@@ -157,6 +157,35 @@
         </div>
     </div>
 
+    <!-- Forgot Password Modal -->
+    <div class="modal-backdrop" id="forgotPasswordBackdrop">
+        <div class="modal modal--small" id="forgotPasswordModal">
+            <div class="modal__header">
+                <h2 class="modal__title">Forgot Password</h2>
+                <button class="modal__close" onclick="closeForgotPasswordModal()">×</button>
+            </div>
+            <div class="modal__body">
+                <p style="color: var(--text-secondary); margin-bottom: var(--spacing-4);">
+                    Enter your email address and we'll send you instructions to reset your password.
+                </p>
+                
+                <div class="error-message" id="forgotErrorMessage" style="display: none;"></div>
+                <div class="success-message" id="forgotSuccessMessage" style="display: none; background: var(--status-success-bg); color: var(--status-success-text); padding: var(--spacing-3); border-radius: var(--radius-base); margin-bottom: var(--spacing-4);"></div>
+                
+                <form id="forgotPasswordForm">
+                    <div class="input-group">
+                        <label class="input-group__label input-group__label--required">Email Address</label>
+                        <input type="email" class="input" id="forgotEmail" name="email" placeholder="Enter your email address" required>
+                    </div>
+                </form>
+            </div>
+            <div class="modal__footer">
+                <button class="btn btn--secondary" onclick="closeForgotPasswordModal()">Cancel</button>
+                <button class="btn btn--primary" id="resetPasswordBtn" onclick="handleForgotPassword()">Send Reset Link</button>
+            </div>
+        </div>
+    </div>
+
     <script src="../assets/js/global.js"></script>
     <script src="../assets/js/api.js"></script>
     <script src="../assets/js/auth.js"></script>
@@ -204,7 +233,97 @@
         // Handle forgot password
         document.querySelector('[data-translate="auth.forgotPassword"]').addEventListener('click', function(e) {
             e.preventDefault();
-            alert('Password reset functionality will be implemented in Phase I.1.6');
+            openForgotPasswordModal();
+        });
+
+        // Forgot Password Modal Functions
+        function openForgotPasswordModal() {
+            document.getElementById('forgotPasswordForm').reset();
+            document.getElementById('forgotErrorMessage').style.display = 'none';
+            document.getElementById('forgotSuccessMessage').style.display = 'none';
+            document.getElementById('forgotPasswordBackdrop').classList.add('active');
+            document.getElementById('forgotPasswordModal').classList.add('active');
+        }
+
+        function closeForgotPasswordModal() {
+            document.getElementById('forgotPasswordBackdrop').classList.remove('active');
+            document.getElementById('forgotPasswordModal').classList.remove('active');
+        }
+
+        async function handleForgotPassword() {
+            const form = document.getElementById('forgotPasswordForm');
+            const errorMsg = document.getElementById('forgotErrorMessage');
+            const successMsg = document.getElementById('forgotSuccessMessage');
+            const resetBtn = document.getElementById('resetPasswordBtn');
+            
+            if (!form.checkValidity()) {
+                form.reportValidity();
+                return;
+            }
+            
+            const email = document.getElementById('forgotEmail').value;
+            
+            // Hide messages
+            errorMsg.style.display = 'none';
+            successMsg.style.display = 'none';
+            
+            // Show loading state
+            resetBtn.classList.add('btn--loading');
+            resetBtn.disabled = true;
+            
+            try {
+                // Simulate API call
+                await LMS.API.delay(1000);
+                
+                // Check if email exists in our users
+                const response = await fetch('../data/mock-users.json');
+                const data = await response.json();
+                const users = data.data || [];
+                
+                const userExists = users.some(u => u.email === email);
+                
+                if (userExists) {
+                    // Generate mock reset token
+                    const resetToken = btoa(JSON.stringify({
+                        email: email,
+                        timestamp: Date.now(),
+                        expires: Date.now() + (60 * 60 * 1000) // 1 hour
+                    }));
+                    
+                    // Store token in localStorage (in real app would be server-side)
+                    localStorage.setItem('lms-reset-token', resetToken);
+                    localStorage.setItem('lms-reset-email', email);
+                    
+                    // Show success message
+                    successMsg.textContent = `Password reset instructions have been sent to ${email}. Check your email.`;
+                    successMsg.style.display = 'block';
+                    
+                    // In real app, would send email. For demo, show link after 2 seconds
+                    setTimeout(() => {
+                        successMsg.innerHTML = `
+                            Password reset instructions have been sent to ${email}.<br>
+                            <strong>For demo:</strong> <a href="reset-password.html?token=${encodeURIComponent(resetToken)}" style="color: var(--color-primary);">Click here to reset password</a>
+                        `;
+                    }, 2000);
+                } else {
+                    errorMsg.textContent = 'No account found with this email address.';
+                    errorMsg.style.display = 'block';
+                }
+            } catch (error) {
+                console.error('Forgot password error:', error);
+                errorMsg.textContent = 'An error occurred. Please try again.';
+                errorMsg.style.display = 'block';
+            } finally {
+                resetBtn.classList.remove('btn--loading');
+                resetBtn.disabled = false;
+            }
+        }
+
+        // ESC key to close modal
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape') {
+                closeForgotPasswordModal();
+            }
         });
     </script>
 </body>
