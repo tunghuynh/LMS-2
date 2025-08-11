@@ -1,0 +1,825 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Course Management - LMS</title>
+    <link rel="stylesheet" href="../assets/css/global.css">
+    <link rel="stylesheet" href="../assets/css/themes.css">
+    <link rel="stylesheet" href="../assets/css/layout.css">
+    <link rel="stylesheet" href="../assets/css/components.css">
+    <style>
+        /* Course specific styles */
+        .course-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: var(--spacing-6);
+        }
+        
+        .course-card {
+            background: var(--bg-card);
+            border-radius: var(--radius-lg);
+            overflow: hidden;
+            transition: transform var(--transition-base), box-shadow var(--transition-base);
+            cursor: pointer;
+        }
+        
+        .course-card:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-lg);
+        }
+        
+        .course-card__image {
+            width: 100%;
+            height: 180px;
+            background: linear-gradient(135deg, var(--color-primary), var(--color-primary-dark));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 48px;
+            position: relative;
+        }
+        
+        .course-card__badge {
+            position: absolute;
+            top: var(--spacing-3);
+            right: var(--spacing-3);
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            padding: var(--spacing-1) var(--spacing-2);
+            border-radius: var(--radius-base);
+            font-size: var(--font-size-xs);
+        }
+        
+        .course-card__body {
+            padding: var(--spacing-4);
+        }
+        
+        .course-card__title {
+            font-size: var(--font-size-lg);
+            font-weight: var(--font-weight-semibold);
+            margin-bottom: var(--spacing-2);
+            color: var(--text-primary);
+        }
+        
+        .course-card__description {
+            color: var(--text-secondary);
+            font-size: var(--font-size-sm);
+            margin-bottom: var(--spacing-3);
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+        
+        .course-card__meta {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding-top: var(--spacing-3);
+            border-top: 1px solid var(--border-color);
+        }
+        
+        .course-card__stat {
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-1);
+            color: var(--text-muted);
+            font-size: var(--font-size-sm);
+        }
+        
+        .view-toggle {
+            display: flex;
+            gap: var(--spacing-2);
+        }
+        
+        .view-toggle__btn {
+            padding: var(--spacing-2);
+            background: transparent;
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-base);
+            cursor: pointer;
+            color: var(--text-secondary);
+            transition: all var(--transition-base);
+        }
+        
+        .view-toggle__btn--active {
+            background: var(--color-primary);
+            border-color: var(--color-primary);
+            color: white;
+        }
+        
+        .filters-section {
+            display: flex;
+            gap: var(--spacing-4);
+            flex-wrap: wrap;
+            align-items: center;
+        }
+        
+        @media (max-width: 768px) {
+            .course-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .filters-section {
+                flex-direction: column;
+                align-items: stretch;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="page-container">
+        <div class="page-header">
+            <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: var(--spacing-4);">
+                <div>
+                    <h1 class="page-title">Course Management</h1>
+                    <p class="page-subtitle">Manage and organize your courses</p>
+                </div>
+                <div style="display: flex; gap: var(--spacing-3); align-items: center;">
+                    <div class="view-toggle">
+                        <button class="view-toggle__btn view-toggle__btn--active" onclick="setView('grid')" title="Grid view">
+                            <svg width="20" height="20" viewBox="0 0 20 20" fill="currentColor">
+                                <rect x="2" y="2" width="6" height="6"/>
+                                <rect x="12" y="2" width="6" height="6"/>
+                                <rect x="2" y="12" width="6" height="6"/>
+                                <rect x="12" y="12" width="6" height="6"/>
+                            </svg>
+                        </button>
+                        <button class="view-toggle__btn" onclick="setView('list')" title="List view">
+                            <svg width="20" height="20" viewBox="0 0 20 20" fill="currentColor">
+                                <rect x="2" y="3" width="16" height="2"/>
+                                <rect x="2" y="9" width="16" height="2"/>
+                                <rect x="2" y="15" width="16" height="2"/>
+                            </svg>
+                        </button>
+                    </div>
+                    <button class="btn btn--primary" onclick="openCreateCourseModal()">
+                        <span class="btn__icon">➕</span>
+                        Create Course
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <div class="page-content">
+            <!-- Filters Section -->
+            <div class="card" style="margin-bottom: var(--spacing-6);">
+                <div class="card__body">
+                    <div class="filters-section">
+                        <div style="flex: 1; min-width: 250px;">
+                            <input 
+                                type="text" 
+                                class="input" 
+                                id="searchInput" 
+                                placeholder="Search courses by title or description..."
+                                onkeyup="handleSearch()"
+                            >
+                        </div>
+                        
+                        <div class="dropdown dropdown--block" style="min-width: 200px;">
+                            <button class="dropdown__trigger">
+                                <span id="categoryFilterText">All Categories</span>
+                                <span class="dropdown__arrow"></span>
+                            </button>
+                            <div class="dropdown__menu">
+                                <div class="dropdown__list" id="categoryList">
+                                    <div class="dropdown__item dropdown__item--selected" data-value="all">All Categories</div>
+                                    <!-- Dynamic categories -->
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="dropdown dropdown--block" style="min-width: 150px;">
+                            <button class="dropdown__trigger">
+                                <span id="statusFilterText">All Status</span>
+                                <span class="dropdown__arrow"></span>
+                            </button>
+                            <div class="dropdown__menu">
+                                <div class="dropdown__list">
+                                    <div class="dropdown__item dropdown__item--selected" data-value="all">All Status</div>
+                                    <div class="dropdown__item" data-value="published">Published</div>
+                                    <div class="dropdown__item" data-value="draft">Draft</div>
+                                    <div class="dropdown__item" data-value="archived">Archived</div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="dropdown dropdown--block" style="min-width: 150px;">
+                            <button class="dropdown__trigger">
+                                <span id="sortText">Sort by Date</span>
+                                <span class="dropdown__arrow"></span>
+                            </button>
+                            <div class="dropdown__menu">
+                                <div class="dropdown__list" id="sortList">
+                                    <div class="dropdown__item dropdown__item--selected" data-value="date">Date Created</div>
+                                    <div class="dropdown__item" data-value="title">Title A-Z</div>
+                                    <div class="dropdown__item" data-value="students">Most Students</div>
+                                    <div class="dropdown__item" data-value="rating">Highest Rated</div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <button class="btn btn--secondary" onclick="resetFilters()">
+                            Reset
+                        </button>
+                    </div>
+
+                    <!-- Stats Summary -->
+                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: var(--spacing-4); margin-top: var(--spacing-4);">
+                        <div style="text-align: center;">
+                            <div style="font-size: var(--font-size-2xl); font-weight: var(--font-weight-bold); color: var(--color-primary);" id="totalCourses">0</div>
+                            <p style="color: var(--text-secondary); font-size: var(--font-size-sm);">Total Courses</p>
+                        </div>
+                        <div style="text-align: center;">
+                            <div style="font-size: var(--font-size-2xl); font-weight: var(--font-weight-bold); color: var(--color-success);" id="publishedCourses">0</div>
+                            <p style="color: var(--text-secondary); font-size: var(--font-size-sm);">Published</p>
+                        </div>
+                        <div style="text-align: center;">
+                            <div style="font-size: var(--font-size-2xl); font-weight: var(--font-weight-bold); color: var(--color-warning);" id="draftCourses">0</div>
+                            <p style="color: var(--text-secondary); font-size: var(--font-size-sm);">Drafts</p>
+                        </div>
+                        <div style="text-align: center;">
+                            <div style="font-size: var(--font-size-2xl); font-weight: var(--font-weight-bold); color: var(--color-info);" id="totalStudents">0</div>
+                            <p style="color: var(--text-secondary); font-size: var(--font-size-sm);">Total Students</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Courses Grid/List -->
+            <div id="coursesContainer">
+                <div class="course-grid" id="coursesGrid">
+                    <!-- Dynamic course cards -->
+                </div>
+                
+                <div class="table-wrapper" id="coursesList" style="display: none;">
+                    <table class="table">
+                        <thead>
+                            <tr class="table__header">
+                                <th class="table__cell table__cell--header">Title</th>
+                                <th class="table__cell table__cell--header">Category</th>
+                                <th class="table__cell table__cell--header">Teacher</th>
+                                <th class="table__cell table__cell--header table__cell--center">Students</th>
+                                <th class="table__cell table__cell--header table__cell--center">Status</th>
+                                <th class="table__cell table__cell--header table__cell--center">Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="coursesTableBody">
+                            <!-- Dynamic table rows -->
+                        </tbody>
+                    </table>
+                </div>
+                
+                <!-- Empty State -->
+                <div id="emptyState" style="display: none;">
+                    <div class="card">
+                        <div class="card__body" style="text-align: center; padding: var(--spacing-8);">
+                            <div style="font-size: 64px; margin-bottom: var(--spacing-4);">📚</div>
+                            <h3 style="margin-bottom: var(--spacing-2);">No courses found</h3>
+                            <p style="color: var(--text-secondary); margin-bottom: var(--spacing-4);">
+                                Try adjusting your filters or create your first course
+                            </p>
+                            <button class="btn btn--primary" onclick="openCreateCourseModal()">
+                                Create Course
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Create/Edit Course Modal -->
+    <div class="modal-backdrop" id="courseModalBackdrop">
+        <div class="modal modal--large" id="courseModal">
+            <div class="modal__header">
+                <h2 class="modal__title" id="courseModalTitle">Create New Course</h2>
+                <button class="modal__close" onclick="closeCourseModal()">×</button>
+            </div>
+            <div class="modal__body">
+                <form id="courseForm">
+                    <input type="hidden" id="courseId">
+                    
+                    <div class="form-grid" style="display: grid; grid-template-columns: 1fr 1fr; gap: var(--spacing-4);">
+                        <div class="input-group">
+                            <label class="input-group__label input-group__label--required">Course Title</label>
+                            <input type="text" class="input" id="courseTitle" name="title" required>
+                        </div>
+                        
+                        <div class="input-group">
+                            <label class="input-group__label input-group__label--required">Category</label>
+                            <div class="dropdown dropdown--block" id="categoryDropdown">
+                                <button type="button" class="dropdown__trigger">
+                                    <span id="selectedCategory">Select category</span>
+                                    <span class="dropdown__arrow"></span>
+                                </button>
+                                <div class="dropdown__menu">
+                                    <div class="dropdown__list" id="categorySelectList">
+                                        <!-- Dynamic categories -->
+                                    </div>
+                                </div>
+                            </div>
+                            <input type="hidden" id="categoryId" name="categoryId" required>
+                        </div>
+                    </div>
+                    
+                    <div class="input-group">
+                        <label class="input-group__label input-group__label--required">Description</label>
+                        <textarea class="input input--textarea" id="courseDescription" name="description" rows="4" required></textarea>
+                    </div>
+                    
+                    <div class="form-grid" style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: var(--spacing-4);">
+                        <div class="input-group">
+                            <label class="input-group__label">Duration (hours)</label>
+                            <input type="number" class="input" id="courseDuration" name="duration" min="1" placeholder="e.g., 40">
+                        </div>
+                        
+                        <div class="input-group">
+                            <label class="input-group__label">Difficulty</label>
+                            <select class="input" id="courseDifficulty" name="difficulty">
+                                <option value="beginner">Beginner</option>
+                                <option value="intermediate">Intermediate</option>
+                                <option value="advanced">Advanced</option>
+                            </select>
+                        </div>
+                        
+                        <div class="input-group">
+                            <label class="input-group__label">Status</label>
+                            <select class="input" id="courseStatus" name="status">
+                                <option value="draft">Draft</option>
+                                <option value="published">Published</option>
+                                <option value="archived">Archived</option>
+                            </select>
+                        </div>
+                    </div>
+                    
+                    <div class="input-group">
+                        <label class="input-group__label">Prerequisites</label>
+                        <input type="text" class="input" id="coursePrerequisites" name="prerequisites" placeholder="e.g., Basic programming knowledge">
+                    </div>
+                    
+                    <div class="input-group">
+                        <label class="input-group__label">Thumbnail Icon</label>
+                        <input type="text" class="input" id="courseThumbnail" name="thumbnail" placeholder="Enter an emoji or leave blank" maxlength="2">
+                        <span class="input-group__help">Use an emoji to represent the course (e.g., 💻, 🎨, 📊)</span>
+                    </div>
+                </form>
+            </div>
+            <div class="modal__footer">
+                <button class="btn btn--secondary" onclick="closeCourseModal()">Cancel</button>
+                <button class="btn btn--primary" onclick="saveCourse()">Save Course</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="../assets/js/global.js"></script>
+    <script src="../assets/js/api.js"></script>
+    <script src="../assets/js/auth.js"></script>
+    <script>
+        // State management
+        let allCourses = [];
+        let allCategories = [];
+        let filteredCourses = [];
+        let currentView = 'grid';
+        let currentCategoryFilter = 'all';
+        let currentStatusFilter = 'all';
+        let currentSort = 'date';
+        let currentUser = LMS.Auth.getUser();
+
+        // Load initial data
+        async function loadData() {
+            try {
+                // Load categories
+                const catResponse = await fetch('../data/mock-categories.json');
+                const catData = await catResponse.json();
+                allCategories = catData.data || [];
+
+                // Load courses
+                const courseResponse = await fetch('../data/mock-courses.json');
+                const courseData = await courseResponse.json();
+                allCourses = courseData.data || [];
+
+                // Merge with localStorage
+                const storedCourses = JSON.parse(localStorage.getItem('lms-courses') || '[]');
+                storedCourses.forEach(course => {
+                    if (!allCourses.find(c => c.id === course.id)) {
+                        allCourses.push(course);
+                    }
+                });
+
+                populateCategoryDropdowns();
+                applyFilters();
+                updateStats();
+            } catch (error) {
+                console.error('Error loading data:', error);
+            }
+        }
+
+        // Populate category dropdowns
+        function populateCategoryDropdowns() {
+            // Filter dropdown
+            const categoryList = document.getElementById('categoryList');
+            categoryList.innerHTML = '<div class="dropdown__item dropdown__item--selected" data-value="all">All Categories</div>';
+            
+            allCategories.forEach(cat => {
+                categoryList.innerHTML += `
+                    <div class="dropdown__item" data-value="${cat.id}">
+                        <span>${cat.icon}</span> ${cat.name}
+                    </div>
+                `;
+            });
+
+            // Form dropdown
+            const categorySelectList = document.getElementById('categorySelectList');
+            categorySelectList.innerHTML = '';
+            
+            allCategories.forEach(cat => {
+                categorySelectList.innerHTML += `
+                    <div class="dropdown__item" data-value="${cat.id}" data-name="${cat.name}">
+                        <span>${cat.icon}</span> ${cat.name}
+                    </div>
+                `;
+            });
+        }
+
+        // Apply filters
+        function applyFilters() {
+            const searchTerm = document.getElementById('searchInput').value.toLowerCase();
+            
+            filteredCourses = allCourses.filter(course => {
+                const matchesSearch = !searchTerm || 
+                    course.title.toLowerCase().includes(searchTerm) ||
+                    course.description.toLowerCase().includes(searchTerm);
+                
+                const matchesCategory = currentCategoryFilter === 'all' || course.categoryId === currentCategoryFilter;
+                const matchesStatus = currentStatusFilter === 'all' || course.status === currentStatusFilter;
+                
+                // Filter by teacher role
+                if (currentUser && currentUser.role === 'teacher') {
+                    return matchesSearch && matchesCategory && matchesStatus && course.teacherId === currentUser.id;
+                }
+                
+                return matchesSearch && matchesCategory && matchesStatus;
+            });
+
+            // Apply sorting
+            sortCourses();
+            
+            // Render based on current view
+            if (currentView === 'grid') {
+                renderGrid();
+            } else {
+                renderList();
+            }
+        }
+
+        // Sort courses
+        function sortCourses() {
+            filteredCourses.sort((a, b) => {
+                switch (currentSort) {
+                    case 'title':
+                        return a.title.localeCompare(b.title);
+                    case 'students':
+                        return (b.enrolledCount || 0) - (a.enrolledCount || 0);
+                    case 'rating':
+                        return (b.rating || 0) - (a.rating || 0);
+                    case 'date':
+                    default:
+                        return new Date(b.createdAt) - new Date(a.createdAt);
+                }
+            });
+        }
+
+        // Render grid view
+        function renderGrid() {
+            const container = document.getElementById('coursesGrid');
+            
+            if (filteredCourses.length === 0) {
+                document.getElementById('coursesContainer').style.display = 'none';
+                document.getElementById('emptyState').style.display = 'block';
+                return;
+            }
+
+            document.getElementById('coursesContainer').style.display = 'block';
+            document.getElementById('emptyState').style.display = 'none';
+            
+            container.innerHTML = filteredCourses.map(course => {
+                const category = allCategories.find(cat => cat.id === course.categoryId);
+                return `
+                    <div class="course-card" onclick="viewCourse('${course.id}')">
+                        <div class="course-card__image">
+                            <span>${course.thumbnail || category?.icon || '📚'}</span>
+                            <span class="course-card__badge">${getStatusBadge(course.status)}</span>
+                        </div>
+                        <div class="course-card__body">
+                            <h3 class="course-card__title">${course.title}</h3>
+                            <p class="course-card__description">${course.description}</p>
+                            <div class="course-card__meta">
+                                <span class="course-card__stat">
+                                    👥 ${course.enrolledCount || 0} students
+                                </span>
+                                <span class="course-card__stat">
+                                    ⭐ ${course.rating || 0}/5
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        // Render list view
+        function renderList() {
+            const tbody = document.getElementById('coursesTableBody');
+            
+            if (filteredCourses.length === 0) {
+                document.getElementById('coursesContainer').style.display = 'none';
+                document.getElementById('emptyState').style.display = 'block';
+                return;
+            }
+
+            document.getElementById('coursesContainer').style.display = 'block';
+            document.getElementById('emptyState').style.display = 'none';
+            
+            tbody.innerHTML = filteredCourses.map(course => {
+                const category = allCategories.find(cat => cat.id === course.categoryId);
+                return `
+                    <tr class="table__row">
+                        <td class="table__cell">
+                            <div style="display: flex; align-items: center; gap: var(--spacing-2);">
+                                <span>${course.thumbnail || category?.icon || '📚'}</span>
+                                <span>${course.title}</span>
+                            </div>
+                        </td>
+                        <td class="table__cell">${category?.name || '-'}</td>
+                        <td class="table__cell">${course.teacherName || '-'}</td>
+                        <td class="table__cell table__cell--center">${course.enrolledCount || 0}</td>
+                        <td class="table__cell table__cell--center">${getStatusBadge(course.status)}</td>
+                        <td class="table__cell table__cell--center">
+                            <button class="btn btn--ghost btn--small" onclick="viewCourse('${course.id}')">View</button>
+                            ${canEditCourse(course) ? `<button class="btn btn--ghost btn--small" onclick="editCourse('${course.id}')">Edit</button>` : ''}
+                        </td>
+                    </tr>
+                `;
+            }).join('');
+        }
+
+        // Get status badge
+        function getStatusBadge(status) {
+            const badges = {
+                published: '<span style="color: var(--color-success);">Published</span>',
+                draft: '<span style="color: var(--color-warning);">Draft</span>',
+                archived: '<span style="color: var(--color-gray-500);">Archived</span>'
+            };
+            return badges[status] || status;
+        }
+
+        // Check if user can edit course
+        function canEditCourse(course) {
+            if (!currentUser) return false;
+            return currentUser.role === 'admin' || 
+                   (currentUser.role === 'teacher' && course.teacherId === currentUser.id);
+        }
+
+        // Set view mode
+        function setView(view) {
+            currentView = view;
+            
+            document.querySelectorAll('.view-toggle__btn').forEach(btn => {
+                btn.classList.remove('view-toggle__btn--active');
+            });
+            event.target.closest('.view-toggle__btn').classList.add('view-toggle__btn--active');
+            
+            if (view === 'grid') {
+                document.getElementById('coursesGrid').style.display = 'grid';
+                document.getElementById('coursesList').style.display = 'none';
+            } else {
+                document.getElementById('coursesGrid').style.display = 'none';
+                document.getElementById('coursesList').style.display = 'block';
+            }
+            
+            applyFilters();
+        }
+
+        // Update statistics
+        function updateStats() {
+            const published = allCourses.filter(c => c.status === 'published').length;
+            const draft = allCourses.filter(c => c.status === 'draft').length;
+            const totalStudents = allCourses.reduce((sum, c) => sum + (c.enrolledCount || 0), 0);
+            
+            document.getElementById('totalCourses').textContent = allCourses.length;
+            document.getElementById('publishedCourses').textContent = published;
+            document.getElementById('draftCourses').textContent = draft;
+            document.getElementById('totalStudents').textContent = totalStudents;
+        }
+
+        // Search handler
+        function handleSearch() {
+            applyFilters();
+        }
+
+        // Reset filters
+        function resetFilters() {
+            document.getElementById('searchInput').value = '';
+            currentCategoryFilter = 'all';
+            currentStatusFilter = 'all';
+            currentSort = 'date';
+            
+            document.getElementById('categoryFilterText').textContent = 'All Categories';
+            document.getElementById('statusFilterText').textContent = 'All Status';
+            document.getElementById('sortText').textContent = 'Sort by Date';
+            
+            document.querySelectorAll('.dropdown__item').forEach(item => {
+                item.classList.remove('dropdown__item--selected');
+            });
+            
+            applyFilters();
+        }
+
+        // Course modal functions
+        function openCreateCourseModal() {
+            document.getElementById('courseModalTitle').textContent = 'Create New Course';
+            document.getElementById('courseForm').reset();
+            document.getElementById('courseId').value = '';
+            document.getElementById('selectedCategory').textContent = 'Select category';
+            
+            document.getElementById('courseModalBackdrop').classList.add('active');
+            document.getElementById('courseModal').classList.add('active');
+        }
+
+        function editCourse(courseId) {
+            event.stopPropagation();
+            const course = allCourses.find(c => c.id === courseId);
+            if (!course) return;
+            
+            document.getElementById('courseModalTitle').textContent = 'Edit Course';
+            document.getElementById('courseId').value = course.id;
+            document.getElementById('courseTitle').value = course.title;
+            document.getElementById('courseDescription').value = course.description;
+            document.getElementById('categoryId').value = course.categoryId;
+            
+            const category = allCategories.find(cat => cat.id === course.categoryId);
+            document.getElementById('selectedCategory').textContent = category ? category.name : 'Select category';
+            
+            document.getElementById('courseDuration').value = course.duration || '';
+            document.getElementById('courseDifficulty').value = course.difficulty || 'beginner';
+            document.getElementById('courseStatus').value = course.status || 'draft';
+            document.getElementById('coursePrerequisites').value = course.prerequisites || '';
+            document.getElementById('courseThumbnail').value = course.thumbnail || '';
+            
+            document.getElementById('courseModalBackdrop').classList.add('active');
+            document.getElementById('courseModal').classList.add('active');
+        }
+
+        function viewCourse(courseId) {
+            // In real app, would navigate to course detail page
+            console.log('View course:', courseId);
+            alert('Course detail page will be implemented in Phase I.2.3');
+        }
+
+        function closeCourseModal() {
+            document.getElementById('courseModalBackdrop').classList.remove('active');
+            document.getElementById('courseModal').classList.remove('active');
+        }
+
+        async function saveCourse() {
+            const form = document.getElementById('courseForm');
+            if (!form.checkValidity()) {
+                form.reportValidity();
+                return;
+            }
+            
+            const courseId = document.getElementById('courseId').value;
+            const courseData = {
+                id: courseId || 'course_' + Date.now(),
+                title: document.getElementById('courseTitle').value,
+                description: document.getElementById('courseDescription').value,
+                categoryId: document.getElementById('categoryId').value,
+                duration: parseInt(document.getElementById('courseDuration').value) || null,
+                difficulty: document.getElementById('courseDifficulty').value,
+                status: document.getElementById('courseStatus').value,
+                prerequisites: document.getElementById('coursePrerequisites').value,
+                thumbnail: document.getElementById('courseThumbnail').value,
+                teacherId: currentUser?.id || 'user_002',
+                teacherName: currentUser?.fullName || 'Teacher',
+                enrolledCount: courseId ? allCourses.find(c => c.id === courseId).enrolledCount : 0,
+                rating: courseId ? allCourses.find(c => c.id === courseId).rating : 0,
+                createdAt: courseId ? allCourses.find(c => c.id === courseId).createdAt : new Date().toISOString()
+            };
+            
+            if (courseId) {
+                // Update existing course
+                const index = allCourses.findIndex(c => c.id === courseId);
+                if (index !== -1) {
+                    allCourses[index] = { ...allCourses[index], ...courseData };
+                }
+            } else {
+                // Add new course
+                allCourses.push(courseData);
+            }
+            
+            // Save to localStorage
+            localStorage.setItem('lms-courses', JSON.stringify(allCourses));
+            
+            closeCourseModal();
+            applyFilters();
+            updateStats();
+            
+            alert(courseId ? 'Course updated successfully!' : 'Course created successfully!');
+        }
+
+        // Setup dropdowns
+        document.querySelectorAll('.dropdown').forEach(dropdown => {
+            const trigger = dropdown.querySelector('.dropdown__trigger');
+            trigger.addEventListener('click', function(e) {
+                e.stopPropagation();
+                dropdown.classList.toggle('active');
+            });
+        });
+
+        // Category filter dropdown
+        document.getElementById('categoryList').addEventListener('click', function(e) {
+            const item = e.target.closest('.dropdown__item');
+            if (item) {
+                currentCategoryFilter = item.dataset.value;
+                document.getElementById('categoryFilterText').textContent = item.textContent;
+                
+                this.querySelectorAll('.dropdown__item').forEach(i => {
+                    i.classList.remove('dropdown__item--selected');
+                });
+                item.classList.add('dropdown__item--selected');
+                
+                item.closest('.dropdown').classList.remove('active');
+                applyFilters();
+            }
+        });
+
+        // Status filter dropdown
+        document.querySelectorAll('.dropdown').forEach(dropdown => {
+            dropdown.addEventListener('click', function(e) {
+                const item = e.target.closest('.dropdown__item');
+                if (!item) return;
+                
+                const list = item.parentElement;
+                const trigger = dropdown.querySelector('.dropdown__trigger span:first-child');
+                
+                if (list.parentElement.previousElementSibling === trigger.parentElement) {
+                    if (trigger.id === 'statusFilterText') {
+                        currentStatusFilter = item.dataset.value;
+                        trigger.textContent = item.textContent;
+                    } else if (trigger.id === 'sortText') {
+                        currentSort = item.dataset.value;
+                        trigger.textContent = item.textContent;
+                    }
+                    
+                    list.querySelectorAll('.dropdown__item').forEach(i => {
+                        i.classList.remove('dropdown__item--selected');
+                    });
+                    item.classList.add('dropdown__item--selected');
+                    
+                    dropdown.classList.remove('active');
+                    applyFilters();
+                }
+            });
+        });
+
+        // Category select dropdown
+        document.getElementById('categorySelectList').addEventListener('click', function(e) {
+            const item = e.target.closest('.dropdown__item');
+            if (item) {
+                document.getElementById('categoryId').value = item.dataset.value;
+                document.getElementById('selectedCategory').textContent = item.dataset.name;
+                document.getElementById('categoryDropdown').classList.remove('active');
+            }
+        });
+
+        // Close dropdowns on outside click
+        document.addEventListener('click', function(e) {
+            if (!e.target.closest('.dropdown')) {
+                document.querySelectorAll('.dropdown.active').forEach(dropdown => {
+                    dropdown.classList.remove('active');
+                });
+            }
+        });
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', function() {
+            // Check authentication - allow teachers and admins
+            if (!LMS.Auth.isAuthenticated()) {
+                alert('Please login to access course management');
+                window.location.href = '../index.html';
+                return;
+            }
+            
+            if (currentUser && currentUser.role === 'student') {
+                alert('Access denied. Teachers and Administrators only.');
+                window.location.href = '../main.html';
+                return;
+            }
+            
+            loadData();
+        });
+    </script>
+</body>
+</html>

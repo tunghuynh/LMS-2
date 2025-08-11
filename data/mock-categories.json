@@ -1,0 +1,152 @@
+{
+  "meta": {
+    "version": "1.0",
+    "totalCount": 12
+  },
+  "data": [
+    {
+      "id": "cat_001",
+      "name": "Programming",
+      "description": "Learn various programming languages and paradigms",
+      "parentId": null,
+      "icon": "💻",
+      "color": "#2C6EAA",
+      "courseCount": 15,
+      "order": 1,
+      "isActive": true,
+      "createdAt": "2024-01-01T00:00:00Z"
+    },
+    {
+      "id": "cat_002",
+      "name": "Web Development",
+      "description": "Frontend and backend web technologies",
+      "parentId": "cat_001",
+      "icon": "🌐",
+      "color": "#4A8BC2",
+      "courseCount": 8,
+      "order": 1,
+      "isActive": true,
+      "createdAt": "2024-01-01T00:00:00Z"
+    },
+    {
+      "id": "cat_003",
+      "name": "Mobile Development",
+      "description": "iOS, Android, and cross-platform mobile apps",
+      "parentId": "cat_001",
+      "icon": "📱",
+      "color": "#7BA7D5",
+      "courseCount": 5,
+      "order": 2,
+      "isActive": true,
+      "createdAt": "2024-01-01T00:00:00Z"
+    },
+    {
+      "id": "cat_004",
+      "name": "Database",
+      "description": "Relational and NoSQL database systems",
+      "parentId": null,
+      "icon": "🗄️",
+      "color": "#10B981",
+      "courseCount": 6,
+      "order": 2,
+      "isActive": true,
+      "createdAt": "2024-01-01T00:00:00Z"
+    },
+    {
+      "id": "cat_005",
+      "name": "DevOps",
+      "description": "CI/CD, containerization, and infrastructure",
+      "parentId": null,
+      "icon": "⚙️",
+      "color": "#F59E0B",
+      "courseCount": 7,
+      "order": 3,
+      "isActive": true,
+      "createdAt": "2024-01-01T00:00:00Z"
+    },
+    {
+      "id": "cat_006",
+      "name": "Cloud Computing",
+      "description": "AWS, Azure, Google Cloud platforms",
+      "parentId": "cat_005",
+      "icon": "☁️",
+      "color": "#F97316",
+      "courseCount": 4,
+      "order": 1,
+      "isActive": true,
+      "createdAt": "2024-01-01T00:00:00Z"
+    },
+    {
+      "id": "cat_007",
+      "name": "Data Science",
+      "description": "Machine learning, AI, and data analysis",
+      "parentId": null,
+      "icon": "📊",
+      "color": "#8B5CF6",
+      "courseCount": 9,
+      "order": 4,
+      "isActive": true,
+      "createdAt": "2024-01-01T00:00:00Z"
+    },
+    {
+      "id": "cat_008",
+      "name": "Machine Learning",
+      "description": "Deep learning and neural networks",
+      "parentId": "cat_007",
+      "icon": "🤖",
+      "color": "#A78BFA",
+      "courseCount": 5,
+      "order": 1,
+      "isActive": true,
+      "createdAt": "2024-01-01T00:00:00Z"
+    },
+    {
+      "id": "cat_009",
+      "name": "Design",
+      "description": "UI/UX design and graphic design",
+      "parentId": null,
+      "icon": "🎨",
+      "color": "#EC4899",
+      "courseCount": 6,
+      "order": 5,
+      "isActive": true,
+      "createdAt": "2024-01-01T00:00:00Z"
+    },
+    {
+      "id": "cat_010",
+      "name": "Business",
+      "description": "Project management and business skills",
+      "parentId": null,
+      "icon": "💼",
+      "color": "#6B7280",
+      "courseCount": 4,
+      "order": 6,
+      "isActive": true,
+      "createdAt": "2024-01-01T00:00:00Z"
+    },
+    {
+      "id": "cat_011",
+      "name": "Security",
+      "description": "Cybersecurity and ethical hacking",
+      "parentId": null,
+      "icon": "🔒",
+      "color": "#EF4444",
+      "courseCount": 3,
+      "order": 7,
+      "isActive": true,
+      "createdAt": "2024-01-01T00:00:00Z"
+    },
+    {
+      "id": "cat_012",
+      "name": "Languages",
+      "description": "Natural language courses",
+      "parentId": null,
+      "icon": "🌍",
+      "color": "#059669",
+      "courseCount": 2,
+      "order": 8,
+      "isActive": false,
+      "createdAt": "2024-01-01T00:00:00Z"
+    }
+  ]
+}

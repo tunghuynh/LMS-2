@@ -1,0 +1,442 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tree View Component - LMS</title>
+    <link rel="stylesheet" href="../assets/css/global.css">
+    <link rel="stylesheet" href="../assets/css/themes.css">
+    <link rel="stylesheet" href="../assets/css/components.css">
+    <style>
+        /* Tree View Component Styles */
+        .tree-view {
+            padding: var(--spacing-2);
+            background: var(--bg-card);
+            border-radius: var(--radius-base);
+        }
+
+        .tree-view__item {
+            margin-bottom: var(--spacing-1);
+        }
+
+        .tree-view__node {
+            display: flex;
+            align-items: center;
+            padding: var(--spacing-2) var(--spacing-3);
+            border-radius: var(--radius-base);
+            cursor: pointer;
+            transition: all var(--transition-base);
+            user-select: none;
+            gap: var(--spacing-2);
+        }
+
+        .tree-view__node:hover {
+            background: var(--bg-secondary);
+        }
+
+        .tree-view__node--selected {
+            background: var(--color-primary-light);
+            color: var(--color-primary);
+        }
+
+        .tree-view__node--parent {
+            font-weight: var(--font-weight-medium);
+        }
+
+        .tree-view__toggle {
+            width: 20px;
+            height: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+            transition: transform var(--transition-base);
+        }
+
+        .tree-view__toggle--expanded {
+            transform: rotate(90deg);
+        }
+
+        .tree-view__icon {
+            font-size: 20px;
+            flex-shrink: 0;
+        }
+
+        .tree-view__content {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-3);
+        }
+
+        .tree-view__text {
+            flex: 1;
+        }
+
+        .tree-view__badge {
+            background: var(--bg-tertiary);
+            color: var(--text-secondary);
+            padding: 2px 8px;
+            border-radius: var(--radius-full);
+            font-size: var(--font-size-xs);
+        }
+
+        .tree-view__actions {
+            display: flex;
+            gap: var(--spacing-1);
+            opacity: 0;
+            transition: opacity var(--transition-base);
+        }
+
+        .tree-view__node:hover .tree-view__actions {
+            opacity: 1;
+        }
+
+        .tree-view__action {
+            width: 28px;
+            height: 28px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: var(--radius-base);
+            background: transparent;
+            border: none;
+            color: var(--text-secondary);
+            cursor: pointer;
+            transition: all var(--transition-base);
+        }
+
+        .tree-view__action:hover {
+            background: var(--bg-primary);
+            color: var(--text-primary);
+        }
+
+        .tree-view__children {
+            margin-left: calc(20px + var(--spacing-3));
+            margin-top: var(--spacing-1);
+            display: none;
+        }
+
+        .tree-view__children--expanded {
+            display: block;
+        }
+
+        .tree-view__empty {
+            text-align: center;
+            padding: var(--spacing-8);
+            color: var(--text-muted);
+        }
+
+        /* Drag and drop styles */
+        .tree-view__node--dragging {
+            opacity: 0.5;
+        }
+
+        .tree-view__node--drag-over {
+            background: var(--color-primary-light);
+            outline: 2px dashed var(--color-primary);
+            outline-offset: -2px;
+        }
+
+        /* Sortable list variant */
+        .tree-view--sortable .tree-view__node {
+            cursor: move;
+        }
+
+        .tree-view--sortable .tree-view__drag-handle {
+            color: var(--text-muted);
+            cursor: grab;
+            padding: var(--spacing-1);
+        }
+
+        .tree-view--sortable .tree-view__drag-handle:active {
+            cursor: grabbing;
+        }
+    </style>
+</head>
+<body style="padding: var(--spacing-8);">
+    <div class="container" style="max-width: 1200px; margin: 0 auto;">
+        <h1>Tree View Component</h1>
+        
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: var(--spacing-6); margin-top: var(--spacing-6);">
+            <!-- Basic Tree View -->
+            <div class="card">
+                <div class="card__header">
+                    <h3 class="card__title">Basic Tree View</h3>
+                </div>
+                <div class="card__body">
+                    <div class="tree-view" id="basicTree">
+                        <div class="tree-view__item">
+                            <div class="tree-view__node tree-view__node--parent" data-id="1">
+                                <span class="tree-view__toggle">▶</span>
+                                <span class="tree-view__icon">💻</span>
+                                <div class="tree-view__content">
+                                    <span class="tree-view__text">Programming</span>
+                                    <span class="tree-view__badge">15</span>
+                                </div>
+                            </div>
+                            <div class="tree-view__children">
+                                <div class="tree-view__item">
+                                    <div class="tree-view__node" data-id="2">
+                                        <span class="tree-view__toggle" style="visibility: hidden;"></span>
+                                        <span class="tree-view__icon">🌐</span>
+                                        <div class="tree-view__content">
+                                            <span class="tree-view__text">Web Development</span>
+                                            <span class="tree-view__badge">8</span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="tree-view__item">
+                                    <div class="tree-view__node" data-id="3">
+                                        <span class="tree-view__toggle" style="visibility: hidden;"></span>
+                                        <span class="tree-view__icon">📱</span>
+                                        <div class="tree-view__content">
+                                            <span class="tree-view__text">Mobile Development</span>
+                                            <span class="tree-view__badge">5</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="tree-view__item">
+                            <div class="tree-view__node" data-id="4">
+                                <span class="tree-view__toggle" style="visibility: hidden;"></span>
+                                <span class="tree-view__icon">🗄️</span>
+                                <div class="tree-view__content">
+                                    <span class="tree-view__text">Database</span>
+                                    <span class="tree-view__badge">6</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Tree View with Actions -->
+            <div class="card">
+                <div class="card__header">
+                    <h3 class="card__title">Tree View with Actions</h3>
+                </div>
+                <div class="card__body">
+                    <div class="tree-view" id="actionsTree">
+                        <div class="tree-view__item">
+                            <div class="tree-view__node tree-view__node--parent" data-id="5">
+                                <span class="tree-view__toggle tree-view__toggle--expanded">▶</span>
+                                <span class="tree-view__icon">📊</span>
+                                <div class="tree-view__content">
+                                    <span class="tree-view__text">Data Science</span>
+                                    <span class="tree-view__badge">9</span>
+                                </div>
+                                <div class="tree-view__actions">
+                                    <button class="tree-view__action" title="Edit">✏️</button>
+                                    <button class="tree-view__action" title="Add">➕</button>
+                                    <button class="tree-view__action" title="Delete">🗑️</button>
+                                </div>
+                            </div>
+                            <div class="tree-view__children tree-view__children--expanded">
+                                <div class="tree-view__item">
+                                    <div class="tree-view__node tree-view__node--selected" data-id="6">
+                                        <span class="tree-view__toggle" style="visibility: hidden;"></span>
+                                        <span class="tree-view__icon">🤖</span>
+                                        <div class="tree-view__content">
+                                            <span class="tree-view__text">Machine Learning</span>
+                                            <span class="tree-view__badge">5</span>
+                                        </div>
+                                        <div class="tree-view__actions">
+                                            <button class="tree-view__action" title="Edit">✏️</button>
+                                            <button class="tree-view__action" title="Delete">🗑️</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Sortable Tree View -->
+            <div class="card">
+                <div class="card__header">
+                    <h3 class="card__title">Sortable Tree View</h3>
+                </div>
+                <div class="card__body">
+                    <div class="tree-view tree-view--sortable" id="sortableTree">
+                        <div class="tree-view__item" draggable="true">
+                            <div class="tree-view__node" data-id="7">
+                                <span class="tree-view__drag-handle">⋮⋮</span>
+                                <span class="tree-view__icon">🎨</span>
+                                <div class="tree-view__content">
+                                    <span class="tree-view__text">Design</span>
+                                    <span class="tree-view__badge">6</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="tree-view__item" draggable="true">
+                            <div class="tree-view__node" data-id="8">
+                                <span class="tree-view__drag-handle">⋮⋮</span>
+                                <span class="tree-view__icon">💼</span>
+                                <div class="tree-view__content">
+                                    <span class="tree-view__text">Business</span>
+                                    <span class="tree-view__badge">4</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="tree-view__item" draggable="true">
+                            <div class="tree-view__node" data-id="9">
+                                <span class="tree-view__drag-handle">⋮⋮</span>
+                                <span class="tree-view__icon">🔒</span>
+                                <div class="tree-view__content">
+                                    <span class="tree-view__text">Security</span>
+                                    <span class="tree-view__badge">3</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Empty State -->
+            <div class="card">
+                <div class="card__header">
+                    <h3 class="card__title">Empty State</h3>
+                </div>
+                <div class="card__body">
+                    <div class="tree-view">
+                        <div class="tree-view__empty">
+                            <div style="font-size: 48px; margin-bottom: var(--spacing-3);">📁</div>
+                            <p>No categories found</p>
+                            <button class="btn btn--primary btn--small" style="margin-top: var(--spacing-3);">
+                                Add Category
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Component API -->
+        <div class="card" style="margin-top: var(--spacing-6);">
+            <div class="card__header">
+                <h3 class="card__title">Component API</h3>
+            </div>
+            <div class="card__body">
+                <h4>Tree View Structure</h4>
+                <pre style="background: var(--bg-secondary); padding: var(--spacing-4); border-radius: var(--radius-base); overflow-x: auto;">
+&lt;div class="tree-view"&gt;
+    &lt;div class="tree-view__item"&gt;
+        &lt;div class="tree-view__node tree-view__node--parent" data-id="1"&gt;
+            &lt;span class="tree-view__toggle"&gt;▶&lt;/span&gt;
+            &lt;span class="tree-view__icon"&gt;💻&lt;/span&gt;
+            &lt;div class="tree-view__content"&gt;
+                &lt;span class="tree-view__text"&gt;Category Name&lt;/span&gt;
+                &lt;span class="tree-view__badge"&gt;15&lt;/span&gt;
+            &lt;/div&gt;
+            &lt;div class="tree-view__actions"&gt;
+                &lt;button class="tree-view__action"&gt;✏️&lt;/button&gt;
+            &lt;/div&gt;
+        &lt;/div&gt;
+        &lt;div class="tree-view__children"&gt;
+            &lt;!-- Child items --&gt;
+        &lt;/div&gt;
+    &lt;/div&gt;
+&lt;/div&gt;</pre>
+
+                <h4 style="margin-top: var(--spacing-4);">Classes</h4>
+                <ul style="list-style: disc; margin-left: var(--spacing-6); color: var(--text-secondary);">
+                    <li><code>.tree-view</code> - Base container</li>
+                    <li><code>.tree-view--sortable</code> - Enable drag and drop</li>
+                    <li><code>.tree-view__node--selected</code> - Selected state</li>
+                    <li><code>.tree-view__node--parent</code> - Parent node style</li>
+                    <li><code>.tree-view__toggle--expanded</code> - Expanded toggle</li>
+                    <li><code>.tree-view__children--expanded</code> - Show children</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <script src="../assets/js/global.js"></script>
+    <script>
+        // Basic tree toggle functionality
+        document.querySelectorAll('.tree-view__toggle').forEach(toggle => {
+            toggle.addEventListener('click', function(e) {
+                e.stopPropagation();
+                const node = this.closest('.tree-view__node');
+                const children = node.nextElementSibling;
+                
+                if (children && children.classList.contains('tree-view__children')) {
+                    this.classList.toggle('tree-view__toggle--expanded');
+                    children.classList.toggle('tree-view__children--expanded');
+                }
+            });
+        });
+
+        // Node selection
+        document.querySelectorAll('.tree-view__node').forEach(node => {
+            node.addEventListener('click', function() {
+                // Remove previous selection
+                this.closest('.tree-view').querySelectorAll('.tree-view__node--selected').forEach(n => {
+                    n.classList.remove('tree-view__node--selected');
+                });
+                
+                // Add selection to clicked node
+                this.classList.add('tree-view__node--selected');
+                
+                console.log('Selected node:', this.dataset.id);
+            });
+        });
+
+        // Action buttons
+        document.querySelectorAll('.tree-view__action').forEach(btn => {
+            btn.addEventListener('click', function(e) {
+                e.stopPropagation();
+                const action = this.title;
+                const nodeId = this.closest('.tree-view__node').dataset.id;
+                console.log(`Action "${action}" on node ${nodeId}`);
+            });
+        });
+
+        // Drag and drop for sortable tree
+        let draggedItem = null;
+
+        document.querySelectorAll('#sortableTree .tree-view__item').forEach(item => {
+            item.addEventListener('dragstart', function(e) {
+                draggedItem = this;
+                this.querySelector('.tree-view__node').classList.add('tree-view__node--dragging');
+            });
+
+            item.addEventListener('dragend', function() {
+                this.querySelector('.tree-view__node').classList.remove('tree-view__node--dragging');
+            });
+
+            item.addEventListener('dragover', function(e) {
+                e.preventDefault();
+                const node = this.querySelector('.tree-view__node');
+                node.classList.add('tree-view__node--drag-over');
+            });
+
+            item.addEventListener('dragleave', function() {
+                const node = this.querySelector('.tree-view__node');
+                node.classList.remove('tree-view__node--drag-over');
+            });
+
+            item.addEventListener('drop', function(e) {
+                e.preventDefault();
+                const node = this.querySelector('.tree-view__node');
+                node.classList.remove('tree-view__node--drag-over');
+                
+                if (this !== draggedItem) {
+                    const parent = this.parentNode;
+                    const draggedIndex = Array.from(parent.children).indexOf(draggedItem);
+                    const targetIndex = Array.from(parent.children).indexOf(this);
+                    
+                    if (draggedIndex < targetIndex) {
+                        parent.insertBefore(draggedItem, this.nextSibling);
+                    } else {
+                        parent.insertBefore(draggedItem, this);
+                    }
+                }
+            });
+        });
+    </script>
+</body>
+</html>
