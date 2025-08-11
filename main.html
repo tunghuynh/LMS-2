@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LMS - Learning Management System</title>
+    <link rel="stylesheet" href="assets/css/global.css">
+    <link rel="stylesheet" href="assets/css/themes.css">
+    <link rel="stylesheet" href="assets/css/layout.css">
+    <link rel="stylesheet" href="assets/css/components.css">
+</head>
+<body>
+    <div class="app-container">
+        <!-- Header -->
+        <header class="app-header">
+            <div class="header-left">
+                <button class="sidebar-toggle" id="sidebarToggle">
+                    <span class="hamburger-icon"></span>
+                </button>
+                <h1 class="app-title" data-translate="app.title">LMS</h1>
+            </div>
+            <div class="header-right">
+                <div class="language-switcher">
+                    <button class="language-btn" data-lang="en">EN</button>
+                    <button class="language-btn" data-lang="vi">VI</button>
+                </div>
+                <div class="theme-switcher">
+                    <button class="theme-btn" id="themeToggle">
+                        <span class="theme-icon"></span>
+                    </button>
+                </div>
+                <div class="user-info">
+                    <span class="user-name" id="userName"></span>
+                    <button class="logout-btn" data-translate="common.logout">Logout</button>
+                </div>
+            </div>
+        </header>
+
+        <!-- Main Content -->
+        <div class="app-body">
+            <!-- Sidebar -->
+            <aside class="app-sidebar" id="sidebar">
+                <nav class="sidebar-nav">
+                    <ul class="nav-list" id="navList">
+                        <!-- Navigation items will be populated dynamically based on user role -->
+                    </ul>
+                </nav>
+            </aside>
+
+            <!-- Content Area -->
+            <main class="app-content">
+                <div class="breadcrumb" id="breadcrumb">
+                    <!-- Breadcrumb will be populated dynamically -->
+                </div>
+                <iframe class="content-iframe" id="contentFrame" name="contentFrame" src="pages/dashboard.html"></iframe>
+            </main>
+        </div>
+
+        <!-- Footer -->
+        <footer class="app-footer">
+            <div class="footer-content">
+                <span data-translate="footer.copyright">&copy; 2024 LMS. All rights reserved.</span>
+            </div>
+        </footer>
+    </div>
+
+    <script src="assets/js/global.js"></script>
+    <script src="assets/js/auth.js"></script>
+    <script src="assets/js/navigation.js"></script>
+</body>
+</html>

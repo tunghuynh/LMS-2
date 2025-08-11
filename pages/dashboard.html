@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard - LMS</title>
+    <link rel="stylesheet" href="../assets/css/global.css">
+    <link rel="stylesheet" href="../assets/css/themes.css">
+    <link rel="stylesheet" href="../assets/css/layout.css">
+    <link rel="stylesheet" href="../assets/css/components.css">
+</head>
+<body>
+    <div class="page-container">
+        <div class="page-header">
+            <h1 class="page-title" data-translate="dashboard.welcome">Welcome back!</h1>
+            <p class="page-subtitle" data-translate="dashboard.overview">Overview</p>
+        </div>
+        
+        <div class="page-content">
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: var(--spacing-4);">
+                <!-- Student Stats -->
+                <div class="card" data-role="student">
+                    <div class="card__header">
+                        <h3 class="card__title" data-translate="dashboard.enrolledCourses">Enrolled Courses</h3>
+                    </div>
+                    <div class="card__body">
+                        <p style="font-size: var(--font-size-3xl); font-weight: var(--font-weight-bold); color: var(--color-primary);">5</p>
+                    </div>
+                </div>
+                
+                <div class="card" data-role="student">
+                    <div class="card__header">
+                        <h3 class="card__title" data-translate="dashboard.completedCourses">Completed Courses</h3>
+                    </div>
+                    <div class="card__body">
+                        <p style="font-size: var(--font-size-3xl); font-weight: var(--font-weight-bold); color: var(--color-success);">2</p>
+                    </div>
+                </div>
+                
+                <!-- Teacher Stats -->
+                <div class="card" data-role="teacher" style="display: none;">
+                    <div class="card__header">
+                        <h3 class="card__title" data-translate="dashboard.coursesCreated">Courses Created</h3>
+                    </div>
+                    <div class="card__body">
+                        <p style="font-size: var(--font-size-3xl); font-weight: var(--font-weight-bold); color: var(--color-primary);">4</p>
+                    </div>
+                </div>
+                
+                <div class="card" data-role="teacher" style="display: none;">
+                    <div class="card__header">
+                        <h3 class="card__title" data-translate="dashboard.studentsCount">Total Students</h3>
+                    </div>
+                    <div class="card__body">
+                        <p style="font-size: var(--font-size-3xl); font-weight: var(--font-weight-bold); color: var(--color-info);">173</p>
+                    </div>
+                </div>
+                
+                <!-- Admin Stats -->
+                <div class="card" data-role="admin" style="display: none;">
+                    <div class="card__header">
+                        <h3 class="card__title" data-translate="dashboard.totalUsers">Total Users</h3>
+                    </div>
+                    <div class="card__body">
+                        <p style="font-size: var(--font-size-3xl); font-weight: var(--font-weight-bold); color: var(--color-primary);">250</p>
+                    </div>
+                </div>
+                
+                <div class="card" data-role="admin" style="display: none;">
+                    <div class="card__header">
+                        <h3 class="card__title" data-translate="dashboard.activeUsers">Active Users</h3>
+                    </div>
+                    <div class="card__body">
+                        <p style="font-size: var(--font-size-3xl); font-weight: var(--font-weight-bold); color: var(--color-success);">198</p>
+                    </div>
+                </div>
+            </div>
+            
+            <div style="margin-top: var(--spacing-6);">
+                <h2 class="text-xl font-semibold mb-4" data-translate="dashboard.recentActivity">Recent Activity</h2>
+                <p class="text-secondary">Dashboard content will be implemented in Phase I</p>
+            </div>
+        </div>
+    </div>
+    
+    <script src="../assets/js/global.js"></script>
+    <script>
+        // Show/hide role-specific content
+        document.addEventListener('DOMContentLoaded', function() {
+            // This would normally come from parent window auth
+            const user = window.parent.LMS?.Auth?.getUser();
+            if (user) {
+                // Update welcome message
+                const welcomeEl = document.querySelector('[data-translate="dashboard.welcome"]');
+                if (welcomeEl && window.parent.t) {
+                    welcomeEl.textContent = window.parent.t('dashboard.welcome', { name: user.fullName });
+                }
+            }
+        });
+    </script>
+    
+    <style>
+        /* Temporary card styles until card component is built */
+        .card {
+            background: var(--card-bg);
+            border: 1px solid var(--card-border);
+            border-radius: var(--radius-lg);
+            padding: var(--spacing-4);
+            box-shadow: var(--shadow-sm);
+        }
+        .card__header {
+            margin-bottom: var(--spacing-3);
+        }
+        .card__title {
+            font-size: var(--font-size-base);
+            font-weight: var(--font-weight-medium);
+            color: var(--text-secondary);
+        }
+    </style>
+</body>
+</html>

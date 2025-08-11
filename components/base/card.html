@@ -1,0 +1,319 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Card Component - LMS</title>
+    <link rel="stylesheet" href="../../assets/css/global.css">
+    <link rel="stylesheet" href="../../assets/css/themes.css">
+    <link rel="stylesheet" href="../../assets/css/components.css">
+    <style>
+        .demo-container {
+            padding: var(--spacing-6);
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        .demo-section {
+            margin-bottom: var(--spacing-8);
+        }
+        .demo-title {
+            font-size: var(--font-size-2xl);
+            font-weight: var(--font-weight-semibold);
+            margin-bottom: var(--spacing-4);
+            color: var(--text-primary);
+        }
+        .demo-subtitle {
+            font-size: var(--font-size-lg);
+            color: var(--text-secondary);
+            margin-bottom: var(--spacing-4);
+        }
+    </style>
+</head>
+<body>
+    <div class="demo-container">
+        <h1 class="demo-title">Card Component</h1>
+        
+        <!-- Basic Cards -->
+        <section class="demo-section">
+            <h2 class="demo-subtitle">Basic Cards</h2>
+            <div class="card-list card-list--grid">
+                <!-- Simple Card -->
+                <div class="card">
+                    <div class="card__header">
+                        <h3 class="card__title">Simple Card</h3>
+                        <p class="card__subtitle">Basic card with header</p>
+                    </div>
+                    <div class="card__body">
+                        <p class="card__text">
+                            This is a simple card component with a header and body. 
+                            It can contain any type of content.
+                        </p>
+                    </div>
+                </div>
+
+                <!-- Card with Footer -->
+                <div class="card">
+                    <div class="card__header">
+                        <h3 class="card__title">Card with Actions</h3>
+                    </div>
+                    <div class="card__body">
+                        <p class="card__text">
+                            This card includes a footer section with action buttons.
+                        </p>
+                    </div>
+                    <div class="card__footer">
+                        <button class="btn btn--secondary btn--small">Cancel</button>
+                        <button class="btn btn--primary btn--small">Save</button>
+                    </div>
+                </div>
+
+                <!-- Clickable Card -->
+                <div class="card card--clickable" onclick="alert('Card clicked!')">
+                    <div class="card__header">
+                        <h3 class="card__title">Clickable Card</h3>
+                    </div>
+                    <div class="card__body">
+                        <p class="card__text">
+                            This entire card is clickable. Hover to see the effect.
+                        </p>
+                    </div>
+                    <div class="card__footer card__footer--center">
+                        <span style="color: var(--color-primary);">Click me! →</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Cards with Images -->
+        <section class="demo-section">
+            <h2 class="demo-subtitle">Cards with Images</h2>
+            <div class="card-list card-list--grid">
+                <!-- Image Card -->
+                <div class="card">
+                    <div class="card__image">
+                        <img src="https://via.placeholder.com/400x225/2C6EAA/ffffff?text=Course+Image" alt="Course">
+                        <span class="card__badge">New</span>
+                    </div>
+                    <div class="card__header card__header--no-border">
+                        <h3 class="card__title">Introduction to Web Development</h3>
+                        <p class="card__subtitle">Learn the basics of HTML, CSS, and JavaScript</p>
+                    </div>
+                    <div class="card__body">
+                        <div class="card__meta">
+                            <span class="card__meta-item">👤 Jane Smith</span>
+                            <span class="card__meta-item">⏱️ 8 weeks</span>
+                            <span class="card__meta-item">⭐ 4.5</span>
+                        </div>
+                    </div>
+                    <div class="card__footer card__footer--space-between">
+                        <span style="font-weight: var(--font-weight-semibold); color: var(--color-primary);">Free</span>
+                        <button class="btn btn--primary btn--small">Enroll Now</button>
+                    </div>
+                </div>
+
+                <!-- Image Card with Overlay -->
+                <div class="card card--clickable">
+                    <div class="card__image">
+                        <img src="https://via.placeholder.com/400x225/4A8BC2/ffffff?text=Advanced+Course" alt="Course">
+                        <div class="card__image-overlay"></div>
+                        <span class="card__badge" style="background-color: var(--color-warning);">Popular</span>
+                    </div>
+                    <div class="card__header card__header--no-border">
+                        <h3 class="card__title">Advanced JavaScript</h3>
+                        <p class="card__subtitle">Master modern JavaScript features</p>
+                    </div>
+                    <div class="card__body">
+                        <p class="card__text">
+                            Deep dive into ES6+, async programming, and popular frameworks.
+                        </p>
+                        <div class="card__meta">
+                            <span class="card__meta-item">📚 24 lessons</span>
+                            <span class="card__meta-item">👥 156 students</span>
+                        </div>
+                    </div>
+                    <div class="card__footer">
+                        <span style="text-decoration: line-through; color: var(--text-muted);">$99</span>
+                        <span style="font-weight: var(--font-weight-bold); color: var(--color-success);">$49.99</span>
+                        <button class="btn btn--primary btn--small" style="margin-left: auto;">View Course</button>
+                    </div>
+                </div>
+
+                <!-- Simple Image Card -->
+                <div class="card">
+                    <div class="card__image">
+                        <img src="https://via.placeholder.com/400x225/1E4F78/ffffff?text=Database+Course" alt="Course">
+                    </div>
+                    <div class="card__body">
+                        <h3 class="card__title">Database Design</h3>
+                        <p class="card__text">Learn SQL and database design principles</p>
+                        <button class="btn btn--ghost btn--small btn--block" style="margin-top: var(--spacing-3);">
+                            Learn More
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Card Variations -->
+        <section class="demo-section">
+            <h2 class="demo-subtitle">Card Variations</h2>
+            <div class="card-list card-list--grid">
+                <!-- Flat Card -->
+                <div class="card card--flat">
+                    <div class="card__header">
+                        <h3 class="card__title">Flat Card</h3>
+                    </div>
+                    <div class="card__body">
+                        <p class="card__text">No shadow effect</p>
+                    </div>
+                </div>
+
+                <!-- Outline Card -->
+                <div class="card card--outline">
+                    <div class="card__header">
+                        <h3 class="card__title">Outline Card</h3>
+                    </div>
+                    <div class="card__body">
+                        <p class="card__text">Transparent background with border</p>
+                    </div>
+                </div>
+
+                <!-- Small Card -->
+                <div class="card card--small">
+                    <div class="card__header">
+                        <h3 class="card__title">Small Card</h3>
+                    </div>
+                    <div class="card__body">
+                        <p class="card__text">Compact size with smaller padding</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Horizontal Cards -->
+        <section class="demo-section">
+            <h2 class="demo-subtitle">Horizontal Cards</h2>
+            <div class="card-list">
+                <!-- Horizontal Card -->
+                <div class="card card--horizontal">
+                    <div class="card__image">
+                        <img src="https://via.placeholder.com/300x200/2C6EAA/ffffff?text=React" alt="Course">
+                    </div>
+                    <div class="card__content">
+                        <div class="card__header card__header--no-border">
+                            <h3 class="card__title">React.js Fundamentals</h3>
+                            <p class="card__subtitle">Build modern user interfaces with React</p>
+                        </div>
+                        <div class="card__body">
+                            <p class="card__text">
+                                Learn React from scratch, including components, state management, hooks, 
+                                and best practices for building scalable applications.
+                            </p>
+                            <div class="card__meta">
+                                <span class="card__meta-item">🎯 Beginner friendly</span>
+                                <span class="card__meta-item">📱 Mobile responsive</span>
+                                <span class="card__meta-item">🏆 Certificate included</span>
+                            </div>
+                        </div>
+                        <div class="card__footer card__footer--no-border">
+                            <button class="btn btn--primary">Start Learning</button>
+                            <button class="btn btn--ghost">Preview Course</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Clickable Horizontal Card -->
+                <div class="card card--horizontal card--clickable">
+                    <div class="card__image">
+                        <img src="https://via.placeholder.com/300x200/4A8BC2/ffffff?text=Node.js" alt="Course">
+                    </div>
+                    <div class="card__content">
+                        <div class="card__header card__header--no-border">
+                            <h3 class="card__title">Node.js Backend Development</h3>
+                            <p class="card__subtitle">Build scalable server-side applications</p>
+                        </div>
+                        <div class="card__body">
+                            <p class="card__text">
+                                Master Node.js, Express, and MongoDB to build full-featured APIs.
+                            </p>
+                        </div>
+                        <div class="card__footer card__footer--space-between card__footer--no-border">
+                            <div>
+                                <span style="font-size: var(--font-size-2xl); font-weight: var(--font-weight-bold); color: var(--color-primary);">
+                                    $79.99
+                                </span>
+                            </div>
+                            <span style="color: var(--color-primary);">View Details →</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Card States -->
+        <section class="demo-section">
+            <h2 class="demo-subtitle">Card States</h2>
+            <div class="card-list card-list--grid">
+                <!-- Loading Card -->
+                <div class="card card--loading">
+                    <div class="card__header">
+                        <h3 class="card__title">Loading State</h3>
+                    </div>
+                    <div class="card__body">
+                        <p class="card__text">Content is loading...</p>
+                    </div>
+                </div>
+
+                <!-- Disabled Card -->
+                <div class="card card--disabled">
+                    <div class="card__header">
+                        <h3 class="card__title">Disabled Card</h3>
+                    </div>
+                    <div class="card__body">
+                        <p class="card__text">This card is disabled</p>
+                    </div>
+                    <div class="card__footer">
+                        <button class="btn btn--primary btn--small" disabled>Unavailable</button>
+                    </div>
+                </div>
+
+                <!-- Empty State Card -->
+                <div class="card">
+                    <div class="card__body" style="text-align: center; padding: var(--spacing-8);">
+                        <div style="font-size: 48px; margin-bottom: var(--spacing-4);">📚</div>
+                        <h3 class="card__title">No Courses Found</h3>
+                        <p class="card__text" style="color: var(--text-muted);">
+                            Start exploring our course catalog
+                        </p>
+                        <button class="btn btn--primary" style="margin-top: var(--spacing-4);">
+                            Browse Courses
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Theme Switcher -->
+        <div style="position: fixed; top: 20px; right: 20px;">
+            <button class="btn btn--secondary btn--small" id="themeToggle">
+                Toggle Theme
+            </button>
+        </div>
+    </div>
+
+    <script src="../../assets/js/global.js"></script>
+    <script>
+        // Demo interactions
+        document.addEventListener('DOMContentLoaded', function() {
+            // Log card clicks
+            document.querySelectorAll('.card--clickable').forEach(card => {
+                if (!card.onclick) {
+                    card.addEventListener('click', function() {
+                        console.log('Card clicked:', this.querySelector('.card__title')?.textContent);
+                    });
+                }
+            });
+        });
+    </script>
+</body>
+</html>

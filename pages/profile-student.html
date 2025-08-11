@@ -1,0 +1,311 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Profile - Student - LMS</title>
+    <link rel="stylesheet" href="../assets/css/global.css">
+    <link rel="stylesheet" href="../assets/css/themes.css">
+    <link rel="stylesheet" href="../assets/css/layout.css">
+    <link rel="stylesheet" href="../assets/css/components.css">
+</head>
+<body>
+    <div class="page-container">
+        <div class="page-header">
+            <h1 class="page-title" data-translate="nav.profile">My Profile</h1>
+            <p class="page-subtitle">Manage your personal information and learning goals</p>
+        </div>
+
+        <div class="page-content">
+            <!-- Profile Overview -->
+            <div class="card" style="margin-bottom: var(--spacing-6);">
+                <div class="card__body">
+                    <div style="display: flex; gap: var(--spacing-6); align-items: start; flex-wrap: wrap;">
+                        <!-- Avatar Section -->
+                        <div style="text-align: center;">
+                            <div style="position: relative; display: inline-block;">
+                                <div id="avatarPreview" style="width: 150px; height: 150px; border-radius: 50%; background: var(--bg-secondary); display: flex; align-items: center; justify-content: center; font-size: 60px; color: var(--text-muted); overflow: hidden;">
+                                    <span id="avatarPlaceholder">👤</span>
+                                    <img id="avatarImage" src="" alt="Avatar" style="width: 100%; height: 100%; object-fit: cover; display: none;">
+                                </div>
+                                <label for="avatarInput" class="btn btn--secondary btn--small" style="position: absolute; bottom: 0; right: 0; cursor: pointer;">
+                                    📷
+                                </label>
+                                <input type="file" id="avatarInput" accept="image/*" style="display: none;">
+                            </div>
+                            <p style="margin-top: var(--spacing-2); font-size: var(--font-size-sm); color: var(--text-muted);">
+                                Click to upload avatar
+                            </p>
+                        </div>
+
+                        <!-- Personal Info -->
+                        <div style="flex: 1; min-width: 300px;">
+                            <h3 style="margin-bottom: var(--spacing-4);">Personal Information</h3>
+                            <div style="display: grid; gap: var(--spacing-3);">
+                                <div>
+                                    <label style="font-weight: var(--font-weight-medium); color: var(--text-secondary);">Full Name:</label>
+                                    <p id="fullName" style="font-size: var(--font-size-lg);">Loading...</p>
+                                </div>
+                                <div>
+                                    <label style="font-weight: var(--font-weight-medium); color: var(--text-secondary);">Username:</label>
+                                    <p id="username">Loading...</p>
+                                </div>
+                                <div>
+                                    <label style="font-weight: var(--font-weight-medium); color: var(--text-secondary);">Email:</label>
+                                    <p id="email">Loading...</p>
+                                </div>
+                                <div>
+                                    <label style="font-weight: var(--font-weight-medium); color: var(--text-secondary);">Member Since:</label>
+                                    <p id="joinDate">Loading...</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Learning Goals -->
+            <div class="card" style="margin-bottom: var(--spacing-6);">
+                <div class="card__header">
+                    <h3 class="card__title">Learning Goals</h3>
+                </div>
+                <div class="card__body">
+                    <form id="goalsForm">
+                        <div class="input-group">
+                            <label class="input-group__label">My Learning Goals</label>
+                            <textarea 
+                                class="input input--textarea" 
+                                id="learningGoals" 
+                                rows="4" 
+                                placeholder="What do you want to achieve? What skills do you want to develop?"
+                            ></textarea>
+                            <span class="input-group__help">Share your learning objectives and aspirations</span>
+                        </div>
+                        <button type="submit" class="btn btn--primary">Save Goals</button>
+                    </form>
+                </div>
+            </div>
+
+            <!-- Progress Summary -->
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: var(--spacing-4); margin-bottom: var(--spacing-6);">
+                <div class="card">
+                    <div class="card__body" style="text-align: center;">
+                        <div style="font-size: var(--font-size-3xl); font-weight: var(--font-weight-bold); color: var(--color-primary);">5</div>
+                        <p style="color: var(--text-secondary);">Enrolled Courses</p>
+                    </div>
+                </div>
+                <div class="card">
+                    <div class="card__body" style="text-align: center;">
+                        <div style="font-size: var(--font-size-3xl); font-weight: var(--font-weight-bold); color: var(--color-success);">2</div>
+                        <p style="color: var(--text-secondary);">Completed Courses</p>
+                    </div>
+                </div>
+                <div class="card">
+                    <div class="card__body" style="text-align: center;">
+                        <div style="font-size: var(--font-size-3xl); font-weight: var(--font-weight-bold); color: var(--color-warning);">12</div>
+                        <p style="color: var(--text-secondary);">Quizzes Taken</p>
+                    </div>
+                </div>
+                <div class="card">
+                    <div class="card__body" style="text-align: center;">
+                        <div style="font-size: var(--font-size-3xl); font-weight: var(--font-weight-bold); color: var(--color-info);">85%</div>
+                        <p style="color: var(--text-secondary);">Average Score</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Course Progress Table -->
+            <div class="card" style="margin-bottom: var(--spacing-6);">
+                <div class="card__header">
+                    <h3 class="card__title">Course Progress</h3>
+                </div>
+                <div class="card__body card__body--no-padding">
+                    <div class="table-wrapper">
+                        <table class="table">
+                            <thead>
+                                <tr class="table__header">
+                                    <th class="table__cell table__cell--header">Course</th>
+                                    <th class="table__cell table__cell--header">Progress</th>
+                                    <th class="table__cell table__cell--header table__cell--center">Status</th>
+                                    <th class="table__cell table__cell--header table__cell--hide-mobile">Last Activity</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr class="table__row">
+                                    <td class="table__cell">Introduction to Web Development</td>
+                                    <td class="table__cell">
+                                        <div style="display: flex; align-items: center; gap: var(--spacing-2);">
+                                            <div style="flex: 1; height: 8px; background: var(--bg-secondary); border-radius: 4px; overflow: hidden;">
+                                                <div style="width: 100%; height: 100%; background: var(--color-success);"></div>
+                                            </div>
+                                            <span style="font-size: var(--font-size-sm);">100%</span>
+                                        </div>
+                                    </td>
+                                    <td class="table__cell table__cell--center">
+                                        <span style="color: var(--color-success);">Completed</span>
+                                    </td>
+                                    <td class="table__cell table__cell--hide-mobile">2 days ago</td>
+                                </tr>
+                                <tr class="table__row">
+                                    <td class="table__cell">Advanced JavaScript</td>
+                                    <td class="table__cell">
+                                        <div style="display: flex; align-items: center; gap: var(--spacing-2);">
+                                            <div style="flex: 1; height: 8px; background: var(--bg-secondary); border-radius: 4px; overflow: hidden;">
+                                                <div style="width: 65%; height: 100%; background: var(--color-primary);"></div>
+                                            </div>
+                                            <span style="font-size: var(--font-size-sm);">65%</span>
+                                        </div>
+                                    </td>
+                                    <td class="table__cell table__cell--center">
+                                        <span style="color: var(--color-primary);">In Progress</span>
+                                    </td>
+                                    <td class="table__cell table__cell--hide-mobile">Today</td>
+                                </tr>
+                                <tr class="table__row">
+                                    <td class="table__cell">React.js Fundamentals</td>
+                                    <td class="table__cell">
+                                        <div style="display: flex; align-items: center; gap: var(--spacing-2);">
+                                            <div style="flex: 1; height: 8px; background: var(--bg-secondary); border-radius: 4px; overflow: hidden;">
+                                                <div style="width: 30%; height: 100%; background: var(--color-primary);"></div>
+                                            </div>
+                                            <span style="font-size: var(--font-size-sm);">30%</span>
+                                        </div>
+                                    </td>
+                                    <td class="table__cell table__cell--center">
+                                        <span style="color: var(--color-primary);">In Progress</span>
+                                    </td>
+                                    <td class="table__cell table__cell--hide-mobile">5 days ago</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Quiz History -->
+            <div class="card">
+                <div class="card__header">
+                    <h3 class="card__title">Recent Quiz Results</h3>
+                </div>
+                <div class="card__body card__body--no-padding">
+                    <div class="table-wrapper">
+                        <table class="table">
+                            <thead>
+                                <tr class="table__header">
+                                    <th class="table__cell table__cell--header">Quiz</th>
+                                    <th class="table__cell table__cell--header table__cell--center">Score</th>
+                                    <th class="table__cell table__cell--header table__cell--center">Result</th>
+                                    <th class="table__cell table__cell--header table__cell--hide-mobile">Date</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr class="table__row">
+                                    <td class="table__cell">HTML Basics Quiz</td>
+                                    <td class="table__cell table__cell--center">95%</td>
+                                    <td class="table__cell table__cell--center">
+                                        <span style="color: var(--color-success);">Passed</span>
+                                    </td>
+                                    <td class="table__cell table__cell--hide-mobile">Jan 10, 2025</td>
+                                </tr>
+                                <tr class="table__row">
+                                    <td class="table__cell">CSS Fundamentals</td>
+                                    <td class="table__cell table__cell--center">88%</td>
+                                    <td class="table__cell table__cell--center">
+                                        <span style="color: var(--color-success);">Passed</span>
+                                    </td>
+                                    <td class="table__cell table__cell--hide-mobile">Jan 8, 2025</td>
+                                </tr>
+                                <tr class="table__row">
+                                    <td class="table__cell">JavaScript Basics</td>
+                                    <td class="table__cell table__cell--center">76%</td>
+                                    <td class="table__cell table__cell--center">
+                                        <span style="color: var(--color-success);">Passed</span>
+                                    </td>
+                                    <td class="table__cell table__cell--hide-mobile">Jan 5, 2025</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="../assets/js/global.js"></script>
+    <script src="../assets/js/api.js"></script>
+    <script src="../assets/js/auth.js"></script>
+    <script>
+        // Load user profile data
+        async function loadProfile() {
+            const user = LMS.Auth.getUser();
+            if (!user) {
+                window.location.href = '../index.html';
+                return;
+            }
+
+            // Display user info
+            document.getElementById('fullName').textContent = user.fullName || user.username;
+            document.getElementById('username').textContent = user.username;
+            document.getElementById('email').textContent = user.email;
+            document.getElementById('joinDate').textContent = new Date(user.createdAt).toLocaleDateString();
+            
+            // Load learning goals
+            document.getElementById('learningGoals').value = user.learningGoals || '';
+            
+            // Load avatar if exists
+            if (user.avatar) {
+                document.getElementById('avatarImage').src = user.avatar;
+                document.getElementById('avatarImage').style.display = 'block';
+                document.getElementById('avatarPlaceholder').style.display = 'none';
+            }
+        }
+
+        // Handle avatar upload
+        document.getElementById('avatarInput').addEventListener('change', function(e) {
+            const file = e.target.files[0];
+            if (file && file.type.startsWith('image/')) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    document.getElementById('avatarImage').src = e.target.result;
+                    document.getElementById('avatarImage').style.display = 'block';
+                    document.getElementById('avatarPlaceholder').style.display = 'none';
+                    
+                    // In real app, would upload to server
+                    // For demo, save to localStorage
+                    const user = LMS.Auth.getUser();
+                    user.avatar = e.target.result;
+                    LMS.Auth.saveSession(user, LMS.Auth.getToken());
+                };
+                reader.readAsDataURL(file);
+            }
+        });
+
+        // Handle goals form
+        document.getElementById('goalsForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            
+            const goals = document.getElementById('learningGoals').value;
+            const user = LMS.Auth.getUser();
+            
+            // Update user data
+            user.learningGoals = goals;
+            LMS.Auth.saveSession(user, LMS.Auth.getToken());
+            
+            // Show success message (in real app, would save to server)
+            alert('Learning goals updated successfully!');
+        });
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', function() {
+            // Check authentication
+            if (!LMS.Auth.hasRole('student')) {
+                alert('Access denied. Students only.');
+                window.location.href = '../index.html';
+                return;
+            }
+            
+            loadProfile();
+        });
+    </script>
+</body>
+</html>

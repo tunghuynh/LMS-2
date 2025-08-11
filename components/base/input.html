@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Input Component - LMS</title>
+    <link rel="stylesheet" href="../../assets/css/global.css">
+    <link rel="stylesheet" href="../../assets/css/themes.css">
+    <link rel="stylesheet" href="../../assets/css/components.css">
+    <style>
+        .demo-container {
+            padding: var(--spacing-6);
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        .demo-section {
+            margin-bottom: var(--spacing-8);
+        }
+        .demo-title {
+            font-size: var(--font-size-2xl);
+            font-weight: var(--font-weight-semibold);
+            margin-bottom: var(--spacing-4);
+            color: var(--text-primary);
+        }
+        .demo-subtitle {
+            font-size: var(--font-size-lg);
+            color: var(--text-secondary);
+            margin-bottom: var(--spacing-4);
+        }
+        .demo-row {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: var(--spacing-4);
+            margin-bottom: var(--spacing-4);
+        }
+    </style>
+</head>
+<body>
+    <div class="demo-container">
+        <h1 class="demo-title">Input Component</h1>
+        
+        <!-- Basic Inputs -->
+        <section class="demo-section">
+            <h2 class="demo-subtitle">Basic Inputs</h2>
+            <div class="demo-row">
+                <div class="input-group">
+                    <label class="input-group__label">Text Input</label>
+                    <input type="text" class="input" placeholder="Enter text...">
+                </div>
+                
+                <div class="input-group">
+                    <label class="input-group__label input-group__label--required">Required Input</label>
+                    <input type="text" class="input" placeholder="This field is required" required>
+                </div>
+            </div>
+            
+            <div class="demo-row">
+                <div class="input-group">
+                    <label class="input-group__label">Email Input</label>
+                    <input type="email" class="input" placeholder="email@example.com">
+                </div>
+                
+                <div class="input-group">
+                    <label class="input-group__label">Password Input</label>
+                    <input type="password" class="input" placeholder="Enter password">
+                </div>
+            </div>
+        </section>
+
+        <!-- Input Sizes -->
+        <section class="demo-section">
+            <h2 class="demo-subtitle">Input Sizes</h2>
+            <div class="input-group">
+                <label class="input-group__label">Small Input</label>
+                <input type="text" class="input input--small" placeholder="Small size">
+            </div>
+            
+            <div class="input-group">
+                <label class="input-group__label">Default Input</label>
+                <input type="text" class="input" placeholder="Default size">
+            </div>
+            
+            <div class="input-group">
+                <label class="input-group__label">Large Input</label>
+                <input type="text" class="input input--large" placeholder="Large size">
+            </div>
+        </section>
+
+        <!-- Input States -->
+        <section class="demo-section">
+            <h2 class="demo-subtitle">Input States</h2>
+            <div class="demo-row">
+                <div class="input-group">
+                    <label class="input-group__label">Normal State</label>
+                    <input type="text" class="input" placeholder="Normal input">
+                </div>
+                
+                <div class="input-group">
+                    <label class="input-group__label">Disabled State</label>
+                    <input type="text" class="input" placeholder="Disabled input" disabled>
+                </div>
+            </div>
+            
+            <div class="demo-row">
+                <div class="input-group">
+                    <label class="input-group__label">Error State</label>
+                    <input type="text" class="input input--error" placeholder="Error input" value="Invalid value">
+                    <span class="input-group__error">This field has an error</span>
+                </div>
+                
+                <div class="input-group">
+                    <label class="input-group__label">Success State</label>
+                    <input type="text" class="input input--success" placeholder="Success input" value="Valid value">
+                    <span class="input-group__success">Looking good!</span>
+                </div>
+            </div>
+        </section>
+
+        <!-- Input with Help Text -->
+        <section class="demo-section">
+            <h2 class="demo-subtitle">Input with Help Text</h2>
+            <div class="demo-row">
+                <div class="input-group">
+                    <label class="input-group__label">Username</label>
+                    <input type="text" class="input" placeholder="Choose a username">
+                    <span class="input-group__help">Your username must be unique</span>
+                </div>
+                
+                <div class="input-group">
+                    <label class="input-group__label">Phone Number</label>
+                    <input type="tel" class="input" placeholder="+1 (555) 000-0000">
+                    <span class="input-group__help">Include country code</span>
+                </div>
+            </div>
+        </section>
+
+        <!-- Input with Icons -->
+        <section class="demo-section">
+            <h2 class="demo-subtitle">Input with Icons</h2>
+            <div class="demo-row">
+                <div class="input-group input-group--with-icon">
+                    <label class="input-group__label">Search</label>
+                    <span class="input-group__icon input-group__icon--left">🔍</span>
+                    <input type="text" class="input" placeholder="Search...">
+                </div>
+                
+                <div class="input-group input-group--with-icon input-group--with-icon-right">
+                    <label class="input-group__label">Email</label>
+                    <input type="email" class="input" placeholder="Enter email">
+                    <span class="input-group__icon input-group__icon--right">✉️</span>
+                </div>
+            </div>
+        </section>
+
+        <!-- Input with Clear Button -->
+        <section class="demo-section">
+            <h2 class="demo-subtitle">Input with Clear Button</h2>
+            <div class="input-group" style="position: relative;">
+                <label class="input-group__label">Clearable Input</label>
+                <input type="text" class="input" id="clearableInput" value="Click X to clear">
+                <button class="input-group__clear" id="clearButton" style="display: block;">✕</button>
+            </div>
+        </section>
+
+        <!-- Textarea -->
+        <section class="demo-section">
+            <h2 class="demo-subtitle">Textarea</h2>
+            <div class="input-group">
+                <label class="input-group__label">Message</label>
+                <textarea class="input input--textarea" placeholder="Enter your message..." rows="4"></textarea>
+            </div>
+            
+            <div class="input-group">
+                <label class="input-group__label">Description with Counter</label>
+                <textarea class="input input--textarea" id="textareaWithCounter" placeholder="Max 200 characters..." maxlength="200"></textarea>
+                <span class="input-group__counter"><span id="charCount">0</span>/200</span>
+            </div>
+        </section>
+
+        <!-- Complex Form Example -->
+        <section class="demo-section">
+            <h2 class="demo-subtitle">Form Example</h2>
+            <form>
+                <div class="demo-row">
+                    <div class="input-group">
+                        <label class="input-group__label input-group__label--required">First Name</label>
+                        <input type="text" class="input" placeholder="John" required>
+                    </div>
+                    
+                    <div class="input-group">
+                        <label class="input-group__label input-group__label--required">Last Name</label>
+                        <input type="text" class="input" placeholder="Doe" required>
+                    </div>
+                </div>
+                
+                <div class="input-group">
+                    <label class="input-group__label input-group__label--required">Email Address</label>
+                    <input type="email" class="input" placeholder="john.doe@example.com" required>
+                    <span class="input-group__help">We'll never share your email</span>
+                </div>
+                
+                <div class="input-group input-group--with-icon">
+                    <label class="input-group__label">Password</label>
+                    <span class="input-group__icon input-group__icon--left">🔒</span>
+                    <input type="password" class="input" placeholder="Enter password">
+                </div>
+                
+                <div class="input-group">
+                    <label class="input-group__label">Bio</label>
+                    <textarea class="input input--textarea" placeholder="Tell us about yourself..." rows="3"></textarea>
+                </div>
+                
+                <button type="submit" class="btn btn--primary">Submit Form</button>
+            </form>
+        </section>
+
+        <!-- Theme Switcher -->
+        <div style="position: fixed; top: 20px; right: 20px;">
+            <button class="btn btn--secondary btn--small" id="themeToggle">
+                Toggle Theme
+            </button>
+        </div>
+    </div>
+
+    <script src="../../assets/js/global.js"></script>
+    <script>
+        // Clear button functionality
+        const clearableInput = document.getElementById('clearableInput');
+        const clearButton = document.getElementById('clearButton');
+        
+        clearButton.addEventListener('click', function() {
+            clearableInput.value = '';
+            clearableInput.focus();
+            this.style.display = 'none';
+        });
+        
+        clearableInput.addEventListener('input', function() {
+            clearButton.style.display = this.value ? 'block' : 'none';
+        });
+        
+        // Character counter
+        const textareaWithCounter = document.getElementById('textareaWithCounter');
+        const charCount = document.getElementById('charCount');
+        
+        textareaWithCounter.addEventListener('input', function() {
+            const count = this.value.length;
+            charCount.textContent = count;
+            
+            const counter = this.nextElementSibling;
+            if (count >= 200) {
+                counter.classList.add('input-group__counter--error');
+            } else {
+                counter.classList.remove('input-group__counter--error');
+            }
+        });
+        
+        // Form validation example
+        document.querySelector('form').addEventListener('submit', function(e) {
+            e.preventDefault();
+            console.log('Form submitted!');
+        });
+    </script>
+</body>
+</html>

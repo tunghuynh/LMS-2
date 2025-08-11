@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Student Login - LMS</title>
+    <link rel="stylesheet" href="../assets/css/global.css">
+    <link rel="stylesheet" href="../assets/css/themes.css">
+    <link rel="stylesheet" href="../assets/css/components.css">
+    <style>
+        body {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            background: var(--bg-secondary);
+        }
+        .login-container {
+            width: 100%;
+            max-width: 400px;
+            padding: var(--spacing-4);
+        }
+        .login-card {
+            background: var(--bg-card);
+            border-radius: var(--radius-lg);
+            box-shadow: var(--shadow-lg);
+            padding: var(--spacing-8);
+        }
+        .login-header {
+            text-align: center;
+            margin-bottom: var(--spacing-6);
+        }
+        .login-title {
+            font-size: var(--font-size-2xl);
+            font-weight: var(--font-weight-semibold);
+            color: var(--text-primary);
+            margin-bottom: var(--spacing-2);
+        }
+        .login-subtitle {
+            color: var(--text-secondary);
+        }
+        .login-icon {
+            font-size: 48px;
+            margin-bottom: var(--spacing-4);
+        }
+        .login-footer {
+            text-align: center;
+            margin-top: var(--spacing-6);
+            color: var(--text-secondary);
+            font-size: var(--font-size-sm);
+        }
+        .login-footer a {
+            color: var(--color-primary);
+            text-decoration: none;
+        }
+        .login-footer a:hover {
+            text-decoration: underline;
+        }
+        .divider {
+            display: flex;
+            align-items: center;
+            margin: var(--spacing-4) 0;
+        }
+        .divider::before,
+        .divider::after {
+            content: '';
+            flex: 1;
+            height: 1px;
+            background: var(--border-color);
+        }
+        .divider span {
+            padding: 0 var(--spacing-3);
+            color: var(--text-muted);
+            font-size: var(--font-size-sm);
+        }
+        .error-message {
+            background: var(--status-error-bg);
+            color: var(--status-error-text);
+            padding: var(--spacing-3);
+            border-radius: var(--radius-base);
+            margin-bottom: var(--spacing-4);
+            display: none;
+        }
+        .theme-controls {
+            position: absolute;
+            top: var(--spacing-4);
+            right: var(--spacing-4);
+            display: flex;
+            gap: var(--spacing-2);
+        }
+    </style>
+</head>
+<body>
+    <!-- Theme & Language Controls -->
+    <div class="theme-controls">
+        <div class="language-switcher">
+            <button class="btn btn--secondary btn--small" data-lang="en">EN</button>
+            <button class="btn btn--secondary btn--small" data-lang="vi">VI</button>
+        </div>
+        <button class="btn btn--secondary btn--small" id="themeToggle">
+            Theme
+        </button>
+    </div>
+
+    <div class="login-container">
+        <div class="login-card">
+            <div class="login-header">
+                <div class="login-icon">🎓</div>
+                <h1 class="login-title" data-translate="auth.loginTitle">Login to your account</h1>
+                <p class="login-subtitle">Student Portal</p>
+            </div>
+
+            <div class="error-message" id="errorMessage"></div>
+
+            <form id="loginForm" data-ajax>
+                <div class="input-group">
+                    <label class="input-group__label" data-translate="auth.username">Username</label>
+                    <input type="text" class="input" id="username" name="username" placeholder="Enter your username" required>
+                </div>
+
+                <div class="input-group">
+                    <label class="input-group__label" data-translate="auth.password">Password</label>
+                    <input type="password" class="input" id="password" name="password" placeholder="Enter your password" required>
+                </div>
+
+                <div class="flex items-center justify-between mb-4">
+                    <label class="flex items-center gap-2">
+                        <input type="checkbox" id="rememberMe">
+                        <span class="text-sm" data-translate="auth.rememberMe">Remember me</span>
+                    </label>
+                    <a href="#" class="text-sm" data-translate="auth.forgotPassword">Forgot password?</a>
+                </div>
+
+                <button type="submit" class="btn btn--primary btn--block" id="submitBtn">
+                    <span data-translate="common.login">Login</span>
+                </button>
+            </form>
+
+            <div class="divider">
+                <span>or</span>
+            </div>
+
+            <div class="login-footer">
+                <p>
+                    <span data-translate="auth.noAccount">Don't have an account?</span>
+                    <a href="register.html" data-translate="common.register">Register</a>
+                </p>
+                <p style="margin-top: var(--spacing-3);">
+                    <a href="../index.html">← Back to Home</a>
+                </p>
+            </div>
+        </div>
+
+        <!-- Demo credentials hint -->
+        <div style="text-align: center; margin-top: var(--spacing-4); padding: var(--spacing-3); background: var(--bg-card); border-radius: var(--radius-base); font-size: var(--font-size-sm); color: var(--text-secondary);">
+            <strong>Demo Account:</strong> student1 / password123
+        </div>
+    </div>
+
+    <script src="../assets/js/global.js"></script>
+    <script src="../assets/js/api.js"></script>
+    <script src="../assets/js/auth.js"></script>
+    <script>
+        // Handle login form
+        document.getElementById('loginForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            
+            const errorMsg = document.getElementById('errorMessage');
+            const submitBtn = document.getElementById('submitBtn');
+            
+            // Hide error message
+            errorMsg.style.display = 'none';
+            
+            // Get form data
+            const formData = {
+                username: document.getElementById('username').value,
+                password: document.getElementById('password').value,
+                role: 'student' // Fixed role for student login
+            };
+            
+            // Show loading state
+            submitBtn.classList.add('btn--loading');
+            submitBtn.disabled = true;
+            
+            try {
+                // Attempt login
+                const result = await LMS.Auth.handleLogin(formData);
+                
+                if (!result.success) {
+                    errorMsg.textContent = result.error || 'Login failed';
+                    errorMsg.style.display = 'block';
+                }
+                // If success, Auth module will handle redirect
+            } catch (error) {
+                errorMsg.textContent = 'An error occurred. Please try again.';
+                errorMsg.style.display = 'block';
+            } finally {
+                // Reset button state
+                submitBtn.classList.remove('btn--loading');
+                submitBtn.disabled = false;
+            }
+        });
+
+        // Handle forgot password
+        document.querySelector('[data-translate="auth.forgotPassword"]').addEventListener('click', function(e) {
+            e.preventDefault();
+            alert('Password reset functionality will be implemented in Phase I.1.6');
+        });
+    </script>
+</body>
+</html>

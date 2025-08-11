@@ -1,0 +1,298 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Register - LMS</title>
+    <link rel="stylesheet" href="../assets/css/global.css">
+    <link rel="stylesheet" href="../assets/css/themes.css">
+    <link rel="stylesheet" href="../assets/css/components.css">
+    <style>
+        body {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            background: var(--bg-secondary);
+            padding: var(--spacing-4) 0;
+        }
+        .register-container {
+            width: 100%;
+            max-width: 500px;
+            padding: var(--spacing-4);
+        }
+        .register-card {
+            background: var(--bg-card);
+            border-radius: var(--radius-lg);
+            box-shadow: var(--shadow-lg);
+            padding: var(--spacing-8);
+        }
+        .register-header {
+            text-align: center;
+            margin-bottom: var(--spacing-6);
+        }
+        .register-title {
+            font-size: var(--font-size-2xl);
+            font-weight: var(--font-weight-semibold);
+            color: var(--text-primary);
+            margin-bottom: var(--spacing-2);
+        }
+        .register-subtitle {
+            color: var(--text-secondary);
+        }
+        .register-footer {
+            text-align: center;
+            margin-top: var(--spacing-6);
+            color: var(--text-secondary);
+            font-size: var(--font-size-sm);
+        }
+        .register-footer a {
+            color: var(--color-primary);
+            text-decoration: none;
+        }
+        .register-footer a:hover {
+            text-decoration: underline;
+        }
+        .error-message {
+            background: var(--status-error-bg);
+            color: var(--status-error-text);
+            padding: var(--spacing-3);
+            border-radius: var(--radius-base);
+            margin-bottom: var(--spacing-4);
+            display: none;
+        }
+        .success-message {
+            background: var(--status-success-bg);
+            color: var(--status-success-text);
+            padding: var(--spacing-3);
+            border-radius: var(--radius-base);
+            margin-bottom: var(--spacing-4);
+            display: none;
+        }
+        .theme-controls {
+            position: absolute;
+            top: var(--spacing-4);
+            right: var(--spacing-4);
+            display: flex;
+            gap: var(--spacing-2);
+        }
+        .form-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: var(--spacing-4);
+        }
+        @media (max-width: 768px) {
+            .form-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Theme & Language Controls -->
+    <div class="theme-controls">
+        <div class="language-switcher">
+            <button class="btn btn--secondary btn--small" data-lang="en">EN</button>
+            <button class="btn btn--secondary btn--small" data-lang="vi">VI</button>
+        </div>
+        <button class="btn btn--secondary btn--small" id="themeToggle">
+            Theme
+        </button>
+    </div>
+
+    <div class="register-container">
+        <div class="register-card">
+            <div class="register-header">
+                <h1 class="register-title" data-translate="auth.registerTitle">Create new account</h1>
+                <p class="register-subtitle">Join our learning community</p>
+            </div>
+
+            <div class="error-message" id="errorMessage"></div>
+            <div class="success-message" id="successMessage"></div>
+
+            <form id="registerForm" data-ajax>
+                <div class="input-group">
+                    <label class="input-group__label input-group__label--required" data-translate="auth.username">Username</label>
+                    <input type="text" class="input" id="username" name="username" placeholder="Choose a username" required minlength="3">
+                    <span class="input-group__help">Must be at least 3 characters</span>
+                </div>
+
+                <div class="input-group">
+                    <label class="input-group__label input-group__label--required" data-translate="auth.email">Email</label>
+                    <input type="email" class="input" id="email" name="email" placeholder="your@email.com" required>
+                </div>
+
+                <div class="form-grid">
+                    <div class="input-group">
+                        <label class="input-group__label input-group__label--required" data-translate="auth.password">Password</label>
+                        <input type="password" class="input" id="password" name="password" placeholder="Min 6 characters" required minlength="6">
+                    </div>
+
+                    <div class="input-group">
+                        <label class="input-group__label input-group__label--required" data-translate="auth.confirmPassword">Confirm Password</label>
+                        <input type="password" class="input" id="confirmPassword" name="confirmPassword" placeholder="Re-enter password" required>
+                    </div>
+                </div>
+
+                <div class="input-group">
+                    <label class="input-group__label input-group__label--required" data-translate="auth.selectRole">Select Role</label>
+                    <div class="dropdown dropdown--block" id="roleDropdown">
+                        <button type="button" class="dropdown__trigger">
+                            <span id="selectedRole">Select your role</span>
+                            <span class="dropdown__arrow"></span>
+                        </button>
+                        <div class="dropdown__menu">
+                            <div class="dropdown__list">
+                                <div class="dropdown__item" data-value="student">
+                                    <span class="dropdown__item-icon">🎓</span>
+                                    <span class="dropdown__item-text">Student</span>
+                                </div>
+                                <div class="dropdown__item" data-value="teacher">
+                                    <span class="dropdown__item-icon">👨‍🏫</span>
+                                    <span class="dropdown__item-text">Teacher</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <input type="hidden" id="role" name="role" required>
+                </div>
+
+                <div style="margin: var(--spacing-4) 0;">
+                    <label class="flex items-center gap-2">
+                        <input type="checkbox" id="terms" required>
+                        <span class="text-sm">
+                            <span data-translate="auth.termsAccept">I accept the terms and conditions</span>
+                        </span>
+                    </label>
+                </div>
+
+                <button type="submit" class="btn btn--primary btn--block" id="submitBtn">
+                    <span data-translate="common.register">Register</span>
+                </button>
+            </form>
+
+            <div class="register-footer">
+                <p>
+                    <span data-translate="auth.hasAccount">Already have an account?</span>
+                    <a href="../index.html" data-translate="common.login">Login</a>
+                </p>
+                <p style="margin-top: var(--spacing-3);">
+                    <a href="../index.html">← Back to Home</a>
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <script src="../assets/js/global.js"></script>
+    <script src="../assets/js/api.js"></script>
+    <script src="../assets/js/auth.js"></script>
+    <script>
+        // Role dropdown functionality
+        const roleDropdown = document.getElementById('roleDropdown');
+        const roleInput = document.getElementById('role');
+        const selectedRoleText = document.getElementById('selectedRole');
+        const dropdownTrigger = roleDropdown.querySelector('.dropdown__trigger');
+        
+        dropdownTrigger.addEventListener('click', function(e) {
+            e.preventDefault();
+            roleDropdown.classList.toggle('active');
+        });
+        
+        roleDropdown.querySelectorAll('.dropdown__item').forEach(item => {
+            item.addEventListener('click', function() {
+                const value = this.getAttribute('data-value');
+                const text = this.querySelector('.dropdown__item-text').textContent;
+                
+                roleInput.value = value;
+                selectedRoleText.textContent = text;
+                
+                // Update selected state
+                roleDropdown.querySelectorAll('.dropdown__item').forEach(i => {
+                    i.classList.remove('dropdown__item--selected');
+                });
+                this.classList.add('dropdown__item--selected');
+                
+                roleDropdown.classList.remove('active');
+            });
+        });
+        
+        // Close dropdown on outside click
+        document.addEventListener('click', function(e) {
+            if (!e.target.closest('#roleDropdown')) {
+                roleDropdown.classList.remove('active');
+            }
+        });
+
+        // Handle registration form
+        document.getElementById('registerForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            
+            const errorMsg = document.getElementById('errorMessage');
+            const successMsg = document.getElementById('successMessage');
+            const submitBtn = document.getElementById('submitBtn');
+            
+            // Hide messages
+            errorMsg.style.display = 'none';
+            successMsg.style.display = 'none';
+            
+            // Get form data
+            const formData = {
+                username: document.getElementById('username').value,
+                email: document.getElementById('email').value,
+                password: document.getElementById('password').value,
+                confirmPassword: document.getElementById('confirmPassword').value,
+                role: document.getElementById('role').value
+            };
+            
+            // Validate role selection
+            if (!formData.role) {
+                errorMsg.textContent = 'Please select a role';
+                errorMsg.style.display = 'block';
+                return;
+            }
+            
+            // Show loading state
+            submitBtn.classList.add('btn--loading');
+            submitBtn.disabled = true;
+            
+            try {
+                // Attempt registration
+                const result = await LMS.Auth.handleRegister(formData);
+                
+                if (result.success) {
+                    successMsg.textContent = 'Registration successful! Redirecting to dashboard...';
+                    successMsg.style.display = 'block';
+                    // Auth module will handle auto-login and redirect
+                } else {
+                    errorMsg.textContent = result.error || 'Registration failed';
+                    errorMsg.style.display = 'block';
+                }
+            } catch (error) {
+                errorMsg.textContent = 'An error occurred. Please try again.';
+                errorMsg.style.display = 'block';
+            } finally {
+                // Reset button state
+                submitBtn.classList.remove('btn--loading');
+                submitBtn.disabled = false;
+            }
+        });
+
+        // Real-time password match validation
+        const password = document.getElementById('password');
+        const confirmPassword = document.getElementById('confirmPassword');
+        
+        function checkPasswordMatch() {
+            if (confirmPassword.value && password.value !== confirmPassword.value) {
+                confirmPassword.classList.add('input--error');
+                confirmPassword.setCustomValidity('Passwords do not match');
+            } else {
+                confirmPassword.classList.remove('input--error');
+                confirmPassword.setCustomValidity('');
+            }
+        }
+        
+        password.addEventListener('change', checkPasswordMatch);
+        confirmPassword.addEventListener('input', checkPasswordMatch);
+    </script>
+</body>
+</html>

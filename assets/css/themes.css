@@ -1,0 +1,313 @@
+/* ==========================================================================
+   Theme System - Light and Dark Mode Variables
+   ========================================================================== */
+
+/* Light Theme (Default) */
+[data-theme="light"],
+:root {
+  /* Backgrounds */
+  --bg-primary: #FFFFFF;
+  --bg-secondary: #F9FAFB;
+  --bg-tertiary: #F3F4F6;
+  --bg-card: #FFFFFF;
+  --bg-hover: #F9FAFB;
+  --bg-active: #F3F4F6;
+  --bg-selected: #E0F2FE;
+  --bg-overlay: rgba(0, 0, 0, 0.5);
+
+  /* Text Colors */
+  --text-primary: #111827;
+  --text-secondary: #4B5563;
+  --text-muted: #9CA3AF;
+  --text-inverse: #FFFFFF;
+  --text-link: #2C6EAA;
+  --text-link-hover: #1E4F78;
+
+  /* Border Colors */
+  --border-color: #E5E7EB;
+  --border-color-dark: #D1D5DB;
+  --border-focus: #2C6EAA;
+
+  /* Component Specific */
+  --input-bg: #FFFFFF;
+  --input-border: #D1D5DB;
+  --input-border-focus: #2C6EAA;
+  --input-text: #111827;
+  --input-placeholder: #9CA3AF;
+
+  --button-primary-bg: #2C6EAA;
+  --button-primary-text: #FFFFFF;
+  --button-primary-hover: #1E4F78;
+  --button-primary-active: #1E4F78;
+
+  --button-secondary-bg: #E5E7EB;
+  --button-secondary-text: #374151;
+  --button-secondary-hover: #D1D5DB;
+  --button-secondary-active: #9CA3AF;
+
+  --table-header-bg: #F9FAFB;
+  --table-row-hover: #F3F4F6;
+  --table-border: #E5E7EB;
+
+  --card-bg: #FFFFFF;
+  --card-border: #E5E7EB;
+  --card-shadow: var(--shadow-sm);
+
+  --modal-bg: #FFFFFF;
+  --modal-overlay: rgba(0, 0, 0, 0.5);
+
+  --dropdown-bg: #FFFFFF;
+  --dropdown-border: #E5E7EB;
+  --dropdown-item-hover: #F3F4F6;
+
+  /* Status Colors (same for both themes) */
+  --status-success-bg: #D1FAE5;
+  --status-success-text: #059669;
+  --status-warning-bg: #FEF3C7;
+  --status-warning-text: #D97706;
+  --status-error-bg: #FEE2E2;
+  --status-error-text: #DC2626;
+  --status-info-bg: #DBEAFE;
+  --status-info-text: #2563EB;
+
+  /* Code/Pre */
+  --code-bg: #F3F4F6;
+  --code-text: #111827;
+  --code-border: #E5E7EB;
+
+  /* Scrollbar */
+  --scrollbar-track: #F3F4F6;
+  --scrollbar-thumb: #9CA3AF;
+  --scrollbar-thumb-hover: #6B7280;
+
+  /* Shadows with opacity */
+  --shadow-color: rgba(0, 0, 0, 0.1);
+}
+
+/* Dark Theme */
+[data-theme="dark"] {
+  /* Backgrounds */
+  --bg-primary: #0F172A;
+  --bg-secondary: #1E293B;
+  --bg-tertiary: #334155;
+  --bg-card: #1E293B;
+  --bg-hover: #334155;
+  --bg-active: #475569;
+  --bg-selected: #1E3A5F;
+  --bg-overlay: rgba(0, 0, 0, 0.7);
+
+  /* Text Colors */
+  --text-primary: #F9FAFB;
+  --text-secondary: #CBD5E1;
+  --text-muted: #94A3B8;
+  --text-inverse: #0F172A;
+  --text-link: #60A5FA;
+  --text-link-hover: #93BBFD;
+
+  /* Border Colors */
+  --border-color: #334155;
+  --border-color-dark: #475569;
+  --border-focus: #60A5FA;
+
+  /* Component Specific */
+  --input-bg: #1E293B;
+  --input-border: #334155;
+  --input-border-focus: #60A5FA;
+  --input-text: #F9FAFB;
+  --input-placeholder: #94A3B8;
+
+  --button-primary-bg: #2563EB;
+  --button-primary-text: #FFFFFF;
+  --button-primary-hover: #1D4ED8;
+  --button-primary-active: #1E40AF;
+
+  --button-secondary-bg: #334155;
+  --button-secondary-text: #E2E8F0;
+  --button-secondary-hover: #475569;
+  --button-secondary-active: #64748B;
+
+  --table-header-bg: #1E293B;
+  --table-row-hover: #334155;
+  --table-border: #334155;
+
+  --card-bg: #1E293B;
+  --card-border: #334155;
+  --card-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.4);
+
+  --modal-bg: #1E293B;
+  --modal-overlay: rgba(0, 0, 0, 0.8);
+
+  --dropdown-bg: #1E293B;
+  --dropdown-border: #334155;
+  --dropdown-item-hover: #334155;
+
+  /* Status Colors (adjusted for dark theme) */
+  --status-success-bg: #064E3B;
+  --status-success-text: #34D399;
+  --status-warning-bg: #78350F;
+  --status-warning-text: #FCD34D;
+  --status-error-bg: #7F1D1D;
+  --status-error-text: #F87171;
+  --status-info-bg: #1E3A8A;
+  --status-info-text: #60A5FA;
+
+  /* Code/Pre */
+  --code-bg: #1E293B;
+  --code-text: #E2E8F0;
+  --code-border: #334155;
+
+  /* Scrollbar */
+  --scrollbar-track: #1E293B;
+  --scrollbar-thumb: #475569;
+  --scrollbar-thumb-hover: #64748B;
+
+  /* Shadows with opacity */
+  --shadow-color: rgba(0, 0, 0, 0.3);
+
+  /* Dark theme shadow overrides */
+  --shadow-xs: 0 1px 2px 0 rgba(0, 0, 0, 0.3);
+  --shadow-sm: 0 1px 3px 0 rgba(0, 0, 0, 0.4), 0 1px 2px 0 rgba(0, 0, 0, 0.3);
+  --shadow-base: 0 4px 6px -1px rgba(0, 0, 0, 0.4), 0 2px 4px -1px rgba(0, 0, 0, 0.3);
+  --shadow-md: 0 10px 15px -3px rgba(0, 0, 0, 0.4), 0 4px 6px -2px rgba(0, 0, 0, 0.3);
+  --shadow-lg: 0 20px 25px -5px rgba(0, 0, 0, 0.4), 0 10px 10px -5px rgba(0, 0, 0, 0.3);
+  --shadow-xl: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+}
+
+/* ==========================================================================
+   Theme Transition
+   ========================================================================== */
+
+/* Smooth theme transitions */
+* {
+  transition: background-color var(--transition-base),
+              border-color var(--transition-base),
+              color var(--transition-base);
+}
+
+/* Disable transitions when switching themes to prevent flash */
+[data-theme-switching] * {
+  transition: none !important;
+}
+
+/* ==========================================================================
+   OS Preference Support
+   ========================================================================== */
+
+/* Respect OS dark mode preference if no theme is set */
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    /* Copy dark theme variables here */
+    --bg-primary: #0F172A;
+    --bg-secondary: #1E293B;
+    --bg-tertiary: #334155;
+    --bg-card: #1E293B;
+    --bg-hover: #334155;
+    --bg-active: #475569;
+    --bg-selected: #1E3A5F;
+    --bg-overlay: rgba(0, 0, 0, 0.7);
+
+    --text-primary: #F9FAFB;
+    --text-secondary: #CBD5E1;
+    --text-muted: #94A3B8;
+    --text-inverse: #0F172A;
+    --text-link: #60A5FA;
+    --text-link-hover: #93BBFD;
+
+    --border-color: #334155;
+    --border-color-dark: #475569;
+    --border-focus: #60A5FA;
+
+    --input-bg: #1E293B;
+    --input-border: #334155;
+    --input-border-focus: #60A5FA;
+    --input-text: #F9FAFB;
+    --input-placeholder: #94A3B8;
+
+    --button-primary-bg: #2563EB;
+    --button-primary-text: #FFFFFF;
+    --button-primary-hover: #1D4ED8;
+    --button-primary-active: #1E40AF;
+
+    --button-secondary-bg: #334155;
+    --button-secondary-text: #E2E8F0;
+    --button-secondary-hover: #475569;
+    --button-secondary-active: #64748B;
+
+    --table-header-bg: #1E293B;
+    --table-row-hover: #334155;
+    --table-border: #334155;
+
+    --card-bg: #1E293B;
+    --card-border: #334155;
+    --card-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.4);
+
+    --modal-bg: #1E293B;
+    --modal-overlay: rgba(0, 0, 0, 0.8);
+
+    --dropdown-bg: #1E293B;
+    --dropdown-border: #334155;
+    --dropdown-item-hover: #334155;
+
+    --status-success-bg: #064E3B;
+    --status-success-text: #34D399;
+    --status-warning-bg: #78350F;
+    --status-warning-text: #FCD34D;
+    --status-error-bg: #7F1D1D;
+    --status-error-text: #F87171;
+    --status-info-bg: #1E3A8A;
+    --status-info-text: #60A5FA;
+
+    --code-bg: #1E293B;
+    --code-text: #E2E8F0;
+    --code-border: #334155;
+
+    --scrollbar-track: #1E293B;
+    --scrollbar-thumb: #475569;
+    --scrollbar-thumb-hover: #64748B;
+
+    --shadow-color: rgba(0, 0, 0, 0.3);
+  }
+}
+
+/* ==========================================================================
+   Theme-specific Component Styles
+   ========================================================================== */
+
+/* Adjust specific components for dark theme */
+[data-theme="dark"] {
+  /* Images might need opacity adjustment in dark mode */
+  img {
+    opacity: 0.9;
+  }
+
+  /* Code blocks need syntax highlighting adjustments */
+  pre, code {
+    background-color: var(--code-bg);
+    border-color: var(--code-border);
+  }
+
+  /* Adjust form inputs */
+  input[type="text"],
+  input[type="email"],
+  input[type="password"],
+  input[type="number"],
+  input[type="search"],
+  textarea,
+  select {
+    background-color: var(--input-bg);
+    border-color: var(--input-border);
+    color: var(--input-text);
+  }
+
+  /* Placeholder text */
+  ::placeholder {
+    color: var(--input-placeholder);
+    opacity: 1;
+  }
+
+  /* Selection colors */
+  ::selection {
+    background-color: var(--color-primary);
+    color: white;
+  }
+}

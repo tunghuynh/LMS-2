@@ -1,0 +1,565 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Component Showcase - LMS UI Kit</title>
+    <link rel="stylesheet" href="../assets/css/global.css">
+    <link rel="stylesheet" href="../assets/css/themes.css">
+    <link rel="stylesheet" href="../assets/css/layout.css">
+    <link rel="stylesheet" href="../assets/css/components.css">
+    <style>
+        .showcase-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: var(--spacing-6);
+        }
+        .showcase-header {
+            text-align: center;
+            padding: var(--spacing-8) 0;
+            border-bottom: 1px solid var(--border-color);
+            margin-bottom: var(--spacing-8);
+        }
+        .showcase-title {
+            font-size: var(--font-size-4xl);
+            font-weight: var(--font-weight-bold);
+            color: var(--text-primary);
+            margin-bottom: var(--spacing-4);
+        }
+        .showcase-subtitle {
+            font-size: var(--font-size-xl);
+            color: var(--text-secondary);
+        }
+        .showcase-nav {
+            display: flex;
+            flex-wrap: wrap;
+            gap: var(--spacing-2);
+            justify-content: center;
+            margin-bottom: var(--spacing-8);
+            padding: var(--spacing-4);
+            background-color: var(--bg-secondary);
+            border-radius: var(--radius-lg);
+        }
+        .showcase-nav a {
+            padding: var(--spacing-2) var(--spacing-4);
+            color: var(--text-secondary);
+            text-decoration: none;
+            border-radius: var(--radius-base);
+            transition: all var(--transition-fast);
+        }
+        .showcase-nav a:hover {
+            background-color: var(--bg-hover);
+            color: var(--text-primary);
+        }
+        .component-section {
+            margin-bottom: var(--spacing-12);
+            padding: var(--spacing-6);
+            background-color: var(--bg-card);
+            border-radius: var(--radius-lg);
+            border: 1px solid var(--border-color);
+        }
+        .component-title {
+            font-size: var(--font-size-2xl);
+            font-weight: var(--font-weight-semibold);
+            margin-bottom: var(--spacing-6);
+            padding-bottom: var(--spacing-4);
+            border-bottom: 2px solid var(--border-color);
+        }
+        .component-demo {
+            padding: var(--spacing-6);
+            background-color: var(--bg-primary);
+            border-radius: var(--radius-base);
+            margin-bottom: var(--spacing-4);
+        }
+        .component-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: var(--spacing-4);
+        }
+        .code-preview {
+            background-color: var(--code-bg);
+            border: 1px solid var(--code-border);
+            border-radius: var(--radius-base);
+            padding: var(--spacing-4);
+            overflow-x: auto;
+            font-family: var(--font-family-mono);
+            font-size: var(--font-size-sm);
+            margin-top: var(--spacing-4);
+        }
+        .theme-controls {
+            position: fixed;
+            top: var(--spacing-4);
+            right: var(--spacing-4);
+            display: flex;
+            gap: var(--spacing-2);
+            z-index: 1000;
+        }
+        .status-badge {
+            display: inline-block;
+            padding: var(--spacing-1) var(--spacing-3);
+            background-color: var(--color-success);
+            color: white;
+            border-radius: var(--radius-full);
+            font-size: var(--font-size-xs);
+            font-weight: var(--font-weight-semibold);
+            margin-left: var(--spacing-2);
+        }
+    </style>
+</head>
+<body>
+    <!-- Theme & Language Controls -->
+    <div class="theme-controls">
+        <button class="btn btn--secondary btn--small" onclick="toggleLanguage()">
+            <span id="langLabel">EN</span>
+        </button>
+        <button class="btn btn--secondary btn--small" id="themeToggle">
+            <span data-translate="theme.toggle">Theme</span>
+        </button>
+    </div>
+
+    <div class="showcase-container">
+        <!-- Header -->
+        <header class="showcase-header">
+            <h1 class="showcase-title">LMS Component Showcase</h1>
+            <p class="showcase-subtitle">Complete UI Component Library with Theme & i18n Support</p>
+        </header>
+
+        <!-- Navigation -->
+        <nav class="showcase-nav">
+            <a href="#buttons">Buttons</a>
+            <a href="#inputs">Inputs</a>
+            <a href="#tables">Tables</a>
+            <a href="#modals">Modals</a>
+            <a href="#cards">Cards</a>
+            <a href="#dropdowns">Dropdowns</a>
+            <a href="base/button.html" target="_blank">Full Button Demo →</a>
+            <a href="base/input.html" target="_blank">Full Input Demo →</a>
+            <a href="base/table.html" target="_blank">Full Table Demo →</a>
+            <a href="base/modal.html" target="_blank">Full Modal Demo →</a>
+            <a href="base/card.html" target="_blank">Full Card Demo →</a>
+            <a href="base/dropdown.html" target="_blank">Full Dropdown Demo →</a>
+        </nav>
+
+        <!-- Buttons Section -->
+        <section class="component-section" id="buttons">
+            <h2 class="component-title">
+                Buttons
+                <span class="status-badge">Complete</span>
+            </h2>
+            
+            <div class="component-demo">
+                <h3>Button Variants</h3>
+                <div class="component-grid">
+                    <button class="btn btn--primary">Primary Button</button>
+                    <button class="btn btn--secondary">Secondary Button</button>
+                    <button class="btn btn--ghost">Ghost Button</button>
+                    <button class="btn btn--primary" disabled>Disabled</button>
+                    <button class="btn btn--primary btn--loading">Loading</button>
+                </div>
+            </div>
+
+            <div class="component-demo">
+                <h3>Button Sizes</h3>
+                <div class="flex gap-2 items-center">
+                    <button class="btn btn--primary btn--small">Small</button>
+                    <button class="btn btn--primary">Default</button>
+                    <button class="btn btn--primary btn--large">Large</button>
+                    <button class="btn btn--primary btn--block">Block Button</button>
+                </div>
+            </div>
+
+            <pre class="code-preview">
+&lt;button class="btn btn--primary"&gt;Primary Button&lt;/button&gt;
+&lt;button class="btn btn--secondary btn--small"&gt;Small Secondary&lt;/button&gt;
+&lt;button class="btn btn--ghost btn--large"&gt;Large Ghost&lt;/button&gt;</pre>
+        </section>
+
+        <!-- Inputs Section -->
+        <section class="component-section" id="inputs">
+            <h2 class="component-title">
+                Form Inputs
+                <span class="status-badge">Complete</span>
+            </h2>
+            
+            <div class="component-demo">
+                <div class="component-grid">
+                    <div class="input-group">
+                        <label class="input-group__label">Default Input</label>
+                        <input type="text" class="input" placeholder="Enter text...">
+                    </div>
+                    
+                    <div class="input-group">
+                        <label class="input-group__label input-group__label--required">Required Input</label>
+                        <input type="email" class="input" placeholder="email@example.com" required>
+                        <span class="input-group__help">We'll never share your email</span>
+                    </div>
+                    
+                    <div class="input-group">
+                        <label class="input-group__label">Error State</label>
+                        <input type="text" class="input input--error" value="Invalid input">
+                        <span class="input-group__error">This field has an error</span>
+                    </div>
+                    
+                    <div class="input-group">
+                        <label class="input-group__label">Success State</label>
+                        <input type="text" class="input input--success" value="Valid input">
+                        <span class="input-group__success">Looking good!</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="component-demo">
+                <h3>Textarea</h3>
+                <div class="input-group" style="max-width: 500px;">
+                    <label class="input-group__label">Message</label>
+                    <textarea class="input input--textarea" placeholder="Type your message..." rows="4"></textarea>
+                </div>
+            </div>
+        </section>
+
+        <!-- Tables Section -->
+        <section class="component-section" id="tables">
+            <h2 class="component-title">
+                Tables
+                <span class="status-badge">Complete</span>
+            </h2>
+            
+            <div class="component-demo">
+                <div class="table-wrapper">
+                    <table class="table">
+                        <thead>
+                            <tr class="table__header">
+                                <th class="table__cell table__cell--header">
+                                    <input type="checkbox" class="table__checkbox">
+                                </th>
+                                <th class="table__cell table__cell--header">Name</th>
+                                <th class="table__cell table__cell--header">Email</th>
+                                <th class="table__cell table__cell--header">Role</th>
+                                <th class="table__cell table__cell--header">Status</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr class="table__row table__row--hoverable">
+                                <td class="table__cell"><input type="checkbox" class="table__checkbox"></td>
+                                <td class="table__cell">John Doe</td>
+                                <td class="table__cell">john@example.com</td>
+                                <td class="table__cell">Student</td>
+                                <td class="table__cell">
+                                    <span style="color: var(--color-success);">Active</span>
+                                </td>
+                            </tr>
+                            <tr class="table__row table__row--hoverable">
+                                <td class="table__cell"><input type="checkbox" class="table__checkbox"></td>
+                                <td class="table__cell">Jane Smith</td>
+                                <td class="table__cell">jane@example.com</td>
+                                <td class="table__cell">Teacher</td>
+                                <td class="table__cell">
+                                    <span style="color: var(--color-success);">Active</span>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <div class="table__pagination">
+                        <div class="table__pagination-info">Showing 1 to 2 of 2 entries</div>
+                        <div class="table__pagination-controls">
+                            <button class="table__pagination-button" disabled>Previous</button>
+                            <button class="table__pagination-button table__pagination-button--active">1</button>
+                            <button class="table__pagination-button" disabled>Next</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Modals Section -->
+        <section class="component-section" id="modals">
+            <h2 class="component-title">
+                Modals
+                <span class="status-badge">Complete</span>
+            </h2>
+            
+            <div class="component-demo">
+                <div class="component-grid">
+                    <button class="btn btn--primary" onclick="showDemoModal()">Open Demo Modal</button>
+                    <button class="btn btn--secondary" onclick="showConfirmModal()">Confirmation Modal</button>
+                </div>
+            </div>
+
+            <!-- Demo Modal -->
+            <div class="modal-backdrop" id="demoModalBackdrop">
+                <div class="modal modal--medium" id="demoModal">
+                    <div class="modal__header">
+                        <h2 class="modal__title">Demo Modal</h2>
+                        <button class="modal__close" onclick="closeDemoModal()">×</button>
+                    </div>
+                    <div class="modal__body">
+                        <p>This is a demo modal with header, body, and footer sections.</p>
+                        <p>Supports ESC key to close and backdrop click.</p>
+                    </div>
+                    <div class="modal__footer">
+                        <button class="btn btn--secondary" onclick="closeDemoModal()">Cancel</button>
+                        <button class="btn btn--primary">Save Changes</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Confirm Modal -->
+            <div class="modal-backdrop" id="confirmModalBackdrop">
+                <div class="modal modal--small" id="confirmModal">
+                    <div class="modal__header">
+                        <h2 class="modal__title">Confirm Action</h2>
+                        <button class="modal__close" onclick="closeConfirmModal()">×</button>
+                    </div>
+                    <div class="modal__body" style="text-align: center;">
+                        <p style="font-size: 48px; margin-bottom: var(--spacing-4);">⚠️</p>
+                        <p>Are you sure you want to proceed?</p>
+                    </div>
+                    <div class="modal__footer modal__footer--center">
+                        <button class="btn btn--secondary" onclick="closeConfirmModal()">Cancel</button>
+                        <button class="btn btn--primary">Confirm</button>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Cards Section -->
+        <section class="component-section" id="cards">
+            <h2 class="component-title">
+                Cards
+                <span class="status-badge">Complete</span>
+            </h2>
+            
+            <div class="component-demo">
+                <div class="card-list card-list--grid">
+                    <div class="card">
+                        <div class="card__header">
+                            <h3 class="card__title">Simple Card</h3>
+                            <p class="card__subtitle">Basic card component</p>
+                        </div>
+                        <div class="card__body">
+                            <p class="card__text">This is a simple card with header and body sections.</p>
+                        </div>
+                    </div>
+
+                    <div class="card card--clickable">
+                        <div class="card__header">
+                            <h3 class="card__title">Clickable Card</h3>
+                        </div>
+                        <div class="card__body">
+                            <p class="card__text">Hover me to see the effect!</p>
+                        </div>
+                        <div class="card__footer">
+                            <button class="btn btn--primary btn--small">Action</button>
+                        </div>
+                    </div>
+
+                    <div class="card">
+                        <div class="card__image">
+                            <img src="https://via.placeholder.com/400x225/2C6EAA/ffffff?text=Card+Image" alt="Demo">
+                            <span class="card__badge">New</span>
+                        </div>
+                        <div class="card__body">
+                            <h3 class="card__title">Image Card</h3>
+                            <p class="card__text">Card with image header and badge.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Dropdowns Section -->
+        <section class="component-section" id="dropdowns">
+            <h2 class="component-title">
+                Dropdowns
+                <span class="status-badge">Complete</span>
+            </h2>
+            
+            <div class="component-demo">
+                <div class="component-grid">
+                    <div>
+                        <label class="input-group__label">Simple Dropdown</label>
+                        <div class="dropdown dropdown--block" id="showcaseDropdown">
+                            <button class="dropdown__trigger">
+                                <span>Select option</span>
+                                <span class="dropdown__arrow"></span>
+                            </button>
+                            <div class="dropdown__menu">
+                                <div class="dropdown__list">
+                                    <div class="dropdown__item">Option 1</div>
+                                    <div class="dropdown__item">Option 2</div>
+                                    <div class="dropdown__item">Option 3</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div>
+                        <label class="input-group__label">With Search</label>
+                        <div class="dropdown dropdown--block">
+                            <button class="dropdown__trigger">
+                                <span>Search & Select</span>
+                                <span class="dropdown__arrow"></span>
+                            </button>
+                            <div class="dropdown__menu">
+                                <div class="dropdown__search">
+                                    <input type="text" class="dropdown__search-input" placeholder="Search...">
+                                </div>
+                                <div class="dropdown__list">
+                                    <div class="dropdown__item">JavaScript</div>
+                                    <div class="dropdown__item">Python</div>
+                                    <div class="dropdown__item">Java</div>
+                                    <div class="dropdown__item">C++</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div>
+                        <label class="input-group__label">Multi-select</label>
+                        <div class="dropdown dropdown--block dropdown--multi">
+                            <button class="dropdown__trigger">
+                                <span>Select multiple</span>
+                                <span class="dropdown__count" style="display: none;">0</span>
+                                <span class="dropdown__arrow"></span>
+                            </button>
+                            <div class="dropdown__menu">
+                                <div class="dropdown__list">
+                                    <label class="dropdown__item">
+                                        <input type="checkbox" class="dropdown__checkbox">
+                                        <span>Option A</span>
+                                    </label>
+                                    <label class="dropdown__item">
+                                        <input type="checkbox" class="dropdown__checkbox">
+                                        <span>Option B</span>
+                                    </label>
+                                    <label class="dropdown__item">
+                                        <input type="checkbox" class="dropdown__checkbox">
+                                        <span>Option C</span>
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- System Status -->
+        <section class="component-section" style="background-color: var(--bg-selected); border-color: var(--color-primary);">
+            <h2 class="component-title">System Status</h2>
+            <div class="component-grid">
+                <div>
+                    <h3>✅ Completed Components</h3>
+                    <ul>
+                        <li>Button Component</li>
+                        <li>Input Component</li>
+                        <li>Table Component</li>
+                        <li>Modal Component</li>
+                        <li>Card Component</li>
+                        <li>Dropdown Component</li>
+                    </ul>
+                </div>
+                <div>
+                    <h3>🎨 Features</h3>
+                    <ul>
+                        <li>Dark/Light Theme Support</li>
+                        <li>English/Vietnamese i18n</li>
+                        <li>Responsive Design</li>
+                        <li>BEM CSS Methodology</li>
+                        <li>CSS Variables</li>
+                        <li>Accessibility Ready</li>
+                    </ul>
+                </div>
+                <div>
+                    <h3>📱 Responsive</h3>
+                    <ul>
+                        <li>Mobile: &lt; 768px</li>
+                        <li>Tablet: 768px - 1024px</li>
+                        <li>Desktop: &gt; 1024px</li>
+                        <li>All components tested</li>
+                        <li>Touch-friendly</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <script src="../assets/js/global.js"></script>
+    <script>
+        // Language toggle
+        let currentLang = 'en';
+        function toggleLanguage() {
+            currentLang = currentLang === 'en' ? 'vi' : 'en';
+            document.getElementById('langLabel').textContent = currentLang.toUpperCase();
+            // In real app, this would trigger language change
+            console.log('Language changed to:', currentLang);
+        }
+
+        // Modal functions
+        function showDemoModal() {
+            document.getElementById('demoModalBackdrop').classList.add('active');
+            document.getElementById('demoModal').classList.add('active');
+        }
+
+        function closeDemoModal() {
+            document.getElementById('demoModalBackdrop').classList.remove('active');
+            document.getElementById('demoModal').classList.remove('active');
+        }
+
+        function showConfirmModal() {
+            document.getElementById('confirmModalBackdrop').classList.add('active');
+            document.getElementById('confirmModal').classList.add('active');
+        }
+
+        function closeConfirmModal() {
+            document.getElementById('confirmModalBackdrop').classList.remove('active');
+            document.getElementById('confirmModal').classList.remove('active');
+        }
+
+        // ESC key to close modals
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape') {
+                closeDemoModal();
+                closeConfirmModal();
+            }
+        });
+
+        // Backdrop click to close
+        document.getElementById('demoModalBackdrop').addEventListener('click', function(e) {
+            if (e.target === this) closeDemoModal();
+        });
+        document.getElementById('confirmModalBackdrop').addEventListener('click', function(e) {
+            if (e.target === this) closeConfirmModal();
+        });
+
+        // Dropdown functionality
+        document.querySelectorAll('.dropdown').forEach(dropdown => {
+            const trigger = dropdown.querySelector('.dropdown__trigger');
+            if (trigger) {
+                trigger.addEventListener('click', function(e) {
+                    e.stopPropagation();
+                    dropdown.classList.toggle('active');
+                });
+            }
+        });
+
+        // Close dropdowns on outside click
+        document.addEventListener('click', function() {
+            document.querySelectorAll('.dropdown.active').forEach(dropdown => {
+                dropdown.classList.remove('active');
+            });
+        });
+
+        // Smooth scroll to sections
+        document.querySelectorAll('.showcase-nav a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                }
+            });
+        });
+    </script>
+</body>
+</html>

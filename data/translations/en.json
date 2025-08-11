@@ -1,0 +1,314 @@
+{
+  "app": {
+    "title": "LMS - Learning Management System",
+    "shortTitle": "LMS",
+    "tagline": "Empowering Education, Enabling Success"
+  },
+  
+  "common": {
+    "loading": "Loading...",
+    "save": "Save",
+    "cancel": "Cancel",
+    "delete": "Delete",
+    "edit": "Edit",
+    "create": "Create",
+    "update": "Update",
+    "submit": "Submit",
+    "search": "Search",
+    "filter": "Filter",
+    "reset": "Reset",
+    "close": "Close",
+    "back": "Back",
+    "next": "Next",
+    "previous": "Previous",
+    "yes": "Yes",
+    "no": "No",
+    "confirm": "Confirm",
+    "logout": "Logout",
+    "login": "Login",
+    "register": "Register",
+    "noData": "No data available",
+    "actions": "Actions",
+    "status": "Status",
+    "active": "Active",
+    "inactive": "Inactive",
+    "pending": "Pending",
+    "completed": "Completed",
+    "required": "Required",
+    "optional": "Optional"
+  },
+  
+  "theme": {
+    "toggle": "Toggle Theme",
+    "light": "Light Mode",
+    "dark": "Dark Mode"
+  },
+  
+  "landing": {
+    "title": "Learning Management System",
+    "subtitle": "Choose your role to continue",
+    "login": "Login",
+    "student": {
+      "title": "Student",
+      "description": "Access courses, track progress, and take quizzes"
+    },
+    "teacher": {
+      "title": "Teacher",
+      "description": "Create courses, manage students, and track performance"
+    },
+    "admin": {
+      "title": "Administrator",
+      "description": "Manage users, monitor system, and configure settings"
+    }
+  },
+  
+  "auth": {
+    "username": "Username",
+    "email": "Email",
+    "password": "Password",
+    "confirmPassword": "Confirm Password",
+    "rememberMe": "Remember me",
+    "forgotPassword": "Forgot password?",
+    "noAccount": "Don't have an account?",
+    "hasAccount": "Already have an account?",
+    "loginTitle": "Login to your account",
+    "registerTitle": "Create new account",
+    "selectRole": "Select your role",
+    "termsAccept": "I accept the terms and conditions",
+    "loginSuccess": "Login successful!",
+    "registerSuccess": "Registration successful!",
+    "loginError": "Invalid username or password",
+    "fillAllFields": "Please fill in all fields",
+    "passwordsDoNotMatch": "Passwords do not match",
+    "passwordTooShort": "Password must be at least 6 characters",
+    "invalidEmail": "Please enter a valid email address",
+    "usernameExists": "Username already exists",
+    "accessDenied": "Access denied. You don't have permission to view this page."
+  },
+  
+  "nav": {
+    "home": "Home",
+    "dashboard": "Dashboard",
+    "courses": "Browse Courses",
+    "myCourses": "My Courses",
+    "progress": "My Progress",
+    "quizzes": "Available Quizzes",
+    "results": "Quiz Results",
+    "profile": "My Profile",
+    "createCourse": "Create Course",
+    "categories": "Categories",
+    "students": "Students",
+    "enrollment": "Enrollments",
+    "quizBuilder": "Quiz Builder",
+    "quizResults": "Quiz Results",
+    "users": "Users",
+    "classes": "Classes",
+    "activityLogs": "Activity Logs",
+    "allCourses": "All Courses",
+    "settings": "Settings",
+    "reports": "Reports",
+    "sections": {
+      "learning": "Learning",
+      "assessment": "Assessment",
+      "account": "Account",
+      "courseManagement": "Course Management",
+      "students": "Students",
+      "userManagement": "User Management",
+      "system": "System"
+    }
+  },
+  
+  "dashboard": {
+    "welcome": "Welcome back, {name}!",
+    "overview": "Overview",
+    "recentActivity": "Recent Activity",
+    "statistics": "Statistics",
+    "totalCourses": "Total Courses",
+    "enrolledCourses": "Enrolled Courses",
+    "completedCourses": "Completed Courses",
+    "upcomingQuizzes": "Upcoming Quizzes",
+    "averageScore": "Average Score",
+    "learningHours": "Learning Hours",
+    "teachingStats": "Teaching Statistics",
+    "studentsCount": "Total Students",
+    "coursesCreated": "Courses Created",
+    "quizzesCreated": "Quizzes Created",
+    "systemStats": "System Statistics",
+    "totalUsers": "Total Users",
+    "activeUsers": "Active Users",
+    "totalRevenue": "Total Revenue"
+  },
+  
+  "course": {
+    "title": "Title",
+    "description": "Description",
+    "category": "Category",
+    "duration": "Duration",
+    "difficulty": "Difficulty",
+    "instructor": "Instructor",
+    "students": "Students",
+    "lessons": "Lessons",
+    "price": "Price",
+    "free": "Free",
+    "enroll": "Enroll Now",
+    "enrolled": "Enrolled",
+    "startLearning": "Start Learning",
+    "continueLearning": "Continue Learning",
+    "viewDetails": "View Details",
+    "createNew": "Create New Course",
+    "editCourse": "Edit Course",
+    "publishCourse": "Publish Course",
+    "unpublishCourse": "Unpublish Course",
+    "deleteCourse": "Delete Course",
+    "difficulty_levels": {
+      "beginner": "Beginner",
+      "intermediate": "Intermediate",
+      "advanced": "Advanced"
+    },
+    "status_types": {
+      "draft": "Draft",
+      "published": "Published",
+      "archived": "Archived"
+    }
+  },
+  
+  "lesson": {
+    "title": "Lesson Title",
+    "content": "Content",
+    "type": "Lesson Type",
+    "duration": "Duration",
+    "order": "Order",
+    "markComplete": "Mark as Complete",
+    "completed": "Completed",
+    "nextLesson": "Next Lesson",
+    "previousLesson": "Previous Lesson",
+    "backToCourse": "Back to Course",
+    "types": {
+      "video": "Video",
+      "pdf": "PDF",
+      "text": "Text",
+      "quiz": "Quiz"
+    }
+  },
+  
+  "quiz": {
+    "title": "Quiz Title",
+    "description": "Description",
+    "questions": "Questions",
+    "duration": "Time Limit",
+    "attempts": "Attempts",
+    "passingScore": "Passing Score",
+    "startQuiz": "Start Quiz",
+    "submitQuiz": "Submit Quiz",
+    "nextQuestion": "Next Question",
+    "previousQuestion": "Previous Question",
+    "flagForReview": "Flag for Review",
+    "timeRemaining": "Time Remaining",
+    "score": "Score",
+    "passed": "Passed",
+    "failed": "Failed",
+    "viewResults": "View Results",
+    "retakeQuiz": "Retake Quiz",
+    "question": "Question {number}",
+    "yourAnswer": "Your Answer",
+    "correctAnswer": "Correct Answer",
+    "explanation": "Explanation"
+  },
+  
+  "user": {
+    "username": "Username",
+    "email": "Email",
+    "fullName": "Full Name",
+    "role": "Role",
+    "status": "Status",
+    "joinDate": "Join Date",
+    "lastLogin": "Last Login",
+    "avatar": "Avatar",
+    "bio": "Bio",
+    "learningGoals": "Learning Goals",
+    "changePassword": "Change Password",
+    "currentPassword": "Current Password",
+    "newPassword": "New Password",
+    "confirmNewPassword": "Confirm New Password",
+    "updateProfile": "Update Profile",
+    "addUser": "Add User",
+    "editUser": "Edit User",
+    "deleteUser": "Delete User",
+    "activateUser": "Activate User",
+    "deactivateUser": "Deactivate User"
+  },
+  
+  "class": {
+    "name": "Class Name",
+    "description": "Description",
+    "teacher": "Teacher",
+    "students": "Students",
+    "created": "Created",
+    "addClass": "Add Class",
+    "editClass": "Edit Class",
+    "deleteClass": "Delete Class",
+    "addStudent": "Add Student",
+    "removeStudent": "Remove Student",
+    "viewMembers": "View Members"
+  },
+  
+  "enrollment": {
+    "enrollmentDate": "Enrollment Date",
+    "progress": "Progress",
+    "status": "Status",
+    "approve": "Approve",
+    "reject": "Reject",
+    "pending": "Pending Approval",
+    "approved": "Approved",
+    "rejected": "Rejected",
+    "enrollmentRequest": "Enrollment Request",
+    "requestDate": "Request Date"
+  },
+  
+  "validation": {
+    "required": "This field is required",
+    "email": "Please enter a valid email address",
+    "minLength": "Must be at least {min} characters",
+    "maxLength": "Must not exceed {max} characters",
+    "passwordMatch": "Passwords do not match",
+    "invalidFormat": "Invalid format",
+    "numberOnly": "Please enter numbers only",
+    "phoneNumber": "Please enter a valid phone number",
+    "url": "Please enter a valid URL"
+  },
+  
+  "messages": {
+    "saveSuccess": "Saved successfully",
+    "updateSuccess": "Updated successfully",
+    "deleteSuccess": "Deleted successfully",
+    "createSuccess": "Created successfully",
+    "operationFailed": "Operation failed. Please try again.",
+    "confirmDelete": "Are you sure you want to delete this {item}?",
+    "noPermission": "You don't have permission to perform this action",
+    "sessionExpired": "Your session has expired. Please login again.",
+    "networkError": "Network error. Please check your connection.",
+    "serverError": "Server error. Please try again later.",
+    "fileUploadSuccess": "File uploaded successfully",
+    "fileUploadError": "File upload failed",
+    "fileSizeError": "File size must not exceed {size}",
+    "fileTypeError": "Invalid file type. Allowed types: {types}"
+  },
+  
+  "pagination": {
+    "showing": "Showing {start} to {end} of {total} entries",
+    "rowsPerPage": "Rows per page",
+    "page": "Page",
+    "of": "of",
+    "first": "First",
+    "last": "Last",
+    "previous": "Previous",
+    "next": "Next"
+  },
+  
+  "footer": {
+    "copyright": "© 2024 LMS. All rights reserved.",
+    "privacyPolicy": "Privacy Policy",
+    "termsOfService": "Terms of Service",
+    "contactUs": "Contact Us"
+  }
+}

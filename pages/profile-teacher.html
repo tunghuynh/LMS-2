@@ -1,0 +1,313 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Profile - Teacher - LMS</title>
+    <link rel="stylesheet" href="../assets/css/global.css">
+    <link rel="stylesheet" href="../assets/css/themes.css">
+    <link rel="stylesheet" href="../assets/css/layout.css">
+    <link rel="stylesheet" href="../assets/css/components.css">
+</head>
+<body>
+    <div class="page-container">
+        <div class="page-header">
+            <h1 class="page-title" data-translate="nav.profile">My Profile</h1>
+            <p class="page-subtitle">Manage your profile and teaching information</p>
+        </div>
+
+        <div class="page-content">
+            <!-- Profile Overview -->
+            <div class="card" style="margin-bottom: var(--spacing-6);">
+                <div class="card__body">
+                    <div style="display: flex; gap: var(--spacing-6); align-items: start; flex-wrap: wrap;">
+                        <!-- Avatar Section -->
+                        <div style="text-align: center;">
+                            <div style="position: relative; display: inline-block;">
+                                <div id="avatarPreview" style="width: 150px; height: 150px; border-radius: 50%; background: var(--bg-secondary); display: flex; align-items: center; justify-content: center; font-size: 60px; color: var(--text-muted); overflow: hidden;">
+                                    <span id="avatarPlaceholder">👤</span>
+                                    <img id="avatarImage" src="" alt="Avatar" style="width: 100%; height: 100%; object-fit: cover; display: none;">
+                                </div>
+                                <label for="avatarInput" class="btn btn--secondary btn--small" style="position: absolute; bottom: 0; right: 0; cursor: pointer;">
+                                    📷
+                                </label>
+                                <input type="file" id="avatarInput" accept="image/*" style="display: none;">
+                            </div>
+                            <p style="margin-top: var(--spacing-2); font-size: var(--font-size-sm); color: var(--text-muted);">
+                                Click to upload avatar
+                            </p>
+                        </div>
+
+                        <!-- Personal Info -->
+                        <div style="flex: 1; min-width: 300px;">
+                            <h3 style="margin-bottom: var(--spacing-4);">Personal Information</h3>
+                            <div style="display: grid; gap: var(--spacing-3);">
+                                <div>
+                                    <label style="font-weight: var(--font-weight-medium); color: var(--text-secondary);">Full Name:</label>
+                                    <p id="fullName" style="font-size: var(--font-size-lg);">Loading...</p>
+                                </div>
+                                <div>
+                                    <label style="font-weight: var(--font-weight-medium); color: var(--text-secondary);">Username:</label>
+                                    <p id="username">Loading...</p>
+                                </div>
+                                <div>
+                                    <label style="font-weight: var(--font-weight-medium); color: var(--text-secondary);">Email:</label>
+                                    <p id="email">Loading...</p>
+                                </div>
+                                <div>
+                                    <label style="font-weight: var(--font-weight-medium); color: var(--text-secondary);">Member Since:</label>
+                                    <p id="joinDate">Loading...</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Bio Section -->
+            <div class="card" style="margin-bottom: var(--spacing-6);">
+                <div class="card__header">
+                    <h3 class="card__title">Professional Bio</h3>
+                </div>
+                <div class="card__body">
+                    <form id="bioForm">
+                        <div class="input-group">
+                            <label class="input-group__label">About Me</label>
+                            <textarea 
+                                class="input input--textarea" 
+                                id="bio" 
+                                rows="4" 
+                                placeholder="Tell us about your teaching experience, expertise, and interests..."
+                            ></textarea>
+                            <span class="input-group__help">This will be visible to your students</span>
+                        </div>
+                        <button type="submit" class="btn btn--primary">Update Bio</button>
+                    </form>
+                </div>
+            </div>
+
+            <!-- Teaching Statistics -->
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: var(--spacing-4); margin-bottom: var(--spacing-6);">
+                <div class="card">
+                    <div class="card__body" style="text-align: center;">
+                        <div style="font-size: var(--font-size-3xl); font-weight: var(--font-weight-bold); color: var(--color-primary);">4</div>
+                        <p style="color: var(--text-secondary);">Courses Created</p>
+                    </div>
+                </div>
+                <div class="card">
+                    <div class="card__body" style="text-align: center;">
+                        <div style="font-size: var(--font-size-3xl); font-weight: var(--font-weight-bold); color: var(--color-success);">173</div>
+                        <p style="color: var(--text-secondary);">Total Students</p>
+                    </div>
+                </div>
+                <div class="card">
+                    <div class="card__body" style="text-align: center;">
+                        <div style="font-size: var(--font-size-3xl); font-weight: var(--font-weight-bold); color: var(--color-warning);">24</div>
+                        <p style="color: var(--text-secondary);">Quizzes Created</p>
+                    </div>
+                </div>
+                <div class="card">
+                    <div class="card__body" style="text-align: center;">
+                        <div style="font-size: var(--font-size-3xl); font-weight: var(--font-weight-bold); color: var(--color-info);">4.7⭐</div>
+                        <p style="color: var(--text-secondary);">Average Rating</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- My Courses -->
+            <div class="card" style="margin-bottom: var(--spacing-6);">
+                <div class="card__header">
+                    <div style="display: flex; justify-content: space-between; align-items: center;">
+                        <h3 class="card__title">My Courses</h3>
+                        <button class="btn btn--primary btn--small">Create New Course</button>
+                    </div>
+                </div>
+                <div class="card__body card__body--no-padding">
+                    <div class="table-wrapper">
+                        <table class="table">
+                            <thead>
+                                <tr class="table__header">
+                                    <th class="table__cell table__cell--header">Course Title</th>
+                                    <th class="table__cell table__cell--header table__cell--center">Students</th>
+                                    <th class="table__cell table__cell--header table__cell--center">Status</th>
+                                    <th class="table__cell table__cell--header table__cell--center">Rating</th>
+                                    <th class="table__cell table__cell--header table__cell--hide-mobile">Last Updated</th>
+                                    <th class="table__cell table__cell--header table__cell--center">Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr class="table__row">
+                                    <td class="table__cell">Introduction to Web Development</td>
+                                    <td class="table__cell table__cell--center">45</td>
+                                    <td class="table__cell table__cell--center">
+                                        <span style="color: var(--color-success);">Published</span>
+                                    </td>
+                                    <td class="table__cell table__cell--center">4.5⭐</td>
+                                    <td class="table__cell table__cell--hide-mobile">2 days ago</td>
+                                    <td class="table__cell table__cell--center">
+                                        <button class="btn btn--ghost btn--small">Edit</button>
+                                    </td>
+                                </tr>
+                                <tr class="table__row">
+                                    <td class="table__cell">Advanced JavaScript</td>
+                                    <td class="table__cell table__cell--center">32</td>
+                                    <td class="table__cell table__cell--center">
+                                        <span style="color: var(--color-success);">Published</span>
+                                    </td>
+                                    <td class="table__cell table__cell--center">4.8⭐</td>
+                                    <td class="table__cell table__cell--hide-mobile">1 week ago</td>
+                                    <td class="table__cell table__cell--center">
+                                        <button class="btn btn--ghost btn--small">Edit</button>
+                                    </td>
+                                </tr>
+                                <tr class="table__row">
+                                    <td class="table__cell">React.js Fundamentals</td>
+                                    <td class="table__cell table__cell--center">58</td>
+                                    <td class="table__cell table__cell--center">
+                                        <span style="color: var(--color-success);">Published</span>
+                                    </td>
+                                    <td class="table__cell table__cell--center">4.7⭐</td>
+                                    <td class="table__cell table__cell--hide-mobile">3 days ago</td>
+                                    <td class="table__cell table__cell--center">
+                                        <button class="btn btn--ghost btn--small">Edit</button>
+                                    </td>
+                                </tr>
+                                <tr class="table__row">
+                                    <td class="table__cell">Database Design</td>
+                                    <td class="table__cell table__cell--center">0</td>
+                                    <td class="table__cell table__cell--center">
+                                        <span style="color: var(--color-warning);">Draft</span>
+                                    </td>
+                                    <td class="table__cell table__cell--center">-</td>
+                                    <td class="table__cell table__cell--hide-mobile">Today</td>
+                                    <td class="table__cell table__cell--center">
+                                        <button class="btn btn--ghost btn--small">Edit</button>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Recent Student Activity -->
+            <div class="card">
+                <div class="card__header">
+                    <h3 class="card__title">Recent Student Activity</h3>
+                </div>
+                <div class="card__body">
+                    <div style="display: flex; flex-direction: column; gap: var(--spacing-3);">
+                        <div style="display: flex; align-items: center; gap: var(--spacing-3); padding: var(--spacing-3); background: var(--bg-secondary); border-radius: var(--radius-base);">
+                            <span style="font-size: 24px;">🎓</span>
+                            <div style="flex: 1;">
+                                <p style="font-weight: var(--font-weight-medium);">John Doe completed "Introduction to Web Development"</p>
+                                <p style="font-size: var(--font-size-sm); color: var(--text-muted);">2 hours ago</p>
+                            </div>
+                        </div>
+                        <div style="display: flex; align-items: center; gap: var(--spacing-3); padding: var(--spacing-3); background: var(--bg-secondary); border-radius: var(--radius-base);">
+                            <span style="font-size: 24px;">📝</span>
+                            <div style="flex: 1;">
+                                <p style="font-weight: var(--font-weight-medium);">Alice Johnson submitted quiz for "Advanced JavaScript"</p>
+                                <p style="font-size: var(--font-size-sm); color: var(--text-muted);">5 hours ago</p>
+                            </div>
+                        </div>
+                        <div style="display: flex; align-items: center; gap: var(--spacing-3); padding: var(--spacing-3); background: var(--bg-secondary); border-radius: var(--radius-base);">
+                            <span style="font-size: 24px;">📚</span>
+                            <div style="flex: 1;">
+                                <p style="font-weight: var(--font-weight-medium);">5 new students enrolled in "React.js Fundamentals"</p>
+                                <p style="font-size: var(--font-size-sm); color: var(--text-muted);">Yesterday</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="../assets/js/global.js"></script>
+    <script src="../assets/js/api.js"></script>
+    <script src="../assets/js/auth.js"></script>
+    <script>
+        // Load user profile data
+        async function loadProfile() {
+            const user = LMS.Auth.getUser();
+            if (!user) {
+                window.location.href = '../index.html';
+                return;
+            }
+
+            // Display user info
+            document.getElementById('fullName').textContent = user.fullName || user.username;
+            document.getElementById('username').textContent = user.username;
+            document.getElementById('email').textContent = user.email;
+            document.getElementById('joinDate').textContent = new Date(user.createdAt).toLocaleDateString();
+            
+            // Load bio
+            document.getElementById('bio').value = user.bio || '';
+            
+            // Load avatar if exists
+            if (user.avatar) {
+                document.getElementById('avatarImage').src = user.avatar;
+                document.getElementById('avatarImage').style.display = 'block';
+                document.getElementById('avatarPlaceholder').style.display = 'none';
+            }
+        }
+
+        // Handle avatar upload
+        document.getElementById('avatarInput').addEventListener('change', function(e) {
+            const file = e.target.files[0];
+            if (file && file.type.startsWith('image/')) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    document.getElementById('avatarImage').src = e.target.result;
+                    document.getElementById('avatarImage').style.display = 'block';
+                    document.getElementById('avatarPlaceholder').style.display = 'none';
+                    
+                    // In real app, would upload to server
+                    // For demo, save to localStorage
+                    const user = LMS.Auth.getUser();
+                    user.avatar = e.target.result;
+                    LMS.Auth.saveSession(user, LMS.Auth.getToken());
+                };
+                reader.readAsDataURL(file);
+            }
+        });
+
+        // Handle bio form
+        document.getElementById('bioForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            
+            const bio = document.getElementById('bio').value;
+            const user = LMS.Auth.getUser();
+            
+            // Update user data
+            user.bio = bio;
+            LMS.Auth.saveSession(user, LMS.Auth.getToken());
+            
+            // Show success message (in real app, would save to server)
+            alert('Bio updated successfully!');
+        });
+
+        // Handle course actions
+        document.addEventListener('click', function(e) {
+            if (e.target.textContent === 'Create New Course') {
+                alert('Course creation will be implemented in Phase I.2');
+            } else if (e.target.textContent === 'Edit') {
+                alert('Course editing will be implemented in Phase I.2');
+            }
+        });
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', function() {
+            // Check authentication
+            if (!LMS.Auth.hasRole('teacher')) {
+                alert('Access denied. Teachers only.');
+                window.location.href = '../index.html';
+                return;
+            }
+            
+            loadProfile();
+        });
+    </script>
+</body>
+</html>

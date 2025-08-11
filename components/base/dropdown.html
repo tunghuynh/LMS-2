@@ -1,0 +1,508 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dropdown Component - LMS</title>
+    <link rel="stylesheet" href="../../assets/css/global.css">
+    <link rel="stylesheet" href="../../assets/css/themes.css">
+    <link rel="stylesheet" href="../../assets/css/components.css">
+    <style>
+        .demo-container {
+            padding: var(--spacing-6);
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        .demo-section {
+            margin-bottom: var(--spacing-8);
+        }
+        .demo-title {
+            font-size: var(--font-size-2xl);
+            font-weight: var(--font-weight-semibold);
+            margin-bottom: var(--spacing-4);
+            color: var(--text-primary);
+        }
+        .demo-subtitle {
+            font-size: var(--font-size-lg);
+            color: var(--text-secondary);
+            margin-bottom: var(--spacing-4);
+        }
+        .demo-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: var(--spacing-4);
+        }
+        .demo-row {
+            margin-bottom: var(--spacing-4);
+        }
+    </style>
+</head>
+<body>
+    <div class="demo-container">
+        <h1 class="demo-title">Dropdown Component</h1>
+        
+        <!-- Basic Dropdowns -->
+        <section class="demo-section">
+            <h2 class="demo-subtitle">Basic Dropdowns</h2>
+            <div class="demo-grid">
+                <!-- Simple Dropdown -->
+                <div>
+                    <label class="input-group__label">Simple Dropdown</label>
+                    <div class="dropdown dropdown--block" id="dropdown1">
+                        <button class="dropdown__trigger">
+                            <span>Select an option</span>
+                            <span class="dropdown__arrow"></span>
+                        </button>
+                        <div class="dropdown__menu">
+                            <div class="dropdown__list">
+                                <div class="dropdown__item" data-value="option1">Option 1</div>
+                                <div class="dropdown__item" data-value="option2">Option 2</div>
+                                <div class="dropdown__item" data-value="option3">Option 3</div>
+                                <div class="dropdown__item" data-value="option4">Option 4</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Dropdown with Icons -->
+                <div>
+                    <label class="input-group__label">With Icons</label>
+                    <div class="dropdown dropdown--block" id="dropdown2">
+                        <button class="dropdown__trigger">
+                            <span>Select status</span>
+                            <span class="dropdown__arrow"></span>
+                        </button>
+                        <div class="dropdown__menu">
+                            <div class="dropdown__list">
+                                <div class="dropdown__item" data-value="active">
+                                    <span class="dropdown__item-icon">✅</span>
+                                    <span class="dropdown__item-text">Active</span>
+                                </div>
+                                <div class="dropdown__item" data-value="pending">
+                                    <span class="dropdown__item-icon">⏳</span>
+                                    <span class="dropdown__item-text">Pending</span>
+                                </div>
+                                <div class="dropdown__item" data-value="inactive">
+                                    <span class="dropdown__item-icon">❌</span>
+                                    <span class="dropdown__item-text">Inactive</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Disabled Items -->
+                <div>
+                    <label class="input-group__label">With Disabled Items</label>
+                    <div class="dropdown dropdown--block" id="dropdown3">
+                        <button class="dropdown__trigger">
+                            <span>Select role</span>
+                            <span class="dropdown__arrow"></span>
+                        </button>
+                        <div class="dropdown__menu">
+                            <div class="dropdown__list">
+                                <div class="dropdown__item" data-value="student">Student</div>
+                                <div class="dropdown__item" data-value="teacher">Teacher</div>
+                                <div class="dropdown__item dropdown__item--disabled" data-value="admin">Admin (Disabled)</div>
+                                <div class="dropdown__item" data-value="guest">Guest</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Searchable Dropdown -->
+        <section class="demo-section">
+            <h2 class="demo-subtitle">Searchable Dropdown</h2>
+            <div class="demo-row" style="max-width: 400px;">
+                <label class="input-group__label">Search Countries</label>
+                <div class="dropdown dropdown--block" id="dropdown-search">
+                    <button class="dropdown__trigger">
+                        <span>Select country</span>
+                        <span class="dropdown__arrow"></span>
+                    </button>
+                    <div class="dropdown__menu">
+                        <div class="dropdown__search">
+                            <input type="text" class="dropdown__search-input" placeholder="Search..." id="searchInput">
+                        </div>
+                        <div class="dropdown__list" id="searchableList">
+                            <div class="dropdown__item" data-value="us">United States</div>
+                            <div class="dropdown__item" data-value="uk">United Kingdom</div>
+                            <div class="dropdown__item" data-value="ca">Canada</div>
+                            <div class="dropdown__item" data-value="au">Australia</div>
+                            <div class="dropdown__item" data-value="de">Germany</div>
+                            <div class="dropdown__item" data-value="fr">France</div>
+                            <div class="dropdown__item" data-value="jp">Japan</div>
+                            <div class="dropdown__item" data-value="kr">South Korea</div>
+                            <div class="dropdown__item" data-value="vn">Vietnam</div>
+                            <div class="dropdown__item" data-value="th">Thailand</div>
+                        </div>
+                        <div class="dropdown__empty" style="display: none;">No results found</div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Multi-select Dropdown -->
+        <section class="demo-section">
+            <h2 class="demo-subtitle">Multi-select Dropdown</h2>
+            <div class="demo-row" style="max-width: 400px;">
+                <label class="input-group__label">Select Skills</label>
+                <div class="dropdown dropdown--block dropdown--multi" id="dropdown-multi">
+                    <button class="dropdown__trigger">
+                        <span id="multiSelectText">Select skills</span>
+                        <span class="dropdown__count" id="selectedCount" style="display: none;">0</span>
+                        <span class="dropdown__arrow"></span>
+                    </button>
+                    <div class="dropdown__menu">
+                        <div class="dropdown__list">
+                            <label class="dropdown__item">
+                                <input type="checkbox" class="dropdown__checkbox" value="html">
+                                <span class="dropdown__item-text">HTML</span>
+                            </label>
+                            <label class="dropdown__item">
+                                <input type="checkbox" class="dropdown__checkbox" value="css">
+                                <span class="dropdown__item-text">CSS</span>
+                            </label>
+                            <label class="dropdown__item">
+                                <input type="checkbox" class="dropdown__checkbox" value="javascript">
+                                <span class="dropdown__item-text">JavaScript</span>
+                            </label>
+                            <label class="dropdown__item">
+                                <input type="checkbox" class="dropdown__checkbox" value="react">
+                                <span class="dropdown__item-text">React</span>
+                            </label>
+                            <label class="dropdown__item">
+                                <input type="checkbox" class="dropdown__checkbox" value="nodejs">
+                                <span class="dropdown__item-text">Node.js</span>
+                            </label>
+                            <label class="dropdown__item">
+                                <input type="checkbox" class="dropdown__checkbox" value="python">
+                                <span class="dropdown__item-text">Python</span>
+                            </label>
+                        </div>
+                        <div class="dropdown__footer">
+                            <button class="btn btn--secondary btn--small" onclick="clearMultiSelect()">Clear</button>
+                            <button class="btn btn--primary btn--small" onclick="applyMultiSelect()">Apply</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Grouped Dropdown -->
+        <section class="demo-section">
+            <h2 class="demo-subtitle">Grouped Dropdown</h2>
+            <div class="demo-row" style="max-width: 400px;">
+                <label class="input-group__label">Select Course</label>
+                <div class="dropdown dropdown--block" id="dropdown-grouped">
+                    <button class="dropdown__trigger">
+                        <span>Select course</span>
+                        <span class="dropdown__arrow"></span>
+                    </button>
+                    <div class="dropdown__menu">
+                        <div class="dropdown__list">
+                            <div class="dropdown__group">
+                                <div class="dropdown__group-label">Web Development</div>
+                                <div class="dropdown__item" data-value="html-basics">HTML Basics</div>
+                                <div class="dropdown__item" data-value="css-advanced">CSS Advanced</div>
+                                <div class="dropdown__item" data-value="js-fundamentals">JavaScript Fundamentals</div>
+                            </div>
+                            <div class="dropdown__divider"></div>
+                            <div class="dropdown__group">
+                                <div class="dropdown__group-label">Backend Development</div>
+                                <div class="dropdown__item" data-value="nodejs">Node.js</div>
+                                <div class="dropdown__item" data-value="python">Python</div>
+                                <div class="dropdown__item" data-value="java">Java</div>
+                            </div>
+                            <div class="dropdown__divider"></div>
+                            <div class="dropdown__group">
+                                <div class="dropdown__group-label">Database</div>
+                                <div class="dropdown__item" data-value="mysql">MySQL</div>
+                                <div class="dropdown__item" data-value="mongodb">MongoDB</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Dropdown Sizes -->
+        <section class="demo-section">
+            <h2 class="demo-subtitle">Dropdown Sizes</h2>
+            <div class="demo-grid">
+                <!-- Small -->
+                <div>
+                    <label class="input-group__label">Small</label>
+                    <div class="dropdown dropdown--block dropdown--small">
+                        <button class="dropdown__trigger">
+                            <span>Small dropdown</span>
+                            <span class="dropdown__arrow"></span>
+                        </button>
+                        <div class="dropdown__menu">
+                            <div class="dropdown__list">
+                                <div class="dropdown__item">Option 1</div>
+                                <div class="dropdown__item">Option 2</div>
+                                <div class="dropdown__item">Option 3</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Default -->
+                <div>
+                    <label class="input-group__label">Default</label>
+                    <div class="dropdown dropdown--block">
+                        <button class="dropdown__trigger">
+                            <span>Default dropdown</span>
+                            <span class="dropdown__arrow"></span>
+                        </button>
+                        <div class="dropdown__menu">
+                            <div class="dropdown__list">
+                                <div class="dropdown__item">Option 1</div>
+                                <div class="dropdown__item">Option 2</div>
+                                <div class="dropdown__item">Option 3</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Large -->
+                <div>
+                    <label class="input-group__label">Large</label>
+                    <div class="dropdown dropdown--block dropdown--large">
+                        <button class="dropdown__trigger">
+                            <span>Large dropdown</span>
+                            <span class="dropdown__arrow"></span>
+                        </button>
+                        <div class="dropdown__menu">
+                            <div class="dropdown__list">
+                                <div class="dropdown__item">Option 1</div>
+                                <div class="dropdown__item">Option 2</div>
+                                <div class="dropdown__item">Option 3</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Complex Dropdown Example -->
+        <section class="demo-section">
+            <h2 class="demo-subtitle">Complex Dropdown</h2>
+            <div class="demo-row" style="max-width: 400px;">
+                <label class="input-group__label">Select User</label>
+                <div class="dropdown dropdown--block" id="dropdown-complex">
+                    <button class="dropdown__trigger">
+                        <span>Select user</span>
+                        <span class="dropdown__arrow"></span>
+                    </button>
+                    <div class="dropdown__menu">
+                        <div class="dropdown__list">
+                            <div class="dropdown__item" data-value="user1">
+                                <span class="dropdown__item-icon">👤</span>
+                                <div style="flex: 1;">
+                                    <div class="dropdown__item-text">John Doe</div>
+                                    <div class="dropdown__item-meta">john@example.com</div>
+                                </div>
+                            </div>
+                            <div class="dropdown__item" data-value="user2">
+                                <span class="dropdown__item-icon">👤</span>
+                                <div style="flex: 1;">
+                                    <div class="dropdown__item-text">Jane Smith</div>
+                                    <div class="dropdown__item-meta">jane@example.com</div>
+                                </div>
+                            </div>
+                            <div class="dropdown__item" data-value="user3">
+                                <span class="dropdown__item-icon">👤</span>
+                                <div style="flex: 1;">
+                                    <div class="dropdown__item-text">Bob Johnson</div>
+                                    <div class="dropdown__item-meta">bob@example.com</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Theme Switcher -->
+        <div style="position: fixed; top: 20px; right: 20px;">
+            <button class="btn btn--secondary btn--small" id="themeToggle">
+                Toggle Theme
+            </button>
+        </div>
+    </div>
+
+    <script src="../../assets/js/global.js"></script>
+    <script>
+        // Dropdown functionality
+        function initDropdown(dropdownId) {
+            const dropdown = document.getElementById(dropdownId);
+            if (!dropdown) return;
+
+            const trigger = dropdown.querySelector('.dropdown__trigger');
+            const menu = dropdown.querySelector('.dropdown__menu');
+            const items = dropdown.querySelectorAll('.dropdown__item:not(.dropdown__item--disabled)');
+
+            // Toggle dropdown
+            trigger.addEventListener('click', function(e) {
+                e.stopPropagation();
+                const isActive = dropdown.classList.contains('active');
+                
+                // Close all other dropdowns
+                document.querySelectorAll('.dropdown.active').forEach(d => {
+                    if (d !== dropdown) d.classList.remove('active');
+                });
+                
+                dropdown.classList.toggle('active');
+                
+                if (!isActive) {
+                    trigger.focus();
+                }
+            });
+
+            // Select item
+            items.forEach(item => {
+                item.addEventListener('click', function(e) {
+                    if (!item.querySelector('input[type="checkbox"]')) {
+                        e.stopPropagation();
+                        const value = this.getAttribute('data-value');
+                        const text = this.querySelector('.dropdown__item-text')?.textContent || this.textContent;
+                        
+                        // Update trigger text
+                        trigger.querySelector('span:first-child').textContent = text.trim();
+                        
+                        // Update selected state
+                        items.forEach(i => i.classList.remove('dropdown__item--selected'));
+                        this.classList.add('dropdown__item--selected');
+                        
+                        // Close dropdown
+                        dropdown.classList.remove('active');
+                        
+                        console.log('Selected:', value);
+                    }
+                });
+            });
+        }
+
+        // Initialize all basic dropdowns
+        ['dropdown1', 'dropdown2', 'dropdown3', 'dropdown-grouped', 'dropdown-complex'].forEach(id => {
+            initDropdown(id);
+        });
+
+        // Searchable dropdown
+        const searchInput = document.getElementById('searchInput');
+        const searchableList = document.getElementById('searchableList');
+        const emptyState = document.querySelector('.dropdown__empty');
+
+        if (searchInput) {
+            searchInput.addEventListener('input', function() {
+                const filter = this.value.toLowerCase();
+                const items = searchableList.querySelectorAll('.dropdown__item');
+                let hasVisible = false;
+
+                items.forEach(item => {
+                    const text = item.textContent.toLowerCase();
+                    if (text.includes(filter)) {
+                        item.style.display = '';
+                        hasVisible = true;
+                    } else {
+                        item.style.display = 'none';
+                    }
+                });
+
+                emptyState.style.display = hasVisible ? 'none' : 'block';
+            });
+        }
+
+        initDropdown('dropdown-search');
+
+        // Multi-select dropdown
+        const multiDropdown = document.getElementById('dropdown-multi');
+        const selectedCount = document.getElementById('selectedCount');
+        const multiSelectText = document.getElementById('multiSelectText');
+
+        function updateMultiSelectCount() {
+            const checked = multiDropdown.querySelectorAll('input[type="checkbox"]:checked');
+            const count = checked.length;
+            
+            if (count > 0) {
+                selectedCount.textContent = count;
+                selectedCount.style.display = '';
+                multiSelectText.textContent = `${count} selected`;
+            } else {
+                selectedCount.style.display = 'none';
+                multiSelectText.textContent = 'Select skills';
+            }
+        }
+
+        multiDropdown.querySelectorAll('input[type="checkbox"]').forEach(checkbox => {
+            checkbox.addEventListener('change', updateMultiSelectCount);
+        });
+
+        function clearMultiSelect() {
+            multiDropdown.querySelectorAll('input[type="checkbox"]').forEach(cb => {
+                cb.checked = false;
+            });
+            updateMultiSelectCount();
+        }
+
+        function applyMultiSelect() {
+            const selected = Array.from(multiDropdown.querySelectorAll('input[type="checkbox"]:checked'))
+                .map(cb => cb.value);
+            console.log('Selected skills:', selected);
+            multiDropdown.classList.remove('active');
+        }
+
+        // Close dropdowns on outside click
+        document.addEventListener('click', function(e) {
+            if (!e.target.closest('.dropdown')) {
+                document.querySelectorAll('.dropdown.active').forEach(dropdown => {
+                    dropdown.classList.remove('active');
+                });
+            }
+        });
+
+        // Keyboard navigation (basic implementation)
+        document.querySelectorAll('.dropdown').forEach(dropdown => {
+            const trigger = dropdown.querySelector('.dropdown__trigger');
+            let currentIndex = -1;
+
+            trigger.addEventListener('keydown', function(e) {
+                const items = Array.from(dropdown.querySelectorAll('.dropdown__item:not(.dropdown__item--disabled)'));
+                
+                switch(e.key) {
+                    case 'Enter':
+                    case ' ':
+                        e.preventDefault();
+                        dropdown.classList.toggle('active');
+                        break;
+                    case 'Escape':
+                        dropdown.classList.remove('active');
+                        trigger.focus();
+                        break;
+                    case 'ArrowDown':
+                        e.preventDefault();
+                        if (!dropdown.classList.contains('active')) {
+                            dropdown.classList.add('active');
+                        }
+                        currentIndex = Math.min(currentIndex + 1, items.length - 1);
+                        if (items[currentIndex]) {
+                            items[currentIndex].focus();
+                        }
+                        break;
+                    case 'ArrowUp':
+                        e.preventDefault();
+                        currentIndex = Math.max(currentIndex - 1, 0);
+                        if (items[currentIndex]) {
+                            items[currentIndex].focus();
+                        }
+                        break;
+                }
+            });
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,76 @@
+{
+  "meta": {
+    "version": "1.0",
+    "totalCount": 15
+  },
+  "data": [
+    {
+      "id": "user_001",
+      "username": "student1",
+      "password": "password123",
+      "email": "student1@example.com",
+      "fullName": "John Doe",
+      "role": "student",
+      "avatar": null,
+      "bio": "Passionate learner interested in web development",
+      "learningGoals": "Master full-stack development",
+      "isActive": true,
+      "createdAt": "2024-01-15T08:00:00Z",
+      "lastLogin": "2024-03-20T10:30:00Z"
+    },
+    {
+      "id": "user_002", 
+      "username": "teacher1",
+      "password": "password123",
+      "email": "teacher1@example.com",
+      "fullName": "Jane Smith",
+      "role": "teacher",
+      "avatar": null,
+      "bio": "Experienced educator with 10 years in tech education",
+      "isActive": true,
+      "createdAt": "2023-12-01T08:00:00Z",
+      "lastLogin": "2024-03-21T09:00:00Z"
+    },
+    {
+      "id": "user_003",
+      "username": "admin",
+      "password": "admin123",
+      "email": "admin@example.com",
+      "fullName": "Admin User",
+      "role": "admin",
+      "avatar": null,
+      "bio": "System administrator",
+      "isActive": true,
+      "createdAt": "2023-11-01T08:00:00Z",
+      "lastLogin": "2024-03-21T08:00:00Z"
+    },
+    {
+      "id": "user_004",
+      "username": "student2",
+      "password": "password123",
+      "email": "student2@example.com",
+      "fullName": "Alice Johnson",
+      "role": "student",
+      "avatar": null,
+      "bio": "Computer science student",
+      "learningGoals": "Learn advanced JavaScript frameworks",
+      "isActive": true,
+      "createdAt": "2024-02-01T08:00:00Z",
+      "lastLogin": "2024-03-19T14:20:00Z"
+    },
+    {
+      "id": "user_005",
+      "username": "student3",
+      "password": "password123",
+      "email": "student3@example.com",
+      "fullName": "Bob Wilson",
+      "role": "student",
+      "avatar": null,
+      "bio": "Beginner in programming",
+      "learningGoals": "Build my first web application",
+      "isActive": false,
+      "createdAt": "2024-02-15T08:00:00Z",
+      "lastLogin": "2024-03-01T11:00:00Z"
+    }
+  ]
+}

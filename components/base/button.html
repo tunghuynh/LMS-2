@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Button Component - LMS</title>
+    <link rel="stylesheet" href="../../assets/css/global.css">
+    <link rel="stylesheet" href="../../assets/css/themes.css">
+    <link rel="stylesheet" href="../../assets/css/components.css">
+    <style>
+        .demo-container {
+            padding: var(--spacing-6);
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        .demo-section {
+            margin-bottom: var(--spacing-8);
+        }
+        .demo-title {
+            font-size: var(--font-size-2xl);
+            font-weight: var(--font-weight-semibold);
+            margin-bottom: var(--spacing-4);
+            color: var(--text-primary);
+        }
+        .demo-subtitle {
+            font-size: var(--font-size-lg);
+            color: var(--text-secondary);
+            margin-bottom: var(--spacing-4);
+        }
+        .demo-grid {
+            display: flex;
+            flex-wrap: wrap;
+            gap: var(--spacing-4);
+            align-items: center;
+        }
+        .demo-code {
+            background-color: var(--code-bg);
+            border: 1px solid var(--code-border);
+            border-radius: var(--radius-base);
+            padding: var(--spacing-3);
+            margin-top: var(--spacing-3);
+            font-family: var(--font-family-mono);
+            font-size: var(--font-size-sm);
+            overflow-x: auto;
+        }
+    </style>
+</head>
+<body>
+    <div class="demo-container">
+        <h1 class="demo-title">Button Component</h1>
+        
+        <!-- Button Variants -->
+        <section class="demo-section">
+            <h2 class="demo-subtitle">Button Variants</h2>
+            <div class="demo-grid">
+                <button class="btn btn--primary">Primary Button</button>
+                <button class="btn btn--secondary">Secondary Button</button>
+                <button class="btn btn--ghost">Ghost Button</button>
+            </div>
+            <pre class="demo-code">&lt;button class="btn btn--primary"&gt;Primary Button&lt;/button&gt;
+&lt;button class="btn btn--secondary"&gt;Secondary Button&lt;/button&gt;
+&lt;button class="btn btn--ghost"&gt;Ghost Button&lt;/button&gt;</pre>
+        </section>
+
+        <!-- Button Sizes -->
+        <section class="demo-section">
+            <h2 class="demo-subtitle">Button Sizes</h2>
+            <div class="demo-grid">
+                <button class="btn btn--primary btn--small">Small</button>
+                <button class="btn btn--primary">Medium</button>
+                <button class="btn btn--primary btn--large">Large</button>
+            </div>
+            <pre class="demo-code">&lt;button class="btn btn--primary btn--small"&gt;Small&lt;/button&gt;
+&lt;button class="btn btn--primary"&gt;Medium&lt;/button&gt;
+&lt;button class="btn btn--primary btn--large"&gt;Large&lt;/button&gt;</pre>
+        </section>
+
+        <!-- Button States -->
+        <section class="demo-section">
+            <h2 class="demo-subtitle">Button States</h2>
+            <div class="demo-grid">
+                <button class="btn btn--primary">Normal</button>
+                <button class="btn btn--primary" disabled>Disabled</button>
+                <button class="btn btn--primary btn--loading">Loading</button>
+            </div>
+            <pre class="demo-code">&lt;button class="btn btn--primary"&gt;Normal&lt;/button&gt;
+&lt;button class="btn btn--primary" disabled&gt;Disabled&lt;/button&gt;
+&lt;button class="btn btn--primary btn--loading"&gt;Loading&lt;/button&gt;</pre>
+        </section>
+
+        <!-- Buttons with Icons -->
+        <section class="demo-section">
+            <h2 class="demo-subtitle">Buttons with Icons</h2>
+            <div class="demo-grid">
+                <button class="btn btn--primary">
+                    <span class="btn__icon btn__icon--left">←</span>
+                    Back
+                </button>
+                <button class="btn btn--primary">
+                    Next
+                    <span class="btn__icon btn__icon--right">→</span>
+                </button>
+                <button class="btn btn--secondary">
+                    <span class="btn__icon">⚙️</span>
+                    Settings
+                </button>
+            </div>
+            <pre class="demo-code">&lt;button class="btn btn--primary"&gt;
+    &lt;span class="btn__icon btn__icon--left"&gt;←&lt;/span&gt;
+    Back
+&lt;/button&gt;</pre>
+        </section>
+
+        <!-- Block Buttons -->
+        <section class="demo-section">
+            <h2 class="demo-subtitle">Block Buttons</h2>
+            <div style="max-width: 400px;">
+                <button class="btn btn--primary btn--block" style="margin-bottom: var(--spacing-2);">
+                    Block Primary Button
+                </button>
+                <button class="btn btn--secondary btn--block" style="margin-bottom: var(--spacing-2);">
+                    Block Secondary Button
+                </button>
+                <button class="btn btn--ghost btn--block">
+                    Block Ghost Button
+                </button>
+            </div>
+            <pre class="demo-code">&lt;button class="btn btn--primary btn--block"&gt;Block Primary Button&lt;/button&gt;</pre>
+        </section>
+
+        <!-- All Combinations -->
+        <section class="demo-section">
+            <h2 class="demo-subtitle">All Combinations</h2>
+            <div class="demo-grid">
+                <button class="btn btn--primary btn--small">Small Primary</button>
+                <button class="btn btn--secondary btn--small">Small Secondary</button>
+                <button class="btn btn--ghost btn--small">Small Ghost</button>
+            </div>
+            <div class="demo-grid" style="margin-top: var(--spacing-2);">
+                <button class="btn btn--primary btn--large">Large Primary</button>
+                <button class="btn btn--secondary btn--large">Large Secondary</button>
+                <button class="btn btn--ghost btn--large">Large Ghost</button>
+            </div>
+            <div class="demo-grid" style="margin-top: var(--spacing-2);">
+                <button class="btn btn--primary btn--small" disabled>Disabled Small</button>
+                <button class="btn btn--secondary" disabled>Disabled Medium</button>
+                <button class="btn btn--ghost btn--large" disabled>Disabled Large</button>
+            </div>
+        </section>
+
+        <!-- Links as Buttons -->
+        <section class="demo-section">
+            <h2 class="demo-subtitle">Links as Buttons</h2>
+            <div class="demo-grid">
+                <a href="#" class="btn btn--primary">Primary Link</a>
+                <a href="#" class="btn btn--secondary">Secondary Link</a>
+                <a href="#" class="btn btn--ghost">Ghost Link</a>
+            </div>
+            <pre class="demo-code">&lt;a href="#" class="btn btn--primary"&gt;Primary Link&lt;/a&gt;</pre>
+        </section>
+
+        <!-- Theme Switcher -->
+        <div style="position: fixed; top: 20px; right: 20px;">
+            <button class="btn btn--secondary btn--small" id="themeToggle">
+                Toggle Theme
+            </button>
+        </div>
+    </div>
+
+    <script src="../../assets/js/global.js"></script>
+    <script>
+        // Demo interactions
+        document.addEventListener('DOMContentLoaded', function() {
+            // Simulate loading state
+            document.querySelectorAll('.btn--loading').forEach(btn => {
+                btn.addEventListener('click', function(e) {
+                    e.preventDefault();
+                });
+            });
+            
+            // Button click feedback
+            document.querySelectorAll('.btn:not(.btn--loading)').forEach(btn => {
+                btn.addEventListener('click', function(e) {
+                    if (!this.disabled && !e.target.closest('a')) {
+                        console.log('Button clicked:', this.textContent.trim());
+                    }
+                });
+            });
+        });
+    </script>
+</body>
+</html>

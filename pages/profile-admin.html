@@ -1,0 +1,278 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Profile - Administrator - LMS</title>
+    <link rel="stylesheet" href="../assets/css/global.css">
+    <link rel="stylesheet" href="../assets/css/themes.css">
+    <link rel="stylesheet" href="../assets/css/layout.css">
+    <link rel="stylesheet" href="../assets/css/components.css">
+</head>
+<body>
+    <div class="page-container">
+        <div class="page-header">
+            <h1 class="page-title" data-translate="nav.profile">My Profile</h1>
+            <p class="page-subtitle">Administrator Profile & System Overview</p>
+        </div>
+
+        <div class="page-content">
+            <!-- Profile Overview -->
+            <div class="card" style="margin-bottom: var(--spacing-6);">
+                <div class="card__body">
+                    <div style="display: flex; gap: var(--spacing-6); align-items: start; flex-wrap: wrap;">
+                        <!-- Avatar Section -->
+                        <div style="text-align: center;">
+                            <div style="position: relative; display: inline-block;">
+                                <div id="avatarPreview" style="width: 150px; height: 150px; border-radius: 50%; background: var(--bg-secondary); display: flex; align-items: center; justify-content: center; font-size: 60px; color: var(--text-muted); overflow: hidden;">
+                                    <span id="avatarPlaceholder">👤</span>
+                                    <img id="avatarImage" src="" alt="Avatar" style="width: 100%; height: 100%; object-fit: cover; display: none;">
+                                </div>
+                                <label for="avatarInput" class="btn btn--secondary btn--small" style="position: absolute; bottom: 0; right: 0; cursor: pointer;">
+                                    📷
+                                </label>
+                                <input type="file" id="avatarInput" accept="image/*" style="display: none;">
+                            </div>
+                            <p style="margin-top: var(--spacing-2); font-size: var(--font-size-sm); color: var(--text-muted);">
+                                Administrator
+                            </p>
+                        </div>
+
+                        <!-- Personal Info -->
+                        <div style="flex: 1; min-width: 300px;">
+                            <h3 style="margin-bottom: var(--spacing-4);">Administrator Information</h3>
+                            <div style="display: grid; gap: var(--spacing-3);">
+                                <div>
+                                    <label style="font-weight: var(--font-weight-medium); color: var(--text-secondary);">Full Name:</label>
+                                    <p id="fullName" style="font-size: var(--font-size-lg);">Loading...</p>
+                                </div>
+                                <div>
+                                    <label style="font-weight: var(--font-weight-medium); color: var(--text-secondary);">Username:</label>
+                                    <p id="username">Loading...</p>
+                                </div>
+                                <div>
+                                    <label style="font-weight: var(--font-weight-medium); color: var(--text-secondary);">Email:</label>
+                                    <p id="email">Loading...</p>
+                                </div>
+                                <div>
+                                    <label style="font-weight: var(--font-weight-medium); color: var(--text-secondary);">Admin Since:</label>
+                                    <p id="joinDate">Loading...</p>
+                                </div>
+                                <div>
+                                    <label style="font-weight: var(--font-weight-medium); color: var(--text-secondary);">Last Login:</label>
+                                    <p id="lastLogin">Loading...</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- System Statistics Overview -->
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: var(--spacing-4); margin-bottom: var(--spacing-6);">
+                <div class="card">
+                    <div class="card__body" style="text-align: center;">
+                        <div style="font-size: var(--font-size-3xl); font-weight: var(--font-weight-bold); color: var(--color-primary);">250</div>
+                        <p style="color: var(--text-secondary);">Total Users</p>
+                    </div>
+                </div>
+                <div class="card">
+                    <div class="card__body" style="text-align: center;">
+                        <div style="font-size: var(--font-size-3xl); font-weight: var(--font-weight-bold); color: var(--color-success);">198</div>
+                        <p style="color: var(--text-secondary);">Active Users</p>
+                    </div>
+                </div>
+                <div class="card">
+                    <div class="card__body" style="text-align: center;">
+                        <div style="font-size: var(--font-size-3xl); font-weight: var(--font-weight-bold); color: var(--color-warning);">45</div>
+                        <p style="color: var(--text-secondary);">Total Courses</p>
+                    </div>
+                </div>
+                <div class="card">
+                    <div class="card__body" style="text-align: center;">
+                        <div style="font-size: var(--font-size-3xl); font-weight: var(--font-weight-bold); color: var(--color-info);">15</div>
+                        <p style="color: var(--text-secondary);">Total Classes</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- User Distribution -->
+            <div class="card" style="margin-bottom: var(--spacing-6);">
+                <div class="card__header">
+                    <h3 class="card__title">User Distribution</h3>
+                </div>
+                <div class="card__body">
+                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: var(--spacing-4);">
+                        <div>
+                            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: var(--spacing-2);">
+                                <span>Students</span>
+                                <span style="font-weight: var(--font-weight-bold);">215</span>
+                            </div>
+                            <div style="height: 8px; background: var(--bg-secondary); border-radius: 4px; overflow: hidden;">
+                                <div style="width: 86%; height: 100%; background: var(--color-primary);"></div>
+                            </div>
+                        </div>
+                        <div>
+                            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: var(--spacing-2);">
+                                <span>Teachers</span>
+                                <span style="font-weight: var(--font-weight-bold);">32</span>
+                            </div>
+                            <div style="height: 8px; background: var(--bg-secondary); border-radius: 4px; overflow: hidden;">
+                                <div style="width: 13%; height: 100%; background: var(--color-success);"></div>
+                            </div>
+                        </div>
+                        <div>
+                            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: var(--spacing-2);">
+                                <span>Administrators</span>
+                                <span style="font-weight: var(--font-weight-bold);">3</span>
+                            </div>
+                            <div style="height: 8px; background: var(--bg-secondary); border-radius: 4px; overflow: hidden;">
+                                <div style="width: 1%; height: 100%; background: var(--color-warning);"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Recent System Activity -->
+            <div class="card" style="margin-bottom: var(--spacing-6);">
+                <div class="card__header">
+                    <div style="display: flex; justify-content: space-between; align-items: center;">
+                        <h3 class="card__title">Recent System Activity</h3>
+                        <a href="logs.html" class="btn btn--ghost btn--small">View All Logs</a>
+                    </div>
+                </div>
+                <div class="card__body">
+                    <div style="display: flex; flex-direction: column; gap: var(--spacing-3);">
+                        <div style="display: flex; align-items: center; gap: var(--spacing-3); padding: var(--spacing-3); background: var(--bg-secondary); border-radius: var(--radius-base);">
+                            <span style="font-size: 24px;">👤</span>
+                            <div style="flex: 1;">
+                                <p style="font-weight: var(--font-weight-medium);">New user registration: <strong>student_new_2025</strong></p>
+                                <p style="font-size: var(--font-size-sm); color: var(--text-muted);">10 minutes ago</p>
+                            </div>
+                        </div>
+                        <div style="display: flex; align-items: center; gap: var(--spacing-3); padding: var(--spacing-3); background: var(--bg-secondary); border-radius: var(--radius-base);">
+                            <span style="font-size: 24px;">📚</span>
+                            <div style="flex: 1;">
+                                <p style="font-weight: var(--font-weight-medium);">Course published: <strong>Advanced React Patterns</strong></p>
+                                <p style="font-size: var(--font-size-sm); color: var(--text-muted);">2 hours ago</p>
+                            </div>
+                        </div>
+                        <div style="display: flex; align-items: center; gap: var(--spacing-3); padding: var(--spacing-3); background: var(--bg-secondary); border-radius: var(--radius-base);">
+                            <span style="font-size: 24px;">⚠️</span>
+                            <div style="flex: 1;">
+                                <p style="font-weight: var(--font-weight-medium);">Failed login attempt for user: <strong>john_doe</strong></p>
+                                <p style="font-size: var(--font-size-sm); color: var(--text-muted);">5 hours ago</p>
+                            </div>
+                        </div>
+                        <div style="display: flex; align-items: center; gap: var(--spacing-3); padding: var(--spacing-3); background: var(--bg-secondary); border-radius: var(--radius-base);">
+                            <span style="font-size: 24px;">🏫</span>
+                            <div style="flex: 1;">
+                                <p style="font-weight: var(--font-weight-medium);">New class created: <strong>Web Development 2025</strong></p>
+                                <p style="font-size: var(--font-size-sm); color: var(--text-muted);">Yesterday</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Quick Actions -->
+            <div class="card">
+                <div class="card__header">
+                    <h3 class="card__title">Quick Actions</h3>
+                </div>
+                <div class="card__body">
+                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: var(--spacing-3);">
+                        <button class="btn btn--primary" onclick="window.location.href='users.html'">
+                            <span>👥</span>
+                            Manage Users
+                        </button>
+                        <button class="btn btn--primary" onclick="window.location.href='classes.html'">
+                            <span>🏫</span>
+                            Manage Classes
+                        </button>
+                        <button class="btn btn--primary" onclick="window.location.href='admin-courses.html'">
+                            <span>📚</span>
+                            Manage Courses
+                        </button>
+                        <button class="btn btn--primary" onclick="window.location.href='logs.html'">
+                            <span>📋</span>
+                            View Activity Logs
+                        </button>
+                        <button class="btn btn--secondary" onclick="window.location.href='settings.html'">
+                            <span>⚙️</span>
+                            System Settings
+                        </button>
+                        <button class="btn btn--secondary" onclick="window.location.href='reports.html'">
+                            <span>📈</span>
+                            Generate Reports
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="../assets/js/global.js"></script>
+    <script src="../assets/js/api.js"></script>
+    <script src="../assets/js/auth.js"></script>
+    <script>
+        // Load user profile data
+        async function loadProfile() {
+            const user = LMS.Auth.getUser();
+            if (!user) {
+                window.location.href = '../index.html';
+                return;
+            }
+
+            // Display user info
+            document.getElementById('fullName').textContent = user.fullName || user.username;
+            document.getElementById('username').textContent = user.username;
+            document.getElementById('email').textContent = user.email;
+            document.getElementById('joinDate').textContent = new Date(user.createdAt).toLocaleDateString();
+            document.getElementById('lastLogin').textContent = user.lastLogin 
+                ? new Date(user.lastLogin).toLocaleString() 
+                : 'Current session';
+            
+            // Load avatar if exists
+            if (user.avatar) {
+                document.getElementById('avatarImage').src = user.avatar;
+                document.getElementById('avatarImage').style.display = 'block';
+                document.getElementById('avatarPlaceholder').style.display = 'none';
+            }
+        }
+
+        // Handle avatar upload
+        document.getElementById('avatarInput').addEventListener('change', function(e) {
+            const file = e.target.files[0];
+            if (file && file.type.startsWith('image/')) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    document.getElementById('avatarImage').src = e.target.result;
+                    document.getElementById('avatarImage').style.display = 'block';
+                    document.getElementById('avatarPlaceholder').style.display = 'none';
+                    
+                    // In real app, would upload to server
+                    // For demo, save to localStorage
+                    const user = LMS.Auth.getUser();
+                    user.avatar = e.target.result;
+                    LMS.Auth.saveSession(user, LMS.Auth.getToken());
+                };
+                reader.readAsDataURL(file);
+            }
+        });
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', function() {
+            // Check authentication
+            if (!LMS.Auth.hasRole('admin')) {
+                alert('Access denied. Administrators only.');
+                window.location.href = '../index.html';
+                return;
+            }
+            
+            loadProfile();
+        });
+    </script>
+</body>
+</html>

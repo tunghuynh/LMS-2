@@ -1,0 +1,314 @@
+{
+  "app": {
+    "title": "LMS - Hệ thống Quản lý Học tập",
+    "shortTitle": "LMS",
+    "tagline": "Nâng cao Giáo dục, Tạo nên Thành công"
+  },
+  
+  "common": {
+    "loading": "Đang tải...",
+    "save": "Lưu",
+    "cancel": "Hủy",
+    "delete": "Xóa",
+    "edit": "Sửa",
+    "create": "Tạo mới",
+    "update": "Cập nhật",
+    "submit": "Gửi",
+    "search": "Tìm kiếm",
+    "filter": "Lọc",
+    "reset": "Đặt lại",
+    "close": "Đóng",
+    "back": "Quay lại",
+    "next": "Tiếp theo",
+    "previous": "Trước",
+    "yes": "Có",
+    "no": "Không",
+    "confirm": "Xác nhận",
+    "logout": "Đăng xuất",
+    "login": "Đăng nhập",
+    "register": "Đăng ký",
+    "noData": "Không có dữ liệu",
+    "actions": "Thao tác",
+    "status": "Trạng thái",
+    "active": "Hoạt động",
+    "inactive": "Không hoạt động",
+    "pending": "Đang chờ",
+    "completed": "Hoàn thành",
+    "required": "Bắt buộc",
+    "optional": "Tùy chọn"
+  },
+  
+  "theme": {
+    "toggle": "Đổi giao diện",
+    "light": "Giao diện sáng",
+    "dark": "Giao diện tối"
+  },
+  
+  "landing": {
+    "title": "Hệ thống Quản lý Học tập",
+    "subtitle": "Chọn vai trò của bạn để tiếp tục",
+    "login": "Đăng nhập",
+    "student": {
+      "title": "Học viên",
+      "description": "Truy cập khóa học, theo dõi tiến độ và làm bài kiểm tra"
+    },
+    "teacher": {
+      "title": "Giảng viên",
+      "description": "Tạo khóa học, quản lý học viên và theo dõi hiệu suất"
+    },
+    "admin": {
+      "title": "Quản trị viên",
+      "description": "Quản lý người dùng, giám sát hệ thống và cấu hình cài đặt"
+    }
+  },
+  
+  "auth": {
+    "username": "Tên đăng nhập",
+    "email": "Email",
+    "password": "Mật khẩu",
+    "confirmPassword": "Xác nhận mật khẩu",
+    "rememberMe": "Ghi nhớ đăng nhập",
+    "forgotPassword": "Quên mật khẩu?",
+    "noAccount": "Chưa có tài khoản?",
+    "hasAccount": "Đã có tài khoản?",
+    "loginTitle": "Đăng nhập vào tài khoản",
+    "registerTitle": "Tạo tài khoản mới",
+    "selectRole": "Chọn vai trò của bạn",
+    "termsAccept": "Tôi đồng ý với điều khoản và điều kiện",
+    "loginSuccess": "Đăng nhập thành công!",
+    "registerSuccess": "Đăng ký thành công!",
+    "loginError": "Tên đăng nhập hoặc mật khẩu không đúng",
+    "fillAllFields": "Vui lòng điền đầy đủ thông tin",
+    "passwordsDoNotMatch": "Mật khẩu không khớp",
+    "passwordTooShort": "Mật khẩu phải có ít nhất 6 ký tự",
+    "invalidEmail": "Vui lòng nhập địa chỉ email hợp lệ",
+    "usernameExists": "Tên đăng nhập đã tồn tại",
+    "accessDenied": "Truy cập bị từ chối. Bạn không có quyền xem trang này."
+  },
+  
+  "nav": {
+    "home": "Trang chủ",
+    "dashboard": "Bảng điều khiển",
+    "courses": "Danh sách khóa học",
+    "myCourses": "Khóa học của tôi",
+    "progress": "Tiến độ học tập",
+    "quizzes": "Bài kiểm tra",
+    "results": "Kết quả kiểm tra",
+    "profile": "Hồ sơ cá nhân",
+    "createCourse": "Tạo khóa học",
+    "categories": "Danh mục",
+    "students": "Học viên",
+    "enrollment": "Ghi danh",
+    "quizBuilder": "Tạo bài kiểm tra",
+    "quizResults": "Kết quả kiểm tra",
+    "users": "Người dùng",
+    "classes": "Lớp học",
+    "activityLogs": "Nhật ký hoạt động",
+    "allCourses": "Tất cả khóa học",
+    "settings": "Cài đặt",
+    "reports": "Báo cáo",
+    "sections": {
+      "learning": "Học tập",
+      "assessment": "Đánh giá",
+      "account": "Tài khoản",
+      "courseManagement": "Quản lý khóa học",
+      "students": "Học viên",
+      "userManagement": "Quản lý người dùng",
+      "system": "Hệ thống"
+    }
+  },
+  
+  "dashboard": {
+    "welcome": "Chào mừng trở lại, {name}!",
+    "overview": "Tổng quan",
+    "recentActivity": "Hoạt động gần đây",
+    "statistics": "Thống kê",
+    "totalCourses": "Tổng số khóa học",
+    "enrolledCourses": "Khóa học đã đăng ký",
+    "completedCourses": "Khóa học hoàn thành",
+    "upcomingQuizzes": "Bài kiểm tra sắp tới",
+    "averageScore": "Điểm trung bình",
+    "learningHours": "Giờ học",
+    "teachingStats": "Thống kê giảng dạy",
+    "studentsCount": "Tổng số học viên",
+    "coursesCreated": "Khóa học đã tạo",
+    "quizzesCreated": "Bài kiểm tra đã tạo",
+    "systemStats": "Thống kê hệ thống",
+    "totalUsers": "Tổng số người dùng",
+    "activeUsers": "Người dùng hoạt động",
+    "totalRevenue": "Tổng doanh thu"
+  },
+  
+  "course": {
+    "title": "Tiêu đề",
+    "description": "Mô tả",
+    "category": "Danh mục",
+    "duration": "Thời lượng",
+    "difficulty": "Độ khó",
+    "instructor": "Giảng viên",
+    "students": "Học viên",
+    "lessons": "Bài học",
+    "price": "Giá",
+    "free": "Miễn phí",
+    "enroll": "Đăng ký ngay",
+    "enrolled": "Đã đăng ký",
+    "startLearning": "Bắt đầu học",
+    "continueLearning": "Tiếp tục học",
+    "viewDetails": "Xem chi tiết",
+    "createNew": "Tạo khóa học mới",
+    "editCourse": "Chỉnh sửa khóa học",
+    "publishCourse": "Xuất bản khóa học",
+    "unpublishCourse": "Hủy xuất bản",
+    "deleteCourse": "Xóa khóa học",
+    "difficulty_levels": {
+      "beginner": "Cơ bản",
+      "intermediate": "Trung bình",
+      "advanced": "Nâng cao"
+    },
+    "status_types": {
+      "draft": "Bản nháp",
+      "published": "Đã xuất bản",
+      "archived": "Đã lưu trữ"
+    }
+  },
+  
+  "lesson": {
+    "title": "Tiêu đề bài học",
+    "content": "Nội dung",
+    "type": "Loại bài học",
+    "duration": "Thời lượng",
+    "order": "Thứ tự",
+    "markComplete": "Đánh dấu hoàn thành",
+    "completed": "Đã hoàn thành",
+    "nextLesson": "Bài tiếp theo",
+    "previousLesson": "Bài trước",
+    "backToCourse": "Quay lại khóa học",
+    "types": {
+      "video": "Video",
+      "pdf": "PDF",
+      "text": "Văn bản",
+      "quiz": "Bài kiểm tra"
+    }
+  },
+  
+  "quiz": {
+    "title": "Tiêu đề bài kiểm tra",
+    "description": "Mô tả",
+    "questions": "Câu hỏi",
+    "duration": "Thời gian giới hạn",
+    "attempts": "Số lần thử",
+    "passingScore": "Điểm đạt",
+    "startQuiz": "Bắt đầu làm bài",
+    "submitQuiz": "Nộp bài",
+    "nextQuestion": "Câu tiếp theo",
+    "previousQuestion": "Câu trước",
+    "flagForReview": "Đánh dấu xem lại",
+    "timeRemaining": "Thời gian còn lại",
+    "score": "Điểm",
+    "passed": "Đạt",
+    "failed": "Không đạt",
+    "viewResults": "Xem kết quả",
+    "retakeQuiz": "Làm lại",
+    "question": "Câu {number}",
+    "yourAnswer": "Câu trả lời của bạn",
+    "correctAnswer": "Đáp án đúng",
+    "explanation": "Giải thích"
+  },
+  
+  "user": {
+    "username": "Tên đăng nhập",
+    "email": "Email",
+    "fullName": "Họ và tên",
+    "role": "Vai trò",
+    "status": "Trạng thái",
+    "joinDate": "Ngày tham gia",
+    "lastLogin": "Đăng nhập lần cuối",
+    "avatar": "Ảnh đại diện",
+    "bio": "Giới thiệu",
+    "learningGoals": "Mục tiêu học tập",
+    "changePassword": "Đổi mật khẩu",
+    "currentPassword": "Mật khẩu hiện tại",
+    "newPassword": "Mật khẩu mới",
+    "confirmNewPassword": "Xác nhận mật khẩu mới",
+    "updateProfile": "Cập nhật hồ sơ",
+    "addUser": "Thêm người dùng",
+    "editUser": "Sửa người dùng",
+    "deleteUser": "Xóa người dùng",
+    "activateUser": "Kích hoạt người dùng",
+    "deactivateUser": "Vô hiệu hóa người dùng"
+  },
+  
+  "class": {
+    "name": "Tên lớp",
+    "description": "Mô tả",
+    "teacher": "Giảng viên",
+    "students": "Học viên",
+    "created": "Ngày tạo",
+    "addClass": "Thêm lớp",
+    "editClass": "Sửa lớp",
+    "deleteClass": "Xóa lớp",
+    "addStudent": "Thêm học viên",
+    "removeStudent": "Xóa học viên",
+    "viewMembers": "Xem thành viên"
+  },
+  
+  "enrollment": {
+    "enrollmentDate": "Ngày ghi danh",
+    "progress": "Tiến độ",
+    "status": "Trạng thái",
+    "approve": "Phê duyệt",
+    "reject": "Từ chối",
+    "pending": "Đang chờ duyệt",
+    "approved": "Đã duyệt",
+    "rejected": "Đã từ chối",
+    "enrollmentRequest": "Yêu cầu ghi danh",
+    "requestDate": "Ngày yêu cầu"
+  },
+  
+  "validation": {
+    "required": "Trường này là bắt buộc",
+    "email": "Vui lòng nhập địa chỉ email hợp lệ",
+    "minLength": "Phải có ít nhất {min} ký tự",
+    "maxLength": "Không được vượt quá {max} ký tự",
+    "passwordMatch": "Mật khẩu không khớp",
+    "invalidFormat": "Định dạng không hợp lệ",
+    "numberOnly": "Vui lòng chỉ nhập số",
+    "phoneNumber": "Vui lòng nhập số điện thoại hợp lệ",
+    "url": "Vui lòng nhập URL hợp lệ"
+  },
+  
+  "messages": {
+    "saveSuccess": "Lưu thành công",
+    "updateSuccess": "Cập nhật thành công",
+    "deleteSuccess": "Xóa thành công",
+    "createSuccess": "Tạo mới thành công",
+    "operationFailed": "Thao tác thất bại. Vui lòng thử lại.",
+    "confirmDelete": "Bạn có chắc chắn muốn xóa {item} này?",
+    "noPermission": "Bạn không có quyền thực hiện thao tác này",
+    "sessionExpired": "Phiên làm việc đã hết hạn. Vui lòng đăng nhập lại.",
+    "networkError": "Lỗi mạng. Vui lòng kiểm tra kết nối.",
+    "serverError": "Lỗi máy chủ. Vui lòng thử lại sau.",
+    "fileUploadSuccess": "Tải tệp lên thành công",
+    "fileUploadError": "Tải tệp lên thất bại",
+    "fileSizeError": "Kích thước tệp không được vượt quá {size}",
+    "fileTypeError": "Loại tệp không hợp lệ. Các loại được phép: {types}"
+  },
+  
+  "pagination": {
+    "showing": "Hiển thị {start} đến {end} trong tổng số {total} mục",
+    "rowsPerPage": "Số dòng mỗi trang",
+    "page": "Trang",
+    "of": "của",
+    "first": "Đầu",
+    "last": "Cuối",
+    "previous": "Trước",
+    "next": "Sau"
+  },
+  
+  "footer": {
+    "copyright": "© 2024 LMS. Bản quyền được bảo lưu.",
+    "privacyPolicy": "Chính sách bảo mật",
+    "termsOfService": "Điều khoản dịch vụ",
+    "contactUs": "Liên hệ"
+  }
+}

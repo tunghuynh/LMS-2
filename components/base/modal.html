@@ -1,0 +1,345 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Modal Component - LMS</title>
+    <link rel="stylesheet" href="../../assets/css/global.css">
+    <link rel="stylesheet" href="../../assets/css/themes.css">
+    <link rel="stylesheet" href="../../assets/css/components.css">
+    <style>
+        .demo-container {
+            padding: var(--spacing-6);
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        .demo-section {
+            margin-bottom: var(--spacing-8);
+        }
+        .demo-title {
+            font-size: var(--font-size-2xl);
+            font-weight: var(--font-weight-semibold);
+            margin-bottom: var(--spacing-4);
+            color: var(--text-primary);
+        }
+        .demo-subtitle {
+            font-size: var(--font-size-lg);
+            color: var(--text-secondary);
+            margin-bottom: var(--spacing-4);
+        }
+        .demo-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: var(--spacing-4);
+        }
+    </style>
+</head>
+<body>
+    <div class="demo-container">
+        <h1 class="demo-title">Modal Component</h1>
+        
+        <!-- Modal Triggers -->
+        <section class="demo-section">
+            <h2 class="demo-subtitle">Modal Sizes</h2>
+            <div class="demo-grid">
+                <button class="btn btn--primary" onclick="openModal('modal-small')">
+                    Open Small Modal
+                </button>
+                <button class="btn btn--primary" onclick="openModal('modal-medium')">
+                    Open Medium Modal
+                </button>
+                <button class="btn btn--primary" onclick="openModal('modal-large')">
+                    Open Large Modal
+                </button>
+                <button class="btn btn--primary" onclick="openModal('modal-fullscreen')">
+                    Open Fullscreen Modal
+                </button>
+            </div>
+        </section>
+
+        <section class="demo-section">
+            <h2 class="demo-subtitle">Modal Examples</h2>
+            <div class="demo-grid">
+                <button class="btn btn--secondary" onclick="openModal('modal-form')">
+                    Form Modal
+                </button>
+                <button class="btn btn--secondary" onclick="openModal('modal-confirmation')">
+                    Confirmation Modal
+                </button>
+                <button class="btn btn--secondary" onclick="openModal('modal-scrollable')">
+                    Scrollable Content
+                </button>
+                <button class="btn btn--secondary" onclick="openModal('modal-no-backdrop')">
+                    No Backdrop Close
+                </button>
+            </div>
+        </section>
+
+        <!-- Small Modal -->
+        <div class="modal-backdrop" data-modal="modal-small">
+            <div class="modal modal--small" id="modal-small">
+                <div class="modal__header">
+                    <h2 class="modal__title">Small Modal</h2>
+                    <button class="modal__close" onclick="closeModal('modal-small')">×</button>
+                </div>
+                <div class="modal__body">
+                    <p>This is a small modal, perfect for simple confirmations or brief messages.</p>
+                </div>
+                <div class="modal__footer">
+                    <button class="btn btn--secondary" onclick="closeModal('modal-small')">Cancel</button>
+                    <button class="btn btn--primary">Confirm</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Medium Modal -->
+        <div class="modal-backdrop" data-modal="modal-medium">
+            <div class="modal modal--medium" id="modal-medium">
+                <div class="modal__header">
+                    <h2 class="modal__title">Medium Modal</h2>
+                    <button class="modal__close" onclick="closeModal('modal-medium')">×</button>
+                </div>
+                <div class="modal__body">
+                    <h3>Default Size Modal</h3>
+                    <p>This is a medium-sized modal, which is the default size. It's suitable for most use cases like forms, detailed information, or user interactions.</p>
+                    <p>The modal automatically centers itself on the screen and includes smooth animations.</p>
+                </div>
+                <div class="modal__footer">
+                    <button class="btn btn--secondary" onclick="closeModal('modal-medium')">Close</button>
+                    <button class="btn btn--primary">Save Changes</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Large Modal -->
+        <div class="modal-backdrop" data-modal="modal-large">
+            <div class="modal modal--large" id="modal-large">
+                <div class="modal__header">
+                    <h2 class="modal__title">Large Modal</h2>
+                    <button class="modal__close" onclick="closeModal('modal-large')">×</button>
+                </div>
+                <div class="modal__body">
+                    <h3>Large Content Area</h3>
+                    <p>This is a large modal that provides more space for complex content such as:</p>
+                    <ul>
+                        <li>Detailed forms with multiple sections</li>
+                        <li>Data tables or lists</li>
+                        <li>Image galleries or media content</li>
+                        <li>Multi-step wizards</li>
+                    </ul>
+                    <p>The modal maintains proper proportions and remains responsive on smaller screens.</p>
+                </div>
+                <div class="modal__footer modal__footer--space-between">
+                    <button class="btn btn--ghost">Previous</button>
+                    <div>
+                        <button class="btn btn--secondary" onclick="closeModal('modal-large')">Cancel</button>
+                        <button class="btn btn--primary">Next</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Fullscreen Modal -->
+        <div class="modal-backdrop" data-modal="modal-fullscreen">
+            <div class="modal modal--fullscreen" id="modal-fullscreen">
+                <div class="modal__header">
+                    <h2 class="modal__title">Fullscreen Modal</h2>
+                    <button class="modal__close" onclick="closeModal('modal-fullscreen')">×</button>
+                </div>
+                <div class="modal__body">
+                    <h3>Fullscreen Experience</h3>
+                    <p>This modal takes up the entire viewport, perfect for immersive experiences like:</p>
+                    <ul>
+                        <li>Image or document viewers</li>
+                        <li>Complex editors or workspaces</li>
+                        <li>Multi-page workflows</li>
+                    </ul>
+                </div>
+                <div class="modal__footer">
+                    <button class="btn btn--secondary" onclick="closeModal('modal-fullscreen')">Exit Fullscreen</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Form Modal -->
+        <div class="modal-backdrop" data-modal="modal-form">
+            <div class="modal modal--medium" id="modal-form">
+                <div class="modal__header">
+                    <h2 class="modal__title">Create New User</h2>
+                    <button class="modal__close" onclick="closeModal('modal-form')">×</button>
+                </div>
+                <div class="modal__body">
+                    <form>
+                        <div class="input-group">
+                            <label class="input-group__label input-group__label--required">Full Name</label>
+                            <input type="text" class="input" placeholder="Enter full name">
+                        </div>
+                        <div class="input-group">
+                            <label class="input-group__label input-group__label--required">Email</label>
+                            <input type="email" class="input" placeholder="user@example.com">
+                        </div>
+                        <div class="input-group">
+                            <label class="input-group__label">Role</label>
+                            <select class="input">
+                                <option>Student</option>
+                                <option>Teacher</option>
+                                <option>Admin</option>
+                            </select>
+                        </div>
+                        <div class="input-group">
+                            <label class="input-group__label">Bio</label>
+                            <textarea class="input input--textarea" placeholder="Tell us about yourself..." rows="3"></textarea>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal__footer">
+                    <button class="btn btn--secondary" onclick="closeModal('modal-form')">Cancel</button>
+                    <button class="btn btn--primary">Create User</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Confirmation Modal -->
+        <div class="modal-backdrop" data-modal="modal-confirmation">
+            <div class="modal modal--small" id="modal-confirmation">
+                <div class="modal__header">
+                    <h2 class="modal__title">Confirm Delete</h2>
+                    <button class="modal__close" onclick="closeModal('modal-confirmation')">×</button>
+                </div>
+                <div class="modal__body">
+                    <p style="text-align: center; font-size: 48px; margin-bottom: var(--spacing-4);">⚠️</p>
+                    <p style="text-align: center;">Are you sure you want to delete this item?</p>
+                    <p style="text-align: center; color: var(--text-muted); font-size: var(--font-size-sm);">This action cannot be undone.</p>
+                </div>
+                <div class="modal__footer modal__footer--center">
+                    <button class="btn btn--secondary" onclick="closeModal('modal-confirmation')">Cancel</button>
+                    <button class="btn btn--primary" style="background-color: var(--color-error); border-color: var(--color-error);">Delete</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Scrollable Modal -->
+        <div class="modal-backdrop" data-modal="modal-scrollable">
+            <div class="modal modal--medium" id="modal-scrollable">
+                <div class="modal__header">
+                    <h2 class="modal__title">Terms of Service</h2>
+                    <button class="modal__close" onclick="closeModal('modal-scrollable')">×</button>
+                </div>
+                <div class="modal__body modal__body--scrollable">
+                    <h3>1. Introduction</h3>
+                    <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</p>
+                    
+                    <h3>2. User Agreement</h3>
+                    <p>Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur.</p>
+                    
+                    <h3>3. Privacy Policy</h3>
+                    <p>Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum. Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium.</p>
+                    
+                    <h3>4. Terms of Use</h3>
+                    <p>Totam rem aperiam, eaque ipsa quae ab illo inventore veritatis et quasi architecto beatae vitae dicta sunt explicabo. Nemo enim ipsam voluptatem quia voluptas sit aspernatur aut odit aut fugit.</p>
+                    
+                    <h3>5. Disclaimers</h3>
+                    <p>Sed quia consequuntur magni dolores eos qui ratione voluptatem sequi nesciunt. Neque porro quisquam est, qui dolorem ipsum quia dolor sit amet, consectetur, adipisci velit.</p>
+                    
+                    <h3>6. Contact Information</h3>
+                    <p>At vero eos et accusamus et iusto odio dignissimos ducimus qui blanditiis praesentium voluptatum deleniti atque corrupti quos dolores et quas molestias excepturi sint occaecati cupiditate non provident.</p>
+                </div>
+                <div class="modal__footer">
+                    <button class="btn btn--secondary" onclick="closeModal('modal-scrollable')">Decline</button>
+                    <button class="btn btn--primary">Accept Terms</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- No Backdrop Close Modal -->
+        <div class="modal-backdrop" data-modal="modal-no-backdrop" data-backdrop-close="false">
+            <div class="modal modal--small" id="modal-no-backdrop">
+                <div class="modal__header">
+                    <h2 class="modal__title">Important Notice</h2>
+                    <button class="modal__close" onclick="closeModal('modal-no-backdrop')">×</button>
+                </div>
+                <div class="modal__body">
+                    <p>This modal cannot be closed by clicking the backdrop. You must use the close button or the action buttons.</p>
+                </div>
+                <div class="modal__footer">
+                    <button class="btn btn--primary" onclick="closeModal('modal-no-backdrop')">Understood</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Theme Switcher -->
+        <div style="position: fixed; top: 20px; right: 20px;">
+            <button class="btn btn--secondary btn--small" id="themeToggle">
+                Toggle Theme
+            </button>
+        </div>
+    </div>
+
+    <script src="../../assets/js/global.js"></script>
+    <script>
+        // Modal management
+        let activeModal = null;
+
+        function openModal(modalId) {
+            const backdrop = document.querySelector(`[data-modal="${modalId}"]`);
+            const modal = document.getElementById(modalId);
+            
+            if (backdrop && modal) {
+                backdrop.classList.add('active');
+                modal.classList.add('active');
+                activeModal = modalId;
+                
+                // Add ESC key listener
+                document.addEventListener('keydown', handleEscKey);
+                
+                // Prevent body scroll
+                document.body.style.overflow = 'hidden';
+            }
+        }
+
+        function closeModal(modalId) {
+            const backdrop = document.querySelector(`[data-modal="${modalId}"]`);
+            const modal = document.getElementById(modalId);
+            
+            if (backdrop && modal) {
+                backdrop.classList.remove('active');
+                modal.classList.remove('active');
+                activeModal = null;
+                
+                // Remove ESC key listener
+                document.removeEventListener('keydown', handleEscKey);
+                
+                // Restore body scroll
+                document.body.style.overflow = '';
+            }
+        }
+
+        function handleEscKey(e) {
+            if (e.key === 'Escape' && activeModal) {
+                closeModal(activeModal);
+            }
+        }
+
+        // Backdrop click to close
+        document.addEventListener('click', function(e) {
+            if (e.target.classList.contains('modal-backdrop')) {
+                const modalId = e.target.getAttribute('data-modal');
+                const allowBackdropClose = e.target.getAttribute('data-backdrop-close') !== 'false';
+                
+                if (allowBackdropClose) {
+                    closeModal(modalId);
+                }
+            }
+        });
+
+        // Demo form submission
+        document.querySelectorAll('form').forEach(form => {
+            form.addEventListener('submit', function(e) {
+                e.preventDefault();
+                console.log('Form submitted');
+                alert('Form submitted (demo only)');
+            });
+        });
+    </script>
+</body>
+</html>
