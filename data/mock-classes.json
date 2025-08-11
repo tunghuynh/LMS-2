@@ -1,0 +1,95 @@
+{
+  "meta": {
+    "version": "1.0",
+    "totalCount": 5
+  },
+  "data": [
+    {
+      "id": "class_001",
+      "name": "Web Development 2025",
+      "description": "Complete web development course covering HTML, CSS, JavaScript and React",
+      "teacherId": "user_002",
+      "teacherName": "Jane Smith",
+      "maxStudents": 30,
+      "enrolledStudents": 18,
+      "startDate": "2025-01-15T00:00:00Z",
+      "endDate": "2025-06-15T00:00:00Z",
+      "schedule": "Monday, Wednesday, Friday - 10:00 AM",
+      "status": "active",
+      "createdAt": "2024-12-01T10:00:00Z",
+      "students": [
+        "user_001", "user_004", "user_005", "user_007", "user_008", 
+        "user_010", "user_011", "user_013", "user_015"
+      ]
+    },
+    {
+      "id": "class_002",
+      "name": "Advanced JavaScript",
+      "description": "Deep dive into JavaScript ES6+, async programming, and modern frameworks",
+      "teacherId": "user_006",
+      "teacherName": "David Brown",
+      "maxStudents": 25,
+      "enrolledStudents": 22,
+      "startDate": "2025-02-01T00:00:00Z",
+      "endDate": "2025-05-01T00:00:00Z",
+      "schedule": "Tuesday, Thursday - 2:00 PM",
+      "status": "active",
+      "createdAt": "2024-12-15T10:00:00Z",
+      "students": [
+        "user_001", "user_004", "user_007", "user_008", "user_010",
+        "user_011", "user_015"
+      ]
+    },
+    {
+      "id": "class_003",
+      "name": "Database Fundamentals",
+      "description": "SQL and NoSQL database design and implementation",
+      "teacherId": "user_009",
+      "teacherName": "Grace Taylor",
+      "maxStudents": 20,
+      "enrolledStudents": 15,
+      "startDate": "2025-01-20T00:00:00Z",
+      "endDate": "2025-04-20T00:00:00Z",
+      "schedule": "Monday, Wednesday - 3:00 PM",
+      "status": "active",
+      "createdAt": "2024-12-10T10:00:00Z",
+      "students": [
+        "user_004", "user_007", "user_008", "user_010", "user_011"
+      ]
+    },
+    {
+      "id": "class_004",
+      "name": "Cloud Computing Basics",
+      "description": "Introduction to AWS, Azure, and cloud architecture",
+      "teacherId": "user_012",
+      "teacherName": "Jack Thompson",
+      "maxStudents": 20,
+      "enrolledStudents": 12,
+      "startDate": "2025-03-01T00:00:00Z",
+      "endDate": "2025-06-01T00:00:00Z",
+      "schedule": "Tuesday, Thursday - 4:00 PM",
+      "status": "upcoming",
+      "createdAt": "2024-12-20T10:00:00Z",
+      "students": [
+        "user_008", "user_010", "user_011", "user_015"
+      ]
+    },
+    {
+      "id": "class_005",
+      "name": "Python Programming",
+      "description": "Python basics to advanced concepts including web development with Django",
+      "teacherId": "user_002",
+      "teacherName": "Jane Smith",
+      "maxStudents": 25,
+      "enrolledStudents": 25,
+      "startDate": "2024-09-01T00:00:00Z",
+      "endDate": "2024-12-31T00:00:00Z",
+      "schedule": "Monday, Friday - 11:00 AM",
+      "status": "completed",
+      "createdAt": "2024-08-01T10:00:00Z",
+      "students": [
+        "user_001", "user_004", "user_005", "user_007", "user_008"
+      ]
+    }
+  ]
+}

@@ -1,0 +1,587 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Activity Logs - Admin - LMS</title>
+    <link rel="stylesheet" href="../assets/css/global.css">
+    <link rel="stylesheet" href="../assets/css/themes.css">
+    <link rel="stylesheet" href="../assets/css/layout.css">
+    <link rel="stylesheet" href="../assets/css/components.css">
+</head>
+<body>
+    <div class="page-container">
+        <div class="page-header">
+            <div style="display: flex; justify-content: space-between; align-items: center;">
+                <div>
+                    <h1 class="page-title">Activity Logs</h1>
+                    <p class="page-subtitle">Monitor system activities and user actions</p>
+                </div>
+                <button class="btn btn--primary" onclick="exportLogs()">
+                    <span class="btn__icon">📥</span>
+                    Export CSV
+                </button>
+            </div>
+        </div>
+
+        <div class="page-content">
+            <!-- Filters Section -->
+            <div class="card" style="margin-bottom: var(--spacing-6);">
+                <div class="card__body">
+                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: var(--spacing-4);">
+                        <!-- User Filter -->
+                        <div class="input-group">
+                            <label class="input-group__label">Filter by User</label>
+                            <input 
+                                type="text" 
+                                class="input" 
+                                id="userFilter" 
+                                placeholder="Username or email..."
+                                onkeyup="applyFilters()"
+                            >
+                        </div>
+
+                        <!-- Action Type Filter -->
+                        <div class="dropdown dropdown--block" id="actionDropdown">
+                            <button class="dropdown__trigger">
+                                <span id="actionFilterText">All Actions</span>
+                                <span class="dropdown__arrow"></span>
+                            </button>
+                            <div class="dropdown__menu">
+                                <div class="dropdown__list">
+                                    <div class="dropdown__item dropdown__item--selected" data-value="all">All Actions</div>
+                                    <div class="dropdown__item" data-value="login">Login</div>
+                                    <div class="dropdown__item" data-value="logout">Logout</div>
+                                    <div class="dropdown__item" data-value="register">Registration</div>
+                                    <div class="dropdown__item" data-value="create">Create</div>
+                                    <div class="dropdown__item" data-value="update">Update</div>
+                                    <div class="dropdown__item" data-value="delete">Delete</div>
+                                    <div class="dropdown__item" data-value="enroll">Enrollment</div>
+                                    <div class="dropdown__item" data-value="error">Errors</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Date Range -->
+                        <div class="input-group">
+                            <label class="input-group__label">From Date</label>
+                            <input 
+                                type="date" 
+                                class="input" 
+                                id="fromDate"
+                                onchange="applyFilters()"
+                            >
+                        </div>
+
+                        <div class="input-group">
+                            <label class="input-group__label">To Date</label>
+                            <input 
+                                type="date" 
+                                class="input" 
+                                id="toDate"
+                                onchange="applyFilters()"
+                            >
+                        </div>
+                    </div>
+
+                    <div style="margin-top: var(--spacing-4); display: flex; gap: var(--spacing-2);">
+                        <button class="btn btn--secondary" onclick="resetFilters()">
+                            Reset Filters
+                        </button>
+                        <button class="btn btn--secondary" onclick="refreshLogs()">
+                            <span class="btn__icon">🔄</span>
+                            Refresh
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Logs Table -->
+            <div class="card">
+                <div class="card__body card__body--no-padding">
+                    <div class="table-wrapper">
+                        <table class="table" id="logsTable">
+                            <thead>
+                                <tr class="table__header">
+                                    <th class="table__cell table__cell--header table__cell--sortable" data-sort="timestamp">
+                                        Timestamp
+                                        <span class="table__sort-icon"></span>
+                                    </th>
+                                    <th class="table__cell table__cell--header table__cell--sortable" data-sort="user">
+                                        User
+                                        <span class="table__sort-icon"></span>
+                                    </th>
+                                    <th class="table__cell table__cell--header table__cell--sortable" data-sort="action">
+                                        Action
+                                        <span class="table__sort-icon"></span>
+                                    </th>
+                                    <th class="table__cell table__cell--header">Description</th>
+                                    <th class="table__cell table__cell--header table__cell--hide-mobile">IP Address</th>
+                                    <th class="table__cell table__cell--header table__cell--center">Details</th>
+                                </tr>
+                            </thead>
+                            <tbody id="logsTableBody">
+                                <!-- Dynamic content -->
+                            </tbody>
+                        </table>
+                        <div class="table__pagination" id="pagination">
+                            <div class="table__pagination-info">
+                                Showing <span id="startRow">1</span> to <span id="endRow">20</span> of <span id="totalRows">0</span> logs
+                            </div>
+                            <div class="table__pagination-controls" id="paginationControls">
+                                <!-- Dynamic pagination -->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Log Details Modal -->
+    <div class="modal-backdrop" id="detailsModalBackdrop">
+        <div class="modal modal--medium" id="detailsModal">
+            <div class="modal__header">
+                <h2 class="modal__title">Log Details</h2>
+                <button class="modal__close" onclick="closeDetailsModal()">×</button>
+            </div>
+            <div class="modal__body">
+                <div id="logDetails">
+                    <!-- Dynamic content -->
+                </div>
+            </div>
+            <div class="modal__footer">
+                <button class="btn btn--secondary" onclick="closeDetailsModal()">Close</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="../assets/js/global.js"></script>
+    <script src="../assets/js/api.js"></script>
+    <script src="../assets/js/auth.js"></script>
+    <script>
+        // State management
+        let allLogs = [];
+        let filteredLogs = [];
+        let currentPage = 1;
+        const rowsPerPage = 20;
+        let sortColumn = 'timestamp';
+        let sortDirection = 'desc';
+        let currentActionFilter = 'all';
+
+        // Generate mock logs
+        function generateMockLogs() {
+            const actions = [
+                { type: 'login', template: 'User logged in' },
+                { type: 'logout', template: 'User logged out' },
+                { type: 'register', template: 'New user registered' },
+                { type: 'create', template: 'Created new {resource}' },
+                { type: 'update', template: 'Updated {resource}' },
+                { type: 'delete', template: 'Deleted {resource}' },
+                { type: 'enroll', template: 'Enrolled in course: {course}' },
+                { type: 'error', template: 'Failed login attempt' }
+            ];
+
+            const resources = ['course', 'quiz', 'user', 'class', 'lesson'];
+            const courses = ['Web Development 2025', 'Advanced JavaScript', 'Database Fundamentals'];
+            
+            // Get users from localStorage or use defaults
+            const users = JSON.parse(localStorage.getItem('lms-users') || '[]');
+            const usernames = users.length > 0 
+                ? users.map(u => ({ username: u.username, role: u.role }))
+                : [
+                    { username: 'admin', role: 'admin' },
+                    { username: 'student1', role: 'student' },
+                    { username: 'teacher1', role: 'teacher' }
+                ];
+
+            // Generate 100 mock logs
+            const logs = [];
+            const now = new Date();
+            
+            for (let i = 0; i < 100; i++) {
+                const action = actions[Math.floor(Math.random() * actions.length)];
+                const user = usernames[Math.floor(Math.random() * usernames.length)];
+                const timestamp = new Date(now - Math.random() * 30 * 24 * 60 * 60 * 1000); // Last 30 days
+                
+                let description = action.template;
+                if (action.type === 'create' || action.type === 'update' || action.type === 'delete') {
+                    const resource = resources[Math.floor(Math.random() * resources.length)];
+                    description = description.replace('{resource}', resource);
+                } else if (action.type === 'enroll') {
+                    const course = courses[Math.floor(Math.random() * courses.length)];
+                    description = description.replace('{course}', course);
+                }
+                
+                logs.push({
+                    id: 'log_' + i,
+                    timestamp: timestamp.toISOString(),
+                    user: user.username,
+                    userRole: user.role,
+                    action: action.type,
+                    description: description,
+                    ipAddress: `192.168.${Math.floor(Math.random() * 255)}.${Math.floor(Math.random() * 255)}`,
+                    details: {
+                        browser: 'Chrome 120.0',
+                        os: 'Windows 10',
+                        additionalInfo: `${action.type} action performed successfully`
+                    }
+                });
+            }
+            
+            return logs.sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
+        }
+
+        // Load logs
+        function loadLogs() {
+            // In real app, would fetch from server
+            // For demo, generate mock logs or load from localStorage
+            const storedLogs = localStorage.getItem('lms-activity-logs');
+            if (storedLogs) {
+                allLogs = JSON.parse(storedLogs);
+            } else {
+                allLogs = generateMockLogs();
+                localStorage.setItem('lms-activity-logs', JSON.stringify(allLogs));
+            }
+            
+            applyFilters();
+        }
+
+        // Apply filters
+        function applyFilters() {
+            const userFilter = document.getElementById('userFilter').value.toLowerCase();
+            const fromDate = document.getElementById('fromDate').value;
+            const toDate = document.getElementById('toDate').value;
+            
+            filteredLogs = allLogs.filter(log => {
+                // User filter
+                if (userFilter && !log.user.toLowerCase().includes(userFilter)) {
+                    return false;
+                }
+                
+                // Action filter
+                if (currentActionFilter !== 'all' && log.action !== currentActionFilter) {
+                    return false;
+                }
+                
+                // Date range filter
+                const logDate = new Date(log.timestamp);
+                if (fromDate && logDate < new Date(fromDate + 'T00:00:00')) {
+                    return false;
+                }
+                if (toDate && logDate > new Date(toDate + 'T23:59:59')) {
+                    return false;
+                }
+                
+                return true;
+            });
+            
+            currentPage = 1;
+            renderTable();
+        }
+
+        // Render table
+        function renderTable() {
+            const startIndex = (currentPage - 1) * rowsPerPage;
+            const endIndex = startIndex + rowsPerPage;
+            
+            // Sort data
+            let sortedData = [...filteredLogs];
+            sortedData.sort((a, b) => {
+                let aVal = a[sortColumn];
+                let bVal = b[sortColumn];
+                
+                if (sortColumn === 'timestamp') {
+                    aVal = new Date(aVal);
+                    bVal = new Date(bVal);
+                }
+                
+                if (aVal < bVal) return sortDirection === 'asc' ? -1 : 1;
+                if (aVal > bVal) return sortDirection === 'asc' ? 1 : -1;
+                return 0;
+            });
+            
+            const pageData = sortedData.slice(startIndex, endIndex);
+            const tbody = document.getElementById('logsTableBody');
+            
+            if (pageData.length === 0) {
+                tbody.innerHTML = `
+                    <tr>
+                        <td colspan="6" class="table__empty">
+                            <div class="table__empty-icon">📋</div>
+                            <div class="table__empty-text">No logs found</div>
+                            <div class="table__empty-subtext">Try adjusting your filters</div>
+                        </td>
+                    </tr>
+                `;
+            } else {
+                tbody.innerHTML = pageData.map(log => `
+                    <tr class="table__row">
+                        <td class="table__cell">${formatTimestamp(log.timestamp)}</td>
+                        <td class="table__cell">
+                            <div>
+                                <div>${log.user}</div>
+                                <div style="font-size: var(--font-size-xs); color: var(--text-muted);">${getRoleBadge(log.userRole)}</div>
+                            </div>
+                        </td>
+                        <td class="table__cell">${getActionBadge(log.action)}</td>
+                        <td class="table__cell">${log.description}</td>
+                        <td class="table__cell table__cell--hide-mobile">${log.ipAddress}</td>
+                        <td class="table__cell table__cell--center">
+                            <button class="btn btn--ghost btn--small" onclick="showDetails('${log.id}')">View</button>
+                        </td>
+                    </tr>
+                `).join('');
+            }
+            
+            // Update pagination
+            document.getElementById('startRow').textContent = startIndex + 1;
+            document.getElementById('endRow').textContent = Math.min(endIndex, filteredLogs.length);
+            document.getElementById('totalRows').textContent = filteredLogs.length;
+            
+            renderPagination();
+            updateSortIndicators();
+        }
+
+        // Format timestamp
+        function formatTimestamp(timestamp) {
+            const date = new Date(timestamp);
+            const now = new Date();
+            const diff = now - date;
+            
+            // If within 24 hours, show relative time
+            if (diff < 24 * 60 * 60 * 1000) {
+                if (diff < 60 * 1000) return 'Just now';
+                if (diff < 60 * 60 * 1000) return `${Math.floor(diff / 60000)} minutes ago`;
+                if (diff < 24 * 60 * 60 * 1000) return `${Math.floor(diff / 3600000)} hours ago`;
+            }
+            
+            // Otherwise show date and time
+            return date.toLocaleDateString() + ' ' + date.toLocaleTimeString();
+        }
+
+        // Get role badge
+        function getRoleBadge(role) {
+            const badges = {
+                admin: '<span style="color: var(--color-error);">Admin</span>',
+                teacher: '<span style="color: var(--color-primary);">Teacher</span>',
+                student: '<span style="color: var(--color-success);">Student</span>'
+            };
+            return badges[role] || role;
+        }
+
+        // Get action badge
+        function getActionBadge(action) {
+            const badges = {
+                login: '<span style="color: var(--color-success);">Login</span>',
+                logout: '<span style="color: var(--color-gray-500);">Logout</span>',
+                register: '<span style="color: var(--color-info);">Register</span>',
+                create: '<span style="color: var(--color-primary);">Create</span>',
+                update: '<span style="color: var(--color-warning);">Update</span>',
+                delete: '<span style="color: var(--color-error);">Delete</span>',
+                enroll: '<span style="color: var(--color-success);">Enroll</span>',
+                error: '<span style="color: var(--color-error);">Error</span>'
+            };
+            return badges[action] || action;
+        }
+
+        // Render pagination
+        function renderPagination() {
+            const totalPages = Math.ceil(filteredLogs.length / rowsPerPage);
+            const controls = document.getElementById('paginationControls');
+            
+            let html = `
+                <button class="table__pagination-button" onclick="goToPage(1)" ${currentPage === 1 ? 'disabled' : ''}>First</button>
+                <button class="table__pagination-button" onclick="goToPage(${currentPage - 1})" ${currentPage === 1 ? 'disabled' : ''}>Previous</button>
+            `;
+            
+            for (let i = 1; i <= totalPages; i++) {
+                if (i === 1 || i === totalPages || (i >= currentPage - 1 && i <= currentPage + 1)) {
+                    html += `<button class="table__pagination-button ${i === currentPage ? 'table__pagination-button--active' : ''}" onclick="goToPage(${i})">${i}</button>`;
+                } else if (i === currentPage - 2 || i === currentPage + 2) {
+                    html += `<span style="padding: 0 8px; color: var(--text-muted);">...</span>`;
+                }
+            }
+            
+            html += `
+                <button class="table__pagination-button" onclick="goToPage(${currentPage + 1})" ${currentPage === totalPages ? 'disabled' : ''}>Next</button>
+                <button class="table__pagination-button" onclick="goToPage(${totalPages})" ${currentPage === totalPages ? 'disabled' : ''}>Last</button>
+            `;
+            
+            controls.innerHTML = html;
+        }
+
+        // Navigate to page
+        function goToPage(page) {
+            currentPage = page;
+            renderTable();
+        }
+
+        // Show log details
+        function showDetails(logId) {
+            const log = allLogs.find(l => l.id === logId);
+            if (!log) return;
+            
+            const detailsHtml = `
+                <div style="display: grid; gap: var(--spacing-3);">
+                    <div>
+                        <label style="font-weight: var(--font-weight-medium); color: var(--text-secondary);">Timestamp:</label>
+                        <p>${new Date(log.timestamp).toLocaleString()}</p>
+                    </div>
+                    <div>
+                        <label style="font-weight: var(--font-weight-medium); color: var(--text-secondary);">User:</label>
+                        <p>${log.user} (${log.userRole})</p>
+                    </div>
+                    <div>
+                        <label style="font-weight: var(--font-weight-medium); color: var(--text-secondary);">Action:</label>
+                        <p>${getActionBadge(log.action)}</p>
+                    </div>
+                    <div>
+                        <label style="font-weight: var(--font-weight-medium); color: var(--text-secondary);">Description:</label>
+                        <p>${log.description}</p>
+                    </div>
+                    <div>
+                        <label style="font-weight: var(--font-weight-medium); color: var(--text-secondary);">IP Address:</label>
+                        <p>${log.ipAddress}</p>
+                    </div>
+                    <div>
+                        <label style="font-weight: var(--font-weight-medium); color: var(--text-secondary);">Browser:</label>
+                        <p>${log.details.browser}</p>
+                    </div>
+                    <div>
+                        <label style="font-weight: var(--font-weight-medium); color: var(--text-secondary);">Operating System:</label>
+                        <p>${log.details.os}</p>
+                    </div>
+                    <div>
+                        <label style="font-weight: var(--font-weight-medium); color: var(--text-secondary);">Additional Info:</label>
+                        <p>${log.details.additionalInfo}</p>
+                    </div>
+                </div>
+            `;
+            
+            document.getElementById('logDetails').innerHTML = detailsHtml;
+            document.getElementById('detailsModalBackdrop').classList.add('active');
+            document.getElementById('detailsModal').classList.add('active');
+        }
+
+        function closeDetailsModal() {
+            document.getElementById('detailsModalBackdrop').classList.remove('active');
+            document.getElementById('detailsModal').classList.remove('active');
+        }
+
+        // Reset filters
+        function resetFilters() {
+            document.getElementById('userFilter').value = '';
+            document.getElementById('fromDate').value = '';
+            document.getElementById('toDate').value = '';
+            currentActionFilter = 'all';
+            document.getElementById('actionFilterText').textContent = 'All Actions';
+            
+            document.querySelectorAll('#actionDropdown .dropdown__item').forEach(item => {
+                item.classList.toggle('dropdown__item--selected', item.dataset.value === 'all');
+            });
+            
+            applyFilters();
+        }
+
+        // Refresh logs
+        function refreshLogs() {
+            loadLogs();
+        }
+
+        // Export logs to CSV
+        function exportLogs() {
+            const csvContent = [
+                ['Timestamp', 'User', 'Role', 'Action', 'Description', 'IP Address'],
+                ...filteredLogs.map(log => [
+                    new Date(log.timestamp).toLocaleString(),
+                    log.user,
+                    log.userRole,
+                    log.action,
+                    log.description,
+                    log.ipAddress
+                ])
+            ].map(row => row.map(cell => `"${cell}"`).join(',')).join('\n');
+            
+            const blob = new Blob([csvContent], { type: 'text/csv' });
+            const url = window.URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `activity_logs_${new Date().toISOString().split('T')[0]}.csv`;
+            a.click();
+            window.URL.revokeObjectURL(url);
+            
+            alert('Logs exported successfully!');
+        }
+
+        // Sort handling
+        document.addEventListener('click', function(e) {
+            if (e.target.closest('.table__cell--sortable')) {
+                const cell = e.target.closest('.table__cell--sortable');
+                const column = cell.dataset.sort;
+                
+                if (sortColumn === column) {
+                    sortDirection = sortDirection === 'asc' ? 'desc' : 'asc';
+                } else {
+                    sortColumn = column;
+                    sortDirection = column === 'timestamp' ? 'desc' : 'asc';
+                }
+                
+                renderTable();
+            }
+        });
+
+        function updateSortIndicators() {
+            document.querySelectorAll('.table__cell--sortable').forEach(cell => {
+                cell.classList.remove('table__cell--sort-asc', 'table__cell--sort-desc');
+                if (cell.dataset.sort === sortColumn) {
+                    cell.classList.add(`table__cell--sort-${sortDirection}`);
+                }
+            });
+        }
+
+        // Setup action dropdown
+        document.querySelectorAll('#actionDropdown .dropdown__item').forEach(item => {
+            item.addEventListener('click', function() {
+                currentActionFilter = this.dataset.value;
+                document.getElementById('actionFilterText').textContent = this.textContent;
+                
+                document.querySelectorAll('#actionDropdown .dropdown__item').forEach(i => {
+                    i.classList.remove('dropdown__item--selected');
+                });
+                this.classList.add('dropdown__item--selected');
+                
+                document.getElementById('actionDropdown').classList.remove('active');
+                applyFilters();
+            });
+        });
+
+        // Setup dropdown
+        document.getElementById('actionDropdown').querySelector('.dropdown__trigger').addEventListener('click', function(e) {
+            e.stopPropagation();
+            document.getElementById('actionDropdown').classList.toggle('active');
+        });
+
+        // Close dropdown on outside click
+        document.addEventListener('click', function(e) {
+            if (!e.target.closest('.dropdown')) {
+                document.querySelectorAll('.dropdown.active').forEach(dropdown => {
+                    dropdown.classList.remove('active');
+                });
+            }
+        });
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', function() {
+            // Check authentication
+            if (!LMS.Auth.hasRole('admin')) {
+                alert('Access denied. Administrators only.');
+                window.location.href = '../index.html';
+                return;
+            }
+            
+            loadLogs();
+        });
+    </script>
+</body>
+</html>

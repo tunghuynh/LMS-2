@@ -1,0 +1,661 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>User Management - Admin - LMS</title>
+    <link rel="stylesheet" href="../assets/css/global.css">
+    <link rel="stylesheet" href="../assets/css/themes.css">
+    <link rel="stylesheet" href="../assets/css/layout.css">
+    <link rel="stylesheet" href="../assets/css/components.css">
+</head>
+<body>
+    <div class="page-container">
+        <div class="page-header">
+            <div style="display: flex; justify-content: space-between; align-items: center;">
+                <div>
+                    <h1 class="page-title">User Management</h1>
+                    <p class="page-subtitle">Manage system users and permissions</p>
+                </div>
+                <button class="btn btn--primary" onclick="openAddUserModal()">
+                    <span class="btn__icon">➕</span>
+                    Add New User
+                </button>
+            </div>
+        </div>
+
+        <div class="page-content">
+            <!-- Search and Filter Section -->
+            <div class="card" style="margin-bottom: var(--spacing-6);">
+                <div class="card__body">
+                    <div style="display: grid; grid-template-columns: 1fr auto auto; gap: var(--spacing-4); align-items: end;">
+                        <div class="input-group">
+                            <label class="input-group__label">Search Users</label>
+                            <input 
+                                type="text" 
+                                class="input" 
+                                id="searchInput" 
+                                placeholder="Search by username or email..."
+                                onkeyup="handleSearch()"
+                            >
+                        </div>
+                        <div class="dropdown dropdown--block" style="min-width: 200px;">
+                            <button class="dropdown__trigger">
+                                <span id="roleFilterText">All Roles</span>
+                                <span class="dropdown__arrow"></span>
+                            </button>
+                            <div class="dropdown__menu">
+                                <div class="dropdown__list">
+                                    <div class="dropdown__item dropdown__item--selected" data-value="all">All Roles</div>
+                                    <div class="dropdown__item" data-value="student">Students</div>
+                                    <div class="dropdown__item" data-value="teacher">Teachers</div>
+                                    <div class="dropdown__item" data-value="admin">Administrators</div>
+                                </div>
+                            </div>
+                        </div>
+                        <button class="btn btn--secondary" onclick="resetFilters()">
+                            Reset Filters
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Users Table -->
+            <div class="card">
+                <div class="card__body card__body--no-padding">
+                    <div class="table-wrapper">
+                        <table class="table" id="usersTable">
+                            <thead>
+                                <tr class="table__header">
+                                    <th class="table__cell table__cell--header">
+                                        <input type="checkbox" class="table__checkbox" id="selectAll">
+                                    </th>
+                                    <th class="table__cell table__cell--header table__cell--sortable" data-sort="username">
+                                        Username
+                                        <span class="table__sort-icon"></span>
+                                    </th>
+                                    <th class="table__cell table__cell--header table__cell--sortable" data-sort="email">
+                                        Email
+                                        <span class="table__sort-icon"></span>
+                                    </th>
+                                    <th class="table__cell table__cell--header table__cell--sortable" data-sort="role">
+                                        Role
+                                        <span class="table__sort-icon"></span>
+                                    </th>
+                                    <th class="table__cell table__cell--header table__cell--center">Status</th>
+                                    <th class="table__cell table__cell--header table__cell--sortable table__cell--hide-mobile" data-sort="created">
+                                        Created
+                                        <span class="table__sort-icon"></span>
+                                    </th>
+                                    <th class="table__cell table__cell--header table__cell--center">Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="tableBody">
+                                <!-- Dynamic content -->
+                            </tbody>
+                        </table>
+                        <div class="table__pagination" id="pagination">
+                            <div class="table__pagination-info">
+                                Showing <span id="startRow">1</span> to <span id="endRow">10</span> of <span id="totalRows">0</span> users
+                            </div>
+                            <div class="table__pagination-controls" id="paginationControls">
+                                <!-- Dynamic pagination -->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Add/Edit User Modal -->
+    <div class="modal-backdrop" id="userModalBackdrop">
+        <div class="modal modal--medium" id="userModal">
+            <div class="modal__header">
+                <h2 class="modal__title" id="modalTitle">Add New User</h2>
+                <button class="modal__close" onclick="closeUserModal()">×</button>
+            </div>
+            <div class="modal__body">
+                <form id="userForm">
+                    <input type="hidden" id="userId">
+                    
+                    <div class="input-group">
+                        <label class="input-group__label input-group__label--required">Username</label>
+                        <input type="text" class="input" id="username" name="username" required minlength="3">
+                        <span class="input-group__help">Must be unique, min 3 characters</span>
+                    </div>
+
+                    <div class="input-group">
+                        <label class="input-group__label input-group__label--required">Email</label>
+                        <input type="email" class="input" id="email" name="email" required>
+                    </div>
+
+                    <div class="input-group">
+                        <label class="input-group__label input-group__label--required">Full Name</label>
+                        <input type="text" class="input" id="fullName" name="fullName" required>
+                    </div>
+
+                    <div class="input-group">
+                        <label class="input-group__label input-group__label--required">Role</label>
+                        <div class="dropdown dropdown--block" id="roleDropdown">
+                            <button type="button" class="dropdown__trigger">
+                                <span id="selectedRole">Select role</span>
+                                <span class="dropdown__arrow"></span>
+                            </button>
+                            <div class="dropdown__menu">
+                                <div class="dropdown__list">
+                                    <div class="dropdown__item" data-value="student">
+                                        <span class="dropdown__item-icon">🎓</span>
+                                        <span class="dropdown__item-text">Student</span>
+                                    </div>
+                                    <div class="dropdown__item" data-value="teacher">
+                                        <span class="dropdown__item-icon">👨‍🏫</span>
+                                        <span class="dropdown__item-text">Teacher</span>
+                                    </div>
+                                    <div class="dropdown__item" data-value="admin">
+                                        <span class="dropdown__item-icon">🔐</span>
+                                        <span class="dropdown__item-text">Administrator</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <input type="hidden" id="role" name="role" required>
+                    </div>
+
+                    <div class="input-group" id="passwordGroup">
+                        <label class="input-group__label input-group__label--required">Password</label>
+                        <input type="password" class="input" id="password" name="password" minlength="6">
+                        <span class="input-group__help">Min 6 characters (leave blank to keep current password when editing)</span>
+                    </div>
+
+                    <div class="input-group">
+                        <label class="input-group__label">Status</label>
+                        <label style="display: flex; align-items: center; gap: var(--spacing-2);">
+                            <input type="checkbox" id="isActive" name="isActive" checked>
+                            <span>Active user account</span>
+                        </label>
+                    </div>
+                </form>
+            </div>
+            <div class="modal__footer">
+                <button class="btn btn--secondary" onclick="closeUserModal()">Cancel</button>
+                <button class="btn btn--primary" onclick="saveUser()">Save User</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Delete Confirmation Modal -->
+    <div class="modal-backdrop" id="deleteModalBackdrop">
+        <div class="modal modal--small" id="deleteModal">
+            <div class="modal__header">
+                <h2 class="modal__title">Confirm Delete</h2>
+                <button class="modal__close" onclick="closeDeleteModal()">×</button>
+            </div>
+            <div class="modal__body" style="text-align: center;">
+                <p style="font-size: 48px; margin-bottom: var(--spacing-4);">⚠️</p>
+                <p>Are you sure you want to delete user <strong id="deleteUsername"></strong>?</p>
+                <p style="color: var(--text-muted); font-size: var(--font-size-sm); margin-top: var(--spacing-3);">
+                    This action cannot be undone. All user data will be permanently removed.
+                </p>
+            </div>
+            <div class="modal__footer modal__footer--center">
+                <button class="btn btn--secondary" onclick="closeDeleteModal()">Cancel</button>
+                <button class="btn btn--primary" style="background-color: var(--color-error); border-color: var(--color-error);" onclick="confirmDelete()">
+                    Delete User
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script src="../assets/js/global.js"></script>
+    <script src="../assets/js/api.js"></script>
+    <script src="../assets/js/auth.js"></script>
+    <script>
+        // State management
+        let allUsers = [];
+        let filteredUsers = [];
+        let currentPage = 1;
+        const rowsPerPage = 10;
+        let sortColumn = null;
+        let sortDirection = 'asc';
+        let selectedRows = new Set();
+        let currentFilter = 'all';
+        let deleteUserId = null;
+
+        // Load users from mock data
+        async function loadUsers() {
+            try {
+                const response = await fetch('../data/mock-users.json');
+                const data = await response.json();
+                // Handle both array format and object with data property
+                allUsers = Array.isArray(data) ? data : (data.data || []);
+                
+                // Merge with localStorage users (for newly created users)
+                const storedUsers = JSON.parse(localStorage.getItem('lms-users') || '[]');
+                const storedUserIds = new Set(storedUsers.map(u => u.id));
+                
+                // Add stored users that don't exist in mock data
+                storedUsers.forEach(user => {
+                    if (!allUsers.find(u => u.id === user.id)) {
+                        allUsers.push(user);
+                    }
+                });
+                
+                applyFilters();
+            } catch (error) {
+                console.error('Error loading users:', error);
+                // Fallback to localStorage users
+                const storedUsers = JSON.parse(localStorage.getItem('lms-users') || '[]');
+                allUsers = storedUsers;
+                applyFilters();
+            }
+        }
+
+        // Apply filters and render
+        function applyFilters() {
+            const searchTerm = document.getElementById('searchInput').value.toLowerCase();
+            
+            filteredUsers = allUsers.filter(user => {
+                const matchesSearch = !searchTerm || 
+                    user.username.toLowerCase().includes(searchTerm) ||
+                    user.email.toLowerCase().includes(searchTerm);
+                
+                const matchesRole = currentFilter === 'all' || user.role === currentFilter;
+                
+                return matchesSearch && matchesRole;
+            });
+            
+            currentPage = 1;
+            renderTable();
+        }
+
+        // Render table
+        function renderTable() {
+            const startIndex = (currentPage - 1) * rowsPerPage;
+            const endIndex = startIndex + rowsPerPage;
+            
+            // Sort data if needed
+            let sortedData = [...filteredUsers];
+            if (sortColumn) {
+                sortedData.sort((a, b) => {
+                    let aVal = a[sortColumn];
+                    let bVal = b[sortColumn];
+                    
+                    if (sortColumn === 'created') {
+                        aVal = new Date(aVal);
+                        bVal = new Date(bVal);
+                    }
+                    
+                    if (aVal < bVal) return sortDirection === 'asc' ? -1 : 1;
+                    if (aVal > bVal) return sortDirection === 'asc' ? 1 : -1;
+                    return 0;
+                });
+            }
+            
+            const pageData = sortedData.slice(startIndex, endIndex);
+            const tableBody = document.getElementById('tableBody');
+            
+            if (pageData.length === 0) {
+                tableBody.innerHTML = `
+                    <tr>
+                        <td colspan="7" class="table__empty">
+                            <div class="table__empty-icon">👥</div>
+                            <div class="table__empty-text">No users found</div>
+                            <div class="table__empty-subtext">Try adjusting your filters</div>
+                        </td>
+                    </tr>
+                `;
+            } else {
+                tableBody.innerHTML = pageData.map(user => `
+                    <tr class="table__row table__row--hoverable ${selectedRows.has(user.id) ? 'table__row--selected' : ''}">
+                        <td class="table__cell table__cell--center">
+                            <input type="checkbox" class="table__checkbox" data-id="${user.id}" ${selectedRows.has(user.id) ? 'checked' : ''}>
+                        </td>
+                        <td class="table__cell">${user.username}</td>
+                        <td class="table__cell">${user.email}</td>
+                        <td class="table__cell">
+                            <span style="display: inline-flex; align-items: center; gap: var(--spacing-1);">
+                                ${getRoleIcon(user.role)} ${capitalize(user.role)}
+                            </span>
+                        </td>
+                        <td class="table__cell table__cell--center">
+                            ${user.isActive 
+                                ? '<span style="color: var(--color-success);">Active</span>' 
+                                : '<span style="color: var(--color-error);">Inactive</span>'}
+                        </td>
+                        <td class="table__cell table__cell--hide-mobile">
+                            ${new Date(user.createdAt).toLocaleDateString()}
+                        </td>
+                        <td class="table__cell table__cell--center">
+                            <button class="btn btn--ghost btn--small" onclick="viewUser('${user.id}')">View</button>
+                            <button class="btn btn--ghost btn--small" onclick="editUser('${user.id}')">Edit</button>
+                            <button class="btn btn--ghost btn--small" onclick="deleteUser('${user.id}')">Delete</button>
+                        </td>
+                    </tr>
+                `).join('');
+            }
+            
+            // Update pagination info
+            document.getElementById('startRow').textContent = startIndex + 1;
+            document.getElementById('endRow').textContent = Math.min(endIndex, filteredUsers.length);
+            document.getElementById('totalRows').textContent = filteredUsers.length;
+            
+            renderPagination();
+            updateSortIndicators();
+        }
+
+        // Render pagination
+        function renderPagination() {
+            const totalPages = Math.ceil(filteredUsers.length / rowsPerPage);
+            const controls = document.getElementById('paginationControls');
+            
+            let html = `
+                <button class="table__pagination-button" onclick="goToPage(1)" ${currentPage === 1 ? 'disabled' : ''}>First</button>
+                <button class="table__pagination-button" onclick="goToPage(${currentPage - 1})" ${currentPage === 1 ? 'disabled' : ''}>Previous</button>
+            `;
+            
+            for (let i = 1; i <= totalPages; i++) {
+                if (i === 1 || i === totalPages || (i >= currentPage - 1 && i <= currentPage + 1)) {
+                    html += `<button class="table__pagination-button ${i === currentPage ? 'table__pagination-button--active' : ''}" onclick="goToPage(${i})">${i}</button>`;
+                } else if (i === currentPage - 2 || i === currentPage + 2) {
+                    html += `<span style="padding: 0 8px; color: var(--text-muted);">...</span>`;
+                }
+            }
+            
+            html += `
+                <button class="table__pagination-button" onclick="goToPage(${currentPage + 1})" ${currentPage === totalPages ? 'disabled' : ''}>Next</button>
+                <button class="table__pagination-button" onclick="goToPage(${totalPages})" ${currentPage === totalPages ? 'disabled' : ''}>Last</button>
+            `;
+            
+            controls.innerHTML = html;
+        }
+
+        // Helper functions
+        function getRoleIcon(role) {
+            const icons = {
+                student: '🎓',
+                teacher: '👨‍🏫',
+                admin: '🔐'
+            };
+            return icons[role] || '👤';
+        }
+
+        function capitalize(str) {
+            return str.charAt(0).toUpperCase() + str.slice(1);
+        }
+
+        function goToPage(page) {
+            currentPage = page;
+            renderTable();
+        }
+
+        function handleSearch() {
+            applyFilters();
+        }
+
+        function resetFilters() {
+            document.getElementById('searchInput').value = '';
+            currentFilter = 'all';
+            document.getElementById('roleFilterText').textContent = 'All Roles';
+            document.querySelectorAll('.dropdown__item').forEach(item => {
+                item.classList.toggle('dropdown__item--selected', item.dataset.value === 'all');
+            });
+            applyFilters();
+        }
+
+        // Sort handling
+        document.addEventListener('click', function(e) {
+            if (e.target.closest('.table__cell--sortable')) {
+                const cell = e.target.closest('.table__cell--sortable');
+                const column = cell.dataset.sort;
+                
+                if (sortColumn === column) {
+                    sortDirection = sortDirection === 'asc' ? 'desc' : 'asc';
+                } else {
+                    sortColumn = column;
+                    sortDirection = 'asc';
+                }
+                
+                renderTable();
+            }
+        });
+
+        function updateSortIndicators() {
+            document.querySelectorAll('.table__cell--sortable').forEach(cell => {
+                cell.classList.remove('table__cell--sort-asc', 'table__cell--sort-desc');
+                if (cell.dataset.sort === sortColumn) {
+                    cell.classList.add(`table__cell--sort-${sortDirection}`);
+                }
+            });
+        }
+
+        // Modal functions
+        function openAddUserModal() {
+            document.getElementById('modalTitle').textContent = 'Add New User';
+            document.getElementById('userForm').reset();
+            document.getElementById('userId').value = '';
+            document.getElementById('selectedRole').textContent = 'Select role';
+            document.getElementById('password').required = true;
+            document.getElementById('userModalBackdrop').classList.add('active');
+            document.getElementById('userModal').classList.add('active');
+        }
+
+        function editUser(userId) {
+            const user = allUsers.find(u => u.id === userId);
+            if (!user) return;
+            
+            document.getElementById('modalTitle').textContent = 'Edit User';
+            document.getElementById('userId').value = user.id;
+            document.getElementById('username').value = user.username;
+            document.getElementById('email').value = user.email;
+            document.getElementById('fullName').value = user.fullName || user.username;
+            document.getElementById('role').value = user.role;
+            document.getElementById('selectedRole').textContent = capitalize(user.role);
+            document.getElementById('isActive').checked = user.isActive !== false;
+            document.getElementById('password').required = false;
+            document.getElementById('password').value = '';
+            
+            document.getElementById('userModalBackdrop').classList.add('active');
+            document.getElementById('userModal').classList.add('active');
+        }
+
+        function viewUser(userId) {
+            const user = allUsers.find(u => u.id === userId);
+            if (!user) return;
+            
+            // In real app, would navigate to user detail page
+            alert(`User Details:\n\nUsername: ${user.username}\nEmail: ${user.email}\nRole: ${user.role}\nStatus: ${user.isActive !== false ? 'Active' : 'Inactive'}\nCreated: ${new Date(user.createdAt).toLocaleString()}`);
+        }
+
+        function deleteUser(userId) {
+            const user = allUsers.find(u => u.id === userId);
+            if (!user) return;
+            
+            deleteUserId = userId;
+            document.getElementById('deleteUsername').textContent = user.username;
+            document.getElementById('deleteModalBackdrop').classList.add('active');
+            document.getElementById('deleteModal').classList.add('active');
+        }
+
+        function closeUserModal() {
+            document.getElementById('userModalBackdrop').classList.remove('active');
+            document.getElementById('userModal').classList.remove('active');
+        }
+
+        function closeDeleteModal() {
+            document.getElementById('deleteModalBackdrop').classList.remove('active');
+            document.getElementById('deleteModal').classList.remove('active');
+            deleteUserId = null;
+        }
+
+        async function saveUser() {
+            const form = document.getElementById('userForm');
+            if (!form.checkValidity()) {
+                form.reportValidity();
+                return;
+            }
+            
+            const userId = document.getElementById('userId').value;
+            const userData = {
+                id: userId || 'user_' + Date.now(),
+                username: document.getElementById('username').value,
+                email: document.getElementById('email').value,
+                fullName: document.getElementById('fullName').value,
+                role: document.getElementById('role').value,
+                isActive: document.getElementById('isActive').checked,
+                createdAt: userId ? allUsers.find(u => u.id === userId).createdAt : new Date().toISOString(),
+                updatedAt: new Date().toISOString()
+            };
+            
+            // Add password if provided
+            const password = document.getElementById('password').value;
+            if (password) {
+                userData.password = password; // In real app, would hash this
+            }
+            
+            if (userId) {
+                // Update existing user
+                const index = allUsers.findIndex(u => u.id === userId);
+                if (index !== -1) {
+                    allUsers[index] = { ...allUsers[index], ...userData };
+                }
+            } else {
+                // Add new user
+                allUsers.push(userData);
+            }
+            
+            // Save to localStorage
+            localStorage.setItem('lms-users', JSON.stringify(allUsers));
+            
+            closeUserModal();
+            applyFilters();
+            
+            // Show success message
+            alert(userId ? 'User updated successfully!' : 'User created successfully!');
+        }
+
+        function confirmDelete() {
+            if (!deleteUserId) return;
+            
+            allUsers = allUsers.filter(u => u.id !== deleteUserId);
+            localStorage.setItem('lms-users', JSON.stringify(allUsers));
+            
+            closeDeleteModal();
+            applyFilters();
+            
+            alert('User deleted successfully!');
+        }
+
+        // Role dropdown functionality
+        const roleDropdown = document.getElementById('roleDropdown');
+        const roleInput = document.getElementById('role');
+        const selectedRoleText = document.getElementById('selectedRole');
+        
+        roleDropdown.querySelector('.dropdown__trigger').addEventListener('click', function(e) {
+            e.preventDefault();
+            roleDropdown.classList.toggle('active');
+        });
+        
+        roleDropdown.querySelectorAll('.dropdown__item').forEach(item => {
+            item.addEventListener('click', function() {
+                const value = this.getAttribute('data-value');
+                const text = this.querySelector('.dropdown__item-text').textContent;
+                
+                roleInput.value = value;
+                selectedRoleText.textContent = text;
+                
+                roleDropdown.querySelectorAll('.dropdown__item').forEach(i => {
+                    i.classList.remove('dropdown__item--selected');
+                });
+                this.classList.add('dropdown__item--selected');
+                
+                roleDropdown.classList.remove('active');
+            });
+        });
+
+        // Filter dropdown functionality
+        document.querySelectorAll('.dropdown').forEach(dropdown => {
+            if (dropdown.id === 'roleDropdown') return; // Skip role dropdown in modal
+            
+            const trigger = dropdown.querySelector('.dropdown__trigger');
+            trigger.addEventListener('click', function(e) {
+                e.stopPropagation();
+                dropdown.classList.toggle('active');
+            });
+            
+            dropdown.querySelectorAll('.dropdown__item').forEach(item => {
+                item.addEventListener('click', function() {
+                    const value = this.getAttribute('data-value');
+                    currentFilter = value;
+                    document.getElementById('roleFilterText').textContent = this.textContent;
+                    
+                    dropdown.querySelectorAll('.dropdown__item').forEach(i => {
+                        i.classList.remove('dropdown__item--selected');
+                    });
+                    this.classList.add('dropdown__item--selected');
+                    
+                    dropdown.classList.remove('active');
+                    applyFilters();
+                });
+            });
+        });
+
+        // Close dropdowns on outside click
+        document.addEventListener('click', function(e) {
+            if (!e.target.closest('.dropdown')) {
+                document.querySelectorAll('.dropdown.active').forEach(dropdown => {
+                    dropdown.classList.remove('active');
+                });
+            }
+        });
+
+        // Select all functionality
+        document.getElementById('selectAll').addEventListener('change', function(e) {
+            const checkboxes = document.querySelectorAll('#tableBody .table__checkbox');
+            checkboxes.forEach(cb => {
+                cb.checked = e.target.checked;
+                const id = cb.dataset.id;
+                if (e.target.checked) {
+                    selectedRows.add(id);
+                } else {
+                    selectedRows.delete(id);
+                }
+            });
+            renderTable();
+        });
+
+        // Row selection
+        document.addEventListener('change', function(e) {
+            if (e.target.classList.contains('table__checkbox') && e.target.dataset.id) {
+                const id = e.target.dataset.id;
+                if (e.target.checked) {
+                    selectedRows.add(id);
+                } else {
+                    selectedRows.delete(id);
+                }
+                renderTable();
+            }
+        });
+
+        // ESC key to close modals
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape') {
+                closeUserModal();
+                closeDeleteModal();
+            }
+        });
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', function() {
+            // Check authentication
+            if (!LMS.Auth.hasRole('admin')) {
+                alert('Access denied. Administrators only.');
+                window.location.href = '../index.html';
+                return;
+            }
+            
+            loadUsers();
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,673 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Class Management - Admin - LMS</title>
+    <link rel="stylesheet" href="../assets/css/global.css">
+    <link rel="stylesheet" href="../assets/css/themes.css">
+    <link rel="stylesheet" href="../assets/css/layout.css">
+    <link rel="stylesheet" href="../assets/css/components.css">
+</head>
+<body>
+    <div class="page-container">
+        <div class="page-header">
+            <div style="display: flex; justify-content: space-between; align-items: center;">
+                <div>
+                    <h1 class="page-title">Class Management</h1>
+                    <p class="page-subtitle">Manage classes and student enrollments</p>
+                </div>
+                <button class="btn btn--primary" onclick="openAddClassModal()">
+                    <span class="btn__icon">➕</span>
+                    Create New Class
+                </button>
+            </div>
+        </div>
+
+        <div class="page-content">
+            <!-- Class Selection and Stats -->
+            <div class="card" style="margin-bottom: var(--spacing-6);">
+                <div class="card__body">
+                    <div style="display: grid; grid-template-columns: 1fr auto; gap: var(--spacing-4); align-items: end;">
+                        <div>
+                            <label class="input-group__label">Select Class</label>
+                            <div class="dropdown dropdown--block" id="classDropdown">
+                                <button class="dropdown__trigger">
+                                    <span id="selectedClassText">Select a class to manage</span>
+                                    <span class="dropdown__arrow"></span>
+                                </button>
+                                <div class="dropdown__menu">
+                                    <div class="dropdown__list" id="classList">
+                                        <!-- Dynamic class list -->
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <button class="btn btn--secondary" onclick="refreshData()">
+                            <span class="btn__icon">🔄</span>
+                            Refresh
+                        </button>
+                    </div>
+
+                    <!-- Class Statistics -->
+                    <div id="classStats" style="display: none; margin-top: var(--spacing-6);">
+                        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: var(--spacing-4);">
+                            <div style="text-align: center; padding: var(--spacing-4); background: var(--bg-secondary); border-radius: var(--radius-base);">
+                                <div style="font-size: var(--font-size-2xl); font-weight: var(--font-weight-bold); color: var(--color-primary);" id="statEnrolled">0</div>
+                                <p style="color: var(--text-secondary); margin: 0;">Enrolled Students</p>
+                            </div>
+                            <div style="text-align: center; padding: var(--spacing-4); background: var(--bg-secondary); border-radius: var(--radius-base);">
+                                <div style="font-size: var(--font-size-2xl); font-weight: var(--font-weight-bold); color: var(--color-success);" id="statMax">0</div>
+                                <p style="color: var(--text-secondary); margin: 0;">Max Capacity</p>
+                            </div>
+                            <div style="text-align: center; padding: var(--spacing-4); background: var(--bg-secondary); border-radius: var(--radius-base);">
+                                <div style="font-size: var(--font-size-2xl); font-weight: var(--font-weight-bold); color: var(--color-warning);" id="statAvailable">0</div>
+                                <p style="color: var(--text-secondary); margin: 0;">Available Seats</p>
+                            </div>
+                            <div style="text-align: center; padding: var(--spacing-4); background: var(--bg-secondary); border-radius: var(--radius-base);">
+                                <div style="font-size: var(--font-size-2xl); font-weight: var(--font-weight-bold); color: var(--color-info);" id="statStatus">-</div>
+                                <p style="color: var(--text-secondary); margin: 0;">Status</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Class Members Table -->
+            <div class="card" id="membersCard" style="display: none;">
+                <div class="card__header">
+                    <div style="display: flex; justify-content: space-between; align-items: center;">
+                        <h3 class="card__title">Class Members</h3>
+                        <button class="btn btn--primary btn--small" onclick="openAddStudentModal()">
+                            <span class="btn__icon">➕</span>
+                            Add Student
+                        </button>
+                    </div>
+                </div>
+                <div class="card__body card__body--no-padding">
+                    <div class="table-wrapper">
+                        <table class="table" id="membersTable">
+                            <thead>
+                                <tr class="table__header">
+                                    <th class="table__cell table__cell--header">
+                                        <input type="checkbox" class="table__checkbox" id="selectAll">
+                                    </th>
+                                    <th class="table__cell table__cell--header">Student Name</th>
+                                    <th class="table__cell table__cell--header">Username</th>
+                                    <th class="table__cell table__cell--header">Email</th>
+                                    <th class="table__cell table__cell--header table__cell--hide-mobile">Enrolled Date</th>
+                                    <th class="table__cell table__cell--header table__cell--center">Status</th>
+                                    <th class="table__cell table__cell--header table__cell--center">Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="membersTableBody">
+                                <!-- Dynamic content -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- All Classes Overview -->
+            <div class="card" id="allClassesCard">
+                <div class="card__header">
+                    <h3 class="card__title">All Classes</h3>
+                </div>
+                <div class="card__body card__body--no-padding">
+                    <div class="table-wrapper">
+                        <table class="table">
+                            <thead>
+                                <tr class="table__header">
+                                    <th class="table__cell table__cell--header">Class Name</th>
+                                    <th class="table__cell table__cell--header">Teacher</th>
+                                    <th class="table__cell table__cell--header table__cell--center">Students</th>
+                                    <th class="table__cell table__cell--header">Schedule</th>
+                                    <th class="table__cell table__cell--header table__cell--center">Status</th>
+                                    <th class="table__cell table__cell--header table__cell--center">Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="allClassesTableBody">
+                                <!-- Dynamic content -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Create/Edit Class Modal -->
+    <div class="modal-backdrop" id="classModalBackdrop">
+        <div class="modal modal--medium" id="classModal">
+            <div class="modal__header">
+                <h2 class="modal__title" id="classModalTitle">Create New Class</h2>
+                <button class="modal__close" onclick="closeClassModal()">×</button>
+            </div>
+            <div class="modal__body">
+                <form id="classForm">
+                    <input type="hidden" id="classId">
+                    
+                    <div class="input-group">
+                        <label class="input-group__label input-group__label--required">Class Name</label>
+                        <input type="text" class="input" id="className" name="className" required>
+                    </div>
+
+                    <div class="input-group">
+                        <label class="input-group__label">Description</label>
+                        <textarea class="input input--textarea" id="classDescription" name="classDescription" rows="3"></textarea>
+                    </div>
+
+                    <div class="form-grid" style="display: grid; grid-template-columns: 1fr 1fr; gap: var(--spacing-4);">
+                        <div class="input-group">
+                            <label class="input-group__label input-group__label--required">Teacher</label>
+                            <div class="dropdown dropdown--block" id="teacherDropdown">
+                                <button type="button" class="dropdown__trigger">
+                                    <span id="selectedTeacher">Select teacher</span>
+                                    <span class="dropdown__arrow"></span>
+                                </button>
+                                <div class="dropdown__menu">
+                                    <div class="dropdown__list" id="teacherList">
+                                        <!-- Dynamic teacher list -->
+                                    </div>
+                                </div>
+                            </div>
+                            <input type="hidden" id="teacherId" name="teacherId" required>
+                        </div>
+
+                        <div class="input-group">
+                            <label class="input-group__label input-group__label--required">Max Students</label>
+                            <input type="number" class="input" id="maxStudents" name="maxStudents" min="1" max="100" value="30" required>
+                        </div>
+                    </div>
+
+                    <div class="form-grid" style="display: grid; grid-template-columns: 1fr 1fr; gap: var(--spacing-4);">
+                        <div class="input-group">
+                            <label class="input-group__label input-group__label--required">Start Date</label>
+                            <input type="date" class="input" id="startDate" name="startDate" required>
+                        </div>
+
+                        <div class="input-group">
+                            <label class="input-group__label input-group__label--required">End Date</label>
+                            <input type="date" class="input" id="endDate" name="endDate" required>
+                        </div>
+                    </div>
+
+                    <div class="input-group">
+                        <label class="input-group__label">Schedule</label>
+                        <input type="text" class="input" id="schedule" name="schedule" placeholder="e.g., Monday, Wednesday, Friday - 10:00 AM">
+                    </div>
+                </form>
+            </div>
+            <div class="modal__footer">
+                <button class="btn btn--secondary" onclick="closeClassModal()">Cancel</button>
+                <button class="btn btn--primary" onclick="saveClass()">Save Class</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Add Student Modal -->
+    <div class="modal-backdrop" id="addStudentModalBackdrop">
+        <div class="modal modal--medium" id="addStudentModal">
+            <div class="modal__header">
+                <h2 class="modal__title">Add Students to Class</h2>
+                <button class="modal__close" onclick="closeAddStudentModal()">×</button>
+            </div>
+            <div class="modal__body">
+                <div class="input-group">
+                    <label class="input-group__label">Search Students</label>
+                    <input type="text" class="input" id="studentSearch" placeholder="Search by name or username..." onkeyup="filterStudents()">
+                </div>
+                
+                <div style="max-height: 400px; overflow-y: auto; margin-top: var(--spacing-4);">
+                    <div id="availableStudentsList">
+                        <!-- Dynamic student list -->
+                    </div>
+                </div>
+            </div>
+            <div class="modal__footer">
+                <button class="btn btn--secondary" onclick="closeAddStudentModal()">Cancel</button>
+                <button class="btn btn--primary" onclick="addSelectedStudents()">Add Selected</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="../assets/js/global.js"></script>
+    <script src="../assets/js/api.js"></script>
+    <script src="../assets/js/auth.js"></script>
+    <script>
+        // State management
+        let allClasses = [];
+        let allUsers = [];
+        let selectedClass = null;
+        let selectedStudents = new Set();
+
+        // Load initial data
+        async function loadData() {
+            try {
+                // Load classes
+                const classResponse = await fetch('../data/mock-classes.json');
+                const classData = await classResponse.json();
+                allClasses = classData.data || [];
+
+                // Load users
+                const userResponse = await fetch('../data/mock-users.json');
+                const userData = await userResponse.json();
+                allUsers = userData.data || [];
+
+                // Merge with localStorage data
+                const storedClasses = JSON.parse(localStorage.getItem('lms-classes') || '[]');
+                storedClasses.forEach(cls => {
+                    if (!allClasses.find(c => c.id === cls.id)) {
+                        allClasses.push(cls);
+                    }
+                });
+
+                renderClassDropdown();
+                renderAllClassesTable();
+            } catch (error) {
+                console.error('Error loading data:', error);
+            }
+        }
+
+        // Render class dropdown
+        function renderClassDropdown() {
+            const classList = document.getElementById('classList');
+            classList.innerHTML = allClasses.map(cls => `
+                <div class="dropdown__item" data-value="${cls.id}">
+                    <div style="flex: 1;">
+                        <div class="dropdown__item-text">${cls.name}</div>
+                        <div class="dropdown__item-meta">${cls.teacherName} • ${cls.enrolledStudents} students</div>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        // Render all classes table
+        function renderAllClassesTable() {
+            const tbody = document.getElementById('allClassesTableBody');
+            
+            if (allClasses.length === 0) {
+                tbody.innerHTML = `
+                    <tr>
+                        <td colspan="6" class="table__empty">
+                            <div class="table__empty-icon">🏫</div>
+                            <div class="table__empty-text">No classes found</div>
+                            <div class="table__empty-subtext">Create your first class to get started</div>
+                        </td>
+                    </tr>
+                `;
+            } else {
+                tbody.innerHTML = allClasses.map(cls => `
+                    <tr class="table__row">
+                        <td class="table__cell">${cls.name}</td>
+                        <td class="table__cell">${cls.teacherName}</td>
+                        <td class="table__cell table__cell--center">${cls.enrolledStudents}/${cls.maxStudents}</td>
+                        <td class="table__cell">${cls.schedule || '-'}</td>
+                        <td class="table__cell table__cell--center">
+                            ${getStatusBadge(cls.status)}
+                        </td>
+                        <td class="table__cell table__cell--center">
+                            <button class="btn btn--ghost btn--small" onclick="selectClass('${cls.id}')">Manage</button>
+                            <button class="btn btn--ghost btn--small" onclick="editClass('${cls.id}')">Edit</button>
+                        </td>
+                    </tr>
+                `).join('');
+            }
+        }
+
+        // Get status badge HTML
+        function getStatusBadge(status) {
+            const colors = {
+                active: 'var(--color-success)',
+                upcoming: 'var(--color-warning)',
+                completed: 'var(--color-gray-500)'
+            };
+            return `<span style="color: ${colors[status] || 'var(--text-secondary)'};">${capitalize(status)}</span>`;
+        }
+
+        // Select class to manage
+        function selectClass(classId) {
+            selectedClass = allClasses.find(c => c.id === classId);
+            if (!selectedClass) return;
+
+            // Update dropdown
+            document.getElementById('selectedClassText').textContent = selectedClass.name;
+            document.getElementById('classDropdown').classList.remove('active');
+
+            // Show class stats
+            document.getElementById('classStats').style.display = 'block';
+            document.getElementById('statEnrolled').textContent = selectedClass.enrolledStudents;
+            document.getElementById('statMax').textContent = selectedClass.maxStudents;
+            document.getElementById('statAvailable').textContent = selectedClass.maxStudents - selectedClass.enrolledStudents;
+            document.getElementById('statStatus').textContent = capitalize(selectedClass.status);
+
+            // Show members card, hide all classes
+            document.getElementById('membersCard').style.display = 'block';
+            document.getElementById('allClassesCard').style.display = 'none';
+
+            // Load class members
+            loadClassMembers();
+        }
+
+        // Load class members
+        function loadClassMembers() {
+            if (!selectedClass) return;
+
+            const members = allUsers.filter(u => selectedClass.students.includes(u.id));
+            const tbody = document.getElementById('membersTableBody');
+
+            if (members.length === 0) {
+                tbody.innerHTML = `
+                    <tr>
+                        <td colspan="7" class="table__empty">
+                            <div class="table__empty-icon">👥</div>
+                            <div class="table__empty-text">No students enrolled</div>
+                            <div class="table__empty-subtext">Add students to this class</div>
+                        </td>
+                    </tr>
+                `;
+            } else {
+                tbody.innerHTML = members.map(student => `
+                    <tr class="table__row">
+                        <td class="table__cell table__cell--center">
+                            <input type="checkbox" class="table__checkbox" data-id="${student.id}">
+                        </td>
+                        <td class="table__cell">${student.fullName}</td>
+                        <td class="table__cell">${student.username}</td>
+                        <td class="table__cell">${student.email}</td>
+                        <td class="table__cell table__cell--hide-mobile">${new Date(student.createdAt).toLocaleDateString()}</td>
+                        <td class="table__cell table__cell--center">
+                            ${student.isActive 
+                                ? '<span style="color: var(--color-success);">Active</span>' 
+                                : '<span style="color: var(--color-error);">Inactive</span>'}
+                        </td>
+                        <td class="table__cell table__cell--center">
+                            <button class="btn btn--ghost btn--small" onclick="removeStudent('${student.id}')">Remove</button>
+                        </td>
+                    </tr>
+                `).join('');
+            }
+        }
+
+        // Create/Edit class modal
+        function openAddClassModal() {
+            document.getElementById('classModalTitle').textContent = 'Create New Class';
+            document.getElementById('classForm').reset();
+            document.getElementById('classId').value = '';
+            
+            // Load teachers
+            loadTeachers();
+            
+            document.getElementById('classModalBackdrop').classList.add('active');
+            document.getElementById('classModal').classList.add('active');
+        }
+
+        function editClass(classId) {
+            const cls = allClasses.find(c => c.id === classId);
+            if (!cls) return;
+
+            document.getElementById('classModalTitle').textContent = 'Edit Class';
+            document.getElementById('classId').value = cls.id;
+            document.getElementById('className').value = cls.name;
+            document.getElementById('classDescription').value = cls.description || '';
+            document.getElementById('teacherId').value = cls.teacherId;
+            document.getElementById('selectedTeacher').textContent = cls.teacherName;
+            document.getElementById('maxStudents').value = cls.maxStudents;
+            document.getElementById('startDate').value = cls.startDate.split('T')[0];
+            document.getElementById('endDate').value = cls.endDate.split('T')[0];
+            document.getElementById('schedule').value = cls.schedule || '';
+
+            loadTeachers();
+
+            document.getElementById('classModalBackdrop').classList.add('active');
+            document.getElementById('classModal').classList.add('active');
+        }
+
+        function loadTeachers() {
+            const teachers = allUsers.filter(u => u.role === 'teacher');
+            const teacherList = document.getElementById('teacherList');
+            
+            teacherList.innerHTML = teachers.map(teacher => `
+                <div class="dropdown__item" data-value="${teacher.id}" data-name="${teacher.fullName}">
+                    <span class="dropdown__item-icon">👨‍🏫</span>
+                    <div style="flex: 1;">
+                        <div class="dropdown__item-text">${teacher.fullName}</div>
+                        <div class="dropdown__item-meta">${teacher.email}</div>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function closeClassModal() {
+            document.getElementById('classModalBackdrop').classList.remove('active');
+            document.getElementById('classModal').classList.remove('active');
+        }
+
+        async function saveClass() {
+            const form = document.getElementById('classForm');
+            if (!form.checkValidity()) {
+                form.reportValidity();
+                return;
+            }
+
+            const classId = document.getElementById('classId').value;
+            const classData = {
+                id: classId || 'class_' + Date.now(),
+                name: document.getElementById('className').value,
+                description: document.getElementById('classDescription').value,
+                teacherId: document.getElementById('teacherId').value,
+                teacherName: document.getElementById('selectedTeacher').textContent,
+                maxStudents: parseInt(document.getElementById('maxStudents').value),
+                enrolledStudents: classId ? allClasses.find(c => c.id === classId).enrolledStudents : 0,
+                startDate: document.getElementById('startDate').value + 'T00:00:00Z',
+                endDate: document.getElementById('endDate').value + 'T00:00:00Z',
+                schedule: document.getElementById('schedule').value,
+                status: 'active',
+                students: classId ? allClasses.find(c => c.id === classId).students : [],
+                createdAt: classId ? allClasses.find(c => c.id === classId).createdAt : new Date().toISOString()
+            };
+
+            if (classId) {
+                // Update existing class
+                const index = allClasses.findIndex(c => c.id === classId);
+                if (index !== -1) {
+                    allClasses[index] = { ...allClasses[index], ...classData };
+                }
+            } else {
+                // Add new class
+                allClasses.push(classData);
+            }
+
+            // Save to localStorage
+            localStorage.setItem('lms-classes', JSON.stringify(allClasses));
+
+            closeClassModal();
+            loadData();
+
+            alert(classId ? 'Class updated successfully!' : 'Class created successfully!');
+        }
+
+        // Add student modal
+        function openAddStudentModal() {
+            if (!selectedClass) return;
+
+            selectedStudents.clear();
+            loadAvailableStudents();
+
+            document.getElementById('addStudentModalBackdrop').classList.add('active');
+            document.getElementById('addStudentModal').classList.add('active');
+        }
+
+        function loadAvailableStudents() {
+            const students = allUsers.filter(u => 
+                u.role === 'student' && 
+                u.isActive &&
+                !selectedClass.students.includes(u.id)
+            );
+
+            const listContainer = document.getElementById('availableStudentsList');
+            
+            if (students.length === 0) {
+                listContainer.innerHTML = `
+                    <div style="text-align: center; padding: var(--spacing-6); color: var(--text-muted);">
+                        No available students to add
+                    </div>
+                `;
+            } else {
+                listContainer.innerHTML = students.map(student => `
+                    <label class="dropdown__item" style="cursor: pointer;">
+                        <input type="checkbox" class="dropdown__checkbox" value="${student.id}" onchange="toggleStudent('${student.id}')">
+                        <div style="flex: 1;">
+                            <div class="dropdown__item-text">${student.fullName}</div>
+                            <div class="dropdown__item-meta">${student.username} • ${student.email}</div>
+                        </div>
+                    </label>
+                `).join('');
+            }
+        }
+
+        function filterStudents() {
+            const search = document.getElementById('studentSearch').value.toLowerCase();
+            const items = document.querySelectorAll('#availableStudentsList .dropdown__item');
+            
+            items.forEach(item => {
+                const text = item.textContent.toLowerCase();
+                item.style.display = text.includes(search) ? '' : 'none';
+            });
+        }
+
+        function toggleStudent(studentId) {
+            if (selectedStudents.has(studentId)) {
+                selectedStudents.delete(studentId);
+            } else {
+                selectedStudents.add(studentId);
+            }
+        }
+
+        function closeAddStudentModal() {
+            document.getElementById('addStudentModalBackdrop').classList.remove('active');
+            document.getElementById('addStudentModal').classList.remove('active');
+        }
+
+        function addSelectedStudents() {
+            if (selectedStudents.size === 0) {
+                alert('Please select at least one student');
+                return;
+            }
+
+            // Add students to class
+            selectedStudents.forEach(studentId => {
+                if (!selectedClass.students.includes(studentId)) {
+                    selectedClass.students.push(studentId);
+                    selectedClass.enrolledStudents++;
+                }
+            });
+
+            // Update class in array
+            const index = allClasses.findIndex(c => c.id === selectedClass.id);
+            if (index !== -1) {
+                allClasses[index] = selectedClass;
+            }
+
+            // Save to localStorage
+            localStorage.setItem('lms-classes', JSON.stringify(allClasses));
+
+            closeAddStudentModal();
+            selectClass(selectedClass.id);
+
+            alert(`${selectedStudents.size} student(s) added successfully!`);
+        }
+
+        function removeStudent(studentId) {
+            if (!confirm('Are you sure you want to remove this student from the class?')) {
+                return;
+            }
+
+            selectedClass.students = selectedClass.students.filter(id => id !== studentId);
+            selectedClass.enrolledStudents--;
+
+            // Update class in array
+            const index = allClasses.findIndex(c => c.id === selectedClass.id);
+            if (index !== -1) {
+                allClasses[index] = selectedClass;
+            }
+
+            // Save to localStorage
+            localStorage.setItem('lms-classes', JSON.stringify(allClasses));
+
+            selectClass(selectedClass.id);
+            alert('Student removed from class');
+        }
+
+        // Utility functions
+        function capitalize(str) {
+            return str.charAt(0).toUpperCase() + str.slice(1);
+        }
+
+        function refreshData() {
+            loadData();
+            if (selectedClass) {
+                selectClass(selectedClass.id);
+            }
+        }
+
+        // Setup dropdowns
+        document.querySelectorAll('.dropdown').forEach(dropdown => {
+            const trigger = dropdown.querySelector('.dropdown__trigger');
+            trigger.addEventListener('click', function(e) {
+                e.preventDefault();
+                dropdown.classList.toggle('active');
+            });
+
+            dropdown.querySelectorAll('.dropdown__item').forEach(item => {
+                item.addEventListener('click', function() {
+                    const value = this.getAttribute('data-value');
+                    const text = this.querySelector('.dropdown__item-text')?.textContent || this.textContent;
+                    
+                    if (dropdown.id === 'classDropdown') {
+                        selectClass(value);
+                    } else if (dropdown.id === 'teacherDropdown') {
+                        document.getElementById('teacherId').value = value;
+                        document.getElementById('selectedTeacher').textContent = this.getAttribute('data-name') || text;
+                    }
+                    
+                    dropdown.classList.remove('active');
+                });
+            });
+        });
+
+        // Close dropdowns on outside click
+        document.addEventListener('click', function(e) {
+            if (!e.target.closest('.dropdown')) {
+                document.querySelectorAll('.dropdown.active').forEach(dropdown => {
+                    dropdown.classList.remove('active');
+                });
+            }
+        });
+
+        // Teacher dropdown delegation
+        document.getElementById('teacherList').addEventListener('click', function(e) {
+            const item = e.target.closest('.dropdown__item');
+            if (item) {
+                const value = item.getAttribute('data-value');
+                const name = item.getAttribute('data-name');
+                document.getElementById('teacherId').value = value;
+                document.getElementById('selectedTeacher').textContent = name;
+                document.getElementById('teacherDropdown').classList.remove('active');
+            }
+        });
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', function() {
+            // Check authentication
+            if (!LMS.Auth.hasRole('admin')) {
+                alert('Access denied. Administrators only.');
+                window.location.href = '../index.html';
+                return;
+            }
+
+            loadData();
+        });
+    </script>
+</body>
+</html>
