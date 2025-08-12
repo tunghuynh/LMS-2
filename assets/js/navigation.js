@@ -312,17 +312,8 @@ LMS.Navigation = {
     const iframe = document.getElementById('contentFrame');
     if (!iframe) return;
     
-    // Handle context path
-    let fullPath = href;
-    if (window.LMS_CONFIG && window.LMS_CONFIG.contextPath) {
-      // If href doesn't start with http or /, prepend context path
-      if (!href.startsWith('http') && !href.startsWith('/')) {
-        fullPath = window.LMS_CONFIG.contextPath + '/' + href;
-      }
-    }
-    
-    // Update iframe src
-    iframe.src = fullPath;
+    // Use relative path directly
+    iframe.src = href;
     
     // Update current page
     this.currentPage = pageId;

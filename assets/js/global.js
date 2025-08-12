@@ -120,27 +120,20 @@ LMS.LanguageManager = {
     if (!this.LANGUAGES.includes(language)) return;
     
     try {
-      // Load translation file using config path
+      // Simple relative path based on current location
       let translationPath;
-      if (window.LMS_CONFIG && window.LMS_CONFIG.getBasePath) {
-        const basePath = window.LMS_CONFIG.getBasePath();
-        // Ensure proper path joining
-        if (basePath === '.' || basePath === '') {
-          translationPath = `data/translations/${language}.json`;
-        } else if (basePath.endsWith('/')) {
-          translationPath = `${basePath}data/translations/${language}.json`;
-        } else {
-          translationPath = `${basePath}/data/translations/${language}.json`;
-        }
+      const currentPath = window.location.pathname;
+      
+      // Determine relative path based on current location
+      if (currentPath.includes('/pages/') || currentPath.includes('/components/')) {
+        // We're in a subdirectory, go up one level
+        translationPath = `../data/translations/${language}.json`;
       } else {
-        // Fallback for backward compatibility
-        const basePath = window.location.pathname.includes('/pages/') || window.location.pathname.includes('/components/') 
-          ? '../' 
-          : '';
-        translationPath = `${basePath}data/translations/${language}.json`;
+        // We're in root directory
+        translationPath = `data/translations/${language}.json`;
       }
       
-      console.log('Loading translation from:', translationPath); // Debug log
+      console.log('Loading translation from:', translationPath);
       
       const response = await fetch(translationPath);
       if (!response.ok) {
@@ -162,40 +155,9 @@ LMS.LanguageManager = {
         detail: { language, translations: this.translations } 
       }));
       
-      console.log('Language loaded successfully:', language); // Debug log
+      console.log('Language loaded successfully:', language);
     } catch (error) {
       console.error('Error loading language:', error);
-      
-      // Try alternative paths as fallback
-      if (error.message.includes('Translation file not found')) {
-        const alternativePaths = [
-          `data/translations/${language}.json`,
-          `../data/translations/${language}.json`,
-          `./data/translations/${language}.json`,
-          `/data/translations/${language}.json`
-        ];
-        
-        for (const altPath of alternativePaths) {
-          try {
-            console.log('Trying alternative path:', altPath);
-            const response = await fetch(altPath);
-            if (response.ok) {
-              this.translations = await response.json();
-              this.currentLanguage = language;
-              localStorage.setItem(this.STORAGE_KEY, language);
-              document.documentElement.lang = language;
-              this.updateUI();
-              window.dispatchEvent(new CustomEvent('languageChanged', { 
-                detail: { language, translations: this.translations } 
-              }));
-              console.log('Language loaded from alternative path:', altPath);
-              return;
-            }
-          } catch (altError) {
-            // Continue to next alternative
-          }
-        }
-      }
       
       // Fallback to English if error and not already trying English
       if (language !== this.DEFAULT_LANGUAGE) {
