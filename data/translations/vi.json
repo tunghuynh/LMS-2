@@ -776,7 +776,26 @@
     "saveTemplate": "Lưu Mẫu",
     "noQuestionsToSave": "Vui lòng thêm ít nhất một câu hỏi trước khi lưu thành mẫu",
     "templateSaved": "Mẫu '{name}' đã được lưu thành công!",
-    "viewTemplateLibrary": "Bạn có muốn xem thư viện mẫu không?"
+    "viewTemplateLibrary": "Bạn có muốn xem thư viện mẫu không?",
+    "availableQuizzes": "Bài Kiểm Tra Khả Dụng",
+    "studentQuizSubtitle": "Duyệt và làm bài kiểm tra từ các khóa học đã đăng ký",
+    "completedQuizzes": "Đã Hoàn Thành",
+    "pendingQuizzes": "Đang Chờ", 
+    "viewHistory": "Xem Lịch Sử",
+    "noQuizzesAvailable": "Không có bài kiểm tra nào",
+    "enrollInCourses": "Đăng ký khóa học để truy cập bài kiểm tra",
+    "missed": "Đã Bỏ Lỡ",
+    "upcoming": "Sắp Tới",
+    "unavailable": "Không Khả Dụng",
+    "details": "Chi Tiết",
+    "bestScore": "Điểm Cao Nhất",
+    "readyToTake": "Bài kiểm tra này đã sẵn sàng để làm",
+    "alreadyCompleted": "Bạn đã hoàn thành bài kiểm tra này",
+    "notAvailable": "Bài kiểm tra này hiện không khả dụng",
+    "previousAttempts": "Các Lần Thử Trước",
+    "topics": "Chủ Đề Được Đề Cập",
+    "instructions": "Hướng Dẫn",
+    "quizzesRefreshed": "Làm mới bài kiểm tra thành công!"
   },
   
   "landing": {

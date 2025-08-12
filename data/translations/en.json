@@ -776,7 +776,26 @@
     "saveTemplate": "Save Template",
     "noQuestionsToSave": "Please add at least one question before saving as template",
     "templateSaved": "Template '{name}' saved successfully!",
-    "viewTemplateLibrary": "Would you like to view the template library?"
+    "viewTemplateLibrary": "Would you like to view the template library?",
+    "availableQuizzes": "Available Quizzes",
+    "studentQuizSubtitle": "Browse and take quizzes from your enrolled courses",
+    "completedQuizzes": "Completed",
+    "pendingQuizzes": "Pending", 
+    "viewHistory": "View History",
+    "noQuizzesAvailable": "No quizzes available",
+    "enrollInCourses": "Enroll in courses to access quizzes",
+    "missed": "Missed",
+    "upcoming": "Upcoming",
+    "unavailable": "Unavailable",
+    "details": "Details",
+    "bestScore": "Best Score",
+    "readyToTake": "This quiz is ready to take",
+    "alreadyCompleted": "You have already completed this quiz",
+    "notAvailable": "This quiz is not currently available",
+    "previousAttempts": "Previous Attempts",
+    "topics": "Topics Covered",
+    "instructions": "Instructions",
+    "quizzesRefreshed": "Quizzes refreshed successfully!"
   },
   
   "landing": {

@@ -1,0 +1,653 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Available Quizzes - LMS</title>
+    <!-- Core CSS -->
+    <link rel="stylesheet" href="../assets/css/global.css">
+    <link rel="stylesheet" href="../assets/css/components.css">
+    <link rel="stylesheet" href="../assets/css/themes.css">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <!-- Configuration -->
+    <script src="../config.js"></script>
+</head>
+<body>
+    <div class="page-container">
+        <!-- Page Header -->
+        <div class="page-header">
+            <div style="display: flex; justify-content: space-between; align-items: center;">
+                <div>
+                    <h1 class="page-title" data-translate="quiz.availableQuizzes">Available Quizzes</h1>
+                    <p class="page-subtitle" data-translate="quiz.studentQuizSubtitle">Browse and take quizzes from your enrolled courses</p>
+                </div>
+                <div style="display: flex; gap: var(--spacing-3);">
+                    <button class="btn btn--secondary" onclick="refreshQuizzes()">
+                        <i class="fas fa-sync-alt" style="margin-right: 8px;"></i>
+                        <span data-translate="common.refresh">Refresh</span>
+                    </button>
+                    <button class="btn btn--primary" onclick="viewHistory()">
+                        <i class="fas fa-history" style="margin-right: 8px;"></i>
+                        <span data-translate="quiz.viewHistory">View History</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <div class="page-content">
+            <!-- Student Quiz Stats -->
+            <div class="grid grid--4-cols" style="margin-bottom: var(--spacing-6);">
+                <div class="card">
+                    <div class="card__body" style="text-align: center;">
+                        <div style="font-size: 2rem; font-weight: var(--font-weight-bold); color: var(--color-primary);" id="availableQuizzes">0</div>
+                        <div style="color: var(--text-secondary);" data-translate="quiz.availableQuizzes">Available Quizzes</div>
+                    </div>
+                </div>
+                <div class="card">
+                    <div class="card__body" style="text-align: center;">
+                        <div style="font-size: 2rem; font-weight: var(--font-weight-bold); color: var(--color-success);" id="completedQuizzes">0</div>
+                        <div style="color: var(--text-secondary);" data-translate="quiz.completedQuizzes">Completed</div>
+                    </div>
+                </div>
+                <div class="card">
+                    <div class="card__body" style="text-align: center;">
+                        <div style="font-size: 2rem; font-weight: var(--font-weight-bold); color: var(--color-warning);" id="pendingQuizzes">0</div>
+                        <div style="color: var(--text-secondary);" data-translate="quiz.pendingQuizzes">Pending</div>
+                    </div>
+                </div>
+                <div class="card">
+                    <div class="card__body" style="text-align: center;">
+                        <div style="font-size: 2rem; font-weight: var(--font-weight-bold); color: var(--color-info);" id="averageScore">0%</div>
+                        <div style="color: var(--text-secondary);" data-translate="quiz.averageScore">Average Score</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Filters -->
+            <div class="card" style="margin-bottom: var(--spacing-6);">
+                <div class="card__body">
+                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: var(--spacing-4); align-items: end;">
+                        <div class="form-group">
+                            <label class="form-label" data-translate="course.selectCourse">Course</label>
+                            <select id="courseFilter" class="form-select" onchange="filterQuizzes()">
+                                <option value="" data-translate="common.allCourses">All Courses</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label" data-translate="quiz.status">Status</label>
+                            <select id="statusFilter" class="form-select" onchange="filterQuizzes()">
+                                <option value="" data-translate="common.allStatuses">All Statuses</option>
+                                <option value="available" data-translate="quiz.available">Available</option>
+                                <option value="completed" data-translate="quiz.completed">Completed</option>
+                                <option value="missed" data-translate="quiz.missed">Missed</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label" data-translate="quiz.difficulty">Difficulty</label>
+                            <select id="difficultyFilter" class="form-select" onchange="filterQuizzes()">
+                                <option value="" data-translate="quiz.allDifficulties">All Difficulties</option>
+                                <option value="easy" data-translate="quiz.easy">Easy</option>
+                                <option value="medium" data-translate="quiz.medium">Medium</option>
+                                <option value="hard" data-translate="quiz.hard">Hard</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <input type="text" id="searchInput" class="form-input" placeholder="Search quizzes..." onkeyup="filterQuizzes()">
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Quiz Cards -->
+            <div id="quizzesContainer">
+                <!-- Dynamic quiz cards -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Quiz Detail Modal -->
+    <div class="modal" id="quizDetailModal">
+        <div class="modal__content">
+            <div class="modal__header">
+                <h3 id="detailQuizTitle">Quiz Details</h3>
+                <button class="modal__close" onclick="closeDetailModal()">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="modal__body" id="quizDetailContent">
+                <!-- Dynamic quiz details -->
+            </div>
+            <div class="modal__footer">
+                <button type="button" class="btn btn--secondary" onclick="closeDetailModal()">
+                    <i class="fas fa-times" style="margin-right: 8px;"></i>
+                    <span data-translate="common.close">Close</span>
+                </button>
+                <button type="button" class="btn btn--primary" onclick="startQuiz()" id="startQuizBtn">
+                    <i class="fas fa-play" style="margin-right: 8px;"></i>
+                    <span data-translate="quiz.startQuiz">Start Quiz</span>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Core JavaScript -->
+    <script src="../assets/js/global.js"></script>
+    <script src="../assets/js/auth.js"></script>
+    <script src="../assets/js/api.js"></script>
+    
+    <script>
+        // State management
+        let allQuizzes = [];
+        let allCourses = [];
+        let studentEnrollments = [];
+        let studentQuizAttempts = [];
+        let filteredQuizzes = [];
+        let currentUser = LMS.Auth.getUser();
+        let selectedQuizId = null;
+
+        // Initialize
+        async function init() {
+            // Check authentication - students only
+            if (!LMS.Auth.isAuthenticated() || !currentUser || currentUser.role !== 'student') {
+                window.location.href = '../index.html';
+                return;
+            }
+
+            // Load translations
+            await LMS.LanguageManager.init();
+            LMS.LanguageManager.updatePageTranslations();
+            
+            // Load data
+            await loadData();
+            populateFilters();
+            displayQuizzes();
+            updateStats();
+        }
+
+        // Load all data
+        async function loadData() {
+            try {
+                // Load courses
+                const courseResponse = await LMS.API.loadJSON('mock-courses.json');
+                allCourses = courseResponse.data || [];
+
+                // Load enrollments to get student's courses
+                const enrollmentResponse = await LMS.API.loadJSON('mock-enrollments.json');
+                const allEnrollments = enrollmentResponse.data || [];
+                studentEnrollments = allEnrollments.filter(e => e.studentId === currentUser.id && e.status === 'approved');
+
+                // Generate quiz data for enrolled courses
+                allQuizzes = generateStudentQuizData();
+                
+                // Generate quiz attempts
+                studentQuizAttempts = generateStudentAttempts();
+                
+                filteredQuizzes = [...allQuizzes];
+                
+            } catch (error) {
+                console.error('Failed to load data:', error);
+                LMS.showToast(LMS.t('error.loadData'), 'error');
+            }
+        }
+
+        // Generate quiz data for student's enrolled courses
+        function generateStudentQuizData() {
+            const enrolledCourseIds = studentEnrollments.map(e => e.courseId);
+            const quizzes = [];
+
+            enrolledCourseIds.forEach((courseId, index) => {
+                const course = allCourses.find(c => c.id === courseId);
+                if (!course) return;
+
+                // Generate 2-4 quizzes per course
+                const quizCount = Math.floor(Math.random() * 3) + 2;
+                
+                for (let i = 0; i < quizCount; i++) {
+                    const quizId = `quiz_${courseId}_${i + 1}`;
+                    const dueDate = new Date(Date.now() + (Math.random() * 30 + 5) * 24 * 60 * 60 * 1000); // 5-35 days from now
+                    const startDate = new Date(Date.now() - Math.random() * 10 * 24 * 60 * 60 * 1000); // Started 0-10 days ago
+                    
+                    quizzes.push({
+                        id: quizId,
+                        title: `${course.title} - Quiz ${i + 1}`,
+                        description: `Assessment quiz for ${course.title} covering key concepts and practical applications.`,
+                        courseId: courseId,
+                        courseName: course.title,
+                        difficulty: ['easy', 'medium', 'hard'][Math.floor(Math.random() * 3)],
+                        questionCount: Math.floor(Math.random() * 15) + 10, // 10-25 questions
+                        timeLimit: [15, 30, 45, 60][Math.floor(Math.random() * 4)], // minutes
+                        passingScore: 70,
+                        maxAttempts: Math.floor(Math.random() * 2) + 2, // 2-3 attempts
+                        startDate: startDate.toISOString(),
+                        dueDate: dueDate.toISOString(),
+                        instructions: [
+                            'Read each question carefully before answering',
+                            'You can navigate between questions using the navigation panel',
+                            'Make sure to review your answers before submitting',
+                            'The quiz will auto-submit when time expires'
+                        ],
+                        topics: [
+                            'Fundamental concepts',
+                            'Practical applications', 
+                            'Problem solving',
+                            'Critical thinking'
+                        ]
+                    });
+                }
+            });
+
+            return quizzes.sort((a, b) => new Date(a.dueDate) - new Date(b.dueDate));
+        }
+
+        // Generate student quiz attempts
+        function generateStudentAttempts() {
+            const attempts = [];
+            
+            // Generate attempts for some quizzes (not all)
+            allQuizzes.forEach(quiz => {
+                const hasAttempt = Math.random() > 0.4; // 60% chance of having attempted
+                
+                if (hasAttempt) {
+                    const attemptCount = Math.floor(Math.random() * quiz.maxAttempts) + 1;
+                    
+                    for (let i = 0; i < attemptCount; i++) {
+                        const score = Math.floor(Math.random() * 100);
+                        const timeSpent = Math.floor(Math.random() * (quiz.timeLimit * 60 * 0.8)) + (quiz.timeLimit * 60 * 0.2);
+                        
+                        attempts.push({
+                            id: `attempt_${quiz.id}_${i + 1}`,
+                            quizId: quiz.id,
+                            studentId: currentUser.id,
+                            attemptNumber: i + 1,
+                            score: score,
+                            timeSpent: timeSpent,
+                            status: score >= quiz.passingScore ? 'passed' : 'failed',
+                            submittedAt: new Date(Date.now() - Math.random() * 14 * 24 * 60 * 60 * 1000).toISOString()
+                        });
+                    }
+                }
+            });
+
+            return attempts;
+        }
+
+        // Populate filters
+        function populateFilters() {
+            const courseFilter = document.getElementById('courseFilter');
+            const enrolledCourses = studentEnrollments.map(e => 
+                allCourses.find(c => c.id === e.courseId)
+            ).filter(Boolean);
+
+            courseFilter.innerHTML = `<option value="">${LMS.t('common.allCourses')}</option>`;
+            enrolledCourses.forEach(course => {
+                const option = document.createElement('option');
+                option.value = course.id;
+                option.textContent = course.title;
+                courseFilter.appendChild(option);
+            });
+        }
+
+        // Filter quizzes
+        function filterQuizzes() {
+            const courseId = document.getElementById('courseFilter').value;
+            const status = document.getElementById('statusFilter').value;
+            const difficulty = document.getElementById('difficultyFilter').value;
+            const search = document.getElementById('searchInput').value.toLowerCase();
+
+            filteredQuizzes = allQuizzes.filter(quiz => {
+                // Course filter
+                if (courseId && quiz.courseId !== courseId) return false;
+                
+                // Status filter
+                if (status) {
+                    const quizStatus = getQuizStatus(quiz);
+                    if (quizStatus !== status) return false;
+                }
+                
+                // Difficulty filter
+                if (difficulty && quiz.difficulty !== difficulty) return false;
+                
+                // Search filter
+                if (search && !quiz.title.toLowerCase().includes(search) && 
+                    !quiz.description.toLowerCase().includes(search)) return false;
+                
+                return true;
+            });
+
+            displayQuizzes();
+        }
+
+        // Get quiz status for student
+        function getQuizStatus(quiz) {
+            const attempts = studentQuizAttempts.filter(a => a.quizId === quiz.id);
+            const now = new Date();
+            const dueDate = new Date(quiz.dueDate);
+            const startDate = new Date(quiz.startDate);
+
+            if (attempts.length === 0) {
+                if (now > dueDate) return 'missed';
+                if (now < startDate) return 'upcoming';
+                return 'available';
+            }
+
+            const bestAttempt = attempts.reduce((best, current) => 
+                current.score > best.score ? current : best
+            );
+
+            return bestAttempt.status === 'passed' ? 'completed' : 'available';
+        }
+
+        // Display quizzes
+        function displayQuizzes() {
+            const container = document.getElementById('quizzesContainer');
+            
+            if (filteredQuizzes.length === 0) {
+                container.innerHTML = `
+                    <div class="card" style="text-align: center; padding: var(--spacing-8);">
+                        <i class="fas fa-clipboard-list" style="font-size: 3rem; color: var(--text-muted); margin-bottom: var(--spacing-4);"></i>
+                        <h3 style="margin-bottom: var(--spacing-2);" data-translate="quiz.noQuizzesAvailable">No quizzes available</h3>
+                        <p style="color: var(--text-secondary);" data-translate="quiz.enrollInCourses">Enroll in courses to access quizzes</p>
+                    </div>
+                `;
+                return;
+            }
+
+            container.innerHTML = `
+                <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(350px, 1fr)); gap: var(--spacing-4);">
+                    ${filteredQuizzes.map(quiz => renderQuizCard(quiz)).join('')}
+                </div>
+            `;
+        }
+
+        // Render quiz card
+        function renderQuizCard(quiz) {
+            const status = getQuizStatus(quiz);
+            const attempts = studentQuizAttempts.filter(a => a.quizId === quiz.id);
+            const bestScore = attempts.length > 0 ? Math.max(...attempts.map(a => a.score)) : null;
+            const timeUntilDue = Math.ceil((new Date(quiz.dueDate) - new Date()) / (1000 * 60 * 60 * 24));
+            
+            const statusColors = {
+                available: 'success',
+                completed: 'primary', 
+                missed: 'danger',
+                upcoming: 'warning'
+            };
+
+            const statusIcons = {
+                available: 'fa-play-circle',
+                completed: 'fa-check-circle',
+                missed: 'fa-times-circle',
+                upcoming: 'fa-clock'
+            };
+
+            return `
+                <div class="card quiz-card" style="transition: all var(--transition-base); cursor: pointer;" onclick="viewQuizDetails('${quiz.id}')">
+                    <div class="card__body">
+                        <div style="display: flex; justify-content: between; align-items: flex-start; margin-bottom: var(--spacing-3);">
+                            <div style="flex: 1;">
+                                <h3 style="margin-bottom: var(--spacing-2); font-size: 1.1rem;">${quiz.title}</h3>
+                                <p style="color: var(--text-secondary); font-size: var(--font-size-sm); margin-bottom: var(--spacing-3);">
+                                    ${quiz.description}
+                                </p>
+                            </div>
+                            <span class="badge badge--${statusColors[status]}" style="margin-left: var(--spacing-2);">
+                                <i class="fas ${statusIcons[status]}" style="margin-right: 4px;"></i>
+                                ${LMS.t(`quiz.${status}`)}
+                            </span>
+                        </div>
+
+                        <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: var(--spacing-3); margin-bottom: var(--spacing-4); padding: var(--spacing-3); background: var(--bg-secondary); border-radius: var(--radius-sm);">
+                            <div style="text-align: center;">
+                                <div style="font-weight: var(--font-weight-bold); color: var(--color-primary);">${quiz.questionCount}</div>
+                                <div style="font-size: var(--font-size-xs); color: var(--text-secondary);" data-translate="quiz.questions">Questions</div>
+                            </div>
+                            <div style="text-align: center;">
+                                <div style="font-weight: var(--font-weight-bold); color: var(--color-info);">${quiz.timeLimit}m</div>
+                                <div style="font-size: var(--font-size-xs); color: var(--text-secondary);" data-translate="quiz.timeLimit">Time Limit</div>
+                            </div>
+                            <div style="text-align: center;">
+                                <div style="font-weight: var(--font-weight-bold); color: var(--color-warning);">
+                                    <span class="badge badge--${quiz.difficulty === 'easy' ? 'success' : quiz.difficulty === 'medium' ? 'warning' : 'danger'}">${quiz.difficulty}</span>
+                                </div>
+                            </div>
+                            <div style="text-align: center;">
+                                <div style="font-weight: var(--font-weight-bold); color: var(--color-success);">
+                                    ${attempts.length}/${quiz.maxAttempts}
+                                </div>
+                                <div style="font-size: var(--font-size-xs); color: var(--text-secondary);" data-translate="quiz.attempts">Attempts</div>
+                            </div>
+                        </div>
+
+                        ${bestScore !== null ? `
+                            <div style="background: var(--color-${bestScore >= quiz.passingScore ? 'success' : 'warning'}-light, rgba(16, 185, 129, 0.1)); padding: var(--spacing-2); border-radius: var(--radius-sm); margin-bottom: var(--spacing-3);">
+                                <div style="display: flex; justify-content: space-between; align-items: center;">
+                                    <span style="font-size: var(--font-size-sm);" data-translate="quiz.bestScore">Best Score:</span>
+                                    <span style="font-weight: var(--font-weight-bold); color: var(--color-${bestScore >= quiz.passingScore ? 'success' : 'warning'});">${bestScore}%</span>
+                                </div>
+                            </div>
+                        ` : ''}
+
+                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: var(--spacing-3);">
+                            <span style="font-size: var(--font-size-sm); color: var(--text-secondary);">
+                                <i class="fas fa-calendar" style="margin-right: 4px;"></i>
+                                Due: ${timeUntilDue > 0 ? `${timeUntilDue} days` : 'Overdue'}
+                            </span>
+                            <span style="font-size: var(--font-size-sm); color: var(--text-secondary);">
+                                <i class="fas fa-book" style="margin-right: 4px;"></i>
+                                ${quiz.courseName}
+                            </span>
+                        </div>
+
+                        <div style="display: flex; gap: var(--spacing-2);">
+                            <button class="btn btn--secondary btn--small" onclick="event.stopPropagation(); viewQuizDetails('${quiz.id}')" style="flex: 1;">
+                                <i class="fas fa-info-circle" style="margin-right: 4px;"></i>
+                                <span data-translate="quiz.details">Details</span>
+                            </button>
+                            ${status === 'available' ? `
+                                <button class="btn btn--primary btn--small" onclick="event.stopPropagation(); startQuizDirectly('${quiz.id}')" style="flex: 1;">
+                                    <i class="fas fa-play" style="margin-right: 4px;"></i>
+                                    <span data-translate="quiz.startQuiz">Start Quiz</span>
+                                </button>
+                            ` : status === 'completed' ? `
+                                <button class="btn btn--success btn--small" onclick="event.stopPropagation(); viewResults('${quiz.id}')" style="flex: 1;">
+                                    <i class="fas fa-chart-bar" style="margin-right: 4px;"></i>
+                                    <span data-translate="quiz.viewResults">View Results</span>
+                                </button>
+                            ` : `
+                                <button class="btn btn--ghost btn--small" disabled style="flex: 1;">
+                                    <i class="fas fa-lock" style="margin-right: 4px;"></i>
+                                    <span data-translate="quiz.unavailable">Unavailable</span>
+                                </button>
+                            `}
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
+        // Update statistics
+        function updateStats() {
+            const available = filteredQuizzes.filter(q => getQuizStatus(q) === 'available').length;
+            const completed = filteredQuizzes.filter(q => getQuizStatus(q) === 'completed').length;
+            const pending = filteredQuizzes.filter(q => ['available', 'upcoming'].includes(getQuizStatus(q))).length;
+            
+            const allScores = studentQuizAttempts.map(a => a.score);
+            const averageScore = allScores.length > 0 ? Math.round(allScores.reduce((sum, score) => sum + score, 0) / allScores.length) : 0;
+
+            document.getElementById('availableQuizzes').textContent = available;
+            document.getElementById('completedQuizzes').textContent = completed;
+            document.getElementById('pendingQuizzes').textContent = pending;
+            document.getElementById('averageScore').textContent = `${averageScore}%`;
+        }
+
+        // View quiz details
+        function viewQuizDetails(quizId) {
+            const quiz = allQuizzes.find(q => q.id === quizId);
+            if (!quiz) return;
+
+            selectedQuizId = quizId;
+            const attempts = studentQuizAttempts.filter(a => a.quizId === quizId);
+            const status = getQuizStatus(quiz);
+
+            document.getElementById('detailQuizTitle').textContent = quiz.title;
+            document.getElementById('quizDetailContent').innerHTML = `
+                <div style="margin-bottom: var(--spacing-4);">
+                    <h4 style="margin-bottom: var(--spacing-2);" data-translate="quiz.description">Description</h4>
+                    <p>${quiz.description}</p>
+                </div>
+
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: var(--spacing-4); margin-bottom: var(--spacing-4);">
+                    <div style="text-align: center; padding: var(--spacing-3); background: var(--bg-secondary); border-radius: var(--radius-sm);">
+                        <div style="font-size: 1.5rem; font-weight: var(--font-weight-bold); color: var(--color-primary);">${quiz.questionCount}</div>
+                        <div style="font-size: var(--font-size-sm); color: var(--text-secondary);" data-translate="quiz.questions">Questions</div>
+                    </div>
+                    <div style="text-align: center; padding: var(--spacing-3); background: var(--bg-secondary); border-radius: var(--radius-sm);">
+                        <div style="font-size: 1.5rem; font-weight: var(--font-weight-bold); color: var(--color-info);">${quiz.timeLimit}m</div>
+                        <div style="font-size: var(--font-size-sm); color: var(--text-secondary);" data-translate="quiz.timeLimit">Time Limit</div>
+                    </div>
+                    <div style="text-align: center; padding: var(--spacing-3); background: var(--bg-secondary); border-radius: var(--radius-sm);">
+                        <div style="font-size: 1.5rem; font-weight: var(--font-weight-bold); color: var(--color-success);">${quiz.passingScore}%</div>
+                        <div style="font-size: var(--font-size-sm); color: var(--text-secondary);" data-translate="quiz.passingScore">Passing Score</div>
+                    </div>
+                    <div style="text-align: center; padding: var(--spacing-3); background: var(--bg-secondary); border-radius: var(--radius-sm);">
+                        <div style="font-size: 1.5rem; font-weight: var(--font-weight-bold); color: var(--color-warning);">${attempts.length}/${quiz.maxAttempts}</div>
+                        <div style="font-size: var(--font-size-sm); color: var(--text-secondary);" data-translate="quiz.attempts">Attempts</div>
+                    </div>
+                </div>
+
+                <div style="margin-bottom: var(--spacing-4);">
+                    <h4 style="margin-bottom: var(--spacing-2);" data-translate="quiz.instructions">Instructions</h4>
+                    <ul style="padding-left: var(--spacing-4);">
+                        ${quiz.instructions.map(instruction => `<li style="margin-bottom: var(--spacing-1);">${instruction}</li>`).join('')}
+                    </ul>
+                </div>
+
+                <div style="margin-bottom: var(--spacing-4);">
+                    <h4 style="margin-bottom: var(--spacing-2);" data-translate="quiz.topics">Topics Covered</h4>
+                    <div style="display: flex; flex-wrap: wrap; gap: var(--spacing-2);">
+                        ${quiz.topics.map(topic => `<span class="badge badge--secondary">${topic}</span>`).join('')}
+                    </div>
+                </div>
+
+                ${attempts.length > 0 ? `
+                    <div style="margin-bottom: var(--spacing-4);">
+                        <h4 style="margin-bottom: var(--spacing-2);" data-translate="quiz.previousAttempts">Previous Attempts</h4>
+                        <div style="background: var(--bg-secondary); border-radius: var(--radius-sm); padding: var(--spacing-3);">
+                            ${attempts.map((attempt, index) => `
+                                <div style="display: flex; justify-content: space-between; align-items: center; padding: var(--spacing-2) 0; ${index < attempts.length - 1 ? 'border-bottom: 1px solid var(--border-color);' : ''}">
+                                    <span>Attempt ${attempt.attemptNumber}</span>
+                                    <div style="display: flex; gap: var(--spacing-4); align-items: center;">
+                                        <span style="font-weight: var(--font-weight-bold); color: var(--color-${attempt.status === 'passed' ? 'success' : 'warning'});">${attempt.score}%</span>
+                                        <span style="font-size: var(--font-size-sm); color: var(--text-secondary);">${Math.floor(attempt.timeSpent / 60)}m ${attempt.timeSpent % 60}s</span>
+                                        <span class="badge badge--${attempt.status === 'passed' ? 'success' : 'warning'}">${attempt.status}</span>
+                                    </div>
+                                </div>
+                            `).join('')}
+                        </div>
+                    </div>
+                ` : ''}
+
+                <div style="background: var(--color-${status === 'available' ? 'info' : status === 'completed' ? 'success' : 'warning'}-light, rgba(59, 130, 246, 0.1)); padding: var(--spacing-3); border-radius: var(--radius-sm); margin-bottom: var(--spacing-4);">
+                    <div style="display: flex; align-items: center; gap: var(--spacing-2);">
+                        <i class="fas fa-${status === 'available' ? 'info-circle' : status === 'completed' ? 'check-circle' : 'exclamation-triangle'}"></i>
+                        <span style="font-weight: var(--font-weight-medium);">
+                            ${status === 'available' ? LMS.t('quiz.readyToTake') : 
+                              status === 'completed' ? LMS.t('quiz.alreadyCompleted') : 
+                              LMS.t('quiz.notAvailable')}
+                        </span>
+                    </div>
+                </div>
+            `;
+
+            // Update start button
+            const startBtn = document.getElementById('startQuizBtn');
+            if (status === 'available') {
+                startBtn.style.display = 'block';
+                startBtn.innerHTML = `
+                    <i class="fas fa-play" style="margin-right: 8px;"></i>
+                    <span data-translate="quiz.startQuiz">Start Quiz</span>
+                `;
+            } else if (status === 'completed') {
+                startBtn.style.display = 'block';
+                startBtn.innerHTML = `
+                    <i class="fas fa-chart-bar" style="margin-right: 8px;"></i>
+                    <span data-translate="quiz.viewResults">View Results</span>
+                `;
+            } else {
+                startBtn.style.display = 'none';
+            }
+
+            document.getElementById('quizDetailModal').classList.add('active');
+        }
+
+        // Close detail modal
+        function closeDetailModal() {
+            document.getElementById('quizDetailModal').classList.remove('active');
+            selectedQuizId = null;
+        }
+
+        // Start quiz
+        function startQuiz() {
+            if (!selectedQuizId) return;
+            startQuizDirectly(selectedQuizId);
+        }
+
+        function startQuizDirectly(quizId) {
+            const quiz = allQuizzes.find(q => q.id === quizId);
+            const status = getQuizStatus(quiz);
+            
+            if (status === 'available') {
+                // In real implementation, navigate to quiz attempt page
+                window.open(`quiz-attempt.html?quiz=${quizId}`, '_blank');
+            } else if (status === 'completed') {
+                viewResults(quizId);
+            }
+        }
+
+        // View results
+        function viewResults(quizId) {
+            const attempts = studentQuizAttempts.filter(a => a.quizId === quizId);
+            if (attempts.length > 0) {
+                const bestAttempt = attempts.reduce((best, current) => 
+                    current.score > best.score ? current : best
+                );
+                window.open(`quiz-results.html?attempt=${bestAttempt.id}`, '_blank');
+            }
+        }
+
+        // View history
+        function viewHistory() {
+            window.location.href = 'quiz-history.html';
+        }
+
+        // Refresh quizzes
+        function refreshQuizzes() {
+            loadData().then(() => {
+                populateFilters();
+                displayQuizzes();
+                updateStats();
+                LMS.showToast(LMS.t('quiz.quizzesRefreshed'), 'success');
+            });
+        }
+
+        // Close modal on outside click
+        document.addEventListener('click', function(e) {
+            const modal = document.getElementById('quizDetailModal');
+            if (e.target === modal) {
+                closeDetailModal();
+            }
+        });
+
+        // Close modal on escape key
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape') {
+                closeDetailModal();
+            }
+        });
+
+        // Initialize on load
+        document.addEventListener('DOMContentLoaded', init);
+    </script>
+</body>
+</html>

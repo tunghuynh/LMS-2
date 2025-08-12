@@ -124,7 +124,14 @@ LMS.LanguageManager = {
       let translationPath;
       if (window.LMS_CONFIG && window.LMS_CONFIG.getBasePath) {
         const basePath = window.LMS_CONFIG.getBasePath();
-        translationPath = `${basePath}/data/translations/${language}.json`;
+        // Ensure proper path joining
+        if (basePath === '.' || basePath === '') {
+          translationPath = `data/translations/${language}.json`;
+        } else if (basePath.endsWith('/')) {
+          translationPath = `${basePath}data/translations/${language}.json`;
+        } else {
+          translationPath = `${basePath}/data/translations/${language}.json`;
+        }
       } else {
         // Fallback for backward compatibility
         const basePath = window.location.pathname.includes('/pages/') || window.location.pathname.includes('/components/') 
@@ -133,8 +140,12 @@ LMS.LanguageManager = {
         translationPath = `${basePath}data/translations/${language}.json`;
       }
       
+      console.log('Loading translation from:', translationPath); // Debug log
+      
       const response = await fetch(translationPath);
-      if (!response.ok) throw new Error('Translation file not found');
+      if (!response.ok) {
+        throw new Error(`Translation file not found: ${translationPath} (Status: ${response.status})`);
+      }
       
       this.translations = await response.json();
       this.currentLanguage = language;
@@ -150,11 +161,52 @@ LMS.LanguageManager = {
       window.dispatchEvent(new CustomEvent('languageChanged', { 
         detail: { language, translations: this.translations } 
       }));
+      
+      console.log('Language loaded successfully:', language); // Debug log
     } catch (error) {
       console.error('Error loading language:', error);
-      // Fallback to English if error
+      
+      // Try alternative paths as fallback
+      if (error.message.includes('Translation file not found')) {
+        const alternativePaths = [
+          `data/translations/${language}.json`,
+          `../data/translations/${language}.json`,
+          `./data/translations/${language}.json`,
+          `/data/translations/${language}.json`
+        ];
+        
+        for (const altPath of alternativePaths) {
+          try {
+            console.log('Trying alternative path:', altPath);
+            const response = await fetch(altPath);
+            if (response.ok) {
+              this.translations = await response.json();
+              this.currentLanguage = language;
+              localStorage.setItem(this.STORAGE_KEY, language);
+              document.documentElement.lang = language;
+              this.updateUI();
+              window.dispatchEvent(new CustomEvent('languageChanged', { 
+                detail: { language, translations: this.translations } 
+              }));
+              console.log('Language loaded from alternative path:', altPath);
+              return;
+            }
+          } catch (altError) {
+            // Continue to next alternative
+          }
+        }
+      }
+      
+      // Fallback to English if error and not already trying English
       if (language !== this.DEFAULT_LANGUAGE) {
+        console.log('Falling back to default language:', this.DEFAULT_LANGUAGE);
         await this.setLanguage(this.DEFAULT_LANGUAGE);
+      } else {
+        // If even English fails, use fallback translations
+        console.log('Using fallback translations');
+        this.translations = this.fallbackTranslations;
+        this.currentLanguage = this.DEFAULT_LANGUAGE;
+        this.updateUI();
       }
     }
   },

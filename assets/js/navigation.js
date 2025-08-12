@@ -48,7 +48,7 @@ LMS.Navigation = {
             id: 'quizzes',
             icon: 'fa-file-alt',
             label: 'nav.quizzes',
-            href: 'pages/quizzes.html'
+            href: 'pages/student-quizzes.html'
           },
           {
             id: 'results',
