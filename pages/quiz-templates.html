@@ -1,0 +1,975 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quiz Templates - LMS</title>
+    <!-- Core CSS -->
+    <link rel="stylesheet" href="../assets/css/global.css">
+    <link rel="stylesheet" href="../assets/css/components.css">
+    <link rel="stylesheet" href="../assets/css/themes.css">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <!-- Configuration -->
+    <script src="../config.js"></script>
+    
+    <style>
+        /* Quiz Templates Specific Styles */
+        .templates-header {
+            background: linear-gradient(135deg, var(--color-primary), var(--color-primary-dark, #1E4F78));
+            color: white;
+            padding: var(--spacing-6);
+            border-radius: var(--radius-lg);
+            margin-bottom: var(--spacing-6);
+        }
+        
+        .templates-title {
+            font-size: 2rem;
+            font-weight: var(--font-weight-bold);
+            margin-bottom: var(--spacing-2);
+        }
+        
+        .templates-subtitle {
+            opacity: 0.9;
+            font-size: 1.1rem;
+        }
+        
+        .template-filters {
+            background: var(--bg-secondary);
+            padding: var(--spacing-4);
+            border-radius: var(--radius-lg);
+            margin-bottom: var(--spacing-6);
+        }
+        
+        .filters-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: var(--spacing-4);
+            align-items: end;
+        }
+        
+        .template-categories {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: var(--spacing-6);
+            margin-bottom: var(--spacing-6);
+        }
+        
+        .category-section {
+            background: var(--bg-primary);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-lg);
+            padding: var(--spacing-5);
+            transition: all var(--transition-base);
+        }
+        
+        .category-section:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-lg);
+        }
+        
+        .category-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: var(--spacing-4);
+            padding-bottom: var(--spacing-3);
+            border-bottom: 2px solid var(--border-color);
+        }
+        
+        .category-icon {
+            width: 48px;
+            height: 48px;
+            border-radius: var(--radius-md);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            color: white;
+            margin-right: var(--spacing-3);
+        }
+        
+        .category-icon.math {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+        }
+        
+        .category-icon.science {
+            background: linear-gradient(135deg, #f093fb, #f5576c);
+        }
+        
+        .category-icon.language {
+            background: linear-gradient(135deg, #4facfe, #00f2fe);
+        }
+        
+        .category-icon.business {
+            background: linear-gradient(135deg, #43e97b, #38f9d7);
+        }
+        
+        .category-icon.programming {
+            background: linear-gradient(135deg, #fa709a, #fee140);
+        }
+        
+        .category-icon.general {
+            background: linear-gradient(135deg, #a8edea, #fed6e3);
+        }
+        
+        .category-title {
+            font-size: 1.25rem;
+            font-weight: var(--font-weight-bold);
+            margin: 0;
+            color: var(--text-primary);
+        }
+        
+        .category-count {
+            font-size: var(--font-size-sm);
+            color: var(--text-secondary);
+            margin-top: var(--spacing-1);
+        }
+        
+        .template-grid {
+            display: grid;
+            gap: var(--spacing-3);
+        }
+        
+        .template-card {
+            background: var(--bg-secondary);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-md);
+            padding: var(--spacing-4);
+            transition: all var(--transition-base);
+            cursor: pointer;
+            position: relative;
+        }
+        
+        .template-card:hover {
+            border-color: var(--color-primary);
+            transform: translateX(4px);
+            box-shadow: var(--shadow-md);
+        }
+        
+        .template-header {
+            display: flex;
+            justify-content: between;
+            align-items: flex-start;
+            margin-bottom: var(--spacing-3);
+        }
+        
+        .template-title {
+            font-weight: var(--font-weight-semibold);
+            margin-bottom: var(--spacing-1);
+            flex: 1;
+        }
+        
+        .template-difficulty {
+            padding: 0.25rem 0.5rem;
+            border-radius: var(--radius-sm);
+            font-size: var(--font-size-xs);
+            font-weight: var(--font-weight-bold);
+            text-transform: uppercase;
+            margin-left: var(--spacing-2);
+        }
+        
+        .template-difficulty.easy {
+            background: var(--color-success-light, rgba(16, 185, 129, 0.2));
+            color: var(--color-success-dark, #047857);
+        }
+        
+        .template-difficulty.medium {
+            background: var(--color-warning-light, rgba(245, 158, 11, 0.2));
+            color: var(--color-warning-dark, #92400e);
+        }
+        
+        .template-difficulty.hard {
+            background: var(--color-danger-light, rgba(239, 68, 68, 0.2));
+            color: var(--color-danger-dark, #991b1b);
+        }
+        
+        .template-description {
+            color: var(--text-secondary);
+            font-size: var(--font-size-sm);
+            margin-bottom: var(--spacing-3);
+            line-height: 1.5;
+        }
+        
+        .template-meta {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: var(--font-size-xs);
+            color: var(--text-muted);
+            margin-bottom: var(--spacing-3);
+        }
+        
+        .template-actions {
+            display: flex;
+            gap: var(--spacing-2);
+        }
+        
+        .btn-template {
+            padding: var(--spacing-2) var(--spacing-3);
+            border-radius: var(--radius-sm);
+            font-size: var(--font-size-sm);
+            font-weight: var(--font-weight-medium);
+            cursor: pointer;
+            transition: all var(--transition-base);
+            border: none;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: var(--spacing-1);
+        }
+        
+        .btn-template.preview {
+            background: var(--color-info-light, rgba(59, 130, 246, 0.1));
+            color: var(--color-info, #3B82F6);
+        }
+        
+        .btn-template.preview:hover {
+            background: var(--color-info, #3B82F6);
+            color: white;
+        }
+        
+        .btn-template.use {
+            background: var(--color-primary);
+            color: white;
+        }
+        
+        .btn-template.use:hover {
+            background: var(--color-primary-dark, #1E4F78);
+        }
+        
+        .btn-template.save {
+            background: var(--color-success);
+            color: white;
+        }
+        
+        .btn-template.save:hover {
+            background: var(--color-success-dark, #047857);
+        }
+        
+        .popular-badge {
+            position: absolute;
+            top: -8px;
+            right: -8px;
+            background: var(--color-warning);
+            color: white;
+            padding: 0.25rem 0.5rem;
+            border-radius: var(--radius-full);
+            font-size: 0.75rem;
+            font-weight: var(--font-weight-bold);
+            text-transform: uppercase;
+        }
+        
+        .template-stats {
+            display: flex;
+            gap: var(--spacing-4);
+            margin-bottom: var(--spacing-4);
+        }
+        
+        .stat-item {
+            text-align: center;
+            flex: 1;
+        }
+        
+        .stat-value {
+            font-size: 1.5rem;
+            font-weight: var(--font-weight-bold);
+            color: var(--color-primary);
+            margin-bottom: var(--spacing-1);
+        }
+        
+        .stat-label {
+            font-size: var(--font-size-xs);
+            color: var(--text-secondary);
+            text-transform: uppercase;
+        }
+        
+        .create-template-section {
+            background: var(--bg-secondary);
+            border: 2px dashed var(--border-color);
+            border-radius: var(--radius-lg);
+            padding: var(--spacing-6);
+            text-align: center;
+            margin-bottom: var(--spacing-6);
+            transition: all var(--transition-base);
+        }
+        
+        .create-template-section:hover {
+            border-color: var(--color-primary);
+            background: var(--color-primary-light, rgba(44, 110, 170, 0.05));
+        }
+        
+        .create-template-icon {
+            font-size: 3rem;
+            color: var(--color-primary);
+            margin-bottom: var(--spacing-3);
+        }
+        
+        .create-template-title {
+            font-size: 1.25rem;
+            font-weight: var(--font-weight-bold);
+            margin-bottom: var(--spacing-2);
+        }
+        
+        .create-template-desc {
+            color: var(--text-secondary);
+            margin-bottom: var(--spacing-4);
+        }
+        
+        /* Modal Styles */
+        .template-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.5);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+        }
+        
+        .template-modal.active {
+            display: flex;
+        }
+        
+        .template-modal-content {
+            background: var(--bg-primary);
+            border-radius: var(--radius-lg);
+            padding: var(--spacing-6);
+            max-width: 800px;
+            max-height: 90vh;
+            overflow-y: auto;
+            margin: var(--spacing-4);
+            position: relative;
+        }
+        
+        .template-modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: var(--spacing-4);
+            padding-bottom: var(--spacing-3);
+            border-bottom: 1px solid var(--border-color);
+        }
+        
+        .template-modal-title {
+            font-size: 1.5rem;
+            font-weight: var(--font-weight-bold);
+            margin: 0;
+        }
+        
+        .template-close {
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            cursor: pointer;
+            color: var(--text-secondary);
+            padding: var(--spacing-2);
+            border-radius: 50%;
+            transition: all var(--transition-base);
+        }
+        
+        .template-close:hover {
+            background: var(--bg-tertiary);
+            color: var(--text-primary);
+        }
+        
+        .template-preview {
+            margin-bottom: var(--spacing-4);
+        }
+        
+        .preview-section {
+            margin-bottom: var(--spacing-4);
+        }
+        
+        .preview-section h4 {
+            font-weight: var(--font-weight-semibold);
+            margin-bottom: var(--spacing-2);
+            color: var(--color-primary);
+        }
+        
+        .question-preview {
+            background: var(--bg-secondary);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-md);
+            padding: var(--spacing-3);
+            margin-bottom: var(--spacing-2);
+        }
+        
+        .question-text {
+            font-weight: var(--font-weight-medium);
+            margin-bottom: var(--spacing-2);
+        }
+        
+        .question-options {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+        
+        .question-option {
+            padding: var(--spacing-1) 0;
+            color: var(--text-secondary);
+            font-size: var(--font-size-sm);
+        }
+        
+        .question-option.correct {
+            color: var(--color-success);
+            font-weight: var(--font-weight-medium);
+        }
+        
+        .template-modal-actions {
+            display: flex;
+            gap: var(--spacing-3);
+            justify-content: flex-end;
+            padding-top: var(--spacing-4);
+            border-top: 1px solid var(--border-color);
+        }
+        
+        /* Responsive */
+        @media (max-width: 768px) {
+            .template-categories {
+                grid-template-columns: 1fr;
+            }
+            
+            .filters-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .template-stats {
+                flex-direction: column;
+                gap: var(--spacing-2);
+            }
+            
+            .template-modal-content {
+                margin: var(--spacing-2);
+                max-width: calc(100vw - 32px);
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="page-container">
+        <!-- Templates Header -->
+        <div class="templates-header">
+            <div style="display: flex; justify-content: space-between; align-items: center;">
+                <div>
+                    <h1 class="templates-title" data-translate="quiz.templates">Quiz Templates</h1>
+                    <p class="templates-subtitle" data-translate="quiz.templatesSubtitle">Ready-to-use quiz templates to accelerate your quiz creation</p>
+                </div>
+                <div style="display: flex; gap: var(--spacing-3);">
+                    <button class="btn btn--secondary" style="color: white; border-color: rgba(255,255,255,0.3);" onclick="refreshTemplates()">
+                        <i class="fas fa-sync-alt" style="margin-right: 8px;"></i>
+                        <span data-translate="common.refresh">Refresh</span>
+                    </button>
+                    <button class="btn btn--success" onclick="showCreateTemplate()">
+                        <i class="fas fa-plus" style="margin-right: 8px;"></i>
+                        <span data-translate="quiz.createTemplate">Create Template</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <div class="page-content">
+            <!-- Template Statistics -->
+            <div class="card">
+                <div class="card__body">
+                    <div class="template-stats">
+                        <div class="stat-item">
+                            <div class="stat-value" id="totalTemplates">24</div>
+                            <div class="stat-label" data-translate="quiz.totalTemplates">Total Templates</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-value" id="categoriesCount">6</div>
+                            <div class="stat-label" data-translate="quiz.categories">Categories</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-value" id="popularTemplates">8</div>
+                            <div class="stat-label" data-translate="quiz.popularTemplates">Popular</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-value" id="myTemplates">3</div>
+                            <div class="stat-label" data-translate="quiz.myTemplates">My Templates</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Filter Section -->
+            <div class="template-filters">
+                <div class="filters-grid">
+                    <div class="form-group">
+                        <label class="form-label" data-translate="quiz.filterByCategory">Category</label>
+                        <select id="categoryFilter" class="form-select" onchange="filterTemplates()">
+                            <option value="" data-translate="quiz.allCategories">All Categories</option>
+                            <option value="math" data-translate="quiz.math">Mathematics</option>
+                            <option value="science" data-translate="quiz.science">Science</option>
+                            <option value="language" data-translate="quiz.language">Language Arts</option>
+                            <option value="business" data-translate="quiz.business">Business</option>
+                            <option value="programming" data-translate="quiz.programming">Programming</option>
+                            <option value="general" data-translate="quiz.general">General Knowledge</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label" data-translate="quiz.difficulty">Difficulty</label>
+                        <select id="difficultyFilter" class="form-select" onchange="filterTemplates()">
+                            <option value="" data-translate="quiz.allDifficulties">All Difficulties</option>
+                            <option value="easy" data-translate="quiz.easy">Easy</option>
+                            <option value="medium" data-translate="quiz.medium">Medium</option>
+                            <option value="hard" data-translate="quiz.hard">Hard</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label" data-translate="quiz.searchTemplates">Search</label>
+                        <input type="text" id="searchInput" class="form-input" placeholder="Search templates..." onkeyup="filterTemplates()">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label" data-translate="quiz.sortBy">Sort By</label>
+                        <select id="sortFilter" class="form-select" onchange="filterTemplates()">
+                            <option value="popular" data-translate="quiz.popularity">Popularity</option>
+                            <option value="newest" data-translate="quiz.newest">Newest</option>
+                            <option value="title" data-translate="quiz.title">Title</option>
+                            <option value="difficulty" data-translate="quiz.difficulty">Difficulty</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Create Template Section -->
+            <div class="create-template-section" onclick="showCreateTemplate()">
+                <div class="create-template-icon">
+                    <i class="fas fa-plus-circle"></i>
+                </div>
+                <h3 class="create-template-title" data-translate="quiz.createNewTemplate">Create New Template</h3>
+                <p class="create-template-desc" data-translate="quiz.createTemplateDesc">Build your own quiz template from scratch or save an existing quiz as a template</p>
+                <button class="btn btn--primary">
+                    <i class="fas fa-magic" style="margin-right: 8px;"></i>
+                    <span data-translate="quiz.startCreating">Start Creating</span>
+                </button>
+            </div>
+
+            <!-- Template Categories -->
+            <div class="template-categories" id="templateCategories">
+                <!-- Dynamic template categories -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Template Preview Modal -->
+    <div class="template-modal" id="templateModal">
+        <div class="template-modal-content">
+            <div class="template-modal-header">
+                <h3 class="template-modal-title" id="modalTitle">Template Preview</h3>
+                <button class="template-close" onclick="closeModal()">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="template-preview" id="templatePreview">
+                <!-- Dynamic preview content -->
+            </div>
+            <div class="template-modal-actions">
+                <button class="btn btn--secondary" onclick="closeModal()">
+                    <i class="fas fa-times" style="margin-right: 8px;"></i>
+                    <span data-translate="common.cancel">Cancel</span>
+                </button>
+                <button class="btn btn--primary" onclick="useTemplate()">
+                    <i class="fas fa-check" style="margin-right: 8px;"></i>
+                    <span data-translate="quiz.useTemplate">Use Template</span>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Core JavaScript -->
+    <script src="../assets/js/global.js"></script>
+    <script src="../assets/js/auth.js"></script>
+    <script src="../assets/js/api.js"></script>
+    
+    <script>
+        // State management
+        let allTemplates = [];
+        let filteredTemplates = [];
+        let currentUser = LMS.Auth.getUser();
+        let selectedTemplate = null;
+
+        // Initialize
+        async function init() {
+            // Check authentication - teachers and admins only
+            if (!LMS.Auth.isAuthenticated() || !currentUser || 
+                (currentUser.role !== 'teacher' && currentUser.role !== 'admin')) {
+                window.location.href = '../index.html';
+                return;
+            }
+
+            // Load translations
+            await LMS.LanguageManager.init();
+            LMS.LanguageManager.updatePageTranslations();
+            
+            // Generate mock templates
+            allTemplates = generateMockTemplates();
+            filteredTemplates = [...allTemplates];
+            
+            // Render templates
+            renderTemplates();
+            updateStatistics();
+        }
+
+        // Generate mock templates
+        function generateMockTemplates() {
+            const categories = ['math', 'science', 'language', 'business', 'programming', 'general'];
+            const difficulties = ['easy', 'medium', 'hard'];
+            const templates = [];
+
+            const templateData = [
+                // Math templates
+                { category: 'math', title: 'Basic Algebra Quiz', difficulty: 'easy', questions: 10, description: 'Fundamental algebra concepts and equations' },
+                { category: 'math', title: 'Calculus Assessment', difficulty: 'hard', questions: 15, description: 'Derivatives, integrals, and limits' },
+                { category: 'math', title: 'Geometry Fundamentals', difficulty: 'medium', questions: 12, description: 'Shapes, angles, and geometric proofs' },
+                { category: 'math', title: 'Statistics & Probability', difficulty: 'medium', questions: 14, description: 'Data analysis and probability theory' },
+                
+                // Science templates
+                { category: 'science', title: 'Biology Basics', difficulty: 'easy', questions: 12, description: 'Cell structure, genetics, and evolution' },
+                { category: 'science', title: 'Chemistry Lab Safety', difficulty: 'easy', questions: 8, description: 'Laboratory safety protocols and procedures' },
+                { category: 'science', title: 'Physics Mechanics', difficulty: 'hard', questions: 16, description: 'Motion, forces, and energy' },
+                { category: 'science', title: 'Environmental Science', difficulty: 'medium', questions: 13, description: 'Ecosystems, climate, and sustainability' },
+                
+                // Language templates
+                { category: 'language', title: 'Grammar Essentials', difficulty: 'easy', questions: 15, description: 'Parts of speech, sentence structure' },
+                { category: 'language', title: 'Literature Analysis', difficulty: 'hard', questions: 10, description: 'Literary devices and critical thinking' },
+                { category: 'language', title: 'Vocabulary Builder', difficulty: 'medium', questions: 20, description: 'Word meanings and usage' },
+                { category: 'language', title: 'Creative Writing', difficulty: 'medium', questions: 8, description: 'Writing techniques and style' },
+                
+                // Business templates
+                { category: 'business', title: 'Marketing Fundamentals', difficulty: 'medium', questions: 12, description: '4Ps of marketing and consumer behavior' },
+                { category: 'business', title: 'Financial Literacy', difficulty: 'easy', questions: 14, description: 'Personal finance and budgeting' },
+                { category: 'business', title: 'Business Ethics', difficulty: 'medium', questions: 10, description: 'Ethical decision making in business' },
+                { category: 'business', title: 'Project Management', difficulty: 'hard', questions: 16, description: 'Planning, execution, and monitoring' },
+                
+                // Programming templates
+                { category: 'programming', title: 'JavaScript Basics', difficulty: 'easy', questions: 15, description: 'Variables, functions, and basic syntax' },
+                { category: 'programming', title: 'Object-Oriented Programming', difficulty: 'hard', questions: 12, description: 'Classes, inheritance, and polymorphism' },
+                { category: 'programming', title: 'Database Design', difficulty: 'medium', questions: 14, description: 'SQL queries and database structure' },
+                { category: 'programming', title: 'Web Development', difficulty: 'medium', questions: 18, description: 'HTML, CSS, and responsive design' },
+                
+                // General templates
+                { category: 'general', title: 'Current Events', difficulty: 'easy', questions: 10, description: 'Recent news and global affairs' },
+                { category: 'general', title: 'Geography Quiz', difficulty: 'medium', questions: 16, description: 'Countries, capitals, and landmarks' },
+                { category: 'general', title: 'History Timeline', difficulty: 'hard', questions: 12, description: 'Major historical events and dates' },
+                { category: 'general', title: 'Cultural Awareness', difficulty: 'easy', questions: 14, description: 'World cultures and traditions' }
+            ];
+
+            templateData.forEach((template, index) => {
+                const isPopular = Math.random() > 0.7;
+                const usageCount = Math.floor(Math.random() * 500) + 50;
+                
+                templates.push({
+                    id: `template_${String(index + 1).padStart(3, '0')}`,
+                    title: template.title,
+                    description: template.description,
+                    category: template.category,
+                    difficulty: template.difficulty,
+                    questionCount: template.questions,
+                    usageCount: usageCount,
+                    isPopular: isPopular,
+                    createdBy: Math.random() > 0.5 ? currentUser.id : 'system',
+                    createdAt: new Date(Date.now() - Math.random() * 90 * 24 * 60 * 60 * 1000).toISOString(),
+                    lastUsed: new Date(Date.now() - Math.random() * 30 * 24 * 60 * 60 * 1000).toISOString(),
+                    tags: generateTags(template.category),
+                    questions: generateSampleQuestions(template.questions, template.difficulty)
+                });
+            });
+
+            return templates.sort((a, b) => b.usageCount - a.usageCount);
+        }
+
+        // Generate tags for template
+        function generateTags(category) {
+            const tagMap = {
+                math: ['numbers', 'equations', 'problem-solving', 'calculation'],
+                science: ['experiment', 'theory', 'analysis', 'research'],
+                language: ['reading', 'writing', 'comprehension', 'communication'],
+                business: ['strategy', 'management', 'finance', 'leadership'],
+                programming: ['coding', 'logic', 'algorithms', 'development'],
+                general: ['knowledge', 'facts', 'trivia', 'culture']
+            };
+            
+            const tags = tagMap[category] || ['general'];
+            return tags.slice(0, Math.floor(Math.random() * 3) + 2);
+        }
+
+        // Generate sample questions for preview
+        function generateSampleQuestions(count, difficulty) {
+            const questions = [];
+            const sampleCount = Math.min(3, count); // Show max 3 questions in preview
+            
+            for (let i = 0; i < sampleCount; i++) {
+                questions.push({
+                    id: `q${i + 1}`,
+                    type: 'multiple_choice',
+                    text: `Sample question ${i + 1} for ${difficulty} difficulty level. This demonstrates the type of content you can expect.`,
+                    options: [
+                        'Option A - First possible answer',
+                        'Option B - Second possible answer', 
+                        'Option C - Third possible answer',
+                        'Option D - Fourth possible answer'
+                    ],
+                    correctAnswer: 0,
+                    points: difficulty === 'easy' ? 1 : difficulty === 'medium' ? 2 : 3
+                });
+            }
+            
+            return questions;
+        }
+
+        // Filter templates
+        function filterTemplates() {
+            const category = document.getElementById('categoryFilter').value;
+            const difficulty = document.getElementById('difficultyFilter').value;
+            const search = document.getElementById('searchInput').value.toLowerCase();
+            const sort = document.getElementById('sortFilter').value;
+
+            filteredTemplates = allTemplates.filter(template => {
+                const matchesCategory = !category || template.category === category;
+                const matchesDifficulty = !difficulty || template.difficulty === difficulty;
+                const matchesSearch = !search || 
+                    template.title.toLowerCase().includes(search) ||
+                    template.description.toLowerCase().includes(search) ||
+                    template.tags.some(tag => tag.toLowerCase().includes(search));
+                
+                return matchesCategory && matchesDifficulty && matchesSearch;
+            });
+
+            // Sort templates
+            filteredTemplates.sort((a, b) => {
+                switch (sort) {
+                    case 'newest':
+                        return new Date(b.createdAt) - new Date(a.createdAt);
+                    case 'title':
+                        return a.title.localeCompare(b.title);
+                    case 'difficulty':
+                        const difficultyOrder = { easy: 1, medium: 2, hard: 3 };
+                        return difficultyOrder[a.difficulty] - difficultyOrder[b.difficulty];
+                    case 'popular':
+                    default:
+                        return b.usageCount - a.usageCount;
+                }
+            });
+
+            renderTemplates();
+        }
+
+        // Render templates by category
+        function renderTemplates() {
+            const container = document.getElementById('templateCategories');
+            const categories = ['math', 'science', 'language', 'business', 'programming', 'general'];
+            
+            container.innerHTML = categories.map(category => {
+                const categoryTemplates = filteredTemplates.filter(t => t.category === category);
+                
+                if (categoryTemplates.length === 0) return '';
+                
+                return `
+                    <div class="category-section">
+                        <div class="category-header">
+                            <div class="category-icon ${category}">
+                                <i class="fas fa-${getCategoryIcon(category)}"></i>
+                            </div>
+                            <div>
+                                <h3 class="category-title" data-translate="quiz.${category}">${getCategoryName(category)}</h3>
+                                <p class="category-count">${categoryTemplates.length} ${LMS.t('quiz.templates')}</p>
+                            </div>
+                        </div>
+                        <div class="template-grid">
+                            ${categoryTemplates.map(template => renderTemplateCard(template)).join('')}
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        // Get category icon
+        function getCategoryIcon(category) {
+            const icons = {
+                math: 'calculator',
+                science: 'flask',
+                language: 'book',
+                business: 'briefcase',
+                programming: 'code',
+                general: 'lightbulb'
+            };
+            return icons[category] || 'folder';
+        }
+
+        // Get category name
+        function getCategoryName(category) {
+            const names = {
+                math: 'Mathematics',
+                science: 'Science',
+                language: 'Language Arts',
+                business: 'Business',
+                programming: 'Programming',
+                general: 'General Knowledge'
+            };
+            return names[category] || category;
+        }
+
+        // Render template card
+        function renderTemplateCard(template) {
+            return `
+                <div class="template-card" onclick="previewTemplate('${template.id}')">
+                    ${template.isPopular ? '<div class="popular-badge">Popular</div>' : ''}
+                    <div class="template-header">
+                        <div class="template-title">${template.title}</div>
+                        <span class="template-difficulty ${template.difficulty}">${template.difficulty}</span>
+                    </div>
+                    <div class="template-description">${template.description}</div>
+                    <div class="template-meta">
+                        <span><i class="fas fa-question-circle"></i> ${template.questionCount} questions</span>
+                        <span><i class="fas fa-users"></i> ${template.usageCount} uses</span>
+                    </div>
+                    <div class="template-actions" onclick="event.stopPropagation()">
+                        <button class="btn-template preview" onclick="previewTemplate('${template.id}')" title="${LMS.t('quiz.preview')}">
+                            <i class="fas fa-eye"></i>
+                            <span data-translate="quiz.preview">Preview</span>
+                        </button>
+                        <button class="btn-template use" onclick="useTemplate('${template.id}')" title="${LMS.t('quiz.useTemplate')}">
+                            <i class="fas fa-play"></i>
+                            <span data-translate="quiz.use">Use</span>
+                        </button>
+                        ${template.createdBy === currentUser.id ? `
+                            <button class="btn-template save" onclick="saveTemplate('${template.id}')" title="${LMS.t('quiz.save')}">
+                                <i class="fas fa-save"></i>
+                            </button>
+                        ` : ''}
+                    </div>
+                </div>
+            `;
+        }
+
+        // Update statistics
+        function updateStatistics() {
+            document.getElementById('totalTemplates').textContent = allTemplates.length;
+            document.getElementById('categoriesCount').textContent = 6;
+            document.getElementById('popularTemplates').textContent = allTemplates.filter(t => t.isPopular).length;
+            document.getElementById('myTemplates').textContent = allTemplates.filter(t => t.createdBy === currentUser.id).length;
+        }
+
+        // Preview template
+        function previewTemplate(templateId) {
+            const template = allTemplates.find(t => t.id === templateId);
+            if (!template) return;
+
+            selectedTemplate = template;
+            document.getElementById('modalTitle').textContent = `${LMS.t('quiz.preview')}: ${template.title}`;
+            
+            const previewHTML = `
+                <div class="preview-section">
+                    <h4 data-translate="quiz.templateInfo">Template Information</h4>
+                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem; margin-bottom: 1rem;">
+                        <div><strong data-translate="quiz.category">Category:</strong> ${getCategoryName(template.category)}</div>
+                        <div><strong data-translate="quiz.difficulty">Difficulty:</strong> <span class="template-difficulty ${template.difficulty}">${template.difficulty}</span></div>
+                        <div><strong data-translate="quiz.questions">Questions:</strong> ${template.questionCount}</div>
+                        <div><strong data-translate="quiz.usageCount">Used:</strong> ${template.usageCount} times</div>
+                    </div>
+                    <div><strong data-translate="quiz.description">Description:</strong> ${template.description}</div>
+                </div>
+                
+                <div class="preview-section">
+                    <h4 data-translate="quiz.sampleQuestions">Sample Questions</h4>
+                    ${template.questions.map((question, index) => `
+                        <div class="question-preview">
+                            <div class="question-text"><strong data-translate="quiz.question">Question ${index + 1}:</strong> ${question.text}</div>
+                            <ul class="question-options">
+                                ${question.options.map((option, optIndex) => `
+                                    <li class="question-option ${optIndex === question.correctAnswer ? 'correct' : ''}">
+                                        ${String.fromCharCode(65 + optIndex)}. ${option}
+                                        ${optIndex === question.correctAnswer ? ' ✓' : ''}
+                                    </li>
+                                `).join('')}
+                            </ul>
+                        </div>
+                    `).join('')}
+                    ${template.questionCount > 3 ? `<p style="color: var(--text-secondary); font-style: italic;">... and ${template.questionCount - 3} more questions</p>` : ''}
+                </div>
+                
+                <div class="preview-section">
+                    <h4 data-translate="quiz.tags">Tags</h4>
+                    <div style="display: flex; flex-wrap: wrap; gap: 0.5rem;">
+                        ${template.tags.map(tag => `<span class="badge badge--secondary">${tag}</span>`).join('')}
+                    </div>
+                </div>
+            `;
+            
+            document.getElementById('templatePreview').innerHTML = previewHTML;
+            document.getElementById('templateModal').classList.add('active');
+        }
+
+        // Use template
+        function useTemplate(templateId = null) {
+            const template = templateId ? allTemplates.find(t => t.id === templateId) : selectedTemplate;
+            if (!template) return;
+
+            // Close modal if open
+            closeModal();
+            
+            // In real implementation, navigate to quiz builder with template data
+            LMS.showToast(`Using template: ${template.title}`, 'success');
+            
+            // Simulate navigation to quiz builder
+            setTimeout(() => {
+                window.location.href = `quiz-builder.html?template=${template.id}`;
+            }, 1000);
+        }
+
+        // Save template (for user's own templates)
+        function saveTemplate(templateId) {
+            const template = allTemplates.find(t => t.id === templateId);
+            if (!template) return;
+
+            // For demo, just show success message
+            LMS.showToast(`Template "${template.title}" saved to your library!`, 'success');
+        }
+
+        // Show create template
+        function showCreateTemplate() {
+            // In real implementation, navigate to template creation page
+            LMS.showToast(LMS.t('quiz.createTemplateRedirect'), 'info');
+            setTimeout(() => {
+                window.location.href = 'quiz-builder.html?mode=template';
+            }, 1000);
+        }
+
+        // Close modal
+        function closeModal() {
+            document.getElementById('templateModal').classList.remove('active');
+            selectedTemplate = null;
+        }
+
+        // Refresh templates
+        function refreshTemplates() {
+            allTemplates = generateMockTemplates();
+            filterTemplates();
+            updateStatistics();
+            LMS.showToast(LMS.t('quiz.templatesRefreshed'), 'success');
+        }
+
+        // Close modal on outside click
+        document.getElementById('templateModal').addEventListener('click', function(e) {
+            if (e.target === this) {
+                closeModal();
+            }
+        });
+
+        // Close modal on escape key
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape') {
+                closeModal();
+            }
+        });
+
+        // Initialize on load
+        document.addEventListener('DOMContentLoaded', init);
+    </script>
+</body>
+</html>

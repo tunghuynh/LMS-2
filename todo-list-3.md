@@ -390,7 +390,7 @@ This is the master TODO list for LMS Phase I development following the Foundatio
   - Difficulty tagging
 
 #### 3.3 Quiz Templates
-- [ ] **3.3.1** Template Library (`quiz-templates.html`):
+- [x] **3.3.1** Template Library (`quiz-templates.html`):
   - Pre-built quiz templates
   - Category-wise organization
   - Preview before use
@@ -526,10 +526,10 @@ This is the master TODO list for LMS Phase I development following the Foundatio
 - Phase 0 Foundation: 38/38 tasks (100%) ✅
 - Phase I.1 User Management: 23/23 tasks (100%) ✅  
 - Phase I.2 Learning System: 18/26 tasks (69.2%) ✅ **Module hoàn thành 69%**
-- Phase I.3 Testing System: 11/24 tasks (45.8%) 🚀 **Quiz History hoàn thành!**
+- Phase I.3 Testing System: 12/24 tasks (50.0%) 🚀 **Template Library hoàn thành!**
 - Integration & Testing: 0/28 tasks (0%)
 
-**Total: 90/139 tasks (64.7%)**
+**Total: 91/139 tasks (65.5%)**
 
 ### Critical Path
 1. Phase 0 must be 100% complete
