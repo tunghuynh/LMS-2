@@ -17,18 +17,18 @@
     <div class="page-container">
         <!-- Page Header -->
         <div class="page-header">
-            <div style="display: flex; justify-content: space-between; align-items: center;">
+            <div class="flex-between">
                 <div>
                     <h1 class="page-title" data-translate="quiz.availableQuizzes">Available Quizzes</h1>
                     <p class="page-subtitle" data-translate="quiz.studentQuizSubtitle">Browse and take quizzes from your enrolled courses</p>
                 </div>
-                <div style="display: flex; gap: var(--spacing-3);">
+                <div class="flex flex-gap-3">
                     <button class="btn btn--secondary" onclick="refreshQuizzes()">
-                        <i class="fas fa-sync-alt" style="margin-right: 8px;"></i>
+                        <i class="fas fa-sync-alt" class="icon-mr"></i>
                         <span data-translate="common.refresh">Refresh</span>
                     </button>
                     <button class="btn btn--primary" onclick="viewHistory()">
-                        <i class="fas fa-history" style="margin-right: 8px;"></i>
+                        <i class="fas fa-history" class="icon-mr"></i>
                         <span data-translate="quiz.viewHistory">View History</span>
                     </button>
                 </div>
@@ -39,27 +39,27 @@
             <!-- Student Quiz Stats -->
             <div class="grid grid--4-cols" style="margin-bottom: var(--spacing-6);">
                 <div class="card">
-                    <div class="card__body" style="text-align: center;">
-                        <div style="font-size: 2rem; font-weight: var(--font-weight-bold); color: var(--color-primary);" id="availableQuizzes">0</div>
-                        <div style="color: var(--text-secondary);" data-translate="quiz.availableQuizzes">Available Quizzes</div>
+                    <div class="card__body" class="text-center">
+                        <div class="text-2xl font-bold text-primary" id="availableQuizzes">0</div>
+                        <div class="text-secondary" data-translate="quiz.availableQuizzes">Available Quizzes</div>
                     </div>
                 </div>
                 <div class="card">
-                    <div class="card__body" style="text-align: center;">
-                        <div style="font-size: 2rem; font-weight: var(--font-weight-bold); color: var(--color-success);" id="completedQuizzes">0</div>
-                        <div style="color: var(--text-secondary);" data-translate="quiz.completedQuizzes">Completed</div>
+                    <div class="card__body" class="text-center">
+                        <div class="text-2xl font-bold text-success" id="completedQuizzes">0</div>
+                        <div class="text-secondary" data-translate="quiz.completedQuizzes">Completed</div>
                     </div>
                 </div>
                 <div class="card">
-                    <div class="card__body" style="text-align: center;">
+                    <div class="card__body" class="text-center">
                         <div style="font-size: 2rem; font-weight: var(--font-weight-bold); color: var(--color-warning);" id="pendingQuizzes">0</div>
-                        <div style="color: var(--text-secondary);" data-translate="quiz.pendingQuizzes">Pending</div>
+                        <div class="text-secondary" data-translate="quiz.pendingQuizzes">Pending</div>
                     </div>
                 </div>
                 <div class="card">
-                    <div class="card__body" style="text-align: center;">
+                    <div class="card__body" class="text-center">
                         <div style="font-size: 2rem; font-weight: var(--font-weight-bold); color: var(--color-info);" id="averageScore">0%</div>
-                        <div style="color: var(--text-secondary);" data-translate="quiz.averageScore">Average Score</div>
+                        <div class="text-secondary" data-translate="quiz.averageScore">Average Score</div>
                     </div>
                 </div>
             </div>
@@ -120,11 +120,11 @@
             </div>
             <div class="modal__footer">
                 <button type="button" class="btn btn--secondary" onclick="closeDetailModal()">
-                    <i class="fas fa-times" style="margin-right: 8px;"></i>
+                    <i class="fas fa-times" class="icon-mr"></i>
                     <span data-translate="common.close">Close</span>
                 </button>
                 <button type="button" class="btn btn--primary" onclick="startQuiz()" id="startQuizBtn">
-                    <i class="fas fa-play" style="margin-right: 8px;"></i>
+                    <i class="fas fa-play" class="icon-mr"></i>
                     <span data-translate="quiz.startQuiz">Start Quiz</span>
                 </button>
             </div>
@@ -355,7 +355,7 @@
                     <div class="card" style="text-align: center; padding: var(--spacing-8);">
                         <i class="fas fa-clipboard-list" style="font-size: 3rem; color: var(--text-muted); margin-bottom: var(--spacing-4);"></i>
                         <h3 style="margin-bottom: var(--spacing-2);" data-translate="quiz.noQuizzesAvailable">No quizzes available</h3>
-                        <p style="color: var(--text-secondary);" data-translate="quiz.enrollInCourses">Enroll in courses to access quizzes</p>
+                        <p class="text-secondary" data-translate="quiz.enrollInCourses">Enroll in courses to access quizzes</p>
                     </div>
                 `;
                 return;
@@ -406,20 +406,20 @@
                         </div>
 
                         <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: var(--spacing-3); margin-bottom: var(--spacing-4); padding: var(--spacing-3); background: var(--bg-secondary); border-radius: var(--radius-sm);">
-                            <div style="text-align: center;">
+                            <div class="text-center">
                                 <div style="font-weight: var(--font-weight-bold); color: var(--color-primary);">${quiz.questionCount}</div>
                                 <div style="font-size: var(--font-size-xs); color: var(--text-secondary);" data-translate="quiz.questions">Questions</div>
                             </div>
-                            <div style="text-align: center;">
+                            <div class="text-center">
                                 <div style="font-weight: var(--font-weight-bold); color: var(--color-info);">${quiz.timeLimit}m</div>
                                 <div style="font-size: var(--font-size-xs); color: var(--text-secondary);" data-translate="quiz.timeLimit">Time Limit</div>
                             </div>
-                            <div style="text-align: center;">
+                            <div class="text-center">
                                 <div style="font-weight: var(--font-weight-bold); color: var(--color-warning);">
                                     <span class="badge badge--${quiz.difficulty === 'easy' ? 'success' : quiz.difficulty === 'medium' ? 'warning' : 'danger'}">${quiz.difficulty}</span>
                                 </div>
                             </div>
-                            <div style="text-align: center;">
+                            <div class="text-center">
                                 <div style="font-weight: var(--font-weight-bold); color: var(--color-success);">
                                     ${attempts.length}/${quiz.maxAttempts}
                                 </div>
@@ -429,7 +429,7 @@
 
                         ${bestScore !== null ? `
                             <div style="background: var(--color-${bestScore >= quiz.passingScore ? 'success' : 'warning'}-light, rgba(16, 185, 129, 0.1)); padding: var(--spacing-2); border-radius: var(--radius-sm); margin-bottom: var(--spacing-3);">
-                                <div style="display: flex; justify-content: space-between; align-items: center;">
+                                <div class="flex-between">
                                     <span style="font-size: var(--font-size-sm);" data-translate="quiz.bestScore">Best Score:</span>
                                     <span style="font-weight: var(--font-weight-bold); color: var(--color-${bestScore >= quiz.passingScore ? 'success' : 'warning'});">${bestScore}%</span>
                                 </div>
@@ -573,13 +573,13 @@
             if (status === 'available') {
                 startBtn.style.display = 'block';
                 startBtn.innerHTML = `
-                    <i class="fas fa-play" style="margin-right: 8px;"></i>
+                    <i class="fas fa-play" class="icon-mr"></i>
                     <span data-translate="quiz.startQuiz">Start Quiz</span>
                 `;
             } else if (status === 'completed') {
                 startBtn.style.display = 'block';
                 startBtn.innerHTML = `
-                    <i class="fas fa-chart-bar" style="margin-right: 8px;"></i>
+                    <i class="fas fa-chart-bar" class="icon-mr"></i>
                     <span data-translate="quiz.viewResults">View Results</span>
                 `;
             } else {
