@@ -309,7 +309,10 @@
     "titleRequired": "Tiêu đề bài kiểm tra là bắt buộc",
     "courseRequired": "Vui lòng chọn khóa học",
     "questionsRequired": "Bài kiểm tra phải có ít nhất một câu hỏi",
-    "correctAnswerRequired": "Mỗi câu hỏi phải có ít nhất một đáp án đúng"
+    "correctAnswerRequired": "Mỗi câu hỏi phải có ít nhất một đáp án đúng",
+    "templateNameRequired": "Tên mẫu là bắt buộc",
+    "categoryRequired": "Danh mục là bắt buộc",
+    "difficultyRequired": "Mức độ khó là bắt buộc"
   },
   
   "messages": {
@@ -747,7 +750,33 @@
     "sampleQuestions": "Câu Hỏi Mẫu",
     "tags": "Thẻ",
     "templatesRefreshed": "Làm mới mẫu thành công!",
-    "createTemplateRedirect": "Đang chuyển hướng đến trình tạo mẫu..."
+    "createTemplateRedirect": "Đang chuyển hướng đến trình tạo mẫu...",
+    "saveAsTemplate": "Lưu Thành Mẫu",
+    "templateName": "Tên Mẫu",
+    "templateNamePlaceholder": "Nhập tên mẫu...",
+    "templateDescription": "Mô Tả Mẫu",
+    "templateDescPlaceholder": "Mô tả mẫu này dùng để làm gì...",
+    "templateCategory": "Danh Mục Mẫu",
+    "selectCategory": "Chọn Danh Mục",
+    "templateDifficulty": "Mức Độ Khó",
+    "selectDifficulty": "Chọn Độ Khó",
+    "templateTags": "Thẻ",
+    "templateTagsPlaceholder": "ví dụ: đại số, phương trình, cơ bản",
+    "templateTagsHelp": "Thêm các thẻ liên quan để giúp người khác tìm thấy mẫu của bạn",
+    "templateSharing": "Cài Đặt Chia Sẻ",
+    "privateTemplate": "Riêng Tư",
+    "privateTemplateDesc": "Chỉ bạn mới có thể xem và sử dụng mẫu này",
+    "publicTemplate": "Công Khai",
+    "publicTemplateDesc": "Có sẵn cho tất cả giáo viên trong hệ thống",
+    "schoolTemplate": "Chỉ Trường",
+    "schoolTemplateDesc": "Có sẵn cho giáo viên trong trường của bạn",
+    "templateSummary": "Tóm Tắt Mẫu",
+    "totalPoints": "Tổng Điểm",
+    "estimatedTime": "Thời Gian Ước Tính",
+    "saveTemplate": "Lưu Mẫu",
+    "noQuestionsToSave": "Vui lòng thêm ít nhất một câu hỏi trước khi lưu thành mẫu",
+    "templateSaved": "Mẫu '{name}' đã được lưu thành công!",
+    "viewTemplateLibrary": "Bạn có muốn xem thư viện mẫu không?"
   },
   
   "error": {
@@ -758,7 +787,8 @@
     "quizNotFound": "Không tìm thấy bài kiểm tra",
     "accessDenied": "Truy cập bị từ chối",
     "loadData": "Không thể tải dữ liệu",
-    "backToCourse": "Quay lại khóa học"
+    "backToCourse": "Quay lại khóa học",
+    "templateSaveFailed": "Không thể lưu mẫu. Vui lòng thử lại."
   },
   
   "pagination": {

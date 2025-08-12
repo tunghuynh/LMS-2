@@ -184,6 +184,10 @@
                         <i class="fas fa-eye" style="margin-right: 8px;"></i>
                         <span data-translate="quiz.preview">Preview</span>
                     </button>
+                    <button class="btn btn--secondary" onclick="saveAsTemplate()" id="saveTemplateBtn">
+                        <i class="fas fa-file-archive" style="margin-right: 8px;"></i>
+                        <span data-translate="quiz.saveAsTemplate">Save as Template</span>
+                    </button>
                     <button class="btn btn--secondary" onclick="saveDraft()" id="saveDraftBtn">
                         <i class="fas fa-save" style="margin-right: 8px;"></i>
                         <span data-translate="quiz.saveDraft">Save Draft</span>
@@ -384,6 +388,131 @@
             </div>
             <div id="previewContent">
                 <!-- Dynamic preview content -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Save as Template Modal -->
+    <div class="modal" id="templateModal">
+        <div class="modal__content">
+            <div class="modal__header">
+                <h3 data-translate="quiz.saveAsTemplate">Save as Template</h3>
+                <button class="modal__close" onclick="closeTemplateModal()">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="modal__body">
+                <form id="templateForm">
+                    <div class="form-group">
+                        <label class="form-label" data-translate="quiz.templateName">Template Name</label>
+                        <input type="text" id="templateName" class="form-input" required 
+                               data-translate-placeholder="quiz.templateNamePlaceholder">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label" data-translate="quiz.templateDescription">Template Description</label>
+                        <textarea id="templateDescription" class="form-textarea" rows="3" 
+                                  data-translate-placeholder="quiz.templateDescPlaceholder"></textarea>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label" data-translate="quiz.templateCategory">Category</label>
+                        <select id="templateCategory" class="form-select" required>
+                            <option value="" data-translate="quiz.selectCategory">Select Category</option>
+                            <option value="math" data-translate="quiz.math">Mathematics</option>
+                            <option value="science" data-translate="quiz.science">Science</option>
+                            <option value="language" data-translate="quiz.language">Language Arts</option>
+                            <option value="business" data-translate="quiz.business">Business</option>
+                            <option value="programming" data-translate="quiz.programming">Programming</option>
+                            <option value="general" data-translate="quiz.general">General Knowledge</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label" data-translate="quiz.templateDifficulty">Difficulty Level</label>
+                        <select id="templateDifficulty" class="form-select" required>
+                            <option value="" data-translate="quiz.selectDifficulty">Select Difficulty</option>
+                            <option value="easy" data-translate="quiz.easy">Easy</option>
+                            <option value="medium" data-translate="quiz.medium">Medium</option>
+                            <option value="hard" data-translate="quiz.hard">Hard</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label" data-translate="quiz.templateTags">Tags (comma-separated)</label>
+                        <input type="text" id="templateTags" class="form-input" 
+                               data-translate-placeholder="quiz.templateTagsPlaceholder">
+                        <div class="form-help" data-translate="quiz.templateTagsHelp">
+                            Add relevant tags to help others find your template
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label" data-translate="quiz.templateSharing">Sharing Settings</label>
+                        <div style="display: flex; flex-direction: column; gap: var(--spacing-2);">
+                            <label class="checkbox-label">
+                                <input type="radio" name="sharing" value="private" checked>
+                                <span class="radio-custom"></span>
+                                <div>
+                                    <span data-translate="quiz.privateTemplate">Private</span>
+                                    <small style="display: block; color: var(--text-secondary);" data-translate="quiz.privateTemplateDesc">
+                                        Only you can see and use this template
+                                    </small>
+                                </div>
+                            </label>
+                            
+                            <label class="checkbox-label">
+                                <input type="radio" name="sharing" value="public">
+                                <span class="radio-custom"></span>
+                                <div>
+                                    <span data-translate="quiz.publicTemplate">Public</span>
+                                    <small style="display: block; color: var(--text-secondary);" data-translate="quiz.publicTemplateDesc">
+                                        Available to all teachers in the system
+                                    </small>
+                                </div>
+                            </label>
+                            
+                            <label class="checkbox-label">
+                                <input type="radio" name="sharing" value="school">
+                                <span class="radio-custom"></span>
+                                <div>
+                                    <span data-translate="quiz.schoolTemplate">School Only</span>
+                                    <small style="display: block; color: var(--text-secondary);" data-translate="quiz.schoolTemplateDesc">
+                                        Available to teachers in your school
+                                    </small>
+                                </div>
+                            </label>
+                        </div>
+                    </div>
+                    
+                    <div class="template-summary" style="background: var(--bg-secondary); padding: var(--spacing-4); border-radius: var(--radius-md); margin-top: var(--spacing-4);">
+                        <h4 style="margin-bottom: var(--spacing-3);" data-translate="quiz.templateSummary">Template Summary</h4>
+                        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); gap: var(--spacing-3);">
+                            <div style="text-align: center;">
+                                <div style="font-size: 1.5rem; font-weight: bold; color: var(--color-primary);" id="summaryQuestions">0</div>
+                                <div style="font-size: var(--font-size-sm); color: var(--text-secondary);" data-translate="quiz.questions">Questions</div>
+                            </div>
+                            <div style="text-align: center;">
+                                <div style="font-size: 1.5rem; font-weight: bold; color: var(--color-success);" id="summaryPoints">0</div>
+                                <div style="font-size: var(--font-size-sm); color: var(--text-secondary);" data-translate="quiz.totalPoints">Total Points</div>
+                            </div>
+                            <div style="text-align: center;">
+                                <div style="font-size: 1.5rem; font-weight: bold; color: var(--color-info);" id="summaryTime">0</div>
+                                <div style="font-size: var(--font-size-sm); color: var(--text-secondary);" data-translate="quiz.estimatedTime">Est. Time</div>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal__footer">
+                <button type="button" class="btn btn--secondary" onclick="closeTemplateModal()">
+                    <i class="fas fa-times" style="margin-right: 8px;"></i>
+                    <span data-translate="common.cancel">Cancel</span>
+                </button>
+                <button type="button" class="btn btn--primary" onclick="confirmSaveTemplate()">
+                    <i class="fas fa-save" style="margin-right: 8px;"></i>
+                    <span data-translate="quiz.saveTemplate">Save Template</span>
+                </button>
             </div>
         </div>
     </div>
@@ -1154,6 +1283,151 @@
                 window.location.href = 'quizzes.html';
             }
         }
+
+        // Template Creation Functions
+        function saveAsTemplate() {
+            // Validate quiz has questions
+            if (questions.length === 0) {
+                LMS.showToast(LMS.t('quiz.noQuestionsToSave'), 'error');
+                return;
+            }
+
+            // Pre-fill template name with quiz title
+            const quizTitle = document.getElementById('quizTitle').value;
+            if (quizTitle) {
+                document.getElementById('templateName').value = `${quizTitle} Template`;
+            }
+
+            // Update template summary
+            updateTemplateSummary();
+
+            // Show modal
+            document.getElementById('templateModal').classList.add('active');
+        }
+
+        function closeTemplateModal() {
+            document.getElementById('templateModal').classList.remove('active');
+            // Reset form
+            document.getElementById('templateForm').reset();
+        }
+
+        function updateTemplateSummary() {
+            const questionCount = questions.length;
+            const totalPoints = questions.reduce((sum, q) => sum + (parseInt(q.points) || 1), 0);
+            const estimatedTime = Math.ceil(questionCount * 1.5); // 1.5 minutes per question
+
+            document.getElementById('summaryQuestions').textContent = questionCount;
+            document.getElementById('summaryPoints').textContent = totalPoints;
+            document.getElementById('summaryTime').textContent = `${estimatedTime}m`;
+        }
+
+        function confirmSaveTemplate() {
+            const form = document.getElementById('templateForm');
+            
+            // Validate required fields
+            const templateName = document.getElementById('templateName').value.trim();
+            const templateCategory = document.getElementById('templateCategory').value;
+            const templateDifficulty = document.getElementById('templateDifficulty').value;
+
+            if (!templateName) {
+                LMS.showToast(LMS.t('validation.templateNameRequired'), 'error');
+                document.getElementById('templateName').focus();
+                return;
+            }
+
+            if (!templateCategory) {
+                LMS.showToast(LMS.t('validation.categoryRequired'), 'error');
+                document.getElementById('templateCategory').focus();
+                return;
+            }
+
+            if (!templateDifficulty) {
+                LMS.showToast(LMS.t('validation.difficultyRequired'), 'error');
+                document.getElementById('templateDifficulty').focus();
+                return;
+            }
+
+            // Gather template data
+            const templateData = {
+                id: `template_${Date.now()}`,
+                name: templateName,
+                description: document.getElementById('templateDescription').value.trim(),
+                category: templateCategory,
+                difficulty: templateDifficulty,
+                tags: document.getElementById('templateTags').value.split(',').map(tag => tag.trim()).filter(tag => tag),
+                sharing: document.querySelector('input[name="sharing"]:checked').value,
+                quiz: {
+                    title: document.getElementById('quizTitle').value || templateName,
+                    description: document.getElementById('quizDescription').value,
+                    courseId: document.getElementById('quizCourse').value,
+                    timeLimit: parseInt(document.getElementById('quizTimeLimit').value) || 30,
+                    passingScore: parseInt(document.getElementById('quizPassingScore').value) || 70,
+                    maxAttempts: parseInt(document.getElementById('quizMaxAttempts').value) || 3,
+                    shuffleQuestions: document.getElementById('quizShuffleQuestions').checked,
+                    showResults: document.getElementById('quizShowResults').checked,
+                    questions: questions
+                },
+                stats: {
+                    questionCount: questions.length,
+                    totalPoints: questions.reduce((sum, q) => sum + (parseInt(q.points) || 1), 0),
+                    estimatedTime: Math.ceil(questions.length * 1.5)
+                },
+                createdBy: currentUser.id,
+                createdAt: new Date().toISOString(),
+                usageCount: 0
+            };
+
+            // Save template (in real implementation, this would be an API call)
+            saveTemplateToStorage(templateData);
+
+            // Close modal and show success
+            closeTemplateModal();
+            LMS.showToast(LMS.t('quiz.templateSaved').replace('{name}', templateName), 'success');
+
+            // Optionally redirect to templates page
+            setTimeout(() => {
+                if (confirm(LMS.t('quiz.viewTemplateLibrary'))) {
+                    window.location.href = 'quiz-templates.html';
+                }
+            }, 2000);
+        }
+
+        function saveTemplateToStorage(templateData) {
+            // In real implementation, this would be an API call to save to database
+            // For demo, we'll save to localStorage
+            try {
+                let savedTemplates = JSON.parse(localStorage.getItem('userTemplates') || '[]');
+                savedTemplates.push(templateData);
+                localStorage.setItem('userTemplates', JSON.stringify(savedTemplates));
+                
+                // Also update template usage tracking
+                let templateStats = JSON.parse(localStorage.getItem('templateStats') || '{}');
+                templateStats.totalCreated = (templateStats.totalCreated || 0) + 1;
+                templateStats.byCategory = templateStats.byCategory || {};
+                templateStats.byCategory[templateData.category] = (templateStats.byCategory[templateData.category] || 0) + 1;
+                localStorage.setItem('templateStats', JSON.stringify(templateStats));
+                
+                console.log('Template saved:', templateData);
+            } catch (error) {
+                console.error('Failed to save template:', error);
+                LMS.showToast(LMS.t('error.templateSaveFailed'), 'error');
+            }
+        }
+
+        // Close template modal on outside click
+        document.addEventListener('click', function(e) {
+            const modal = document.getElementById('templateModal');
+            if (e.target === modal) {
+                closeTemplateModal();
+            }
+        });
+
+        // Close template modal on escape key
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape' && document.getElementById('templateModal').classList.contains('active')) {
+                closeTemplateModal();
+            }
+        });
 
         // Initialize on load
         document.addEventListener('DOMContentLoaded', init);

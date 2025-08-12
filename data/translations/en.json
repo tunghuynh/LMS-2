@@ -309,7 +309,10 @@
     "titleRequired": "Quiz title is required",
     "courseRequired": "Please select a course",
     "questionsRequired": "Quiz must have at least one question",
-    "correctAnswerRequired": "Each question must have at least one correct answer"
+    "correctAnswerRequired": "Each question must have at least one correct answer",
+    "templateNameRequired": "Template name is required",
+    "categoryRequired": "Category is required",
+    "difficultyRequired": "Difficulty level is required"
   },
   
   "messages": {
@@ -747,7 +750,33 @@
     "sampleQuestions": "Sample Questions",
     "tags": "Tags",
     "templatesRefreshed": "Templates refreshed successfully!",
-    "createTemplateRedirect": "Redirecting to template creator..."
+    "createTemplateRedirect": "Redirecting to template creator...",
+    "saveAsTemplate": "Save as Template",
+    "templateName": "Template Name",
+    "templateNamePlaceholder": "Enter template name...",
+    "templateDescription": "Template Description",
+    "templateDescPlaceholder": "Describe what this template is for...",
+    "templateCategory": "Template Category",
+    "selectCategory": "Select Category",
+    "templateDifficulty": "Difficulty Level",
+    "selectDifficulty": "Select Difficulty",
+    "templateTags": "Tags",
+    "templateTagsPlaceholder": "e.g. algebra, equations, basics",
+    "templateTagsHelp": "Add relevant tags to help others find your template",
+    "templateSharing": "Sharing Settings",
+    "privateTemplate": "Private",
+    "privateTemplateDesc": "Only you can see and use this template",
+    "publicTemplate": "Public",
+    "publicTemplateDesc": "Available to all teachers in the system",
+    "schoolTemplate": "School Only",
+    "schoolTemplateDesc": "Available to teachers in your school",
+    "templateSummary": "Template Summary",
+    "totalPoints": "Total Points",
+    "estimatedTime": "Est. Time",
+    "saveTemplate": "Save Template",
+    "noQuestionsToSave": "Please add at least one question before saving as template",
+    "templateSaved": "Template '{name}' saved successfully!",
+    "viewTemplateLibrary": "Would you like to view the template library?"
   },
   
   "error": {
@@ -758,7 +787,8 @@
     "quizNotFound": "Quiz not found",
     "accessDenied": "Access denied",
     "loadData": "Failed to load data",
-    "backToCourse": "Back to Course"
+    "backToCourse": "Back to Course",
+    "templateSaveFailed": "Failed to save template. Please try again."
   },
   
   "pagination": {
