@@ -175,6 +175,12 @@ LMS.Auth = {
       userNameElement.textContent = this.currentUser ? this.currentUser.fullName : '';
     }
     
+    // Update user role display
+    const userRoleElement = document.getElementById('userRole');
+    if (userRoleElement) {
+      userRoleElement.textContent = this.currentUser ? this.currentUser.role : '';
+    }
+    
     // Show/hide auth-related elements
     document.querySelectorAll('[data-auth-required]').forEach(element => {
       element.style.display = this.isAuthenticated() ? '' : 'none';

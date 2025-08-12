@@ -75,15 +75,15 @@
 .btn--primary:hover:not(:disabled) {
   background-color: var(--button-primary-hover);
   border-color: var(--button-primary-hover);
-  transform: translateY(-1px);
-  box-shadow: var(--shadow-sm);
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-md);
 }
 
 .btn--primary:active:not(:disabled) {
   background-color: var(--button-primary-active);
   border-color: var(--button-primary-active);
   transform: translateY(0);
-  box-shadow: none;
+  box-shadow: var(--shadow-sm);
 }
 
 .btn--secondary {

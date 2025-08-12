@@ -23,8 +23,10 @@
             </div>
             <div class="header-right">
                 <div class="language-switcher">
-                    <button class="language-btn" data-lang="en">EN</button>
-                    <button class="language-btn" data-lang="vi">VI</button>
+                    <button class="language-toggle" id="languageToggle">
+                        <img src="" alt="" class="flag-icon" id="flagIcon">
+                        <span class="lang-code" id="langCode">EN</span>
+                    </button>
                 </div>
                 <div class="theme-switcher">
                     <button class="theme-btn" id="themeToggle">
@@ -32,7 +34,10 @@
                     </button>
                 </div>
                 <div class="user-info">
-                    <span class="user-name" id="userName"></span>
+                    <div class="user-details">
+                        <span class="user-name" id="userName"></span>
+                        <span class="user-role" id="userRole"></span>
+                    </div>
                     <button class="logout-btn" data-translate="common.logout">Logout</button>
                 </div>
             </div>

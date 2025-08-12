@@ -160,11 +160,8 @@ LMS.LanguageManager = {
       }
     });
     
-    // Update language buttons
-    document.querySelectorAll('.language-btn').forEach(btn => {
-      const lang = btn.getAttribute('data-lang');
-      btn.classList.toggle('active', lang === this.currentLanguage);
-    });
+    // Update language toggle
+    this.updateLanguageToggle();
   },
   
   t(key, params = {}) {
@@ -197,15 +194,26 @@ LMS.LanguageManager = {
   },
   
   bindEvents() {
-    // Language switcher buttons
+    // Language toggle button
     document.addEventListener('click', (e) => {
-      if (e.target.matches('.language-btn')) {
-        const language = e.target.getAttribute('data-lang');
-        if (language) {
-          this.setLanguage(language);
-        }
+      if (e.target.matches('#languageToggle') || e.target.closest('#languageToggle')) {
+        const currentLang = this.currentLanguage || 'en';
+        const newLang = currentLang === 'en' ? 'vi' : 'en';
+        this.setLanguage(newLang);
       }
     });
+  },
+  
+  updateLanguageToggle() {
+    const flagIcon = document.getElementById('flagIcon');
+    const langCode = document.getElementById('langCode');
+    
+    if (flagIcon && langCode) {
+      const basePath = window.location.pathname.includes('/pages/') ? '../' : '';
+      flagIcon.src = `${basePath}assets/images/flags/${this.currentLanguage}.svg`;
+      flagIcon.alt = this.currentLanguage === 'en' ? 'English' : 'Tiếng Việt';
+      langCode.textContent = this.currentLanguage.toUpperCase();
+    }
   }
 };
 
