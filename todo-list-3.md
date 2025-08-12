@@ -425,7 +425,7 @@ This is the master TODO list for LMS Phase I development following the Foundatio
   - Answered/unanswered tracking
 
 #### 3.6 Quiz Results
-- [ ] **3.6.1** Result Page (`quiz-results.html`):
+- [x] **3.6.1** Result Page (`quiz-results.html`):
   - Score display
   - Pass/Fail status
   - Question-wise breakdown
@@ -526,10 +526,10 @@ This is the master TODO list for LMS Phase I development following the Foundatio
 - Phase 0 Foundation: 38/38 tasks (100%) ✅
 - Phase I.1 User Management: 23/23 tasks (100%) ✅  
 - Phase I.2 Learning System: 18/26 tasks (69.2%) ✅ **Module hoàn thành 69%**
-- Phase I.3 Testing System: 7/24 tasks (29.2%) 🚀 **Quiz Taking Interface hoàn thành!**
+- Phase I.3 Testing System: 8/24 tasks (33.3%) 🚀 **Quiz Results hoàn thành!**
 - Integration & Testing: 0/28 tasks (0%)
 
-**Total: 86/139 tasks (61.9%)**
+**Total: 87/139 tasks (62.6%)**
 
 ### Critical Path
 1. Phase 0 must be 100% complete

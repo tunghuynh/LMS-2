@@ -1,0 +1,1022 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quiz Results - LMS</title>
+    <!-- Core CSS -->
+    <link rel="stylesheet" href="../assets/css/global.css">
+    <link rel="stylesheet" href="../assets/css/components.css">
+    <link rel="stylesheet" href="../assets/css/themes.css">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <!-- Configuration -->
+    <script src="../config.js"></script>
+    
+    <style>
+        /* Quiz Results Specific Styles */
+        .results-hero {
+            background: linear-gradient(135deg, var(--color-primary), var(--color-primary-dark, #1E4F78));
+            color: white;
+            text-align: center;
+            padding: var(--spacing-8) var(--spacing-6);
+            border-radius: var(--radius-lg);
+            margin-bottom: var(--spacing-6);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .results-hero::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><circle cx="20" cy="20" r="2" fill="rgba(255,255,255,0.1)"/><circle cx="80" cy="40" r="1.5" fill="rgba(255,255,255,0.1)"/><circle cx="40" cy="80" r="1" fill="rgba(255,255,255,0.1)"/></svg>');
+            pointer-events: none;
+        }
+        
+        .results-hero.passed {
+            background: linear-gradient(135deg, var(--color-success), #059669);
+        }
+        
+        .results-hero.failed {
+            background: linear-gradient(135deg, var(--color-danger), #dc2626);
+        }
+        
+        .score-display {
+            font-size: 4rem;
+            font-weight: var(--font-weight-bold);
+            margin: var(--spacing-4) 0;
+            position: relative;
+            z-index: 1;
+        }
+        
+        .result-status {
+            font-size: 1.5rem;
+            font-weight: var(--font-weight-medium);
+            margin-bottom: var(--spacing-2);
+            position: relative;
+            z-index: 1;
+        }
+        
+        .result-subtitle {
+            font-size: 1.1rem;
+            opacity: 0.9;
+            position: relative;
+            z-index: 1;
+        }
+        
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: var(--spacing-4);
+            margin-bottom: var(--spacing-6);
+        }
+        
+        .stat-card {
+            background: var(--bg-primary);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-lg);
+            padding: var(--spacing-4);
+            text-align: center;
+            transition: all var(--transition-base);
+        }
+        
+        .stat-card:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-md);
+        }
+        
+        .stat-value {
+            font-size: 2rem;
+            font-weight: var(--font-weight-bold);
+            margin-bottom: var(--spacing-2);
+        }
+        
+        .stat-label {
+            color: var(--text-secondary);
+            font-size: var(--font-size-sm);
+            font-weight: var(--font-weight-medium);
+        }
+        
+        .question-review {
+            margin-bottom: var(--spacing-6);
+        }
+        
+        .question-item {
+            background: var(--bg-primary);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-lg);
+            margin-bottom: var(--spacing-4);
+            overflow: hidden;
+            transition: all var(--transition-base);
+        }
+        
+        .question-item.correct {
+            border-color: var(--color-success);
+            box-shadow: 0 0 0 1px var(--color-success-light, rgba(16, 185, 129, 0.2));
+        }
+        
+        .question-item.incorrect {
+            border-color: var(--color-danger);
+            box-shadow: 0 0 0 1px var(--color-danger-light, rgba(239, 68, 68, 0.2));
+        }
+        
+        .question-item.partial {
+            border-color: var(--color-warning);
+            box-shadow: 0 0 0 1px var(--color-warning-light, rgba(245, 158, 11, 0.2));
+        }
+        
+        .question-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: var(--spacing-4);
+            background: var(--bg-secondary);
+            border-bottom: 1px solid var(--border-color);
+            cursor: pointer;
+        }
+        
+        .question-number {
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-3);
+            font-weight: var(--font-weight-medium);
+        }
+        
+        .result-icon {
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 0.875rem;
+        }
+        
+        .result-icon.correct {
+            background: var(--color-success);
+        }
+        
+        .result-icon.incorrect {
+            background: var(--color-danger);
+        }
+        
+        .result-icon.partial {
+            background: var(--color-warning);
+        }
+        
+        .points-display {
+            font-size: var(--font-size-sm);
+            color: var(--text-secondary);
+        }
+        
+        .question-content {
+            padding: var(--spacing-4);
+            display: none;
+        }
+        
+        .question-item.expanded .question-content {
+            display: block;
+        }
+        
+        .question-text {
+            font-size: 1.1rem;
+            margin-bottom: var(--spacing-4);
+            line-height: 1.6;
+        }
+        
+        .answer-section {
+            margin-bottom: var(--spacing-4);
+        }
+        
+        .answer-section h5 {
+            margin-bottom: var(--spacing-2);
+            font-weight: var(--font-weight-medium);
+        }
+        
+        .answer-option {
+            display: flex;
+            align-items: flex-start;
+            gap: var(--spacing-3);
+            padding: var(--spacing-3);
+            margin-bottom: var(--spacing-2);
+            border-radius: var(--radius-md);
+            transition: all var(--transition-base);
+        }
+        
+        .answer-option.correct {
+            background: var(--color-success-light, rgba(16, 185, 129, 0.1));
+            border: 1px solid var(--color-success);
+        }
+        
+        .answer-option.incorrect {
+            background: var(--color-danger-light, rgba(239, 68, 68, 0.1));
+            border: 1px solid var(--color-danger);
+        }
+        
+        .answer-option.selected {
+            background: var(--color-primary-light, rgba(44, 110, 170, 0.1));
+            border: 1px solid var(--color-primary);
+        }
+        
+        .answer-option.neutral {
+            background: var(--bg-tertiary);
+            border: 1px solid var(--border-color);
+        }
+        
+        .text-answer {
+            background: var(--bg-tertiary);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-md);
+            padding: var(--spacing-3);
+            white-space: pre-wrap;
+            line-height: 1.5;
+        }
+        
+        .text-answer.correct {
+            background: var(--color-success-light, rgba(16, 185, 129, 0.1));
+            border-color: var(--color-success);
+        }
+        
+        .text-answer.partial {
+            background: var(--color-warning-light, rgba(245, 158, 11, 0.1));
+            border-color: var(--color-warning);
+        }
+        
+        .certificate-section {
+            background: linear-gradient(135deg, #f8fafc, #e2e8f0);
+            border: 2px dashed var(--color-success);
+            border-radius: var(--radius-lg);
+            padding: var(--spacing-6);
+            text-align: center;
+            margin-bottom: var(--spacing-6);
+        }
+        
+        .certificate-icon {
+            font-size: 3rem;
+            color: var(--color-success);
+            margin-bottom: var(--spacing-3);
+        }
+        
+        .time-analysis {
+            background: var(--bg-secondary);
+            border-radius: var(--radius-lg);
+            padding: var(--spacing-4);
+            margin-bottom: var(--spacing-6);
+        }
+        
+        .time-bar {
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-3);
+            margin-bottom: var(--spacing-3);
+        }
+        
+        .time-bar-fill {
+            flex: 1;
+            height: 8px;
+            background: var(--bg-tertiary);
+            border-radius: var(--radius-full);
+            overflow: hidden;
+        }
+        
+        .time-bar-progress {
+            height: 100%;
+            background: var(--color-info);
+            transition: width var(--transition-base);
+        }
+        
+        .retake-section {
+            background: var(--bg-secondary);
+            border-radius: var(--radius-lg);
+            padding: var(--spacing-6);
+            text-align: center;
+            margin-bottom: var(--spacing-6);
+        }
+        
+        .retake-attempts {
+            margin-bottom: var(--spacing-4);
+            color: var(--text-secondary);
+        }
+        
+        /* Responsive */
+        @media (max-width: 768px) {
+            .score-display {
+                font-size: 3rem;
+            }
+            
+            .stats-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            
+            .question-header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: var(--spacing-2);
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="page-container">
+        <!-- Page Header -->
+        <div class="page-header">
+            <div style="display: flex; justify-content: space-between; align-items: center;">
+                <div>
+                    <h1 class="page-title" data-translate="quiz.results">Quiz Results</h1>
+                    <p class="page-subtitle" id="quizTitle">Quiz Title</p>
+                </div>
+                <div style="display: flex; gap: var(--spacing-3);">
+                    <button class="btn btn--secondary" onclick="printResults()">
+                        <i class="fas fa-print" style="margin-right: 8px;"></i>
+                        <span data-translate="quiz.printResults">Print Results</span>
+                    </button>
+                    <button class="btn btn--primary" onclick="goToCourses()">
+                        <i class="fas fa-arrow-left" style="margin-right: 8px;"></i>
+                        <span data-translate="quiz.backToCourses">Back to Courses</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <div class="page-content">
+            <!-- Results Hero Section -->
+            <div class="results-hero" id="resultsHero">
+                <div class="result-status" id="resultStatus">Completed</div>
+                <div class="score-display" id="scoreDisplay">0%</div>
+                <div class="result-subtitle" id="resultSubtitle">Score details</div>
+            </div>
+
+            <!-- Statistics Grid -->
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-value" style="color: var(--color-success);" id="correctAnswers">0</div>
+                    <div class="stat-label" data-translate="quiz.correctAnswers">Correct Answers</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value" style="color: var(--color-danger);" id="incorrectAnswers">0</div>
+                    <div class="stat-label" data-translate="quiz.incorrectAnswers">Incorrect Answers</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value" style="color: var(--color-info);" id="totalQuestions">0</div>
+                    <div class="stat-label" data-translate="quiz.totalQuestions">Total Questions</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value" style="color: var(--color-warning);" id="timeSpent">0:00</div>
+                    <div class="stat-label" data-translate="quiz.timeSpent">Time Spent</div>
+                </div>
+            </div>
+
+            <!-- Certificate Section -->
+            <div class="certificate-section" id="certificateSection" style="display: none;">
+                <div class="certificate-icon">
+                    <i class="fas fa-certificate"></i>
+                </div>
+                <h3 style="margin-bottom: var(--spacing-3);" data-translate="quiz.congratulations">Congratulations!</h3>
+                <p style="margin-bottom: var(--spacing-4);" data-translate="quiz.passedMessage">You have successfully passed this quiz and earned a certificate.</p>
+                <button class="btn btn--success" onclick="downloadCertificate()">
+                    <i class="fas fa-download" style="margin-right: 8px;"></i>
+                    <span data-translate="quiz.downloadCertificate">Download Certificate</span>
+                </button>
+            </div>
+
+            <!-- Time Analysis -->
+            <div class="card">
+                <div class="card__header">
+                    <h3 data-translate="quiz.timeAnalysis">Time Analysis</h3>
+                </div>
+                <div class="card__body">
+                    <div class="time-analysis">
+                        <div class="time-bar">
+                            <span style="min-width: 80px; font-size: var(--font-size-sm);" data-translate="quiz.timeUsed">Time Used:</span>
+                            <div class="time-bar-fill">
+                                <div class="time-bar-progress" id="timeProgress"></div>
+                            </div>
+                            <span id="timeUsedDisplay" style="min-width: 60px; font-size: var(--font-size-sm);">0:00</span>
+                        </div>
+                        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: var(--spacing-4); margin-top: var(--spacing-4); font-size: var(--font-size-sm);">
+                            <div>
+                                <strong data-translate="quiz.averagePerQuestion">Avg per Question:</strong>
+                                <span id="avgTimePerQuestion">0:00</span>
+                            </div>
+                            <div>
+                                <strong data-translate="quiz.timeLimit">Time Limit:</strong>
+                                <span id="timeLimitDisplay">0:00</span>
+                            </div>
+                            <div>
+                                <strong data-translate="quiz.timeRemaining">Time Remaining:</strong>
+                                <span id="timeRemainingDisplay">0:00</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Question Review -->
+            <div class="card">
+                <div class="card__header">
+                    <div style="display: flex; justify-content: space-between; align-items: center;">
+                        <h3 data-translate="quiz.questionReview">Question Review</h3>
+                        <div style="display: flex; gap: var(--spacing-3);">
+                            <button class="btn btn--ghost btn--small" onclick="expandAllQuestions()">
+                                <i class="fas fa-expand-alt" style="margin-right: 8px;"></i>
+                                <span data-translate="quiz.expandAll">Expand All</span>
+                            </button>
+                            <button class="btn btn--ghost btn--small" onclick="collapseAllQuestions()">
+                                <i class="fas fa-compress-alt" style="margin-right: 8px;"></i>
+                                <span data-translate="quiz.collapseAll">Collapse All</span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                <div class="card__body">
+                    <div class="question-review" id="questionReview">
+                        <!-- Dynamic question review content -->
+                    </div>
+                </div>
+            </div>
+
+            <!-- Retake Section -->
+            <div class="retake-section" id="retakeSection" style="display: none;">
+                <h3 style="margin-bottom: var(--spacing-3);" data-translate="quiz.retakeQuiz">Retake Quiz</h3>
+                <div class="retake-attempts" id="retakeAttempts">
+                    <!-- Dynamic retake attempts info -->
+                </div>
+                <button class="btn btn--primary" onclick="retakeQuiz()">
+                    <i class="fas fa-redo" style="margin-right: 8px;"></i>
+                    <span data-translate="quiz.startNewAttempt">Start New Attempt</span>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Core JavaScript -->
+    <script src="../assets/js/global.js"></script>
+    <script src="../assets/js/auth.js"></script>
+    <script src="../assets/js/api.js"></script>
+    
+    <script>
+        // State management
+        let quizData = null;
+        let submissionData = null;
+        let currentUser = LMS.Auth.getUser();
+
+        // Initialize
+        async function init() {
+            // Check authentication - students only
+            if (!LMS.Auth.isAuthenticated() || !currentUser || currentUser.role !== 'student') {
+                window.location.href = '../index.html';
+                return;
+            }
+
+            // Load translations
+            await LMS.LanguageManager.init();
+            LMS.LanguageManager.updatePageTranslations();
+            
+            // Get quiz ID from URL
+            const urlParams = new URLSearchParams(window.location.search);
+            const quizId = urlParams.get('id');
+            
+            if (!quizId) {
+                LMS.showToast(LMS.t('error.quizNotFound'), 'error');
+                window.location.href = 'courses.html';
+                return;
+            }
+            
+            // Load quiz and submission data
+            await loadData(quizId);
+            displayResults();
+        }
+
+        // Load quiz and submission data
+        async function loadData(quizId) {
+            try {
+                // Load quiz data
+                quizData = generateMockQuiz(quizId);
+                
+                // Load submission data
+                const submissionKey = `quiz_submission_${quizId}_${currentUser.id}`;
+                const savedSubmission = localStorage.getItem(submissionKey);
+                
+                if (!savedSubmission) {
+                    LMS.showToast(LMS.t('quiz.noSubmissionFound'), 'error');
+                    window.location.href = 'courses.html';
+                    return;
+                }
+                
+                submissionData = JSON.parse(savedSubmission);
+                
+            } catch (error) {
+                console.error('Failed to load data:', error);
+                LMS.showToast(LMS.t('error.loadData'), 'error');
+                window.location.href = 'courses.html';
+            }
+        }
+
+        // Generate mock quiz data (same as quiz-attempt.html)
+        function generateMockQuiz(quizId) {
+            return {
+                id: quizId,
+                title: 'JavaScript Fundamentals Quiz',
+                description: 'Test your knowledge of JavaScript fundamentals',
+                timeLimit: 30, // minutes
+                passingScore: 70,
+                maxAttempts: 3,
+                shuffleQuestions: false,
+                questions: [
+                    {
+                        id: 'q1',
+                        type: 'multiple-choice',
+                        question: 'What is the correct way to declare a variable in JavaScript?',
+                        points: 1,
+                        options: [
+                            { id: 'a', text: 'var myVariable;', correct: true },
+                            { id: 'b', text: 'variable myVariable;', correct: false },
+                            { id: 'c', text: 'declare myVariable;', correct: false },
+                            { id: 'd', text: 'v myVariable;', correct: false }
+                        ]
+                    },
+                    {
+                        id: 'q2',
+                        type: 'multiple-select',
+                        question: 'Which of the following are JavaScript data types? (Select all that apply)',
+                        points: 2,
+                        options: [
+                            { id: 'a', text: 'String', correct: true },
+                            { id: 'b', text: 'Number', correct: true },
+                            { id: 'c', text: 'Character', correct: false },
+                            { id: 'd', text: 'Boolean', correct: true },
+                            { id: 'e', text: 'Float', correct: false }
+                        ]
+                    },
+                    {
+                        id: 'q3',
+                        type: 'true-false',
+                        question: 'JavaScript is a case-sensitive programming language.',
+                        points: 1,
+                        answer: true
+                    },
+                    {
+                        id: 'q4',
+                        type: 'text-input',
+                        question: 'Explain the difference between "let" and "var" in JavaScript. (Minimum 50 words)',
+                        points: 3,
+                        expectedAnswer: 'let has block scope while var has function scope. let variables cannot be redeclared in the same scope, while var can be. let variables are not hoisted to the top of their scope like var variables are.'
+                    },
+                    {
+                        id: 'q5',
+                        type: 'multiple-choice',
+                        question: 'What does the "typeof" operator return for an array in JavaScript?',
+                        points: 1,
+                        options: [
+                            { id: 'a', text: 'array', correct: false },
+                            { id: 'b', text: 'object', correct: true },
+                            { id: 'c', text: 'list', correct: false },
+                            { id: 'd', text: 'undefined', correct: false }
+                        ]
+                    }
+                ]
+            };
+        }
+
+        // Display results
+        function displayResults() {
+            // Update title
+            document.getElementById('quizTitle').textContent = quizData.title;
+            
+            // Calculate detailed results
+            const results = calculateDetailedResults();
+            
+            // Display hero section
+            displayHeroSection(results);
+            
+            // Display statistics
+            displayStatistics(results);
+            
+            // Display time analysis
+            displayTimeAnalysis();
+            
+            // Display question review
+            displayQuestionReview(results);
+            
+            // Display certificate section if passed
+            if (results.passed) {
+                displayCertificateSection();
+            }
+            
+            // Display retake section if available
+            displayRetakeSection();
+        }
+
+        // Calculate detailed results
+        function calculateDetailedResults() {
+            let correctAnswers = 0;
+            let incorrectAnswers = 0;
+            let totalPoints = 0;
+            let earnedPoints = 0;
+            const questionResults = [];
+
+            quizData.questions.forEach(question => {
+                totalPoints += question.points;
+                const userAnswer = submissionData.answers[question.id];
+                let isCorrect = false;
+                let pointsEarned = 0;
+                let resultType = 'incorrect';
+
+                if (!userAnswer) {
+                    // No answer provided
+                    resultType = 'incorrect';
+                } else {
+                    switch (question.type) {
+                        case 'multiple-choice':
+                        case 'true-false':
+                            const correctOption = question.options ? 
+                                question.options.find(o => o.correct)?.id : 
+                                question.answer;
+                            if (userAnswer === correctOption || userAnswer === question.answer) {
+                                isCorrect = true;
+                                pointsEarned = question.points;
+                                resultType = 'correct';
+                            }
+                            break;
+                            
+                        case 'multiple-select':
+                            const correctOptions = question.options.filter(o => o.correct).map(o => o.id);
+                            const selectedOptions = Array.isArray(userAnswer) ? userAnswer : [];
+                            
+                            if (correctOptions.length === selectedOptions.length &&
+                                correctOptions.every(id => selectedOptions.includes(id))) {
+                                isCorrect = true;
+                                pointsEarned = question.points;
+                                resultType = 'correct';
+                            } else if (selectedOptions.some(id => correctOptions.includes(id))) {
+                                // Partial credit for multiple select
+                                const correctSelected = selectedOptions.filter(id => correctOptions.includes(id)).length;
+                                const incorrectSelected = selectedOptions.filter(id => !correctOptions.includes(id)).length;
+                                const missedCorrect = correctOptions.filter(id => !selectedOptions.includes(id)).length;
+                                
+                                // Simple partial scoring: (correct - incorrect) / total possible
+                                const partialScore = Math.max(0, (correctSelected - incorrectSelected) / correctOptions.length);
+                                pointsEarned = question.points * partialScore;
+                                resultType = pointsEarned > 0 ? 'partial' : 'incorrect';
+                            }
+                            break;
+                            
+                        case 'text-input':
+                            // For demo, give partial points if answer exists and has minimum length
+                            if (userAnswer && userAnswer.trim().length >= 20) {
+                                pointsEarned = question.points * 0.7; // 70% for effort
+                                resultType = 'partial';
+                            } else if (userAnswer && userAnswer.trim().length > 0) {
+                                pointsEarned = question.points * 0.3; // 30% for some effort
+                                resultType = 'partial';
+                            }
+                            break;
+                    }
+                }
+
+                if (isCorrect) {
+                    correctAnswers++;
+                } else {
+                    incorrectAnswers++;
+                }
+                
+                earnedPoints += pointsEarned;
+                
+                questionResults.push({
+                    question,
+                    userAnswer,
+                    isCorrect,
+                    pointsEarned,
+                    resultType
+                });
+            });
+
+            const finalScore = Math.round((earnedPoints / totalPoints) * 100);
+            const passed = finalScore >= quizData.passingScore;
+
+            return {
+                finalScore,
+                passed,
+                correctAnswers,
+                incorrectAnswers,
+                totalQuestions: quizData.questions.length,
+                totalPoints,
+                earnedPoints,
+                questionResults
+            };
+        }
+
+        // Display hero section
+        function displayHeroSection(results) {
+            const hero = document.getElementById('resultsHero');
+            const status = document.getElementById('resultStatus');
+            const score = document.getElementById('scoreDisplay');
+            const subtitle = document.getElementById('resultSubtitle');
+            
+            score.textContent = results.finalScore + '%';
+            
+            if (results.passed) {
+                hero.classList.add('passed');
+                status.textContent = LMS.t('quiz.passed');
+                subtitle.textContent = LMS.t('quiz.passedSubtitle');
+            } else {
+                hero.classList.add('failed');
+                status.textContent = LMS.t('quiz.failed');
+                subtitle.textContent = LMS.t('quiz.failedSubtitle');
+            }
+        }
+
+        // Display statistics
+        function displayStatistics(results) {
+            document.getElementById('correctAnswers').textContent = results.correctAnswers;
+            document.getElementById('incorrectAnswers').textContent = results.incorrectAnswers;
+            document.getElementById('totalQuestions').textContent = results.totalQuestions;
+            
+            // Format time spent
+            const timeSpent = submissionData.timeUsed || 0;
+            document.getElementById('timeSpent').textContent = formatTime(timeSpent);
+        }
+
+        // Display time analysis
+        function displayTimeAnalysis() {
+            const timeUsed = submissionData.timeUsed || 0;
+            const timeLimit = quizData.timeLimit * 60; // Convert to seconds
+            const timeRemaining = timeLimit - timeUsed;
+            const timePercentage = Math.min((timeUsed / timeLimit) * 100, 100);
+            
+            // Update time progress bar
+            document.getElementById('timeProgress').style.width = timePercentage + '%';
+            document.getElementById('timeUsedDisplay').textContent = formatTime(timeUsed);
+            document.getElementById('avgTimePerQuestion').textContent = formatTime(Math.round(timeUsed / quizData.questions.length));
+            document.getElementById('timeLimitDisplay').textContent = formatTime(timeLimit);
+            document.getElementById('timeRemainingDisplay').textContent = formatTime(Math.max(0, timeRemaining));
+        }
+
+        // Display question review
+        function displayQuestionReview(results) {
+            const container = document.getElementById('questionReview');
+            
+            container.innerHTML = results.questionResults.map((result, index) => `
+                <div class="question-item ${result.resultType}" data-question-index="${index}">
+                    <div class="question-header" onclick="toggleQuestion(${index})">
+                        <div class="question-number">
+                            <div class="result-icon ${result.resultType}">
+                                ${result.resultType === 'correct' ? '<i class="fas fa-check"></i>' : 
+                                  result.resultType === 'partial' ? '<i class="fas fa-minus"></i>' : 
+                                  '<i class="fas fa-times"></i>'}
+                            </div>
+                            <span>${LMS.t('quiz.question')} ${index + 1}</span>
+                        </div>
+                        <div class="points-display">
+                            ${result.pointsEarned.toFixed(1)}/${result.question.points} ${LMS.t('quiz.points')}
+                        </div>
+                    </div>
+                    <div class="question-content">
+                        <div class="question-text">${result.question.question}</div>
+                        ${renderQuestionAnswers(result)}
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        // Render question answers based on type
+        function renderQuestionAnswers(result) {
+            const { question, userAnswer } = result;
+            
+            switch (question.type) {
+                case 'multiple-choice':
+                    return `
+                        <div class="answer-section">
+                            <h5>${LMS.t('quiz.answerOptions')}:</h5>
+                            ${question.options.map(option => {
+                                let className = 'answer-option neutral';
+                                if (option.correct) {
+                                    className = 'answer-option correct';
+                                } else if (userAnswer === option.id) {
+                                    className = 'answer-option incorrect';
+                                }
+                                
+                                return `
+                                    <div class="${className}">
+                                        <span style="font-weight: var(--font-weight-medium);">${option.text}</span>
+                                        ${option.correct ? ' <i class="fas fa-check" style="color: var(--color-success);"></i>' : ''}
+                                        ${userAnswer === option.id && !option.correct ? ' <i class="fas fa-times" style="color: var(--color-danger);"></i>' : ''}
+                                    </div>
+                                `;
+                            }).join('')}
+                        </div>
+                        <div class="answer-section">
+                            <h5>${LMS.t('quiz.yourAnswer')}:</h5>
+                            <p>${question.options.find(o => o.id === userAnswer)?.text || LMS.t('quiz.noAnswer')}</p>
+                        </div>
+                    `;
+                    
+                case 'multiple-select':
+                    const selectedOptions = Array.isArray(userAnswer) ? userAnswer : [];
+                    return `
+                        <div class="answer-section">
+                            <h5>${LMS.t('quiz.answerOptions')}:</h5>
+                            ${question.options.map(option => {
+                                let className = 'answer-option neutral';
+                                const isSelected = selectedOptions.includes(option.id);
+                                
+                                if (option.correct && isSelected) {
+                                    className = 'answer-option correct';
+                                } else if (option.correct && !isSelected) {
+                                    className = 'answer-option correct';
+                                } else if (!option.correct && isSelected) {
+                                    className = 'answer-option incorrect';
+                                }
+                                
+                                return `
+                                    <div class="${className}">
+                                        <span style="font-weight: var(--font-weight-medium);">${option.text}</span>
+                                        ${option.correct ? ' <i class="fas fa-check" style="color: var(--color-success);"></i>' : ''}
+                                        ${isSelected ? ' <i class="fas fa-check-square" style="color: var(--color-primary);"></i>' : ''}
+                                    </div>
+                                `;
+                            }).join('')}
+                        </div>
+                        <div class="answer-section">
+                            <h5>${LMS.t('quiz.yourAnswers')}:</h5>
+                            <p>${selectedOptions.length > 0 ? 
+                                selectedOptions.map(id => question.options.find(o => o.id === id)?.text).join(', ') : 
+                                LMS.t('quiz.noAnswer')}</p>
+                        </div>
+                    `;
+                    
+                case 'true-false':
+                    const correctAnswer = question.answer;
+                    const userBoolAnswer = userAnswer;
+                    return `
+                        <div class="answer-section">
+                            <h5>${LMS.t('quiz.correctAnswer')}:</h5>
+                            <div class="answer-option correct">
+                                ${correctAnswer ? LMS.t('quiz.true') : LMS.t('quiz.false')}
+                                <i class="fas fa-check" style="color: var(--color-success);"></i>
+                            </div>
+                        </div>
+                        <div class="answer-section">
+                            <h5>${LMS.t('quiz.yourAnswer')}:</h5>
+                            <div class="answer-option ${userBoolAnswer === correctAnswer ? 'correct' : 'incorrect'}">
+                                ${userBoolAnswer === true ? LMS.t('quiz.true') : 
+                                  userBoolAnswer === false ? LMS.t('quiz.false') : LMS.t('quiz.noAnswer')}
+                                ${userBoolAnswer === correctAnswer ? 
+                                  '<i class="fas fa-check" style="color: var(--color-success);"></i>' : 
+                                  '<i class="fas fa-times" style="color: var(--color-danger);"></i>'}
+                            </div>
+                        </div>
+                    `;
+                    
+                case 'text-input':
+                    return `
+                        <div class="answer-section">
+                            <h5>${LMS.t('quiz.expectedAnswer')}:</h5>
+                            <div class="text-answer correct">${question.expectedAnswer || LMS.t('quiz.manualGrading')}</div>
+                        </div>
+                        <div class="answer-section">
+                            <h5>${LMS.t('quiz.yourAnswer')}:</h5>
+                            <div class="text-answer ${result.resultType}">${userAnswer || LMS.t('quiz.noAnswer')}</div>
+                        </div>
+                    `;
+                    
+                default:
+                    return '<p>Unknown question type</p>';
+            }
+        }
+
+        // Display certificate section
+        function displayCertificateSection() {
+            document.getElementById('certificateSection').style.display = 'block';
+        }
+
+        // Display retake section
+        function displayRetakeSection() {
+            // Get existing attempts
+            const attempts = getQuizAttempts();
+            const remainingAttempts = quizData.maxAttempts - attempts.length;
+            
+            if (remainingAttempts > 0 && !submissionData.passed) {
+                const section = document.getElementById('retakeSection');
+                const attemptsInfo = document.getElementById('retakeAttempts');
+                
+                attemptsInfo.innerHTML = `
+                    <p>${LMS.t('quiz.attemptInfo', { current: attempts.length, max: quizData.maxAttempts })}</p>
+                    <p>${LMS.t('quiz.remainingAttempts', { remaining: remainingAttempts })}</p>
+                `;
+                
+                section.style.display = 'block';
+            }
+        }
+
+        // Get quiz attempts
+        function getQuizAttempts() {
+            const attempts = [];
+            let i = 1;
+            while (true) {
+                const key = `quiz_submission_${quizData.id}_${currentUser.id}_attempt_${i}`;
+                const attempt = localStorage.getItem(key);
+                if (!attempt) break;
+                attempts.push(JSON.parse(attempt));
+                i++;
+            }
+            return attempts;
+        }
+
+        // Toggle question expansion
+        function toggleQuestion(index) {
+            const questionItem = document.querySelector(`[data-question-index="${index}"]`);
+            questionItem.classList.toggle('expanded');
+        }
+
+        // Expand all questions
+        function expandAllQuestions() {
+            document.querySelectorAll('.question-item').forEach(item => {
+                item.classList.add('expanded');
+            });
+        }
+
+        // Collapse all questions
+        function collapseAllQuestions() {
+            document.querySelectorAll('.question-item').forEach(item => {
+                item.classList.remove('expanded');
+            });
+        }
+
+        // Format time in seconds to MM:SS or HH:MM:SS
+        function formatTime(seconds) {
+            const hours = Math.floor(seconds / 3600);
+            const minutes = Math.floor((seconds % 3600) / 60);
+            const secs = seconds % 60;
+            
+            if (hours > 0) {
+                return `${hours}:${minutes.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
+            } else {
+                return `${minutes}:${secs.toString().padStart(2, '0')}`;
+            }
+        }
+
+        // Action functions
+        function printResults() {
+            window.print();
+        }
+
+        function downloadCertificate() {
+            // In a real implementation, this would generate a PDF certificate
+            const certificateContent = `
+Certificate of Achievement
+
+This is to certify that
+${currentUser.fullName || 'Student'}
+
+has successfully completed
+${quizData.title}
+
+with a score of ${submissionData.score}%
+
+Date: ${new Date().toLocaleDateString()}
+`;
+            
+            const blob = new Blob([certificateContent], { type: 'text/plain' });
+            const url = window.URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `certificate_${quizData.title.replace(/\s+/g, '_')}_${new Date().toISOString().split('T')[0]}.txt`;
+            a.click();
+            window.URL.revokeObjectURL(url);
+            
+            LMS.showToast(LMS.t('quiz.certificateDownloaded'), 'success');
+        }
+
+        function retakeQuiz() {
+            if (confirm(LMS.t('quiz.retakeConfirm'))) {
+                // Clear current attempt data
+                localStorage.removeItem(`quiz_attempt_${quizData.id}_${currentUser.id}`);
+                
+                // Archive current submission as an attempt
+                const attempts = getQuizAttempts();
+                const attemptKey = `quiz_submission_${quizData.id}_${currentUser.id}_attempt_${attempts.length + 1}`;
+                localStorage.setItem(attemptKey, JSON.stringify(submissionData));
+                
+                // Clear current submission
+                localStorage.removeItem(`quiz_submission_${quizData.id}_${currentUser.id}`);
+                
+                // Redirect to quiz attempt
+                window.location.href = `quiz-attempt.html?id=${quizData.id}`;
+            }
+        }
+
+        function goToCourses() {
+            window.location.href = 'courses.html';
+        }
+
+        // Initialize on load
+        document.addEventListener('DOMContentLoaded', init);
+    </script>
+</body>
+</html>
