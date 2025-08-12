@@ -200,7 +200,7 @@ LMS.Navigation = {
         items: [
           {
             id: 'settings',
-            icon: '⚙️',
+            icon: 'fa-cogs',
             label: 'nav.settings',
             href: 'pages/settings.html'
           },

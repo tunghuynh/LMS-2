@@ -779,6 +779,96 @@
     "viewTemplateLibrary": "Would you like to view the template library?"
   },
   
+  "landing": {
+    "brand": "EduLearn LMS",
+    "nav": {
+      "features": "Features",
+      "demo": "Demo", 
+      "pricing": "Pricing",
+      "contact": "Contact",
+      "login": "Login",
+      "tryFree": "Try Free"
+    },
+    "hero": {
+      "title": "Transform Your Learning Experience",
+      "subtitle": "Comprehensive Learning Management System that empowers educators and engages students with modern tools and interactive features.",
+      "getStarted": "Get Started Free",
+      "watchDemo": "Watch Demo",
+      "feature1": "No Credit Card Required",
+      "feature2": "30-Day Free Trial", 
+      "feature3": "Easy Setup"
+    },
+    "features": {
+      "title": "Everything You Need to Succeed",
+      "subtitle": "Powerful features designed to enhance teaching and learning experiences for modern education.",
+      "teaching": {
+        "title": "Interactive Teaching",
+        "desc": "Create engaging lessons with multimedia content, quizzes, and interactive assessments."
+      },
+      "analytics": {
+        "title": "Advanced Analytics",
+        "desc": "Track student progress with detailed analytics and generate comprehensive reports."
+      },
+      "mobile": {
+        "title": "Mobile Ready",
+        "desc": "Access your courses anywhere, anytime with our fully responsive design."
+      },
+      "collaboration": {
+        "title": "Collaboration",
+        "desc": "Foster collaboration with discussion forums, group projects, and peer reviews."
+      },
+      "security": {
+        "title": "Secure & Reliable",
+        "desc": "Enterprise-grade security with regular backups and 99.9% uptime guarantee."
+      },
+      "integration": {
+        "title": "Easy Integration",
+        "desc": "Integrate with your existing tools and systems with our comprehensive API."
+      }
+    },
+    "demo": {
+      "title": "See It In Action",
+      "subtitle": "Watch how EduLearn LMS transforms traditional learning into an engaging digital experience.",
+      "description": "Discover how teachers create courses, students engage with content, and administrators manage the entire learning ecosystem."
+    },
+    "roles": {
+      "title": "Choose Your Experience",
+      "subtitle": "Start your journey with the role that best fits your needs. You can always upgrade or change later.",
+      "student": {
+        "title": "Student",
+        "desc": "Access courses, track progress, take quizzes, and collaborate with peers.",
+        "feature1": "Access all courses",
+        "feature2": "Track learning progress",
+        "feature3": "Take interactive quizzes",
+        "feature4": "Download certificates",
+        "login": "Start Learning"
+      },
+      "teacher": {
+        "title": "Teacher", 
+        "desc": "Create courses, manage students, design quizzes, and track class performance.",
+        "feature1": "Create unlimited courses",
+        "feature2": "Build interactive quizzes",
+        "feature3": "Monitor student progress",
+        "feature4": "Generate reports",
+        "login": "Start Teaching"
+      },
+      "admin": {
+        "title": "Administrator",
+        "desc": "Manage the entire system, users, courses, and get comprehensive analytics.",
+        "feature1": "User management",
+        "feature2": "System analytics", 
+        "feature3": "Content oversight",
+        "feature4": "Advanced reporting",
+        "login": "Manage System"
+      }
+    },
+    "footer": {
+      "brand": "EduLearn LMS",
+      "description": "Empowering education through technology. Transform your learning experience with our comprehensive Learning Management System.",
+      "copyright": "© 2024 EduLearn LMS. All rights reserved."
+    }
+  },
+  
   "error": {
     "pageNotFound": "Page not found",
     "lessonNotFound": "Lesson not found",

@@ -3,123 +3,845 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>LMS - Welcome</title>
+    <title>EduLearn LMS - Transform Learning Experience</title>
     <link rel="stylesheet" href="assets/css/global.css">
     <link rel="stylesheet" href="assets/css/themes.css">
     <link rel="stylesheet" href="assets/css/components.css">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <!-- Configuration -->
+    <script src="config.js"></script>
+    
     <style>
+        /* Landing Page Specific Styles */
         body {
+            margin: 0;
+            padding: 0;
+            background: var(--bg-primary);
+            font-family: var(--font-family);
+            overflow-x: hidden;
+        }
+
+        /* Header */
+        .landing-header {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid var(--border-color);
+            z-index: 1000;
+            transition: all var(--transition-base);
+        }
+
+        .dark-theme .landing-header {
+            background: rgba(30, 41, 59, 0.95);
+        }
+
+        .header-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: var(--spacing-3) var(--spacing-4);
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-2);
+            font-size: 1.5rem;
+            font-weight: var(--font-weight-bold);
+            color: var(--color-primary);
+            text-decoration: none;
+        }
+
+        .nav-menu {
+            display: flex;
+            gap: var(--spacing-6);
+            list-style: none;
+            margin: 0;
+            padding: 0;
+        }
+
+        .nav-link {
+            color: var(--text-primary);
+            text-decoration: none;
+            font-weight: var(--font-weight-medium);
+            transition: color var(--transition-base);
+        }
+
+        .nav-link:hover {
+            color: var(--color-primary);
+        }
+
+        .header-actions {
+            display: flex;
+            gap: var(--spacing-3);
+            align-items: center;
+        }
+
+        /* Hero Section */
+        .hero {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            background: linear-gradient(135deg, var(--color-primary), var(--color-primary-dark, #1E4F78));
+            color: white;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .hero::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: 0;
+            bottom: 0;
+            left: 0;
+            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 1000"><circle cx="200" cy="200" r="2" fill="rgba(255,255,255,0.1)"/><circle cx="400" cy="100" r="1" fill="rgba(255,255,255,0.1)"/><circle cx="600" cy="300" r="2" fill="rgba(255,255,255,0.1)"/><circle cx="800" cy="150" r="1" fill="rgba(255,255,255,0.1)"/><circle cx="300" cy="400" r="1" fill="rgba(255,255,255,0.1)"/><circle cx="700" cy="500" r="2" fill="rgba(255,255,255,0.1)"/></svg>') repeat;
+            animation: float 20s infinite linear;
+        }
+
+        @keyframes float {
+            0% { transform: translateY(0px); }
+            100% { transform: translateY(-100px); }
+        }
+
+        .hero-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 var(--spacing-4);
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: var(--spacing-8);
+            align-items: center;
+            position: relative;
+            z-index: 1;
+        }
+
+        .hero-text h1 {
+            font-size: 3.5rem;
+            font-weight: var(--font-weight-bold);
+            margin-bottom: var(--spacing-4);
+            line-height: 1.2;
+        }
+
+        .hero-text .subtitle {
+            font-size: 1.25rem;
+            margin-bottom: var(--spacing-6);
+            opacity: 0.9;
+            line-height: 1.6;
+        }
+
+        .hero-actions {
+            display: flex;
+            gap: var(--spacing-4);
+            margin-bottom: var(--spacing-6);
+        }
+
+        .btn-hero {
+            padding: var(--spacing-4) var(--spacing-6);
+            font-size: 1.1rem;
+            font-weight: var(--font-weight-semibold);
+            border-radius: var(--radius-lg);
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: var(--spacing-2);
+            transition: all var(--transition-base);
+        }
+
+        .btn-hero.primary {
+            background: white;
+            color: var(--color-primary);
+        }
+
+        .btn-hero.primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+        }
+
+        .btn-hero.secondary {
+            background: transparent;
+            color: white;
+            border: 2px solid white;
+        }
+
+        .btn-hero.secondary:hover {
+            background: white;
+            color: var(--color-primary);
+        }
+
+        .hero-features {
+            display: flex;
+            gap: var(--spacing-4);
+            font-size: var(--font-size-sm);
+            opacity: 0.8;
+        }
+
+        .hero-feature {
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-1);
+        }
+
+        .hero-visual {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .hero-mockup {
+            width: 100%;
+            max-width: 500px;
+            border-radius: var(--radius-xl);
+            box-shadow: 0 25px 50px rgba(0,0,0,0.3);
+            transform: perspective(1000px) rotateY(-15deg) rotateX(10deg);
+            background: white;
+            padding: var(--spacing-4);
+        }
+
+        /* Features Section */
+        .features {
+            padding: 120px 0;
+            background: var(--bg-secondary);
+        }
+
+        .section-header {
+            text-align: center;
+            max-width: 600px;
+            margin: 0 auto var(--spacing-12);
+        }
+
+        .section-header h2 {
+            font-size: 2.5rem;
+            font-weight: var(--font-weight-bold);
+            margin-bottom: var(--spacing-4);
+            color: var(--text-primary);
+        }
+
+        .section-header p {
+            font-size: 1.1rem;
+            color: var(--text-secondary);
+            line-height: 1.6;
+        }
+
+        .features-grid {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 var(--spacing-4);
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: var(--spacing-8);
+        }
+
+        .feature-card {
+            background: var(--bg-primary);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-xl);
+            padding: var(--spacing-6);
+            text-align: center;
+            transition: all var(--transition-base);
+        }
+
+        .feature-card:hover {
+            transform: translateY(-8px);
+            box-shadow: var(--shadow-xl);
+            border-color: var(--color-primary);
+        }
+
+        .feature-icon {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--color-primary), var(--color-primary-dark, #1E4F78));
             display: flex;
             align-items: center;
             justify-content: center;
-            min-height: 100vh;
+            margin: 0 auto var(--spacing-4);
+            font-size: 2rem;
+            color: white;
+        }
+
+        .feature-card h3 {
+            font-size: 1.5rem;
+            font-weight: var(--font-weight-bold);
+            margin-bottom: var(--spacing-3);
+            color: var(--text-primary);
+        }
+
+        .feature-card p {
+            color: var(--text-secondary);
+            line-height: 1.6;
+        }
+
+        /* Roles Section */
+        .roles {
+            padding: 120px 0;
             background: var(--bg-primary);
         }
-        .landing-container {
-            width: 100%;
-            max-width: 1200px;
-            padding: var(--spacing-4);
-        }
-        .landing-header {
-            text-align: center;
-            margin-bottom: var(--spacing-8);
-        }
-        .landing-title {
-            font-size: var(--font-size-2xl);
-            color: var(--text-primary);
-            margin-bottom: var(--spacing-2);
-        }
-        .landing-subtitle {
-            font-size: var(--font-size-lg);
-            color: var(--text-secondary);
-        }
-        .role-grid {
+
+        .roles-grid {
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 0 var(--spacing-4);
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
             gap: var(--spacing-6);
-            margin-bottom: var(--spacing-6);
         }
-        .theme-controls {
+
+        .role-card {
+            background: var(--bg-secondary);
+            border: 2px solid var(--border-color);
+            border-radius: var(--radius-xl);
+            padding: var(--spacing-6);
+            text-align: center;
+            transition: all var(--transition-base);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .role-card::before {
+            content: '';
             position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: var(--role-color);
+        }
+
+        .role-card.student::before {
+            background: linear-gradient(135deg, #10B981, #34D399);
+        }
+
+        .role-card.teacher::before {
+            background: linear-gradient(135deg, #3B82F6, #60A5FA);
+        }
+
+        .role-card.admin::before {
+            background: linear-gradient(135deg, #8B5CF6, #A78BFA);
+        }
+
+        .role-card:hover {
+            transform: translateY(-8px);
+            box-shadow: var(--shadow-xl);
+            border-color: var(--color-primary);
+        }
+
+        .role-icon {
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto var(--spacing-4);
+            font-size: 2.5rem;
+            color: white;
+        }
+
+        .role-card.student .role-icon {
+            background: linear-gradient(135deg, #10B981, #34D399);
+        }
+
+        .role-card.teacher .role-icon {
+            background: linear-gradient(135deg, #3B82F6, #60A5FA);
+        }
+
+        .role-card.admin .role-icon {
+            background: linear-gradient(135deg, #8B5CF6, #A78BFA);
+        }
+
+        .role-card h3 {
+            font-size: 1.75rem;
+            font-weight: var(--font-weight-bold);
+            margin-bottom: var(--spacing-3);
+            color: var(--text-primary);
+        }
+
+        .role-card p {
+            color: var(--text-secondary);
+            line-height: 1.6;
+            margin-bottom: var(--spacing-4);
+        }
+
+        .role-features {
+            list-style: none;
+            padding: 0;
+            margin: 0 0 var(--spacing-6) 0;
+            text-align: left;
+        }
+
+        .role-features li {
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-2);
+            padding: var(--spacing-1) 0;
+            color: var(--text-secondary);
+            font-size: var(--font-size-sm);
+        }
+
+        .role-features li i {
+            color: var(--color-success);
+            width: 16px;
+        }
+
+        /* Demo Section */
+        .demo {
+            padding: 120px 0;
+            background: linear-gradient(135deg, #f8fafc, #e2e8f0);
+        }
+
+        .dark-theme .demo {
+            background: linear-gradient(135deg, #1e293b, #334155);
+        }
+
+        .demo-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 var(--spacing-4);
+            text-align: center;
+        }
+
+        .demo-video {
+            max-width: 800px;
+            margin: 0 auto var(--spacing-8);
+            border-radius: var(--radius-xl);
+            overflow: hidden;
+            box-shadow: var(--shadow-xl);
+        }
+
+        .demo-placeholder {
+            aspect-ratio: 16/9;
+            background: linear-gradient(135deg, var(--color-primary), var(--color-primary-dark, #1E4F78));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 4rem;
+            cursor: pointer;
+            transition: all var(--transition-base);
+        }
+
+        .demo-placeholder:hover {
+            transform: scale(1.02);
+        }
+
+        /* Footer */
+        .landing-footer {
+            background: var(--color-primary-dark, #1E4F78);
+            color: white;
+            padding: var(--spacing-8) 0 var(--spacing-4);
+        }
+
+        .footer-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 var(--spacing-4);
+            text-align: center;
+        }
+
+        .footer-logo {
+            font-size: 2rem;
+            font-weight: var(--font-weight-bold);
+            margin-bottom: var(--spacing-4);
+        }
+
+        .footer-text {
+            opacity: 0.8;
+            margin-bottom: var(--spacing-6);
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .theme-controls {
+            position: fixed;
             top: var(--spacing-4);
             right: var(--spacing-4);
+            z-index: 1001;
             display: flex;
             gap: var(--spacing-2);
+        }
+
+        /* Mobile Responsive */
+        @media (max-width: 768px) {
+            .nav-menu {
+                display: none;
+            }
+
+            .hero-content {
+                grid-template-columns: 1fr;
+                text-align: center;
+            }
+
+            .hero-text h1 {
+                font-size: 2.5rem;
+            }
+
+            .hero-actions {
+                flex-direction: column;
+                align-items: center;
+            }
+
+            .btn-hero {
+                width: 100%;
+                max-width: 300px;
+                justify-content: center;
+            }
+
+            .features-grid,
+            .roles-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .section-header h2 {
+                font-size: 2rem;
+            }
+
+            .hero-visual {
+                order: -1;
+            }
+
+            .hero-mockup {
+                transform: none;
+                max-width: 300px;
+            }
         }
     </style>
 </head>
 <body>
+    <!-- Theme Controls -->
     <div class="theme-controls">
-        <div class="language-switcher">
-            <button class="btn btn--secondary btn--small" data-lang="en">EN</button>
-            <button class="btn btn--secondary btn--small" data-lang="vi">VI</button>
-        </div>
-        <button class="btn btn--secondary btn--small" id="themeToggle">
-            Theme
+        <button id="themeToggle" class="btn btn--small btn--ghost" title="Toggle theme">
+            <i class="fas fa-moon" id="themeIcon"></i>
+        </button>
+        <button id="langToggle" class="btn btn--small btn--ghost" title="Switch language">
+            <i class="fas fa-language"></i>
         </button>
     </div>
 
-    <div class="landing-container">
-        <header class="landing-header">
-            <h1 class="landing-title" data-translate="landing.title">Learning Management System</h1>
-            <p class="landing-subtitle" data-translate="landing.subtitle">Choose your role to continue</p>
-        </header>
+    <!-- Header -->
+    <header class="landing-header">
+        <div class="header-content">
+            <a href="#" class="logo">
+                <i class="fas fa-graduation-cap"></i>
+                <span data-translate="landing.brand">EduLearn LMS</span>
+            </a>
+            <nav>
+                <ul class="nav-menu">
+                    <li><a href="#features" class="nav-link" data-translate="landing.nav.features">Features</a></li>
+                    <li><a href="#demo" class="nav-link" data-translate="landing.nav.demo">Demo</a></li>
+                    <li><a href="#pricing" class="nav-link" data-translate="landing.nav.pricing">Pricing</a></li>
+                    <li><a href="#contact" class="nav-link" data-translate="landing.nav.contact">Contact</a></li>
+                </ul>
+            </nav>
+            <div class="header-actions">
+                <a href="#roles" class="btn btn--secondary btn--small" data-translate="landing.nav.login">Login</a>
+                <a href="#roles" class="btn btn--primary btn--small" data-translate="landing.nav.tryFree">Try Free</a>
+            </div>
+        </div>
+    </header>
 
-        <div class="role-grid">
-            <!-- Student Card -->
-            <div class="card card--clickable" onclick="window.location.href='pages/login-student.html'">
-                <div class="card__header">
-                    <h3 class="card__title" data-translate="landing.student.title">Student</h3>
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="hero-content">
+            <div class="hero-text">
+                <h1 data-translate="landing.hero.title">Transform Your Learning Experience</h1>
+                <p class="subtitle" data-translate="landing.hero.subtitle">
+                    Comprehensive Learning Management System that empowers educators and engages students with modern tools and interactive features.
+                </p>
+                <div class="hero-actions">
+                    <a href="#roles" class="btn-hero primary" data-translate="landing.hero.getStarted">
+                        <i class="fas fa-rocket"></i>
+                        Get Started Free
+                    </a>
+                    <a href="#demo" class="btn-hero secondary" data-translate="landing.hero.watchDemo">
+                        <i class="fas fa-play"></i>
+                        Watch Demo
+                    </a>
                 </div>
-                <div class="card__body">
-                    <p class="card__text" data-translate="landing.student.description">
-                        Access courses, track progress, and take quizzes
-                    </p>
-                </div>
-                <div class="card__footer">
-                    <button class="btn btn--primary btn--block" data-translate="landing.login">Login</button>
+                <div class="hero-features">
+                    <div class="hero-feature">
+                        <i class="fas fa-check"></i>
+                        <span data-translate="landing.hero.feature1">No Credit Card Required</span>
+                    </div>
+                    <div class="hero-feature">
+                        <i class="fas fa-check"></i>
+                        <span data-translate="landing.hero.feature2">30-Day Free Trial</span>
+                    </div>
+                    <div class="hero-feature">
+                        <i class="fas fa-check"></i>
+                        <span data-translate="landing.hero.feature3">Easy Setup</span>
+                    </div>
                 </div>
             </div>
-
-            <!-- Teacher Card -->
-            <div class="card card--clickable" onclick="window.location.href='pages/login-teacher.html'">
-                <div class="card__header">
-                    <h3 class="card__title" data-translate="landing.teacher.title">Teacher</h3>
-                </div>
-                <div class="card__body">
-                    <p class="card__text" data-translate="landing.teacher.description">
-                        Create courses, manage students, and track performance
-                    </p>
-                </div>
-                <div class="card__footer">
-                    <button class="btn btn--primary btn--block" data-translate="landing.login">Login</button>
-                </div>
-            </div>
-
-            <!-- Admin Card -->
-            <div class="card card--clickable" onclick="window.location.href='pages/login-admin.html'">
-                <div class="card__header">
-                    <h3 class="card__title" data-translate="landing.admin.title">Administrator</h3>
-                </div>
-                <div class="card__body">
-                    <p class="card__text" data-translate="landing.admin.description">
-                        Manage users, monitor system, and configure settings
-                    </p>
-                </div>
-                <div class="card__footer">
-                    <button class="btn btn--primary btn--block" data-translate="landing.login">Login</button>
+            <div class="hero-visual">
+                <div class="hero-mockup">
+                    <div style="background: #f8f9fa; border-radius: 8px; padding: 16px; margin-bottom: 12px;">
+                        <div style="height: 12px; background: var(--color-primary); border-radius: 6px; margin-bottom: 8px; width: 60%;"></div>
+                        <div style="height: 8px; background: #e9ecef; border-radius: 4px; margin-bottom: 4px;"></div>
+                        <div style="height: 8px; background: #e9ecef; border-radius: 4px; width: 80%;"></div>
+                    </div>
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
+                        <div style="background: #e3f2fd; border-radius: 8px; padding: 12px; text-align: center;">
+                            <div style="height: 20px; background: #2196f3; border-radius: 50%; width: 20px; margin: 0 auto 8px;"></div>
+                            <div style="height: 6px; background: #90caf9; border-radius: 3px;"></div>
+                        </div>
+                        <div style="background: #e8f5e8; border-radius: 8px; padding: 12px; text-align: center;">
+                            <div style="height: 20px; background: #4caf50; border-radius: 50%; width: 20px; margin: 0 auto 8px;"></div>
+                            <div style="height: 6px; background: #a5d6a7; border-radius: 3px;"></div>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
-    </div>
+    </section>
 
+    <!-- Features Section -->
+    <section id="features" class="features">
+        <div class="section-header">
+            <h2 data-translate="landing.features.title">Everything You Need to Succeed</h2>
+            <p data-translate="landing.features.subtitle">
+                Powerful features designed to enhance teaching and learning experiences for modern education.
+            </p>
+        </div>
+        <div class="features-grid">
+            <div class="feature-card">
+                <div class="feature-icon">
+                    <i class="fas fa-chalkboard-teacher"></i>
+                </div>
+                <h3 data-translate="landing.features.teaching.title">Interactive Teaching</h3>
+                <p data-translate="landing.features.teaching.desc">
+                    Create engaging lessons with multimedia content, quizzes, and interactive assessments.
+                </p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon">
+                    <i class="fas fa-chart-line"></i>
+                </div>
+                <h3 data-translate="landing.features.analytics.title">Advanced Analytics</h3>
+                <p data-translate="landing.features.analytics.desc">
+                    Track student progress with detailed analytics and generate comprehensive reports.
+                </p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon">
+                    <i class="fas fa-mobile-alt"></i>
+                </div>
+                <h3 data-translate="landing.features.mobile.title">Mobile Ready</h3>
+                <p data-translate="landing.features.mobile.desc">
+                    Access your courses anywhere, anytime with our fully responsive design.
+                </p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon">
+                    <i class="fas fa-users"></i>
+                </div>
+                <h3 data-translate="landing.features.collaboration.title">Collaboration</h3>
+                <p data-translate="landing.features.collaboration.desc">
+                    Foster collaboration with discussion forums, group projects, and peer reviews.
+                </p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon">
+                    <i class="fas fa-shield-alt"></i>
+                </div>
+                <h3 data-translate="landing.features.security.title">Secure & Reliable</h3>
+                <p data-translate="landing.features.security.desc">
+                    Enterprise-grade security with regular backups and 99.9% uptime guarantee.
+                </p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon">
+                    <i class="fas fa-puzzle-piece"></i>
+                </div>
+                <h3 data-translate="landing.features.integration.title">Easy Integration</h3>
+                <p data-translate="landing.features.integration.desc">
+                    Integrate with your existing tools and systems with our comprehensive API.
+                </p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Demo Section -->
+    <section id="demo" class="demo">
+        <div class="demo-content">
+            <div class="section-header">
+                <h2 data-translate="landing.demo.title">See It In Action</h2>
+                <p data-translate="landing.demo.subtitle">
+                    Watch how EduLearn LMS transforms traditional learning into an engaging digital experience.
+                </p>
+            </div>
+            <div class="demo-video">
+                <div class="demo-placeholder" onclick="playDemo()">
+                    <i class="fas fa-play"></i>
+                </div>
+            </div>
+            <p data-translate="landing.demo.description">
+                Discover how teachers create courses, students engage with content, and administrators manage the entire learning ecosystem.
+            </p>
+        </div>
+    </section>
+
+    <!-- Roles Section -->
+    <section id="roles" class="roles">
+        <div class="section-header">
+            <h2 data-translate="landing.roles.title">Choose Your Experience</h2>
+            <p data-translate="landing.roles.subtitle">
+                Start your journey with the role that best fits your needs. You can always upgrade or change later.
+            </p>
+        </div>
+        <div class="roles-grid">
+            <div class="role-card student">
+                <div class="role-icon">
+                    <i class="fas fa-user-graduate"></i>
+                </div>
+                <h3 data-translate="landing.roles.student.title">Student</h3>
+                <p data-translate="landing.roles.student.desc">
+                    Access courses, track progress, take quizzes, and collaborate with peers.
+                </p>
+                <ul class="role-features">
+                    <li><i class="fas fa-check"></i> <span data-translate="landing.roles.student.feature1">Access all courses</span></li>
+                    <li><i class="fas fa-check"></i> <span data-translate="landing.roles.student.feature2">Track learning progress</span></li>
+                    <li><i class="fas fa-check"></i> <span data-translate="landing.roles.student.feature3">Take interactive quizzes</span></li>
+                    <li><i class="fas fa-check"></i> <span data-translate="landing.roles.student.feature4">Download certificates</span></li>
+                </ul>
+                <a href="pages/login-student.html" class="btn btn--success btn--large" style="width: 100%;">
+                    <i class="fas fa-sign-in-alt" style="margin-right: 8px;"></i>
+                    <span data-translate="landing.roles.student.login">Start Learning</span>
+                </a>
+            </div>
+            <div class="role-card teacher">
+                <div class="role-icon">
+                    <i class="fas fa-chalkboard-teacher"></i>
+                </div>
+                <h3 data-translate="landing.roles.teacher.title">Teacher</h3>
+                <p data-translate="landing.roles.teacher.desc">
+                    Create courses, manage students, design quizzes, and track class performance.
+                </p>
+                <ul class="role-features">
+                    <li><i class="fas fa-check"></i> <span data-translate="landing.roles.teacher.feature1">Create unlimited courses</span></li>
+                    <li><i class="fas fa-check"></i> <span data-translate="landing.roles.teacher.feature2">Build interactive quizzes</span></li>
+                    <li><i class="fas fa-check"></i> <span data-translate="landing.roles.teacher.feature3">Monitor student progress</span></li>
+                    <li><i class="fas fa-check"></i> <span data-translate="landing.roles.teacher.feature4">Generate reports</span></li>
+                </ul>
+                <a href="pages/login-teacher.html" class="btn btn--primary btn--large" style="width: 100%;">
+                    <i class="fas fa-sign-in-alt" style="margin-right: 8px;"></i>
+                    <span data-translate="landing.roles.teacher.login">Start Teaching</span>
+                </a>
+            </div>
+            <div class="role-card admin">
+                <div class="role-icon">
+                    <i class="fas fa-user-cog"></i>
+                </div>
+                <h3 data-translate="landing.roles.admin.title">Administrator</h3>
+                <p data-translate="landing.roles.admin.desc">
+                    Manage the entire system, users, courses, and get comprehensive analytics.
+                </p>
+                <ul class="role-features">
+                    <li><i class="fas fa-check"></i> <span data-translate="landing.roles.admin.feature1">User management</span></li>
+                    <li><i class="fas fa-check"></i> <span data-translate="landing.roles.admin.feature2">System analytics</span></li>
+                    <li><i class="fas fa-check"></i> <span data-translate="landing.roles.admin.feature3">Content oversight</span></li>
+                    <li><i class="fas fa-check"></i> <span data-translate="landing.roles.admin.feature4">Advanced reporting</span></li>
+                </ul>
+                <a href="pages/login-admin.html" class="btn btn--secondary btn--large" style="width: 100%;">
+                    <i class="fas fa-sign-in-alt" style="margin-right: 8px;"></i>
+                    <span data-translate="landing.roles.admin.login">Manage System</span>
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="landing-footer">
+        <div class="footer-content">
+            <div class="footer-logo" data-translate="landing.footer.brand">EduLearn LMS</div>
+            <p class="footer-text" data-translate="landing.footer.description">
+                Empowering education through technology. Transform your learning experience with our comprehensive Learning Management System.
+            </p>
+            <p style="opacity: 0.6; font-size: var(--font-size-sm);" data-translate="landing.footer.copyright">
+                © 2024 EduLearn LMS. All rights reserved.
+            </p>
+        </div>
+    </footer>
+
+    <!-- Core JavaScript -->
     <script src="assets/js/global.js"></script>
+    
     <script>
-        // Initialize theme and language on landing page
-        document.addEventListener('DOMContentLoaded', function() {
-            // Theme initialization will be handled by global.js
-            // Language initialization will be handled by global.js
-        });
+        // Initialize
+        async function init() {
+            // Load translations
+            await LMS.LanguageManager.init();
+            LMS.LanguageManager.updatePageTranslations();
+            
+            // Initialize theme
+            LMS.ThemeManager.init();
+            
+            // Setup theme toggle
+            document.getElementById('themeToggle').addEventListener('click', () => {
+                LMS.ThemeManager.toggle();
+                updateThemeIcon();
+            });
+            
+            // Setup language toggle
+            document.getElementById('langToggle').addEventListener('click', () => {
+                const currentLang = LMS.LanguageManager.getCurrentLanguage();
+                const newLang = currentLang === 'en' ? 'vi' : 'en';
+                LMS.LanguageManager.setLanguage(newLang);
+                LMS.LanguageManager.updatePageTranslations();
+            });
+            
+            updateThemeIcon();
+            
+            // Smooth scrolling for anchor links
+            document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+                anchor.addEventListener('click', function (e) {
+                    e.preventDefault();
+                    const target = document.querySelector(this.getAttribute('href'));
+                    if (target) {
+                        target.scrollIntoView({
+                            behavior: 'smooth',
+                            block: 'start'
+                        });
+                    }
+                });
+            });
+            
+            // Header scroll effect
+            let lastScroll = 0;
+            window.addEventListener('scroll', () => {
+                const header = document.querySelector('.landing-header');
+                const currentScroll = window.pageYOffset;
+                
+                if (currentScroll > 100) {
+                    header.style.background = 'rgba(255, 255, 255, 0.98)';
+                } else {
+                    header.style.background = 'rgba(255, 255, 255, 0.95)';
+                }
+                
+                lastScroll = currentScroll;
+            });
+        }
+        
+        function updateThemeIcon() {
+            const icon = document.getElementById('themeIcon');
+            const isDark = document.documentElement.classList.contains('dark-theme');
+            icon.className = isDark ? 'fas fa-sun' : 'fas fa-moon';
+        }
+        
+        function playDemo() {
+            // For demo, just show an alert
+            alert('Demo video would play here. In a real implementation, this would open a video player.');
+        }
+        
+        // Initialize on load
+        document.addEventListener('DOMContentLoaded', init);
     </script>
 </body>
 </html>

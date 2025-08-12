@@ -779,6 +779,96 @@
     "viewTemplateLibrary": "Bạn có muốn xem thư viện mẫu không?"
   },
   
+  "landing": {
+    "brand": "EduLearn LMS",
+    "nav": {
+      "features": "Tính Năng",
+      "demo": "Demo", 
+      "pricing": "Bảng Giá",
+      "contact": "Liên Hệ",
+      "login": "Đăng Nhập",
+      "tryFree": "Dùng Thử Miễn Phí"
+    },
+    "hero": {
+      "title": "Biến Đổi Trải Nghiệm Học Tập",
+      "subtitle": "Hệ thống Quản lý Học tập Toàn diện trao quyền cho các nhà giáo dục và thu hút học sinh với các công cụ hiện đại và tính năng tương tác.",
+      "getStarted": "Bắt Đầu Miễn Phí",
+      "watchDemo": "Xem Demo",
+      "feature1": "Không Cần Thẻ Tín Dụng",
+      "feature2": "Dùng Thử 30 Ngày Miễn Phí", 
+      "feature3": "Thiết Lập Dễ Dàng"
+    },
+    "features": {
+      "title": "Mọi Thứ Bạn Cần Để Thành Công",
+      "subtitle": "Các tính năng mạnh mẽ được thiết kế để nâng cao trải nghiệm dạy và học cho giáo dục hiện đại.",
+      "teaching": {
+        "title": "Giảng Dạy Tương Tác",
+        "desc": "Tạo bài học hấp dẫn với nội dung đa phương tiện, câu hỏi và đánh giá tương tác."
+      },
+      "analytics": {
+        "title": "Phân Tích Nâng Cao",
+        "desc": "Theo dõi tiến độ học sinh với phân tích chi tiết và tạo báo cáo toàn diện."
+      },
+      "mobile": {
+        "title": "Tương Thích Mobile",
+        "desc": "Truy cập khóa học mọi lúc, mọi nơi với thiết kế đáp ứng hoàn toàn."
+      },
+      "collaboration": {
+        "title": "Hợp Tác",
+        "desc": "Thúc đẩy hợp tác với diễn đàn thảo luận, dự án nhóm và đánh giá đồng nghiệp."
+      },
+      "security": {
+        "title": "An Toàn & Đáng Tin Cậy",
+        "desc": "Bảo mật cấp doanh nghiệp với sao lưu thường xuyên và đảm bảo thời gian hoạt động 99.9%."
+      },
+      "integration": {
+        "title": "Tích Hợp Dễ Dàng",
+        "desc": "Tích hợp với các công cụ và hệ thống hiện có của bạn với API toàn diện."
+      }
+    },
+    "demo": {
+      "title": "Xem Hoạt Động Thực Tế",
+      "subtitle": "Xem EduLearn LMS biến đổi việc học truyền thống thành trải nghiệm kỹ thuật số hấp dẫn như thế nào.",
+      "description": "Khám phá cách giáo viên tạo khóa học, học sinh tương tác với nội dung và quản trị viên quản lý toàn bộ hệ sinh thái học tập."
+    },
+    "roles": {
+      "title": "Chọn Trải Nghiệm Của Bạn",
+      "subtitle": "Bắt đầu hành trình với vai trò phù hợp nhất với nhu cầu của bạn. Bạn luôn có thể nâng cấp hoặc thay đổi sau.",
+      "student": {
+        "title": "Học Sinh",
+        "desc": "Truy cập khóa học, theo dõi tiến độ, làm bài kiểm tra và hợp tác với bạn bè.",
+        "feature1": "Truy cập tất cả khóa học",
+        "feature2": "Theo dõi tiến độ học tập",
+        "feature3": "Làm bài kiểm tra tương tác",
+        "feature4": "Tải xuống chứng chỉ",
+        "login": "Bắt Đầu Học"
+      },
+      "teacher": {
+        "title": "Giáo Viên", 
+        "desc": "Tạo khóa học, quản lý học sinh, thiết kế bài kiểm tra và theo dõi hiệu suất lớp học.",
+        "feature1": "Tạo khóa học không giới hạn",
+        "feature2": "Xây dựng bài kiểm tra tương tác",
+        "feature3": "Giám sát tiến độ học sinh",
+        "feature4": "Tạo báo cáo",
+        "login": "Bắt Đầu Dạy"
+      },
+      "admin": {
+        "title": "Quản Trị Viên",
+        "desc": "Quản lý toàn bộ hệ thống, người dùng, khóa học và nhận phân tích toàn diện.",
+        "feature1": "Quản lý người dùng",
+        "feature2": "Phân tích hệ thống", 
+        "feature3": "Giám sát nội dung",
+        "feature4": "Báo cáo nâng cao",
+        "login": "Quản Lý Hệ Thống"
+      }
+    },
+    "footer": {
+      "brand": "EduLearn LMS",
+      "description": "Trao quyền cho giáo dục thông qua công nghệ. Biến đổi trải nghiệm học tập của bạn với Hệ thống Quản lý Học tập toàn diện của chúng tôi.",
+      "copyright": "© 2024 EduLearn LMS. Bảo lưu mọi quyền."
+    }
+  },
+  
   "error": {
     "pageNotFound": "Không tìm thấy trang",
     "lessonNotFound": "Không tìm thấy bài học",

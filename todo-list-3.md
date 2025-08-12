@@ -154,7 +154,7 @@ This is the master TODO list for LMS Phase I development following the Foundatio
   - Responsive grid layout
   - Hover animations
   - Links to respective login pages
-  - [ ] Thiết kế trang landing page giống như 1 trang quảng bá sản phẩm dịch vụ, dùng thử trải nghiệm
+  - [x] Thiết kế trang landing page giống như 1 trang quảng bá sản phẩm dịch vụ, dùng thử trải nghiệm
 - [x] **1.1.2** Student Login (`login-student.html`):
   - Use base input/button components
   - Remember me checkbox
