@@ -324,8 +324,8 @@
                         </td>
                         <td class="table__cell table__cell--center">
                             ${user.isActive 
-                                ? '<span style="color: var(--color-success);">Active</span>' 
-                                : '<span style="color: var(--color-error);">Inactive</span>'}
+                                ? '<span class="badge badge--active">Active</span>' 
+                                : '<span class="badge badge--inactive">Inactive</span>'}
                         </td>
                         <td class="table__cell table__cell--hide-mobile">
                             ${new Date(user.createdAt).toLocaleDateString()}

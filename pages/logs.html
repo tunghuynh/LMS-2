@@ -369,26 +369,26 @@
         // Get role badge
         function getRoleBadge(role) {
             const badges = {
-                admin: '<span style="color: var(--color-error);">Admin</span>',
-                teacher: '<span style="color: var(--color-primary);">Teacher</span>',
-                student: '<span style="color: var(--color-success);">Student</span>'
+                admin: '<span class="badge badge--danger">Admin</span>',
+                teacher: '<span class="badge badge--primary">Teacher</span>',
+                student: '<span class="badge badge--success">Student</span>'
             };
-            return badges[role] || role;
+            return badges[role] || `<span class="badge badge--secondary">${role}</span>`;
         }
 
         // Get action badge
         function getActionBadge(action) {
             const badges = {
-                login: '<span style="color: var(--color-success);">Login</span>',
-                logout: '<span style="color: var(--color-gray-500);">Logout</span>',
-                register: '<span style="color: var(--color-info);">Register</span>',
-                create: '<span style="color: var(--color-primary);">Create</span>',
-                update: '<span style="color: var(--color-warning);">Update</span>',
-                delete: '<span style="color: var(--color-error);">Delete</span>',
-                enroll: '<span style="color: var(--color-success);">Enroll</span>',
-                error: '<span style="color: var(--color-error);">Error</span>'
+                login: '<span class="badge badge--success">Login</span>',
+                logout: '<span class="badge badge--gray">Logout</span>',
+                register: '<span class="badge badge--info">Register</span>',
+                create: '<span class="badge badge--primary">Create</span>',
+                update: '<span class="badge badge--warning">Update</span>',
+                delete: '<span class="badge badge--danger">Delete</span>',
+                enroll: '<span class="badge badge--success">Enroll</span>',
+                error: '<span class="badge badge--danger">Error</span>'
             };
-            return badges[action] || action;
+            return badges[action] || `<span class="badge badge--secondary">${action}</span>`;
         }
 
         // Render pagination

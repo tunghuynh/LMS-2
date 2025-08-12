@@ -577,11 +577,11 @@
         // Get status badge
         function getStatusBadge(status) {
             const badges = {
-                published: '<span style="color: var(--color-success);">Published</span>',
-                draft: '<span style="color: var(--color-warning);">Draft</span>',
-                archived: '<span style="color: var(--color-gray-500);">Archived</span>'
+                published: '<span class="badge badge--published">Published</span>',
+                draft: '<span class="badge badge--draft">Draft</span>',
+                archived: '<span class="badge badge--archived">Archived</span>'
             };
-            return badges[status] || status;
+            return badges[status] || `<span class="badge badge--secondary">${status}</span>`;
         }
 
         // Check if user can edit course

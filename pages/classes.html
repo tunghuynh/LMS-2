@@ -337,12 +337,12 @@
 
         // Get status badge HTML
         function getStatusBadge(status) {
-            const colors = {
-                active: 'var(--color-success)',
-                upcoming: 'var(--color-warning)',
-                completed: 'var(--color-gray-500)'
+            const badges = {
+                active: '<span class="badge badge--active">Active</span>',
+                upcoming: '<span class="badge badge--warning">Upcoming</span>',
+                completed: '<span class="badge badge--secondary">Completed</span>'
             };
-            return `<span style="color: ${colors[status] || 'var(--text-secondary)'};">${capitalize(status)}</span>`;
+            return badges[status] || `<span class="badge badge--secondary">${capitalize(status)}</span>`;
         }
 
         // Select class to manage
@@ -398,8 +398,8 @@
                         <td class="table__cell table__cell--hide-mobile">${new Date(student.createdAt).toLocaleDateString()}</td>
                         <td class="table__cell table__cell--center">
                             ${student.isActive 
-                                ? '<span style="color: var(--color-success);">Active</span>' 
-                                : '<span style="color: var(--color-error);">Inactive</span>'}
+                                ? '<span class="badge badge--active">Active</span>' 
+                                : '<span class="badge badge--inactive">Inactive</span>'}
                         </td>
                         <td class="table__cell table__cell--center">
                             <button class="btn btn--ghost btn--small" onclick="removeStudent('${student.id}')" title="Remove Student">
