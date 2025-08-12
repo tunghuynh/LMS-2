@@ -154,6 +154,7 @@ This is the master TODO list for LMS Phase I development following the Foundatio
   - Responsive grid layout
   - Hover animations
   - Links to respective login pages
+  - [ ] Thiết kế trang landing page giống như 1 trang quảng bá sản phẩm dịch vụ, dùng thử trải nghiệm
 - [x] **1.1.2** Student Login (`login-student.html`):
   - Use base input/button components
   - Remember me checkbox
@@ -284,7 +285,7 @@ This is the master TODO list for LMS Phase I development following the Foundatio
   - Publish/Unpublish toggle
 
 #### 2.3 Lesson Management
-- [ ] **2.3.1** Lesson Builder (`lesson-builder.html`):
+- [x] **2.3.1** Lesson Builder (`lesson-builder.html`):
   - Lesson type selector (Video/PDF/Markdown)
   - Title, description fields
   - Content upload/editor area
@@ -524,11 +525,11 @@ This is the master TODO list for LMS Phase I development following the Foundatio
 ### Completion Status
 - Phase 0 Foundation: 38/38 tasks (100%) ✅
 - Phase I.1 User Management: 23/23 tasks (100%) ✅
-- Phase I.2 Learning System: 6/26 tasks (23.1%)
+- Phase I.2 Learning System: 7/26 tasks (26.9%)
 - Phase I.3 Testing System: 0/24 tasks (0%)
 - Integration & Testing: 0/28 tasks (0%)
 
-**Total: 67/139 tasks (48.2%)**
+**Total: 68/139 tasks (48.9%)**
 
 ### Critical Path
 1. Phase 0 must be 100% complete

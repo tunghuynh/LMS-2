@@ -35,7 +35,28 @@
     "pending": "Pending",
     "completed": "Completed",
     "required": "Required",
-    "optional": "Optional"
+    "optional": "Optional",
+    "saveDraft": "Save Draft",
+    "publish": "Publish",
+    "minutes": "minutes",
+    "moveUp": "Move Up",
+    "moveDown": "Move Down",
+    "chooseFile": "Choose File",
+    "noFileChosen": "No file chosen",
+    "selectOption": "Select an option"
+  },
+  
+  "status": {
+    "active": "Active",
+    "inactive": "Inactive",
+    "pending": "Pending",
+    "completed": "Completed",
+    "draft": "Draft",
+    "published": "Published",
+    "approved": "Approved",
+    "rejected": "Rejected",
+    "enrolled": "Enrolled",
+    "inProgress": "In Progress"
   },
   
   "theme": {
@@ -303,6 +324,72 @@
     "last": "Last",
     "previous": "Previous",
     "next": "Next"
+  },
+  
+  "lesson": {
+    "builder": {
+      "title": "Lesson Builder",
+      "subtitle": "Create and manage course lessons"
+    },
+    "courseSelection": "Course Selection",
+    "selectCourse": "Select Course",
+    "details": "Lesson Details",
+    "type": "Lesson Type",
+    "type.video": "Video",
+    "type.pdf": "PDF",
+    "type.markdown": "Markdown",
+    "title": "Lesson Title",
+    "titlePlaceholder": "Enter lesson title...",
+    "duration": "Duration (minutes)",
+    "durationPlaceholder": "30",
+    "description": "Description",
+    "descriptionPlaceholder": "Enter lesson description...",
+    "video": {
+      "url": "Video URL",
+      "urlPlaceholder": "https://youtube.com/watch?v=...",
+      "help": "YouTube, Vimeo, or direct video URLs supported",
+      "invalidUrl": "Invalid video URL",
+      "required": "Video URL is required"
+    },
+    "pdf": {
+      "upload": "Upload PDF",
+      "help": "Maximum file size: 10MB",
+      "sizeError": "File size exceeds 10MB limit",
+      "required": "PDF file is required"
+    },
+    "markdown": {
+      "content": "Content",
+      "editor": "Editor",
+      "preview": "Preview",
+      "placeholder": "Enter markdown content...",
+      "help": "Supports standard Markdown syntax",
+      "noContent": "No content to preview",
+      "required": "Content is required"
+    },
+    "order": "Lesson Order",
+    "order.last": "Add to end",
+    "order.after": "After",
+    "order.help": "Position within the course",
+    "status": "Status",
+    "published": "Published",
+    "status.help": "Unpublished lessons are not visible to students",
+    "notes": "Instructor Notes",
+    "notes.placeholder": "Private notes for instructors...",
+    "notes.help": "These notes are only visible to instructors",
+    "preview": "Preview",
+    "existing": "Existing Lessons",
+    "table": {
+      "title": "Title",
+      "type": "Type",
+      "duration": "Duration",
+      "status": "Status"
+    },
+    "noLessons": "No lessons created yet",
+    "draftSaved": "Draft saved successfully",
+    "published": "Lesson published successfully",
+    "deleteConfirm": "Are you sure you want to delete this lesson?",
+    "deleted": "Lesson deleted successfully",
+    "orderUpdated": "Lesson order updated"
   },
   
   "footer": {

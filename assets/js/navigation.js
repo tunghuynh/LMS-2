@@ -14,7 +14,7 @@ LMS.Navigation = {
     student: [
       {
         id: 'dashboard',
-        icon: '📊',
+        icon: 'fa-chart-line',
         label: 'nav.dashboard',
         href: 'pages/dashboard.html'
       },
@@ -23,19 +23,19 @@ LMS.Navigation = {
         items: [
           {
             id: 'courses',
-            icon: '📚',
+            icon: 'fa-book',
             label: 'nav.courses',
             href: 'pages/courses.html'
           },
           {
             id: 'my-courses',
-            icon: '📖',
+            icon: 'fa-book-open',
             label: 'nav.myCourses',
             href: 'pages/my-courses.html'
           },
           {
             id: 'progress',
-            icon: '📈',
+            icon: 'fa-chart-bar',
             label: 'nav.progress',
             href: 'pages/progress.html'
           }
@@ -46,13 +46,13 @@ LMS.Navigation = {
         items: [
           {
             id: 'quizzes',
-            icon: '📝',
+            icon: 'fa-file-alt',
             label: 'nav.quizzes',
             href: 'pages/quizzes.html'
           },
           {
             id: 'results',
-            icon: '🏆',
+            icon: 'fa-trophy',
             label: 'nav.results',
             href: 'pages/quiz-results.html'
           }
@@ -63,7 +63,7 @@ LMS.Navigation = {
         items: [
           {
             id: 'profile',
-            icon: '👤',
+            icon: 'fa-user',
             label: 'nav.profile',
             href: 'pages/profile-student.html'
           }
@@ -74,7 +74,7 @@ LMS.Navigation = {
     teacher: [
       {
         id: 'dashboard',
-        icon: '📊',
+        icon: 'fa-chart-line',
         label: 'nav.dashboard',
         href: 'pages/dashboard.html'
       },
@@ -83,19 +83,19 @@ LMS.Navigation = {
         items: [
           {
             id: 'my-courses',
-            icon: '📚',
+            icon: 'fa-book',
             label: 'nav.myCourses',
             href: 'pages/teacher-courses.html'
           },
           {
             id: 'create-course',
-            icon: '➕',
+            icon: 'fa-plus-circle',
             label: 'nav.createCourse',
             href: 'pages/course-create.html'
           },
           {
             id: 'categories',
-            icon: '📁',
+            icon: 'fa-folder',
             label: 'nav.categories',
             href: 'pages/categories.html'
           }
@@ -106,13 +106,13 @@ LMS.Navigation = {
         items: [
           {
             id: 'students',
-            icon: '👥',
+            icon: 'fa-users',
             label: 'nav.students',
             href: 'pages/students.html'
           },
           {
             id: 'enrollment',
-            icon: '📋',
+            icon: 'fa-clipboard-list',
             label: 'nav.enrollment',
             href: 'pages/enrollments.html'
           }
@@ -123,13 +123,13 @@ LMS.Navigation = {
         items: [
           {
             id: 'quiz-builder',
-            icon: '🔨',
+            icon: 'fa-hammer',
             label: 'nav.quizBuilder',
             href: 'pages/quiz-builder.html'
           },
           {
             id: 'quiz-results',
-            icon: '📊',
+            icon: 'fa-chart-line',
             label: 'nav.quizResults',
             href: 'pages/teacher-quiz-results.html'
           }
@@ -140,7 +140,7 @@ LMS.Navigation = {
         items: [
           {
             id: 'profile',
-            icon: '👤',
+            icon: 'fa-user',
             label: 'nav.profile',
             href: 'pages/profile-teacher.html'
           }
@@ -151,7 +151,7 @@ LMS.Navigation = {
     admin: [
       {
         id: 'dashboard',
-        icon: '📊',
+        icon: 'fa-chart-line',
         label: 'nav.dashboard',
         href: 'pages/dashboard.html'
       },
@@ -160,19 +160,19 @@ LMS.Navigation = {
         items: [
           {
             id: 'users',
-            icon: '👥',
+            icon: 'fa-users',
             label: 'nav.users',
             href: 'pages/users.html'
           },
           {
             id: 'classes',
-            icon: '🏫',
+            icon: 'fa-school',
             label: 'nav.classes',
             href: 'pages/classes.html'
           },
           {
             id: 'activity-logs',
-            icon: '📋',
+            icon: 'fa-clipboard-list',
             label: 'nav.activityLogs',
             href: 'pages/logs.html'
           }
@@ -183,13 +183,13 @@ LMS.Navigation = {
         items: [
           {
             id: 'all-courses',
-            icon: '📚',
+            icon: 'fa-book',
             label: 'nav.allCourses',
             href: 'pages/admin-courses.html'
           },
           {
             id: 'categories',
-            icon: '📁',
+            icon: 'fa-folder',
             label: 'nav.categories',
             href: 'pages/categories.html'
           }
@@ -206,7 +206,7 @@ LMS.Navigation = {
           },
           {
             id: 'reports',
-            icon: '📈',
+            icon: 'fa-chart-bar',
             label: 'nav.reports',
             href: 'pages/reports.html'
           }
@@ -217,7 +217,7 @@ LMS.Navigation = {
         items: [
           {
             id: 'profile',
-            icon: '👤',
+            icon: 'fa-user',
             label: 'nav.profile',
             href: 'pages/profile-admin.html'
           }
@@ -299,7 +299,7 @@ LMS.Navigation = {
     a.setAttribute('data-href', item.href);
     
     a.innerHTML = `
-      <span class="nav-icon">${item.icon}</span>
+      <span class="nav-icon"><i class="fas ${item.icon}"></i></span>
       <span class="nav-text" data-translate="${item.label}"></span>
     `;
     

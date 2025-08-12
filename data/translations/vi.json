@@ -35,7 +35,28 @@
     "pending": "Đang chờ",
     "completed": "Hoàn thành",
     "required": "Bắt buộc",
-    "optional": "Tùy chọn"
+    "optional": "Tùy chọn",
+    "saveDraft": "Lưu nháp",
+    "publish": "Xuất bản",
+    "minutes": "phút",
+    "moveUp": "Di chuyển lên",
+    "moveDown": "Di chuyển xuống",
+    "chooseFile": "Chọn tệp",
+    "noFileChosen": "Chưa chọn tệp",
+    "selectOption": "Chọn một tùy chọn"
+  },
+  
+  "status": {
+    "active": "Hoạt động",
+    "inactive": "Không hoạt động",
+    "pending": "Đang chờ",
+    "completed": "Hoàn thành",
+    "draft": "Nháp",
+    "published": "Đã xuất bản",
+    "approved": "Đã duyệt",
+    "rejected": "Đã từ chối",
+    "enrolled": "Đã đăng ký",
+    "inProgress": "Đang học"
   },
   
   "theme": {
@@ -303,6 +324,72 @@
     "last": "Cuối",
     "previous": "Trước",
     "next": "Sau"
+  },
+  
+  "lesson": {
+    "builder": {
+      "title": "Xây dựng bài học",
+      "subtitle": "Tạo và quản lý bài học khóa học"
+    },
+    "courseSelection": "Chọn khóa học",
+    "selectCourse": "Chọn khóa học",
+    "details": "Chi tiết bài học",
+    "type": "Loại bài học",
+    "type.video": "Video",
+    "type.pdf": "PDF",
+    "type.markdown": "Markdown",
+    "title": "Tiêu đề bài học",
+    "titlePlaceholder": "Nhập tiêu đề bài học...",
+    "duration": "Thời lượng (phút)",
+    "durationPlaceholder": "30",
+    "description": "Mô tả",
+    "descriptionPlaceholder": "Nhập mô tả bài học...",
+    "video": {
+      "url": "URL Video",
+      "urlPlaceholder": "https://youtube.com/watch?v=...",
+      "help": "Hỗ trợ YouTube, Vimeo hoặc URL video trực tiếp",
+      "invalidUrl": "URL video không hợp lệ",
+      "required": "URL video là bắt buộc"
+    },
+    "pdf": {
+      "upload": "Tải lên PDF",
+      "help": "Kích thước tối đa: 10MB",
+      "sizeError": "Kích thước file vượt quá giới hạn 10MB",
+      "required": "File PDF là bắt buộc"
+    },
+    "markdown": {
+      "content": "Nội dung",
+      "editor": "Trình soạn thảo",
+      "preview": "Xem trước",
+      "placeholder": "Nhập nội dung markdown...",
+      "help": "Hỗ trợ cú pháp Markdown chuẩn",
+      "noContent": "Không có nội dung để xem trước",
+      "required": "Nội dung là bắt buộc"
+    },
+    "order": "Thứ tự bài học",
+    "order.last": "Thêm vào cuối",
+    "order.after": "Sau",
+    "order.help": "Vị trí trong khóa học",
+    "status": "Trạng thái",
+    "published": "Đã xuất bản",
+    "status.help": "Bài học chưa xuất bản sẽ không hiển thị cho học viên",
+    "notes": "Ghi chú giảng viên",
+    "notes.placeholder": "Ghi chú riêng cho giảng viên...",
+    "notes.help": "Các ghi chú này chỉ hiển thị cho giảng viên",
+    "preview": "Xem trước",
+    "existing": "Bài học hiện có",
+    "table": {
+      "title": "Tiêu đề",
+      "type": "Loại",
+      "duration": "Thời lượng",
+      "status": "Trạng thái"
+    },
+    "noLessons": "Chưa có bài học nào",
+    "draftSaved": "Lưu nháp thành công",
+    "published": "Xuất bản bài học thành công",
+    "deleteConfirm": "Bạn có chắc muốn xóa bài học này?",
+    "deleted": "Xóa bài học thành công",
+    "orderUpdated": "Cập nhật thứ tự bài học"
   },
   
   "footer": {

@@ -203,8 +203,14 @@
                 </form>
             </div>
             <div class="modal__footer">
-                <button class="btn btn--secondary" onclick="closeClassModal()">Cancel</button>
-                <button class="btn btn--primary" onclick="saveClass()">Save Class</button>
+                <button class="btn btn--secondary" onclick="closeClassModal()">
+                    <i class="fas fa-times" style="margin-right: 8px;"></i>
+                    Cancel
+                </button>
+                <button class="btn btn--primary" onclick="saveClass()">
+                    <i class="fas fa-save" style="margin-right: 8px;"></i>
+                    Save Class
+                </button>
             </div>
         </div>
     </div>
@@ -229,8 +235,14 @@
                 </div>
             </div>
             <div class="modal__footer">
-                <button class="btn btn--secondary" onclick="closeAddStudentModal()">Cancel</button>
-                <button class="btn btn--primary" onclick="addSelectedStudents()">Add Selected</button>
+                <button class="btn btn--secondary" onclick="closeAddStudentModal()">
+                    <i class="fas fa-times" style="margin-right: 8px;"></i>
+                    Cancel
+                </button>
+                <button class="btn btn--primary" onclick="addSelectedStudents()">
+                    <i class="fas fa-user-plus" style="margin-right: 8px;"></i>
+                    Add Selected
+                </button>
             </div>
         </div>
     </div>
@@ -311,8 +323,12 @@
                             ${getStatusBadge(cls.status)}
                         </td>
                         <td class="table__cell table__cell--center">
-                            <button class="btn btn--ghost btn--small" onclick="selectClass('${cls.id}')">Manage</button>
-                            <button class="btn btn--ghost btn--small" onclick="editClass('${cls.id}')">Edit</button>
+                            <button class="btn btn--ghost btn--small" onclick="selectClass('${cls.id}')" title="Manage">
+                                <i class="fas fa-cog"></i>
+                            </button>
+                            <button class="btn btn--ghost btn--small" onclick="editClass('${cls.id}')" title="Edit">
+                                <i class="fas fa-edit"></i>
+                            </button>
                         </td>
                     </tr>
                 `).join('');

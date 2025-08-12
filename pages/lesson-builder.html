@@ -1,0 +1,706 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lesson Builder</title>
+    <!-- Core CSS -->
+    <link rel="stylesheet" href="../assets/css/global.css">
+    <link rel="stylesheet" href="../assets/css/components.css">
+    <link rel="stylesheet" href="../assets/css/themes.css">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <!-- Configuration -->
+    <script src="../config.js"></script>
+</head>
+<body>
+    <div class="page-container">
+        <!-- Page Header -->
+        <div class="page-header">
+            <div style="display: flex; justify-content: space-between; align-items: center;">
+                <div>
+                    <h1 class="page-title" data-translate="lesson.builder.title">Lesson Builder</h1>
+                    <p class="page-subtitle" data-translate="lesson.builder.subtitle">Create and manage course lessons</p>
+                </div>
+                <div style="display: flex; gap: var(--spacing-2);">
+                    <button class="btn btn--secondary" onclick="saveDraft()">
+                        <i class="fas fa-save" style="margin-right: 8px;"></i>
+                        <span data-translate="common.saveDraft">Save Draft</span>
+                    </button>
+                    <button class="btn btn--primary" onclick="publishLesson()">
+                        <i class="fas fa-upload" style="margin-right: 8px;"></i>
+                        <span data-translate="common.publish">Publish</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <div class="page-content">
+            <!-- Course Selection -->
+            <div class="card" style="margin-bottom: var(--spacing-6);">
+                <div class="card__header">
+                    <h3 data-translate="lesson.courseSelection">Course Selection</h3>
+                </div>
+                <div class="card__body">
+                    <div class="form-group">
+                        <label class="form-label required" data-translate="lesson.selectCourse">Select Course</label>
+                        <select id="courseSelect" class="form-select" onchange="loadCourseLessons()">
+                            <option value="" data-translate="common.selectOption">Select a course...</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Lesson Form -->
+            <div class="card" id="lessonForm" style="display: none;">
+                <div class="card__header">
+                    <h3 data-translate="lesson.details">Lesson Details</h3>
+                </div>
+                <div class="card__body">
+                    <!-- Lesson Type Selection -->
+                    <div class="form-group">
+                        <label class="form-label required" data-translate="lesson.type">Lesson Type</label>
+                        <div class="radio-group" style="display: flex; gap: var(--spacing-4); margin-bottom: var(--spacing-4);">
+                            <label class="radio-label">
+                                <input type="radio" name="lessonType" value="video" onchange="toggleContentArea('video')" checked>
+                                <span class="radio-custom"></span>
+                                <i class="fas fa-video" style="margin-right: 8px;"></i>
+                                <span data-translate="lesson.type.video">Video</span>
+                            </label>
+                            <label class="radio-label">
+                                <input type="radio" name="lessonType" value="pdf" onchange="toggleContentArea('pdf')">
+                                <span class="radio-custom"></span>
+                                <i class="fas fa-file-pdf" style="margin-right: 8px;"></i>
+                                <span data-translate="lesson.type.pdf">PDF</span>
+                            </label>
+                            <label class="radio-label">
+                                <input type="radio" name="lessonType" value="markdown" onchange="toggleContentArea('markdown')">
+                                <span class="radio-custom"></span>
+                                <i class="fas fa-file-code" style="margin-right: 8px;"></i>
+                                <span data-translate="lesson.type.markdown">Markdown</span>
+                            </label>
+                        </div>
+                    </div>
+
+                    <!-- Basic Information -->
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: var(--spacing-4);">
+                        <div class="form-group">
+                            <label class="form-label required" data-translate="lesson.title">Lesson Title</label>
+                            <input type="text" id="lessonTitle" class="form-input" 
+                                   placeholder="Enter lesson title..." data-translate-placeholder="lesson.titlePlaceholder">
+                            <span class="form-error" data-translate="validation.required" style="display: none;">This field is required</span>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label required" data-translate="lesson.duration">Duration (minutes)</label>
+                            <input type="number" id="lessonDuration" class="form-input" min="1" value="30"
+                                   placeholder="30" data-translate-placeholder="lesson.durationPlaceholder">
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label" data-translate="lesson.description">Description</label>
+                        <textarea id="lessonDescription" class="form-textarea" rows="3"
+                                  placeholder="Enter lesson description..." 
+                                  data-translate-placeholder="lesson.descriptionPlaceholder"></textarea>
+                    </div>
+
+                    <!-- Content Areas -->
+                    <!-- Video Content -->
+                    <div id="videoContent" class="content-area">
+                        <div class="form-group">
+                            <label class="form-label required" data-translate="lesson.video.url">Video URL</label>
+                            <input type="url" id="videoUrl" class="form-input" 
+                                   placeholder="https://youtube.com/watch?v=..." 
+                                   data-translate-placeholder="lesson.video.urlPlaceholder"
+                                   onchange="previewVideo()">
+                            <span class="form-help" data-translate="lesson.video.help">YouTube, Vimeo, or direct video URLs supported</span>
+                        </div>
+                        <div id="videoPreview" style="margin-top: var(--spacing-4); display: none;">
+                            <label class="form-label" data-translate="lesson.preview">Preview</label>
+                            <div style="position: relative; padding-bottom: 56.25%; height: 0; overflow: hidden; max-width: 100%; background: var(--bg-secondary); border-radius: var(--radius-md);">
+                                <iframe id="videoFrame" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; border: 0;"></iframe>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- PDF Content -->
+                    <div id="pdfContent" class="content-area" style="display: none;">
+                        <div class="form-group">
+                            <label class="form-label required" data-translate="lesson.pdf.upload">Upload PDF</label>
+                            <div class="file-upload">
+                                <input type="file" id="pdfFile" accept=".pdf" onchange="handlePdfUpload(event)" style="display: none;">
+                                <button class="btn btn--secondary" onclick="document.getElementById('pdfFile').click()">
+                                    <i class="fas fa-cloud-upload-alt" style="margin-right: 8px;"></i>
+                                    <span data-translate="common.chooseFile">Choose File</span>
+                                </button>
+                                <span id="pdfFileName" style="margin-left: var(--spacing-3);" data-translate="common.noFileChosen">No file chosen</span>
+                            </div>
+                            <span class="form-help" data-translate="lesson.pdf.help">Maximum file size: 10MB</span>
+                        </div>
+                        <div id="pdfPreview" style="margin-top: var(--spacing-4); display: none;">
+                            <label class="form-label" data-translate="lesson.preview">Preview</label>
+                            <div style="padding: var(--spacing-4); background: var(--bg-secondary); border-radius: var(--radius-md); text-align: center;">
+                                <i class="fas fa-file-pdf" style="font-size: 48px; color: #dc2626; margin-bottom: var(--spacing-2);"></i>
+                                <p id="pdfInfo"></p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Markdown Content -->
+                    <div id="markdownContent" class="content-area" style="display: none;">
+                        <div class="form-group">
+                            <label class="form-label required" data-translate="lesson.markdown.content">Content</label>
+                            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: var(--spacing-4);">
+                                <div>
+                                    <div style="display: flex; justify-content: between; align-items: center; margin-bottom: var(--spacing-2);">
+                                        <span class="form-label" style="margin: 0;" data-translate="lesson.markdown.editor">Editor</span>
+                                        <div class="btn-group" style="margin-left: auto;">
+                                            <button class="btn btn--sm" onclick="insertMarkdown('**', '**')" title="Bold">
+                                                <i class="fas fa-bold"></i>
+                                            </button>
+                                            <button class="btn btn--sm" onclick="insertMarkdown('*', '*')" title="Italic">
+                                                <i class="fas fa-italic"></i>
+                                            </button>
+                                            <button class="btn btn--sm" onclick="insertMarkdown('# ', '')" title="Heading">
+                                                <i class="fas fa-heading"></i>
+                                            </button>
+                                            <button class="btn btn--sm" onclick="insertMarkdown('[', '](url)')" title="Link">
+                                                <i class="fas fa-link"></i>
+                                            </button>
+                                            <button class="btn btn--sm" onclick="insertMarkdown('```\n', '\n```')" title="Code">
+                                                <i class="fas fa-code"></i>
+                                            </button>
+                                        </div>
+                                    </div>
+                                    <textarea id="markdownEditor" class="form-textarea" rows="15" 
+                                              placeholder="Enter markdown content..." 
+                                              data-translate-placeholder="lesson.markdown.placeholder"
+                                              oninput="updateMarkdownPreview()"></textarea>
+                                </div>
+                                <div>
+                                    <span class="form-label" data-translate="lesson.markdown.preview">Preview</span>
+                                    <div id="markdownPreview" style="padding: var(--spacing-4); background: var(--bg-secondary); border: 1px solid var(--border-color); border-radius: var(--radius-md); height: 400px; overflow-y: auto;">
+                                        <p style="color: var(--text-secondary);" data-translate="lesson.markdown.noContent">No content to preview</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <span class="form-help" data-translate="lesson.markdown.help">Supports standard Markdown syntax</span>
+                        </div>
+                    </div>
+
+                    <!-- Order and Publishing -->
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: var(--spacing-4); margin-top: var(--spacing-6);">
+                        <div class="form-group">
+                            <label class="form-label" data-translate="lesson.order">Lesson Order</label>
+                            <select id="lessonOrder" class="form-select">
+                                <option value="0" data-translate="lesson.order.last">Add to end</option>
+                            </select>
+                            <span class="form-help" data-translate="lesson.order.help">Position within the course</span>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label" data-translate="lesson.status">Status</label>
+                            <div class="checkbox-group">
+                                <label class="checkbox-label">
+                                    <input type="checkbox" id="publishStatus" checked>
+                                    <span class="checkbox-custom"></span>
+                                    <span data-translate="lesson.published">Published</span>
+                                </label>
+                            </div>
+                            <span class="form-help" data-translate="lesson.status.help">Unpublished lessons are not visible to students</span>
+                        </div>
+                    </div>
+
+                    <!-- Notes Section -->
+                    <div class="form-group">
+                        <label class="form-label" data-translate="lesson.notes">Instructor Notes</label>
+                        <textarea id="instructorNotes" class="form-textarea" rows="3"
+                                  placeholder="Private notes for instructors..." 
+                                  data-translate-placeholder="lesson.notes.placeholder"></textarea>
+                        <span class="form-help" data-translate="lesson.notes.help">These notes are only visible to instructors</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Existing Lessons -->
+            <div class="card" id="existingLessons" style="display: none; margin-top: var(--spacing-6);">
+                <div class="card__header">
+                    <h3 data-translate="lesson.existing">Existing Lessons</h3>
+                </div>
+                <div class="card__body">
+                    <div class="table-container">
+                        <table class="table">
+                            <thead>
+                                <tr>
+                                    <th width="40">#</th>
+                                    <th data-translate="lesson.table.title">Title</th>
+                                    <th data-translate="lesson.table.type">Type</th>
+                                    <th data-translate="lesson.table.duration">Duration</th>
+                                    <th data-translate="lesson.table.status">Status</th>
+                                    <th width="120" data-translate="common.actions">Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="lessonsTableBody">
+                                <!-- Dynamic content -->
+                            </tbody>
+                        </table>
+                        <div id="noLessons" class="empty-state" style="display: none;">
+                            <i class="fas fa-book-open" style="font-size: 48px; color: var(--text-muted); margin-bottom: var(--spacing-3);"></i>
+                            <p data-translate="lesson.noLessons">No lessons created yet</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Core JavaScript -->
+    <script src="../assets/js/global.js"></script>
+    <script src="../assets/js/auth.js"></script>
+    <script src="../assets/js/api.js"></script>
+    
+    <script>
+        // Initialize
+        let currentCourseId = null;
+        let currentLessonId = null;
+        let courses = [];
+        let lessons = [];
+
+        async function init() {
+            // Check authentication
+            const user = LMS.Auth.getUser();
+            if (!user || (user.role !== 'teacher' && user.role !== 'admin')) {
+                window.location.href = '../index.html';
+                return;
+            }
+
+            // Load translations
+            await LMS.LanguageManager.init();
+            LMS.LanguageManager.updatePageTranslations();
+            
+            // Load courses
+            await loadCourses();
+        }
+
+        async function loadCourses() {
+            try {
+                const response = await LMS.API.loadJSON('mock-courses.json');
+                courses = response.data || [];
+                
+                const select = document.getElementById('courseSelect');
+                select.innerHTML = '<option value="">' + LMS.t('common.selectOption') + '</option>';
+                
+                const user = LMS.Auth.getUser();
+                // Filter courses for teachers (only their courses)
+                const userCourses = user.role === 'teacher' 
+                    ? courses.filter(c => c.teacherId === user.id)
+                    : courses;
+                
+                userCourses.forEach(course => {
+                    const option = document.createElement('option');
+                    option.value = course.id;
+                    option.textContent = course.title;
+                    select.appendChild(option);
+                });
+            } catch (error) {
+                console.error('Failed to load courses:', error);
+                LMS.showToast(LMS.t('error.loadData'), 'error');
+            }
+        }
+
+        async function loadCourseLessons() {
+            const courseId = document.getElementById('courseSelect').value;
+            if (!courseId) {
+                document.getElementById('lessonForm').style.display = 'none';
+                document.getElementById('existingLessons').style.display = 'none';
+                return;
+            }
+
+            currentCourseId = courseId;
+            document.getElementById('lessonForm').style.display = 'block';
+            document.getElementById('existingLessons').style.display = 'block';
+
+            // Load lessons for this course
+            try {
+                const response = await LMS.API.loadJSON('mock-lessons.json');
+                const allLessons = response.data || [];
+                lessons = allLessons.filter(l => l.courseId === courseId);
+                
+                displayLessons();
+                updateOrderSelect();
+            } catch (error) {
+                console.error('Failed to load lessons:', error);
+            }
+        }
+
+        function displayLessons() {
+            const tbody = document.getElementById('lessonsTableBody');
+            const noLessons = document.getElementById('noLessons');
+            
+            if (lessons.length === 0) {
+                tbody.innerHTML = '';
+                noLessons.style.display = 'block';
+                return;
+            }
+            
+            noLessons.style.display = 'none';
+            tbody.innerHTML = lessons
+                .sort((a, b) => a.order - b.order)
+                .map((lesson, index) => `
+                    <tr>
+                        <td>${index + 1}</td>
+                        <td>${lesson.title}</td>
+                        <td>
+                            <span class="badge badge--${lesson.type}">
+                                <i class="fas fa-${lesson.type === 'video' ? 'video' : lesson.type === 'pdf' ? 'file-pdf' : 'file-code'}"></i>
+                                ${lesson.type.toUpperCase()}
+                            </span>
+                        </td>
+                        <td>${lesson.duration} ${LMS.t('common.minutes')}</td>
+                        <td>
+                            <span class="badge badge--${lesson.published ? 'success' : 'secondary'}">
+                                ${lesson.published ? LMS.t('status.published') : LMS.t('status.draft')}
+                            </span>
+                        </td>
+                        <td>
+                            <div class="action-buttons">
+                                <button class="btn btn--sm btn--ghost" onclick="editLesson('${lesson.id}')" title="${LMS.t('common.edit')}">
+                                    <i class="fas fa-edit"></i>
+                                </button>
+                                <button class="btn btn--sm btn--ghost" onclick="moveLesson('${lesson.id}', 'up')" 
+                                        title="${LMS.t('common.moveUp')}" ${index === 0 ? 'disabled' : ''}>
+                                    <i class="fas fa-arrow-up"></i>
+                                </button>
+                                <button class="btn btn--sm btn--ghost" onclick="moveLesson('${lesson.id}', 'down')" 
+                                        title="${LMS.t('common.moveDown')}" ${index === lessons.length - 1 ? 'disabled' : ''}>
+                                    <i class="fas fa-arrow-down"></i>
+                                </button>
+                                <button class="btn btn--sm btn--ghost text-danger" onclick="deleteLesson('${lesson.id}')" 
+                                        title="${LMS.t('common.delete')}">
+                                    <i class="fas fa-trash-alt"></i>
+                                </button>
+                            </div>
+                        </td>
+                    </tr>
+                `).join('');
+        }
+
+        function updateOrderSelect() {
+            const select = document.getElementById('lessonOrder');
+            select.innerHTML = `<option value="0">${LMS.t('lesson.order.last')}</option>`;
+            
+            lessons.forEach((lesson, index) => {
+                const option = document.createElement('option');
+                option.value = lesson.order;
+                option.textContent = `${LMS.t('lesson.order.after')} ${index + 1}. ${lesson.title}`;
+                select.appendChild(option);
+            });
+        }
+
+        function toggleContentArea(type) {
+            // Hide all content areas
+            document.querySelectorAll('.content-area').forEach(area => {
+                area.style.display = 'none';
+            });
+            
+            // Show selected content area
+            document.getElementById(type + 'Content').style.display = 'block';
+        }
+
+        function previewVideo() {
+            const url = document.getElementById('videoUrl').value;
+            const preview = document.getElementById('videoPreview');
+            const frame = document.getElementById('videoFrame');
+            
+            if (!url) {
+                preview.style.display = 'none';
+                return;
+            }
+
+            // Extract video ID and create embed URL
+            let embedUrl = '';
+            if (url.includes('youtube.com') || url.includes('youtu.be')) {
+                const videoId = url.match(/(?:youtube\.com\/watch\?v=|youtu\.be\/)([^&\n?#]+)/);
+                if (videoId) {
+                    embedUrl = `https://www.youtube.com/embed/${videoId[1]}`;
+                }
+            } else if (url.includes('vimeo.com')) {
+                const videoId = url.match(/vimeo\.com\/(\d+)/);
+                if (videoId) {
+                    embedUrl = `https://player.vimeo.com/video/${videoId[1]}`;
+                }
+            }
+
+            if (embedUrl) {
+                frame.src = embedUrl;
+                preview.style.display = 'block';
+            } else {
+                preview.style.display = 'none';
+                LMS.showToast(LMS.t('lesson.video.invalidUrl'), 'error');
+            }
+        }
+
+        function handlePdfUpload(event) {
+            const file = event.target.files[0];
+            const fileName = document.getElementById('pdfFileName');
+            const preview = document.getElementById('pdfPreview');
+            const info = document.getElementById('pdfInfo');
+            
+            if (!file) {
+                fileName.textContent = LMS.t('common.noFileChosen');
+                preview.style.display = 'none';
+                return;
+            }
+
+            if (file.size > 10 * 1024 * 1024) {
+                LMS.showToast(LMS.t('lesson.pdf.sizeError'), 'error');
+                event.target.value = '';
+                return;
+            }
+
+            fileName.textContent = file.name;
+            info.textContent = `${file.name} (${(file.size / 1024 / 1024).toFixed(2)} MB)`;
+            preview.style.display = 'block';
+        }
+
+        function insertMarkdown(before, after) {
+            const editor = document.getElementById('markdownEditor');
+            const start = editor.selectionStart;
+            const end = editor.selectionEnd;
+            const text = editor.value;
+            const selectedText = text.substring(start, end);
+            
+            const newText = text.substring(0, start) + before + selectedText + after + text.substring(end);
+            editor.value = newText;
+            
+            // Set cursor position
+            editor.focus();
+            const newCursorPos = start + before.length + selectedText.length;
+            editor.setSelectionRange(newCursorPos, newCursorPos);
+            
+            updateMarkdownPreview();
+        }
+
+        function updateMarkdownPreview() {
+            const content = document.getElementById('markdownEditor').value;
+            const preview = document.getElementById('markdownPreview');
+            
+            if (!content) {
+                preview.innerHTML = `<p style="color: var(--text-secondary);">${LMS.t('lesson.markdown.noContent')}</p>`;
+                return;
+            }
+
+            // Simple markdown parsing (in real app, use a proper markdown parser)
+            let html = content;
+            
+            // Headers
+            html = html.replace(/^### (.*$)/gim, '<h3>$1</h3>');
+            html = html.replace(/^## (.*$)/gim, '<h2>$1</h2>');
+            html = html.replace(/^# (.*$)/gim, '<h1>$1</h1>');
+            
+            // Bold and Italic
+            html = html.replace(/\*\*\*(.*)\*\*\*/g, '<strong><em>$1</em></strong>');
+            html = html.replace(/\*\*(.*)\*\*/g, '<strong>$1</strong>');
+            html = html.replace(/\*(.*)\*/g, '<em>$1</em>');
+            
+            // Links
+            html = html.replace(/\[([^\]]+)\]\(([^)]+)\)/g, '<a href="$2" target="_blank">$1</a>');
+            
+            // Line breaks
+            html = html.replace(/\n/g, '<br>');
+            
+            // Code blocks
+            html = html.replace(/```([^`]+)```/g, '<pre><code>$1</code></pre>');
+            html = html.replace(/`([^`]+)`/g, '<code>$1</code>');
+            
+            preview.innerHTML = html;
+        }
+
+        async function saveDraft() {
+            if (!validateForm()) return;
+            
+            const lessonData = collectFormData();
+            lessonData.published = false;
+            
+            // Save to mock data
+            console.log('Saving draft:', lessonData);
+            LMS.showToast(LMS.t('lesson.draftSaved'), 'success');
+        }
+
+        async function publishLesson() {
+            if (!validateForm()) return;
+            
+            const lessonData = collectFormData();
+            lessonData.published = document.getElementById('publishStatus').checked;
+            
+            // Save to mock data
+            console.log('Publishing lesson:', lessonData);
+            LMS.showToast(LMS.t('lesson.published'), 'success');
+            
+            // Reload lessons
+            await loadCourseLessons();
+            resetForm();
+        }
+
+        function validateForm() {
+            const title = document.getElementById('lessonTitle').value.trim();
+            const type = document.querySelector('input[name="lessonType"]:checked').value;
+            
+            let isValid = true;
+            
+            // Title validation
+            if (!title) {
+                document.querySelector('#lessonTitle + .form-error').style.display = 'block';
+                isValid = false;
+            } else {
+                document.querySelector('#lessonTitle + .form-error').style.display = 'none';
+            }
+            
+            // Type-specific validation
+            if (type === 'video') {
+                const url = document.getElementById('videoUrl').value.trim();
+                if (!url) {
+                    LMS.showToast(LMS.t('lesson.video.required'), 'error');
+                    isValid = false;
+                }
+            } else if (type === 'pdf') {
+                const file = document.getElementById('pdfFile').files[0];
+                if (!file && !currentLessonId) {
+                    LMS.showToast(LMS.t('lesson.pdf.required'), 'error');
+                    isValid = false;
+                }
+            } else if (type === 'markdown') {
+                const content = document.getElementById('markdownEditor').value.trim();
+                if (!content) {
+                    LMS.showToast(LMS.t('lesson.markdown.required'), 'error');
+                    isValid = false;
+                }
+            }
+            
+            return isValid;
+        }
+
+        function collectFormData() {
+            const type = document.querySelector('input[name="lessonType"]:checked').value;
+            const order = parseInt(document.getElementById('lessonOrder').value) || lessons.length + 1;
+            
+            const data = {
+                id: currentLessonId || 'lesson_' + Date.now(),
+                courseId: currentCourseId,
+                title: document.getElementById('lessonTitle').value.trim(),
+                description: document.getElementById('lessonDescription').value.trim(),
+                type: type,
+                duration: parseInt(document.getElementById('lessonDuration').value) || 30,
+                order: order,
+                published: document.getElementById('publishStatus').checked,
+                notes: document.getElementById('instructorNotes').value.trim(),
+                createdAt: new Date().toISOString(),
+                updatedAt: new Date().toISOString()
+            };
+            
+            // Type-specific data
+            if (type === 'video') {
+                data.videoUrl = document.getElementById('videoUrl').value.trim();
+            } else if (type === 'pdf') {
+                const file = document.getElementById('pdfFile').files[0];
+                if (file) {
+                    data.pdfName = file.name;
+                    data.pdfSize = file.size;
+                    // In real app, would upload file to server
+                }
+            } else if (type === 'markdown') {
+                data.content = document.getElementById('markdownEditor').value.trim();
+            }
+            
+            return data;
+        }
+
+        function resetForm() {
+            document.getElementById('lessonTitle').value = '';
+            document.getElementById('lessonDescription').value = '';
+            document.getElementById('lessonDuration').value = '30';
+            document.getElementById('instructorNotes').value = '';
+            document.getElementById('publishStatus').checked = true;
+            
+            // Reset content areas
+            document.getElementById('videoUrl').value = '';
+            document.getElementById('videoPreview').style.display = 'none';
+            document.getElementById('pdfFile').value = '';
+            document.getElementById('pdfFileName').textContent = LMS.t('common.noFileChosen');
+            document.getElementById('pdfPreview').style.display = 'none';
+            document.getElementById('markdownEditor').value = '';
+            updateMarkdownPreview();
+            
+            // Reset to video type
+            document.querySelector('input[name="lessonType"][value="video"]').checked = true;
+            toggleContentArea('video');
+            
+            currentLessonId = null;
+        }
+
+        async function editLesson(lessonId) {
+            const lesson = lessons.find(l => l.id === lessonId);
+            if (!lesson) return;
+            
+            currentLessonId = lessonId;
+            
+            // Populate form
+            document.getElementById('lessonTitle').value = lesson.title;
+            document.getElementById('lessonDescription').value = lesson.description || '';
+            document.getElementById('lessonDuration').value = lesson.duration;
+            document.getElementById('instructorNotes').value = lesson.notes || '';
+            document.getElementById('publishStatus').checked = lesson.published;
+            document.getElementById('lessonOrder').value = lesson.order;
+            
+            // Set type and content
+            document.querySelector(`input[name="lessonType"][value="${lesson.type}"]`).checked = true;
+            toggleContentArea(lesson.type);
+            
+            if (lesson.type === 'video' && lesson.videoUrl) {
+                document.getElementById('videoUrl').value = lesson.videoUrl;
+                previewVideo();
+            } else if (lesson.type === 'pdf' && lesson.pdfName) {
+                document.getElementById('pdfFileName').textContent = lesson.pdfName;
+                document.getElementById('pdfInfo').textContent = `${lesson.pdfName} (${(lesson.pdfSize / 1024 / 1024).toFixed(2)} MB)`;
+                document.getElementById('pdfPreview').style.display = 'block';
+            } else if (lesson.type === 'markdown' && lesson.content) {
+                document.getElementById('markdownEditor').value = lesson.content;
+                updateMarkdownPreview();
+            }
+            
+            // Scroll to form
+            document.getElementById('lessonForm').scrollIntoView({ behavior: 'smooth' });
+        }
+
+        async function deleteLesson(lessonId) {
+            if (!confirm(LMS.t('lesson.deleteConfirm'))) return;
+            
+            // In real app, would delete from server
+            lessons = lessons.filter(l => l.id !== lessonId);
+            displayLessons();
+            LMS.showToast(LMS.t('lesson.deleted'), 'success');
+        }
+
+        function moveLesson(lessonId, direction) {
+            const index = lessons.findIndex(l => l.id === lessonId);
+            if (index === -1) return;
+            
+            if (direction === 'up' && index > 0) {
+                [lessons[index], lessons[index - 1]] = [lessons[index - 1], lessons[index]];
+            } else if (direction === 'down' && index < lessons.length - 1) {
+                [lessons[index], lessons[index + 1]] = [lessons[index + 1], lessons[index]];
+            }
+            
+            // Update order values
+            lessons.forEach((lesson, i) => {
+                lesson.order = i + 1;
+            });
+            
+            displayLessons();
+            LMS.showToast(LMS.t('lesson.orderUpdated'), 'success');
+        }
+
+        // Initialize on load
+        document.addEventListener('DOMContentLoaded', init);
+    </script>
+</body>
+</html>
