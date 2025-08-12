@@ -291,24 +291,24 @@ This is the master TODO list for LMS Phase I development following the Foundatio
   - Content upload/editor area
   - Duration setting
   - Order in course
-- [ ] **2.3.2** Video Lesson Component:
+- [x] **2.3.2** Video Lesson Component:
   - YouTube URL input
   - Video preview
   - Playback tracking
   - Notes section
-- [ ] **2.3.3** PDF Lesson Component:
+- [x] **2.3.3** PDF Lesson Component:
   - PDF upload with preview
   - PDF.js viewer integration
   - Download option
   - Page tracking
-- [ ] **2.3.4** Markdown Lesson Component:
+- [x] **2.3.4** Markdown Lesson Component:
   - WYSIWYG editor (QuillJS)
   - Markdown preview
   - Image upload support
   - Code syntax highlighting
 
 #### 2.4 Lesson Viewer
-- [ ] **2.4.1** Lesson Page (`lesson.html`):
+- [x] **2.4.1** Lesson Page (`lesson.html`):
   - Content display area
   - Navigation sidebar
   - Progress tracking
@@ -525,11 +525,11 @@ This is the master TODO list for LMS Phase I development following the Foundatio
 ### Completion Status
 - Phase 0 Foundation: 38/38 tasks (100%) ✅
 - Phase I.1 User Management: 23/23 tasks (100%) ✅
-- Phase I.2 Learning System: 7/26 tasks (26.9%)
+- Phase I.2 Learning System: 11/26 tasks (42.3%)
 - Phase I.3 Testing System: 0/24 tasks (0%)
 - Integration & Testing: 0/28 tasks (0%)
 
-**Total: 68/139 tasks (48.9%)**
+**Total: 72/139 tasks (51.8%)**
 
 ### Critical Path
 1. Phase 0 must be 100% complete

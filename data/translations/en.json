@@ -315,6 +315,16 @@
     "fileTypeError": "Invalid file type. Allowed types: {types}"
   },
   
+  "error": {
+    "pageNotFound": "Page not found",
+    "lessonNotFound": "Lesson not found",
+    "lessonNotFoundDesc": "The requested lesson could not be loaded.",
+    "courseNotFound": "Course not found",
+    "accessDenied": "Access denied",
+    "loadData": "Failed to load data",
+    "backToCourse": "Back to Course"
+  },
+  
   "pagination": {
     "showing": "Showing {start} to {end} of {total} entries",
     "rowsPerPage": "Rows per page",
@@ -389,7 +399,23 @@
     "published": "Lesson published successfully",
     "deleteConfirm": "Are you sure you want to delete this lesson?",
     "deleted": "Lesson deleted successfully",
-    "orderUpdated": "Lesson order updated"
+    "orderUpdated": "Lesson order updated",
+    "showLessons": "Show Lessons",
+    "courseTitle": "Course Lessons",
+    "completed": "completed",
+    "notes": {
+      "title": "Lesson Notes",
+      "empty": "No notes available for this lesson."
+    },
+    "pdf": {
+      "download": "Download PDF",
+      "notAvailable": "PDF download not available"
+    },
+    "previous": "Previous",
+    "next": "Next",
+    "markComplete": "Mark as Complete",
+    "markedComplete": "Lesson marked as complete",
+    "markedIncomplete": "Lesson marked as incomplete"
   },
   
   "footer": {

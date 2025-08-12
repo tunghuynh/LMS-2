@@ -315,6 +315,16 @@
     "fileTypeError": "Loại tệp không hợp lệ. Các loại được phép: {types}"
   },
   
+  "error": {
+    "pageNotFound": "Không tìm thấy trang",
+    "lessonNotFound": "Không tìm thấy bài học",
+    "lessonNotFoundDesc": "Không thể tải bài học được yêu cầu.",
+    "courseNotFound": "Không tìm thấy khóa học",
+    "accessDenied": "Truy cập bị từ chối",
+    "loadData": "Không thể tải dữ liệu",
+    "backToCourse": "Quay lại khóa học"
+  },
+  
   "pagination": {
     "showing": "Hiển thị {start} đến {end} trong tổng số {total} mục",
     "rowsPerPage": "Số dòng mỗi trang",
@@ -389,7 +399,23 @@
     "published": "Xuất bản bài học thành công",
     "deleteConfirm": "Bạn có chắc muốn xóa bài học này?",
     "deleted": "Xóa bài học thành công",
-    "orderUpdated": "Cập nhật thứ tự bài học"
+    "orderUpdated": "Cập nhật thứ tự bài học",
+    "showLessons": "Hiển thị bài học",
+    "courseTitle": "Bài học khóa học",
+    "completed": "đã hoàn thành",
+    "notes": {
+      "title": "Ghi chú bài học",
+      "empty": "Không có ghi chú cho bài học này."
+    },
+    "pdf": {
+      "download": "Tải xuống PDF",
+      "notAvailable": "Không thể tải xuống PDF"
+    },
+    "previous": "Trước",
+    "next": "Tiếp theo",
+    "markComplete": "Đánh dấu hoàn thành",
+    "markedComplete": "Đã đánh dấu bài học hoàn thành",
+    "markedIncomplete": "Đã bỏ đánh dấu hoàn thành"
   },
   
   "footer": {
