@@ -10,8 +10,95 @@
     <link rel="stylesheet" href="../assets/css/themes.css">
     <!-- Font Awesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <!-- Chart.js for Analytics -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <!-- Configuration -->
     <script src="../config.js"></script>
+    <style>
+        /* Analytics Styles */
+        .analytics-stats {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: var(--spacing-4);
+            margin-top: var(--spacing-4);
+        }
+        
+        .analytics-stat {
+            text-align: center;
+            padding: var(--spacing-4);
+            background: var(--bg-secondary);
+            border-radius: var(--radius-md);
+        }
+        
+        .analytics-stat__value {
+            font-size: 1.5rem;
+            font-weight: var(--font-weight-bold);
+            margin-bottom: var(--spacing-1);
+        }
+        
+        .analytics-stat__label {
+            font-size: var(--font-size-sm);
+            color: var(--text-secondary);
+        }
+        
+        .analytics-insights {
+            background: var(--bg-secondary);
+            border-radius: var(--radius-md);
+            padding: var(--spacing-4);
+        }
+        
+        .analytics-insight {
+            display: flex;
+            align-items: start;
+            gap: var(--spacing-3);
+            margin-bottom: var(--spacing-3);
+        }
+        
+        .analytics-insight:last-child {
+            margin-bottom: 0;
+        }
+        
+        .analytics-insight__icon {
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+            color: white;
+            flex-shrink: 0;
+            margin-top: 2px;
+        }
+        
+        .analytics-insight__icon--warning {
+            background: var(--color-warning);
+        }
+        
+        .analytics-insight__icon--info {
+            background: var(--color-info);
+        }
+        
+        .analytics-insight__icon--success {
+            background: var(--color-success);
+        }
+        
+        .analytics-insight__text {
+            font-size: var(--font-size-sm);
+            line-height: 1.4;
+        }
+
+        /* Responsive adjustments for analytics */
+        @media (max-width: 768px) {
+            .tabs__panel > div[style*="grid-template-columns"] {
+                grid-template-columns: 1fr !important;
+            }
+            
+            .analytics-stats {
+                grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+            }
+        }
+    </style>
 </head>
 <body>
     <div class="page-container">
@@ -88,6 +175,115 @@
                     <div class="card__body" style="text-align: center;">
                         <div style="font-size: 2rem; font-weight: var(--font-weight-bold); color: var(--color-primary);" id="totalCount">0</div>
                         <div style="color: var(--text-secondary);" data-translate="enrollment.totalEnrollments">Total Enrollments</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Enrollment Analytics -->
+            <div class="card" style="margin-bottom: var(--spacing-6);">
+                <div class="card__header">
+                    <h3 data-translate="enrollment.analytics">Enrollment Analytics</h3>
+                </div>
+                <div class="card__body">
+                    <!-- Analytics Tabs -->
+                    <div class="tabs">
+                        <div class="tabs__nav">
+                            <button class="tabs__nav-item tabs__nav-item--active" onclick="switchAnalyticsTab('trends')" id="trendsTab">
+                                <i class="fas fa-chart-line"></i>
+                                <span data-translate="analytics.trends">Trends</span>
+                            </button>
+                            <button class="tabs__nav-item" onclick="switchAnalyticsTab('completion')" id="completionTab">
+                                <i class="fas fa-chart-pie"></i>
+                                <span data-translate="analytics.completion">Completion</span>
+                            </button>
+                            <button class="tabs__nav-item" onclick="switchAnalyticsTab('dropoff')" id="dropoffTab">
+                                <i class="fas fa-chart-bar"></i>
+                                <span data-translate="analytics.dropoff">Drop-off</span>
+                            </button>
+                        </div>
+                        
+                        <div class="tabs__content">
+                            <!-- Trends Tab -->
+                            <div class="tabs__panel tabs__panel--active" id="trendsPanel">
+                                <div style="display: grid; grid-template-columns: 2fr 1fr; gap: var(--spacing-6);">
+                                    <div>
+                                        <h4 data-translate="analytics.enrollmentTrends">Enrollment Trends</h4>
+                                        <canvas id="enrollmentTrendsChart" height="200"></canvas>
+                                    </div>
+                                    <div>
+                                        <h4 data-translate="analytics.trendsSummary">Trends Summary</h4>
+                                        <div class="analytics-stats">
+                                            <div class="analytics-stat">
+                                                <div class="analytics-stat__value" id="monthlyGrowth">+0%</div>
+                                                <div class="analytics-stat__label" data-translate="analytics.monthlyGrowth">Monthly Growth</div>
+                                            </div>
+                                            <div class="analytics-stat">
+                                                <div class="analytics-stat__value" id="avgEnrollments">0</div>
+                                                <div class="analytics-stat__label" data-translate="analytics.avgEnrollments">Avg/Month</div>
+                                            </div>
+                                            <div class="analytics-stat">
+                                                <div class="analytics-stat__value" id="peakMonth">-</div>
+                                                <div class="analytics-stat__label" data-translate="analytics.peakMonth">Peak Month</div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <!-- Completion Tab -->
+                            <div class="tabs__panel" id="completionPanel">
+                                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: var(--spacing-6);">
+                                    <div>
+                                        <h4 data-translate="analytics.completionRates">Completion Rates by Course</h4>
+                                        <canvas id="completionRatesChart" height="300"></canvas>
+                                    </div>
+                                    <div>
+                                        <h4 data-translate="analytics.overallCompletion">Overall Completion Statistics</h4>
+                                        <canvas id="overallCompletionChart" width="300" height="300"></canvas>
+                                        <div class="analytics-stats" style="margin-top: var(--spacing-4);">
+                                            <div class="analytics-stat">
+                                                <div class="analytics-stat__value text-success" id="completedRate">0%</div>
+                                                <div class="analytics-stat__label" data-translate="analytics.completed">Completed</div>
+                                            </div>
+                                            <div class="analytics-stat">
+                                                <div class="analytics-stat__value text-warning" id="inProgressRate">0%</div>
+                                                <div class="analytics-stat__label" data-translate="analytics.inProgress">In Progress</div>
+                                            </div>
+                                            <div class="analytics-stat">
+                                                <div class="analytics-stat__value text-danger" id="droppedRate">0%</div>
+                                                <div class="analytics-stat__label" data-translate="analytics.dropped">Dropped</div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <!-- Drop-off Tab -->
+                            <div class="tabs__panel" id="dropoffPanel">
+                                <div style="display: grid; grid-template-columns: 2fr 1fr; gap: var(--spacing-6);">
+                                    <div>
+                                        <h4 data-translate="analytics.dropoffAnalysis">Drop-off Analysis</h4>
+                                        <canvas id="dropoffChart" height="200"></canvas>
+                                    </div>
+                                    <div>
+                                        <h4 data-translate="analytics.dropoffInsights">Key Insights</h4>
+                                        <div id="dropoffInsights" class="analytics-insights">
+                                            <!-- Dynamic insights -->
+                                        </div>
+                                        <div class="analytics-stats" style="margin-top: var(--spacing-4);">
+                                            <div class="analytics-stat">
+                                                <div class="analytics-stat__value text-danger" id="dropoffRate">0%</div>
+                                                <div class="analytics-stat__label" data-translate="analytics.overallDropoff">Overall Drop-off</div>
+                                            </div>
+                                            <div class="analytics-stat">
+                                                <div class="analytics-stat__value" id="avgDaysToDropoff">0</div>
+                                                <div class="analytics-stat__label" data-translate="analytics.avgDaysToDropoff">Avg Days to Drop-off</div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -285,6 +481,7 @@
             await loadData();
             displayEnrollments();
             updateStatistics();
+            initializeAnalytics();
         }
 
         // Load all data
@@ -836,6 +1033,379 @@
         function goToPage(page) {
             currentPage = page;
             displayEnrollments();
+        }
+
+        // Analytics functions
+        let analyticsCharts = {};
+        let currentAnalyticsTab = 'trends';
+
+        function switchAnalyticsTab(tabName) {
+            // Update tab buttons
+            document.querySelectorAll('.tabs__nav-item').forEach(tab => {
+                tab.classList.remove('tabs__nav-item--active');
+            });
+            document.getElementById(tabName + 'Tab').classList.add('tabs__nav-item--active');
+
+            // Update tab panels
+            document.querySelectorAll('.tabs__panel').forEach(panel => {
+                panel.classList.remove('tabs__panel--active');
+            });
+            document.getElementById(tabName + 'Panel').classList.add('tabs__panel--active');
+
+            currentAnalyticsTab = tabName;
+
+            // Load analytics for this tab
+            loadAnalyticsData(tabName);
+        }
+
+        function loadAnalyticsData(tabName) {
+            switch (tabName) {
+                case 'trends':
+                    createTrendsChart();
+                    updateTrendsStats();
+                    break;
+                case 'completion':
+                    createCompletionCharts();
+                    updateCompletionStats();
+                    break;
+                case 'dropoff':
+                    createDropoffChart();
+                    updateDropoffStats();
+                    generateDropoffInsights();
+                    break;
+            }
+        }
+
+        function createTrendsChart() {
+            const ctx = document.getElementById('enrollmentTrendsChart').getContext('2d');
+            
+            // Destroy existing chart
+            if (analyticsCharts.trends) {
+                analyticsCharts.trends.destroy();
+            }
+
+            // Generate trends data (last 6 months)
+            const trendsData = generateTrendsData();
+
+            analyticsCharts.trends = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: trendsData.labels,
+                    datasets: [{
+                        label: 'Enrollments',
+                        data: trendsData.enrollments,
+                        borderColor: getComputedStyle(document.documentElement).getPropertyValue('--color-primary'),
+                        backgroundColor: getComputedStyle(document.documentElement).getPropertyValue('--color-primary') + '20',
+                        tension: 0.4,
+                        fill: true
+                    }, {
+                        label: 'Completions',
+                        data: trendsData.completions,
+                        borderColor: getComputedStyle(document.documentElement).getPropertyValue('--color-success'),
+                        backgroundColor: getComputedStyle(document.documentElement).getPropertyValue('--color-success') + '20',
+                        tension: 0.4,
+                        fill: true
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            position: 'top',
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            ticks: {
+                                stepSize: 1
+                            }
+                        }
+                    }
+                }
+            });
+        }
+
+        function generateTrendsData() {
+            const months = [];
+            const enrollments = [];
+            const completions = [];
+            
+            // Generate last 6 months
+            for (let i = 5; i >= 0; i--) {
+                const date = new Date();
+                date.setMonth(date.getMonth() - i);
+                months.push(date.toLocaleDateString('en-US', { month: 'short', year: 'numeric' }));
+                
+                // Filter enrollments by month
+                const monthEnrollments = allEnrollments.filter(e => {
+                    const enrollDate = new Date(e.enrollmentDate);
+                    return enrollDate.getMonth() === date.getMonth() && 
+                           enrollDate.getFullYear() === date.getFullYear();
+                });
+                
+                enrollments.push(monthEnrollments.length);
+                completions.push(monthEnrollments.filter(e => e.progress >= 100).length);
+            }
+            
+            return { labels: months, enrollments, completions };
+        }
+
+        function updateTrendsStats() {
+            const trendsData = generateTrendsData();
+            const enrollments = trendsData.enrollments;
+            
+            // Calculate monthly growth
+            const currentMonth = enrollments[enrollments.length - 1] || 0;
+            const previousMonth = enrollments[enrollments.length - 2] || 0;
+            const growth = previousMonth > 0 ? ((currentMonth - previousMonth) / previousMonth * 100) : 0;
+            
+            document.getElementById('monthlyGrowth').textContent = 
+                (growth >= 0 ? '+' : '') + growth.toFixed(1) + '%';
+            document.getElementById('monthlyGrowth').className = 
+                growth >= 0 ? 'analytics-stat__value text-success' : 'analytics-stat__value text-danger';
+            
+            // Average enrollments
+            const avgEnrollments = (enrollments.reduce((a, b) => a + b, 0) / enrollments.length).toFixed(1);
+            document.getElementById('avgEnrollments').textContent = avgEnrollments;
+            
+            // Peak month
+            const maxIndex = enrollments.indexOf(Math.max(...enrollments));
+            document.getElementById('peakMonth').textContent = trendsData.labels[maxIndex] || '-';
+        }
+
+        function createCompletionCharts() {
+            // Completion rates by course (bar chart)
+            const ctx1 = document.getElementById('completionRatesChart').getContext('2d');
+            if (analyticsCharts.completionRates) {
+                analyticsCharts.completionRates.destroy();
+            }
+
+            const courseCompletionData = generateCourseCompletionData();
+
+            analyticsCharts.completionRates = new Chart(ctx1, {
+                type: 'bar',
+                data: {
+                    labels: courseCompletionData.labels,
+                    datasets: [{
+                        label: 'Completion Rate (%)',
+                        data: courseCompletionData.rates,
+                        backgroundColor: getComputedStyle(document.documentElement).getPropertyValue('--color-primary') + '80',
+                        borderColor: getComputedStyle(document.documentElement).getPropertyValue('--color-primary'),
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            display: false
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            max: 100,
+                            ticks: {
+                                callback: function(value) {
+                                    return value + '%';
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+
+            // Overall completion (doughnut chart)
+            const ctx2 = document.getElementById('overallCompletionChart').getContext('2d');
+            if (analyticsCharts.overallCompletion) {
+                analyticsCharts.overallCompletion.destroy();
+            }
+
+            const overallData = generateOverallCompletionData();
+
+            analyticsCharts.overallCompletion = new Chart(ctx2, {
+                type: 'doughnut',
+                data: {
+                    labels: ['Completed', 'In Progress', 'Dropped'],
+                    datasets: [{
+                        data: [overallData.completed, overallData.inProgress, overallData.dropped],
+                        backgroundColor: [
+                            getComputedStyle(document.documentElement).getPropertyValue('--color-success'),
+                            getComputedStyle(document.documentElement).getPropertyValue('--color-warning'),
+                            getComputedStyle(document.documentElement).getPropertyValue('--color-danger')
+                        ]
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: true,
+                    plugins: {
+                        legend: {
+                            position: 'bottom'
+                        }
+                    }
+                }
+            });
+        }
+
+        function generateCourseCompletionData() {
+            const courseRates = {};
+            
+            // Calculate completion rate for each course
+            allCourses.forEach(course => {
+                const courseEnrollments = allEnrollments.filter(e => e.courseId === course.id);
+                const completed = courseEnrollments.filter(e => e.progress >= 100).length;
+                const total = courseEnrollments.length;
+                courseRates[course.title] = total > 0 ? (completed / total * 100) : 0;
+            });
+            
+            // Sort by completion rate and take top 10
+            const sorted = Object.entries(courseRates)
+                .sort(([,a], [,b]) => b - a)
+                .slice(0, 10);
+            
+            return {
+                labels: sorted.map(([title]) => title.length > 20 ? title.substring(0, 20) + '...' : title),
+                rates: sorted.map(([,rate]) => rate.toFixed(1))
+            };
+        }
+
+        function generateOverallCompletionData() {
+            const total = allEnrollments.length;
+            const completed = allEnrollments.filter(e => e.progress >= 100).length;
+            const inProgress = allEnrollments.filter(e => e.progress > 0 && e.progress < 100).length;
+            const dropped = total - completed - inProgress;
+            
+            return { completed, inProgress, dropped };
+        }
+
+        function updateCompletionStats() {
+            const data = generateOverallCompletionData();
+            const total = data.completed + data.inProgress + data.dropped;
+            
+            if (total > 0) {
+                document.getElementById('completedRate').textContent = 
+                    (data.completed / total * 100).toFixed(1) + '%';
+                document.getElementById('inProgressRate').textContent = 
+                    (data.inProgress / total * 100).toFixed(1) + '%';
+                document.getElementById('droppedRate').textContent = 
+                    (data.dropped / total * 100).toFixed(1) + '%';
+            }
+        }
+
+        function createDropoffChart() {
+            const ctx = document.getElementById('dropoffChart').getContext('2d');
+            if (analyticsCharts.dropoff) {
+                analyticsCharts.dropoff.destroy();
+            }
+
+            const dropoffData = generateDropoffData();
+
+            analyticsCharts.dropoff = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: dropoffData.labels,
+                    datasets: [{
+                        label: 'Drop-offs',
+                        data: dropoffData.values,
+                        backgroundColor: getComputedStyle(document.documentElement).getPropertyValue('--color-danger') + '80',
+                        borderColor: getComputedStyle(document.documentElement).getPropertyValue('--color-danger'),
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            display: false
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            ticks: {
+                                stepSize: 1
+                            }
+                        }
+                    }
+                }
+            });
+        }
+
+        function generateDropoffData() {
+            // Simulate drop-off data by progress ranges
+            const ranges = ['0-10%', '11-25%', '26-50%', '51-75%', '76-99%'];
+            const dropoffs = [
+                allEnrollments.filter(e => e.progress >= 0 && e.progress <= 10 && e.status !== 'enrolled').length,
+                allEnrollments.filter(e => e.progress > 10 && e.progress <= 25 && e.status !== 'enrolled').length,
+                allEnrollments.filter(e => e.progress > 25 && e.progress <= 50 && e.status !== 'enrolled').length,
+                allEnrollments.filter(e => e.progress > 50 && e.progress <= 75 && e.status !== 'enrolled').length,
+                allEnrollments.filter(e => e.progress > 75 && e.progress < 100 && e.status !== 'enrolled').length
+            ];
+            
+            return { labels: ranges, values: dropoffs };
+        }
+
+        function updateDropoffStats() {
+            const dropped = allEnrollments.filter(e => e.status !== 'enrolled' && e.progress < 100).length;
+            const total = allEnrollments.length;
+            const dropoffRate = total > 0 ? (dropped / total * 100) : 0;
+            
+            document.getElementById('dropoffRate').textContent = dropoffRate.toFixed(1) + '%';
+            
+            // Calculate average days to dropoff (simulated)
+            const avgDays = Math.round(Math.random() * 30 + 15); // Mock data
+            document.getElementById('avgDaysToDropoff').textContent = avgDays;
+        }
+
+        function generateDropoffInsights() {
+            const insights = [];
+            
+            // Analyze dropoff patterns
+            const earlyDropoffs = allEnrollments.filter(e => e.progress <= 25 && e.status !== 'enrolled').length;
+            const total = allEnrollments.length;
+            
+            if (earlyDropoffs > total * 0.3) {
+                insights.push({
+                    type: 'warning',
+                    text: 'High early drop-off rate detected. Consider improving course onboarding.'
+                });
+            }
+            
+            const midDropoffs = allEnrollments.filter(e => e.progress > 25 && e.progress <= 75 && e.status !== 'enrolled').length;
+            if (midDropoffs > total * 0.2) {
+                insights.push({
+                    type: 'info',
+                    text: 'Students tend to drop off mid-course. Review content difficulty and engagement.'
+                });
+            }
+            
+            if (insights.length === 0) {
+                insights.push({
+                    type: 'success',
+                    text: 'Drop-off rates are within acceptable ranges. Good course retention!'
+                });
+            }
+            
+            // Render insights
+            const container = document.getElementById('dropoffInsights');
+            container.innerHTML = insights.map(insight => `
+                <div class="analytics-insight">
+                    <div class="analytics-insight__icon analytics-insight__icon--${insight.type}">
+                        <i class="fas fa-${insight.type === 'warning' ? 'exclamation' : insight.type === 'info' ? 'info' : 'check'}"></i>
+                    </div>
+                    <div class="analytics-insight__text">${insight.text}</div>
+                </div>
+            `).join('');
+        }
+
+        // Initialize analytics on data load
+        function initializeAnalytics() {
+            loadAnalyticsData(currentAnalyticsTab);
         }
 
         // Initialize on load

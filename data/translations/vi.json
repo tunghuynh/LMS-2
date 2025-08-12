@@ -361,6 +361,7 @@
     "lastAccessed": "Truy cập lần cuối",
     "searchPlaceholder": "Tìm kiếm theo tên, email học viên...",
     "noRequests": "Không tìm thấy yêu cầu đăng ký",
+    "analytics": "Phân tích đăng ký",
     "confirmTitle": "Xác nhận đăng ký",
     "withdrawTitle": "Rút khỏi khóa học",
     "whatYouGet": "Bạn sẽ nhận được:",
@@ -387,6 +388,26 @@
   "student": {
     "name": "Học viên",
     "information": "Thông tin học viên"
+  },
+  
+  "analytics": {
+    "trends": "Xu hướng",
+    "completion": "Hoàn thành",
+    "dropoff": "Bỏ dở",
+    "enrollmentTrends": "Xu hướng đăng ký",
+    "trendsSummary": "Tóm tắt xu hướng",
+    "monthlyGrowth": "Tăng trưởng hàng tháng",
+    "avgEnrollments": "TB/Tháng",
+    "peakMonth": "Tháng cao điểm",
+    "completionRates": "Tỷ lệ hoàn thành theo khóa học",
+    "overallCompletion": "Thống kê hoàn thành tổng thể",
+    "completed": "Đã hoàn thành",
+    "inProgress": "Đang học",
+    "dropped": "Đã bỏ dở",
+    "dropoffAnalysis": "Phân tích bỏ dở",
+    "dropoffInsights": "Thông tin quan trọng",
+    "overallDropoff": "Tỷ lệ bỏ dở tổng thể",
+    "avgDaysToDropoff": "TB ngày đến khi bỏ dở"
   },
   
   "error": {

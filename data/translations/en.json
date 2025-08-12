@@ -361,6 +361,7 @@
     "lastAccessed": "Last Accessed",
     "searchPlaceholder": "Search by student name, email...",
     "noRequests": "No enrollment requests found",
+    "analytics": "Enrollment Analytics",
     "confirmTitle": "Confirm Enrollment",
     "withdrawTitle": "Withdraw from Course",
     "whatYouGet": "What you'll get:",
@@ -387,6 +388,26 @@
   "student": {
     "name": "Student",
     "information": "Student Information"
+  },
+  
+  "analytics": {
+    "trends": "Trends",
+    "completion": "Completion",
+    "dropoff": "Drop-off",
+    "enrollmentTrends": "Enrollment Trends",
+    "trendsSummary": "Trends Summary",
+    "monthlyGrowth": "Monthly Growth",
+    "avgEnrollments": "Avg/Month",
+    "peakMonth": "Peak Month",
+    "completionRates": "Completion Rates by Course",
+    "overallCompletion": "Overall Completion Statistics",
+    "completed": "Completed",
+    "inProgress": "In Progress",
+    "dropped": "Dropped",
+    "dropoffAnalysis": "Drop-off Analysis",
+    "dropoffInsights": "Key Insights",
+    "overallDropoff": "Overall Drop-off",
+    "avgDaysToDropoff": "Avg Days to Drop-off"
   },
   
   "error": {
