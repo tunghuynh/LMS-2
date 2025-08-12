@@ -410,6 +410,32 @@
     "avgDaysToDropoff": "Avg Days to Drop-off"
   },
   
+  "progress": {
+    "yourProgress": "Your Learning Progress",
+    "welcomeBack": "Welcome back! Let's continue your learning journey.",
+    "completedCourses": "Completed Courses",
+    "activeCourses": "Active Courses",
+    "timeSpent": "Time Spent",
+    "dayStreak": "Day Streak",
+    "courseProgress": "Course Progress",
+    "timeAnalytics": "Time Analytics",
+    "learningStreak": "Learning Streak",
+    "consecutiveDays": "Consecutive Days",
+    "streakMotivation": "Keep it up! You're on fire!",
+    "achievements": "Recent Achievements",
+    "viewAll": "View All",
+    "detailedProgress": "Detailed Progress",
+    "exportReport": "Export Report",
+    "progress": "Progress",
+    "lessonsCompleted": "Lessons",
+    "lastAccessed": "Last Accessed",
+    "noCourses": "No enrolled courses yet. Start learning today!",
+    "browseCourses": "Browse Courses",
+    "noAchievements": "Start learning to unlock achievements!",
+    "noEnrollments": "No course enrollments found",
+    "allAchievements": "All Achievements"
+  },
+  
   "error": {
     "pageNotFound": "Page not found",
     "lessonNotFound": "Lesson not found",

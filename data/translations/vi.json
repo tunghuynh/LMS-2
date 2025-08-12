@@ -410,6 +410,32 @@
     "avgDaysToDropoff": "TB ngày đến khi bỏ dở"
   },
   
+  "progress": {
+    "yourProgress": "Tiến độ học tập của bạn",
+    "welcomeBack": "Chào mừng bạn trở lại! Hãy tiếp tục hành trình học tập.",
+    "completedCourses": "Khóa học đã hoàn thành",
+    "activeCourses": "Khóa học đang học",
+    "timeSpent": "Thời gian học",
+    "dayStreak": "Chuỗi ngày",
+    "courseProgress": "Tiến độ khóa học",
+    "timeAnalytics": "Phân tích thời gian",
+    "learningStreak": "Chuỗi học tập",
+    "consecutiveDays": "Ngày liên tiếp",
+    "streakMotivation": "Tiếp tục như vậy! Bạn đang rất tuyệt!",
+    "achievements": "Thành tích gần đây",
+    "viewAll": "Xem tất cả",
+    "detailedProgress": "Tiến độ chi tiết",
+    "exportReport": "Xuất báo cáo",
+    "progress": "Tiến độ",
+    "lessonsCompleted": "Bài học",
+    "lastAccessed": "Truy cập lần cuối",
+    "noCourses": "Chưa đăng ký khóa học nào. Bắt đầu học ngay hôm nay!",
+    "browseCourses": "Xem khóa học",
+    "noAchievements": "Bắt đầu học để mở khóa thành tích!",
+    "noEnrollments": "Không tìm thấy đăng ký khóa học",
+    "allAchievements": "Tất cả thành tích"
+  },
+  
   "error": {
     "pageNotFound": "Không tìm thấy trang",
     "lessonNotFound": "Không tìm thấy bài học",
