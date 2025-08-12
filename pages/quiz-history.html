@@ -451,18 +451,18 @@
     <div class="page-container">
         <!-- History Header -->
         <div class="history-header">
-            <div style="display: flex; justify-content: space-between; align-items: center;">
+            <div class="flex-between">
                 <div>
                     <h1 class="history-title" data-translate="quiz.history">Quiz History</h1>
                     <p class="history-subtitle" data-translate="quiz.historySubtitle">Track your quiz attempts and progress over time</p>
                 </div>
-                <div style="display: flex; gap: var(--spacing-3);">
-                    <button class="btn btn--secondary" style="color: white; border-color: rgba(255,255,255,0.3);" onclick="refreshHistory()">
-                        <i class="fas fa-sync-alt" style="margin-right: 8px;"></i>
+                <div class="flex flex-gap-3">
+                    <button class="btn btn--secondary"  onclick="refreshHistory()">
+                        <i class="fas fa-sync-alt" class="icon-mr"></i>
                         <span data-translate="common.refresh">Refresh</span>
                     </button>
                     <button class="btn btn--success" onclick="exportHistory()">
-                        <i class="fas fa-download" style="margin-right: 8px;"></i>
+                        <i class="fas fa-download" class="icon-mr"></i>
                         <span data-translate="quiz.exportHistory">Export History</span>
                     </button>
                 </div>
@@ -537,7 +537,7 @@
             <!-- Quiz History Table -->
             <div class="card">
                 <div class="card__header">
-                    <div style="display: flex; justify-content: space-between; align-items: center;">
+                    <div class="flex-between">
                         <h3 data-translate="quiz.attemptHistory">Attempt History</h3>
                         <div class="badge" id="totalAttempts">0 attempts</div>
                     </div>
@@ -1070,7 +1070,7 @@
                                 </td>
                                 <td>
                                     <span class="attempt-number ${attempt.isBestScore ? 'best' : ''}">#${attempt.attemptNumber}</span>
-                                    ${attempt.isBestScore ? '<i class="fas fa-crown" style="margin-left: 8px; color: var(--color-warning);"></i>' : ''}
+                                    ${attempt.isBestScore ? '<i class="fas fa-crown" class="icon-ml text-warning"></i>' : ''}
                                 </td>
                                 <td>
                                     <div class="score-badge ${getScoreClass(attempt.score)}">
