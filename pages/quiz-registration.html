@@ -1,0 +1,1007 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quiz Registration - LMS</title>
+    <!-- Core CSS -->
+    <link rel="stylesheet" href="../assets/css/global.css">
+    <link rel="stylesheet" href="../assets/css/components.css">
+    <link rel="stylesheet" href="../assets/css/themes.css">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <!-- Configuration -->
+    <script src="../config.js"></script>
+    
+    <style>
+        /* Quiz Registration Specific Styles */
+        .quiz-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+            gap: var(--spacing-6);
+            margin-bottom: var(--spacing-6);
+        }
+        
+        .quiz-card {
+            background: var(--bg-primary);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-lg);
+            overflow: hidden;
+            transition: all var(--transition-base);
+            position: relative;
+        }
+        
+        .quiz-card:hover {
+            transform: translateY(-4px);
+            box-shadow: var(--shadow-lg);
+            border-color: var(--color-primary);
+        }
+        
+        .quiz-card__header {
+            padding: var(--spacing-5);
+            background: linear-gradient(135deg, var(--color-primary), var(--color-primary-dark, #1E4F78));
+            color: white;
+            position: relative;
+        }
+        
+        .quiz-card__header::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: var(--color-secondary, #4A8BC2);
+        }
+        
+        .quiz-title {
+            font-size: 1.25rem;
+            font-weight: var(--font-weight-bold);
+            margin: 0 0 var(--spacing-2) 0;
+            line-height: 1.3;
+        }
+        
+        .quiz-course {
+            font-size: var(--font-size-sm);
+            opacity: 0.9;
+            margin-bottom: var(--spacing-3);
+        }
+        
+        .quiz-meta {
+            display: flex;
+            gap: var(--spacing-4);
+            font-size: var(--font-size-sm);
+        }
+        
+        .quiz-meta-item {
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-1);
+            opacity: 0.9;
+        }
+        
+        .quiz-card__body {
+            padding: var(--spacing-5);
+        }
+        
+        .quiz-description {
+            color: var(--text-secondary);
+            line-height: 1.6;
+            margin-bottom: var(--spacing-4);
+            display: -webkit-box;
+            -webkit-line-clamp: 3;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+        
+        .quiz-stats {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: var(--spacing-3);
+            margin-bottom: var(--spacing-4);
+            padding: var(--spacing-3);
+            background: var(--bg-secondary);
+            border-radius: var(--radius-md);
+        }
+        
+        .quiz-stat {
+            text-align: center;
+        }
+        
+        .quiz-stat__value {
+            font-size: 1.1rem;
+            font-weight: var(--font-weight-bold);
+            color: var(--color-primary);
+            margin-bottom: var(--spacing-1);
+        }
+        
+        .quiz-stat__label {
+            font-size: var(--font-size-xs);
+            color: var(--text-secondary);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        
+        .quiz-requirements {
+            margin-bottom: var(--spacing-4);
+        }
+        
+        .requirement-item {
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-2);
+            margin-bottom: var(--spacing-2);
+            font-size: var(--font-size-sm);
+        }
+        
+        .requirement-icon {
+            width: 16px;
+            height: 16px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.75rem;
+        }
+        
+        .requirement-icon.met {
+            background: var(--color-success);
+            color: white;
+        }
+        
+        .requirement-icon.not-met {
+            background: var(--color-danger);
+            color: white;
+        }
+        
+        .requirement-icon.warning {
+            background: var(--color-warning);
+            color: white;
+        }
+        
+        .deadline-warning {
+            background: var(--color-warning-light, rgba(245, 158, 11, 0.1));
+            border: 1px solid var(--color-warning);
+            color: var(--color-warning-dark, #92400e);
+            padding: var(--spacing-3);
+            border-radius: var(--radius-md);
+            margin-bottom: var(--spacing-4);
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-2);
+            font-size: var(--font-size-sm);
+        }
+        
+        .deadline-expired {
+            background: var(--color-danger-light, rgba(239, 68, 68, 0.1));
+            border-color: var(--color-danger);
+            color: var(--color-danger-dark, #991b1b);
+        }
+        
+        .quiz-card__footer {
+            padding: var(--spacing-4) var(--spacing-5);
+            background: var(--bg-tertiary);
+            border-top: 1px solid var(--border-color);
+        }
+        
+        .registration-status {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: var(--spacing-3);
+        }
+        
+        .status-badge {
+            padding: 0.375rem 0.75rem;
+            border-radius: var(--radius-full);
+            font-size: var(--font-size-sm);
+            font-weight: var(--font-weight-medium);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        
+        .status-badge.available {
+            background: var(--color-success-light, rgba(16, 185, 129, 0.2));
+            color: var(--color-success-dark, #047857);
+        }
+        
+        .status-badge.registered {
+            background: var(--color-primary-light, rgba(44, 110, 170, 0.2));
+            color: var(--color-primary-dark, #1E4F78);
+        }
+        
+        .status-badge.closed {
+            background: var(--color-danger-light, rgba(239, 68, 68, 0.2));
+            color: var(--color-danger-dark, #991b1b);
+        }
+        
+        .status-badge.upcoming {
+            background: var(--color-warning-light, rgba(245, 158, 11, 0.2));
+            color: var(--color-warning-dark, #92400e);
+        }
+        
+        .filters-section {
+            background: var(--bg-secondary);
+            border-radius: var(--radius-lg);
+            padding: var(--spacing-4);
+            margin-bottom: var(--spacing-6);
+        }
+        
+        .filters-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: var(--spacing-4);
+            align-items: end;
+        }
+        
+        .empty-state {
+            text-align: center;
+            padding: var(--spacing-8);
+            color: var(--text-secondary);
+        }
+        
+        .empty-state-icon {
+            font-size: 4rem;
+            margin-bottom: var(--spacing-4);
+            opacity: 0.5;
+        }
+        
+        /* Terms Modal Styles */
+        .terms-content {
+            max-height: 400px;
+            overflow-y: auto;
+            padding: var(--spacing-4);
+            background: var(--bg-secondary);
+            border-radius: var(--radius-md);
+            margin-bottom: var(--spacing-4);
+        }
+        
+        .terms-content h4 {
+            color: var(--color-primary);
+            margin-bottom: var(--spacing-3);
+        }
+        
+        .terms-content p {
+            margin-bottom: var(--spacing-3);
+            line-height: 1.6;
+        }
+        
+        .terms-content ul {
+            margin-left: var(--spacing-4);
+            margin-bottom: var(--spacing-3);
+        }
+        
+        .terms-agreement {
+            display: flex;
+            align-items: flex-start;
+            gap: var(--spacing-3);
+            padding: var(--spacing-4);
+            background: var(--bg-tertiary);
+            border-radius: var(--radius-md);
+            margin-bottom: var(--spacing-4);
+        }
+        
+        /* Responsive */
+        @media (max-width: 768px) {
+            .quiz-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .filters-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .quiz-stats {
+                grid-template-columns: 1fr;
+            }
+            
+            .registration-status {
+                flex-direction: column;
+                align-items: stretch;
+                gap: var(--spacing-2);
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="page-container">
+        <!-- Page Header -->
+        <div class="page-header">
+            <div style="display: flex; justify-content: space-between; align-items: center;">
+                <div>
+                    <h1 class="page-title" data-translate="quiz.registration">Quiz Registration</h1>
+                    <p class="page-subtitle" data-translate="quiz.registrationSubtitle">Register for available quizzes and track your progress</p>
+                </div>
+                <div style="display: flex; gap: var(--spacing-3);">
+                    <button class="btn btn--secondary" onclick="refreshQuizzes()">
+                        <i class="fas fa-sync-alt" style="margin-right: 8px;"></i>
+                        <span data-translate="common.refresh">Refresh</span>
+                    </button>
+                    <button class="btn btn--primary" onclick="viewMyRegistrations()">
+                        <i class="fas fa-list" style="margin-right: 8px;"></i>
+                        <span data-translate="quiz.myRegistrations">My Registrations</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <div class="page-content">
+            <!-- Filters Section -->
+            <div class="filters-section">
+                <div class="filters-grid">
+                    <div class="form-group">
+                        <label class="form-label" data-translate="common.search">Search</label>
+                        <input type="text" id="searchInput" class="form-input" 
+                               placeholder="Search quizzes by title or description..."
+                               data-translate-placeholder="quiz.searchPlaceholder"
+                               onkeyup="filterQuizzes()">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label" data-translate="course.selectCourse">Course</label>
+                        <select id="courseFilter" class="form-select" onchange="filterQuizzes()">
+                            <option value="" data-translate="common.allCourses">All Courses</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label" data-translate="quiz.registrationStatus">Status</label>
+                        <select id="statusFilter" class="form-select" onchange="filterQuizzes()">
+                            <option value="" data-translate="common.allStatuses">All Statuses</option>
+                            <option value="available" data-translate="quiz.available">Available</option>
+                            <option value="registered" data-translate="quiz.registered">Registered</option>
+                            <option value="closed" data-translate="quiz.closed">Registration Closed</option>
+                            <option value="upcoming" data-translate="quiz.upcoming">Upcoming</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label" data-translate="quiz.difficulty">Difficulty</label>
+                        <select id="difficultyFilter" class="form-select" onchange="filterQuizzes()">
+                            <option value="" data-translate="quiz.allDifficulties">All Difficulties</option>
+                            <option value="beginner" data-translate="quiz.beginner">Beginner</option>
+                            <option value="intermediate" data-translate="quiz.intermediate">Intermediate</option>
+                            <option value="advanced" data-translate="quiz.advanced">Advanced</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Quiz Grid -->
+            <div class="quiz-grid" id="quizGrid">
+                <!-- Dynamic quiz cards -->
+            </div>
+
+            <!-- Empty State -->
+            <div class="empty-state" id="emptyState" style="display: none;">
+                <div class="empty-state-icon">
+                    <i class="fas fa-clipboard-list"></i>
+                </div>
+                <h3 data-translate="quiz.noQuizzesAvailable">No Quizzes Available</h3>
+                <p data-translate="quiz.noQuizzesMessage">There are no quizzes matching your current filters. Try adjusting your search criteria.</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Registration Modal -->
+    <div class="modal-backdrop" id="registrationModalBackdrop">
+        <div class="modal modal--large" id="registrationModal">
+            <div class="modal__header">
+                <h2 class="modal__title" data-translate="quiz.registerForQuiz">Register for Quiz</h2>
+                <button class="modal__close" onclick="closeRegistrationModal()">×</button>
+            </div>
+            <div class="modal__body" id="registrationModalContent">
+                <!-- Dynamic registration content -->
+            </div>
+            <div class="modal__footer">
+                <button class="btn btn--secondary" onclick="closeRegistrationModal()">
+                    <i class="fas fa-times" style="margin-right: 8px;"></i>
+                    <span data-translate="common.cancel">Cancel</span>
+                </button>
+                <button class="btn btn--primary" onclick="confirmRegistration()" id="confirmRegistrationBtn" disabled>
+                    <i class="fas fa-check" style="margin-right: 8px;"></i>
+                    <span data-translate="quiz.confirmRegistration">Confirm Registration</span>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Terms and Conditions Modal -->
+    <div class="modal-backdrop" id="termsModalBackdrop">
+        <div class="modal modal--medium" id="termsModal">
+            <div class="modal__header">
+                <h2 class="modal__title" data-translate="quiz.termsAndConditions">Terms and Conditions</h2>
+                <button class="modal__close" onclick="closeTermsModal()">×</button>
+            </div>
+            <div class="modal__body">
+                <div class="terms-content">
+                    <h4 data-translate="quiz.quizPolicies">Quiz Policies</h4>
+                    <p data-translate="quiz.termsIntro">By registering for this quiz, you agree to the following terms and conditions:</p>
+                    
+                    <h4 data-translate="quiz.academicIntegrity">Academic Integrity</h4>
+                    <ul>
+                        <li data-translate="quiz.noExternalHelp">No external help or resources allowed during the quiz</li>
+                        <li data-translate="quiz.originalWork">All answers must be your own original work</li>
+                        <li data-translate="quiz.noCheating">Any form of cheating will result in automatic failure</li>
+                    </ul>
+                    
+                    <h4 data-translate="quiz.technicalRequirements">Technical Requirements</h4>
+                    <ul>
+                        <li data-translate="quiz.stableInternet">Stable internet connection required</li>
+                        <li data-translate="quiz.supportedBrowser">Use a supported web browser</li>
+                        <li data-translate="quiz.disablePopupBlocker">Disable popup blockers</li>
+                    </ul>
+                    
+                    <h4 data-translate="quiz.attemptPolicies">Attempt Policies</h4>
+                    <ul>
+                        <li data-translate="quiz.limitedAttempts">Limited number of attempts as specified</li>
+                        <li data-translate="quiz.noRefunds">No refunds for failed attempts</li>
+                        <li data-translate="quiz.timeLimit">Strict time limits will be enforced</li>
+                    </ul>
+                </div>
+                
+                <div class="terms-agreement">
+                    <input type="checkbox" id="termsAgreement" onchange="updateTermsButton()">
+                    <label for="termsAgreement" data-translate="quiz.agreeToTerms">
+                        I have read and agree to the terms and conditions outlined above
+                    </label>
+                </div>
+            </div>
+            <div class="modal__footer">
+                <button class="btn btn--secondary" onclick="closeTermsModal()">
+                    <i class="fas fa-times" style="margin-right: 8px;"></i>
+                    <span data-translate="common.cancel">Cancel</span>
+                </button>
+                <button class="btn btn--primary" onclick="acceptTerms()" id="acceptTermsBtn" disabled>
+                    <i class="fas fa-check" style="margin-right: 8px;"></i>
+                    <span data-translate="quiz.acceptTerms">Accept Terms</span>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Core JavaScript -->
+    <script src="../assets/js/global.js"></script>
+    <script src="../assets/js/auth.js"></script>
+    <script src="../assets/js/api.js"></script>
+    
+    <script>
+        // State management
+        let allQuizzes = [];
+        let allCourses = [];
+        let filteredQuizzes = [];
+        let userRegistrations = [];
+        let currentUser = LMS.Auth.getUser();
+        let selectedQuizForRegistration = null;
+
+        // Initialize
+        async function init() {
+            // Check authentication - students only
+            if (!LMS.Auth.isAuthenticated() || !currentUser || currentUser.role !== 'student') {
+                window.location.href = '../index.html';
+                return;
+            }
+
+            // Load translations
+            await LMS.LanguageManager.init();
+            LMS.LanguageManager.updatePageTranslations();
+            
+            // Load data
+            await loadData();
+            populateFilters();
+            displayQuizzes();
+        }
+
+        // Load all data
+        async function loadData() {
+            try {
+                // Load courses
+                const courseResponse = await LMS.API.loadJSON('mock-courses.json');
+                allCourses = courseResponse.data || [];
+
+                // Generate mock quiz registration data
+                allQuizzes = generateMockQuizRegistrationData();
+                
+                // Load user registrations
+                loadUserRegistrations();
+                
+                // Apply filters
+                applyFilters();
+                
+            } catch (error) {
+                console.error('Failed to load data:', error);
+                LMS.showToast(LMS.t('error.loadData'), 'error');
+            }
+        }
+
+        // Generate mock quiz registration data
+        function generateMockQuizRegistrationData() {
+            const difficulties = ['beginner', 'intermediate', 'advanced'];
+            const quizzes = [];
+            
+            for (let i = 0; i < 12; i++) {
+                const course = allCourses[i % allCourses.length];
+                const registrationStart = new Date(Date.now() - Math.random() * 30 * 24 * 60 * 60 * 1000);
+                const registrationEnd = new Date(registrationStart.getTime() + (Math.random() * 60 + 30) * 24 * 60 * 60 * 1000);
+                const quizDate = new Date(registrationEnd.getTime() + (Math.random() * 14 + 1) * 24 * 60 * 60 * 1000);
+                
+                const quiz = {
+                    id: `quiz_reg_${String(i + 1).padStart(3, '0')}`,
+                    title: `${course?.title || 'Sample Course'} - ${['Midterm', 'Final', 'Chapter', 'Unit'][i % 4]} Quiz`,
+                    description: `Comprehensive assessment covering key concepts from ${course?.title || 'the course'}. This quiz will test your understanding of fundamental principles and practical applications.`,
+                    courseId: course?.id || 'course_001',
+                    courseName: course?.title || 'Sample Course',
+                    difficulty: difficulties[i % difficulties.length],
+                    duration: [30, 45, 60, 90, 120][i % 5],
+                    questionCount: Math.floor(Math.random() * 25) + 10,
+                    maxAttempts: [1, 2, 3][i % 3],
+                    passingScore: [60, 70, 75, 80][i % 4],
+                    registrationStart: registrationStart.toISOString(),
+                    registrationEnd: registrationEnd.toISOString(),
+                    quizDate: quizDate.toISOString(),
+                    prerequisites: i > 5 ? [`Complete ${course?.title || 'Course'} Lessons 1-${Math.floor(Math.random() * 5) + 3}`] : [],
+                    isActive: true,
+                    availableSlots: Math.floor(Math.random() * 50) + 20,
+                    registeredStudents: Math.floor(Math.random() * 30),
+                    createdBy: 'teacher_001'
+                };
+                
+                quizzes.push(quiz);
+            }
+            
+            return quizzes;
+        }
+
+        // Load user registrations
+        function loadUserRegistrations() {
+            const saved = localStorage.getItem(`quiz_registrations_${currentUser.id}`);
+            userRegistrations = saved ? JSON.parse(saved) : [];
+        }
+
+        // Save user registrations
+        function saveUserRegistrations() {
+            localStorage.setItem(`quiz_registrations_${currentUser.id}`, JSON.stringify(userRegistrations));
+        }
+
+        // Populate filter dropdowns
+        function populateFilters() {
+            const courseFilter = document.getElementById('courseFilter');
+            
+            // Get unique courses from quizzes
+            const uniqueCourses = [...new Set(allQuizzes.map(q => q.courseId))]
+                .map(id => allCourses.find(c => c.id === id))
+                .filter(Boolean);
+            
+            courseFilter.innerHTML = `<option value="">${LMS.t('common.allCourses')}</option>`;
+            uniqueCourses.forEach(course => {
+                const option = document.createElement('option');
+                option.value = course.id;
+                option.textContent = course.title;
+                courseFilter.appendChild(option);
+            });
+        }
+
+        // Apply filters
+        function applyFilters() {
+            filteredQuizzes = [...allQuizzes];
+
+            // Course filter
+            const courseFilter = document.getElementById('courseFilter').value;
+            if (courseFilter) {
+                filteredQuizzes = filteredQuizzes.filter(q => q.courseId === courseFilter);
+            }
+
+            // Status filter
+            const statusFilter = document.getElementById('statusFilter').value;
+            if (statusFilter) {
+                filteredQuizzes = filteredQuizzes.filter(quiz => {
+                    const status = getQuizRegistrationStatus(quiz);
+                    return status === statusFilter;
+                });
+            }
+
+            // Difficulty filter
+            const difficultyFilter = document.getElementById('difficultyFilter').value;
+            if (difficultyFilter) {
+                filteredQuizzes = filteredQuizzes.filter(q => q.difficulty === difficultyFilter);
+            }
+
+            // Search filter
+            const searchTerm = document.getElementById('searchInput').value.toLowerCase();
+            if (searchTerm) {
+                filteredQuizzes = filteredQuizzes.filter(quiz => 
+                    quiz.title.toLowerCase().includes(searchTerm) ||
+                    quiz.description.toLowerCase().includes(searchTerm) ||
+                    quiz.courseName.toLowerCase().includes(searchTerm)
+                );
+            }
+        }
+
+        // Get quiz registration status
+        function getQuizRegistrationStatus(quiz) {
+            const now = new Date();
+            const registrationStart = new Date(quiz.registrationStart);
+            const registrationEnd = new Date(quiz.registrationEnd);
+            const quizDate = new Date(quiz.quizDate);
+            
+            const isRegistered = userRegistrations.some(r => r.quizId === quiz.id);
+            
+            if (isRegistered) {
+                return 'registered';
+            } else if (now < registrationStart) {
+                return 'upcoming';
+            } else if (now > registrationEnd || now > quizDate) {
+                return 'closed';
+            } else {
+                return 'available';
+            }
+        }
+
+        // Display quizzes
+        function displayQuizzes() {
+            const container = document.getElementById('quizGrid');
+            const emptyState = document.getElementById('emptyState');
+            
+            if (filteredQuizzes.length === 0) {
+                container.innerHTML = '';
+                emptyState.style.display = 'block';
+                return;
+            }
+            
+            emptyState.style.display = 'none';
+            
+            container.innerHTML = filteredQuizzes.map(quiz => {
+                const status = getQuizRegistrationStatus(quiz);
+                const isRegistered = userRegistrations.some(r => r.quizId === quiz.id);
+                const registration = userRegistrations.find(r => r.quizId === quiz.id);
+                
+                return `
+                    <div class="quiz-card">
+                        <div class="quiz-card__header">
+                            <h3 class="quiz-title">${quiz.title}</h3>
+                            <p class="quiz-course">${quiz.courseName}</p>
+                            <div class="quiz-meta">
+                                <div class="quiz-meta-item">
+                                    <i class="fas fa-clock"></i>
+                                    <span>${quiz.duration} min</span>
+                                </div>
+                                <div class="quiz-meta-item">
+                                    <i class="fas fa-question-circle"></i>
+                                    <span>${quiz.questionCount} questions</span>
+                                </div>
+                                <div class="quiz-meta-item">
+                                    <i class="fas fa-trophy"></i>
+                                    <span>${quiz.passingScore}% to pass</span>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="quiz-card__body">
+                            <p class="quiz-description">${quiz.description}</p>
+                            
+                            <div class="quiz-stats">
+                                <div class="quiz-stat">
+                                    <div class="quiz-stat__value">${quiz.difficulty.charAt(0).toUpperCase() + quiz.difficulty.slice(1)}</div>
+                                    <div class="quiz-stat__label" data-translate="quiz.difficulty">Difficulty</div>
+                                </div>
+                                <div class="quiz-stat">
+                                    <div class="quiz-stat__value">${quiz.maxAttempts}</div>
+                                    <div class="quiz-stat__label" data-translate="quiz.maxAttempts">Max Attempts</div>
+                                </div>
+                                <div class="quiz-stat">
+                                    <div class="quiz-stat__value">${quiz.registeredStudents}/${quiz.availableSlots}</div>
+                                    <div class="quiz-stat__label" data-translate="quiz.enrolled">Enrolled</div>
+                                </div>
+                            </div>
+                            
+                            ${renderQuizRequirements(quiz)}
+                            ${renderDeadlineWarning(quiz, status)}
+                        </div>
+                        
+                        <div class="quiz-card__footer">
+                            <div class="registration-status">
+                                <span class="status-badge ${status}" data-translate="quiz.${status}">${status.charAt(0).toUpperCase() + status.slice(1)}</span>
+                                ${status === 'registered' ? `<span style="font-size: var(--font-size-sm); color: var(--text-secondary);">Registered: ${new Date(registration.registeredAt).toLocaleDateString()}</span>` : ''}
+                            </div>
+                            ${renderActionButton(quiz, status, isRegistered)}
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        // Render quiz requirements
+        function renderQuizRequirements(quiz) {
+            if (!quiz.prerequisites || quiz.prerequisites.length === 0) {
+                return `
+                    <div class="quiz-requirements">
+                        <div class="requirement-item">
+                            <div class="requirement-icon met"><i class="fas fa-check"></i></div>
+                            <span data-translate="quiz.noPrerequisites">No prerequisites required</span>
+                        </div>
+                    </div>
+                `;
+            }
+            
+            return `
+                <div class="quiz-requirements">
+                    <h5 style="margin-bottom: var(--spacing-2); font-size: var(--font-size-sm); color: var(--text-secondary);" data-translate="quiz.prerequisites">Prerequisites:</h5>
+                    ${quiz.prerequisites.map(prereq => {
+                        const isMet = Math.random() > 0.3; // Mock prerequisite check
+                        return `
+                            <div class="requirement-item">
+                                <div class="requirement-icon ${isMet ? 'met' : 'not-met'}">
+                                    <i class="fas fa-${isMet ? 'check' : 'times'}"></i>
+                                </div>
+                                <span style="color: ${isMet ? 'var(--text-primary)' : 'var(--color-danger)'};">${prereq}</span>
+                            </div>
+                        `;
+                    }).join('')}
+                </div>
+            `;
+        }
+
+        // Render deadline warning
+        function renderDeadlineWarning(quiz, status) {
+            const now = new Date();
+            const registrationEnd = new Date(quiz.registrationEnd);
+            const quizDate = new Date(quiz.quizDate);
+            const daysUntilDeadline = Math.ceil((registrationEnd - now) / (1000 * 60 * 60 * 24));
+            
+            if (status === 'closed') {
+                return `
+                    <div class="deadline-warning deadline-expired">
+                        <i class="fas fa-exclamation-triangle"></i>
+                        <span data-translate="quiz.registrationClosed">Registration period has ended</span>
+                    </div>
+                `;
+            } else if (status === 'available' && daysUntilDeadline <= 3) {
+                return `
+                    <div class="deadline-warning">
+                        <i class="fas fa-clock"></i>
+                        <span>${LMS.t('quiz.registrationEnds')} ${daysUntilDeadline} ${daysUntilDeadline === 1 ? 'day' : 'days'}</span>
+                    </div>
+                `;
+            } else if (status === 'upcoming') {
+                const daysUntilOpen = Math.ceil((new Date(quiz.registrationStart) - now) / (1000 * 60 * 60 * 24));
+                return `
+                    <div class="deadline-warning">
+                        <i class="fas fa-calendar-alt"></i>
+                        <span>${LMS.t('quiz.registrationOpens')} ${daysUntilOpen} ${daysUntilOpen === 1 ? 'day' : 'days'}</span>
+                    </div>
+                `;
+            }
+            
+            return '';
+        }
+
+        // Render action button
+        function renderActionButton(quiz, status, isRegistered) {
+            switch (status) {
+                case 'available':
+                    const hasUnmetPrerequisites = quiz.prerequisites && quiz.prerequisites.some(() => Math.random() > 0.3);
+                    return `
+                        <button class="btn btn--primary" 
+                                onclick="registerForQuiz('${quiz.id}')" 
+                                style="width: 100%;"
+                                ${hasUnmetPrerequisites ? 'disabled title="Prerequisites not met"' : ''}>
+                            <i class="fas fa-user-plus" style="margin-right: 8px;"></i>
+                            <span data-translate="quiz.register">Register</span>
+                        </button>
+                    `;
+                    
+                case 'registered':
+                    const registration = userRegistrations.find(r => r.quizId === quiz.id);
+                    const canTakeQuiz = new Date() >= new Date(quiz.quizDate);
+                    
+                    if (canTakeQuiz) {
+                        return `
+                            <button class="btn btn--success" onclick="startQuiz('${quiz.id}')" style="width: 100%;">
+                                <i class="fas fa-play" style="margin-right: 8px;"></i>
+                                <span data-translate="quiz.startQuiz">Start Quiz</span>
+                            </button>
+                        `;
+                    } else {
+                        return `
+                            <div style="display: flex; gap: var(--spacing-2);">
+                                <button class="btn btn--ghost" onclick="viewQuizDetails('${quiz.id}')" style="flex: 1;">
+                                    <i class="fas fa-info-circle" style="margin-right: 8px;"></i>
+                                    <span data-translate="quiz.viewDetails">Details</span>
+                                </button>
+                                <button class="btn btn--danger" onclick="unregisterFromQuiz('${quiz.id}')" style="flex: 1;">
+                                    <i class="fas fa-user-minus" style="margin-right: 8px;"></i>
+                                    <span data-translate="quiz.unregister">Unregister</span>
+                                </button>
+                            </div>
+                        `;
+                    }
+                    
+                case 'closed':
+                    return `
+                        <button class="btn btn--secondary" disabled style="width: 100%;">
+                            <i class="fas fa-lock" style="margin-right: 8px;"></i>
+                            <span data-translate="quiz.registrationClosed">Registration Closed</span>
+                        </button>
+                    `;
+                    
+                case 'upcoming':
+                    return `
+                        <button class="btn btn--ghost" onclick="viewQuizDetails('${quiz.id}')" style="width: 100%;">
+                            <i class="fas fa-calendar-alt" style="margin-right: 8px;"></i>
+                            <span data-translate="quiz.viewDetails">View Details</span>
+                        </button>
+                    `;
+                    
+                default:
+                    return '';
+            }
+        }
+
+        // Registration functions
+        function registerForQuiz(quizId) {
+            const quiz = allQuizzes.find(q => q.id === quizId);
+            if (!quiz) return;
+            
+            selectedQuizForRegistration = quiz;
+            showRegistrationModal(quiz);
+        }
+
+        function showRegistrationModal(quiz) {
+            const modal = document.getElementById('registrationModal');
+            const content = document.getElementById('registrationModalContent');
+            
+            content.innerHTML = `
+                <div style="margin-bottom: var(--spacing-6);">
+                    <h3 style="margin-bottom: var(--spacing-3);">${quiz.title}</h3>
+                    <p style="color: var(--text-secondary); margin-bottom: var(--spacing-4);">${quiz.description}</p>
+                    
+                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: var(--spacing-4); margin-bottom: var(--spacing-4);">
+                        <div style="background: var(--bg-secondary); padding: var(--spacing-3); border-radius: var(--radius-md);">
+                            <strong>${LMS.t('quiz.quizDate')}:</strong><br>
+                            ${new Date(quiz.quizDate).toLocaleDateString()} at ${new Date(quiz.quizDate).toLocaleTimeString()}
+                        </div>
+                        <div style="background: var(--bg-secondary); padding: var(--spacing-3); border-radius: var(--radius-md);">
+                            <strong>${LMS.t('quiz.duration')}:</strong><br>
+                            ${quiz.duration} minutes
+                        </div>
+                        <div style="background: var(--bg-secondary); padding: var(--spacing-3); border-radius: var(--radius-md);">
+                            <strong>${LMS.t('quiz.attempts')}:</strong><br>
+                            ${quiz.maxAttempts} ${quiz.maxAttempts === 1 ? 'attempt' : 'attempts'}
+                        </div>
+                        <div style="background: var(--bg-secondary); padding: var(--spacing-3); border-radius: var(--radius-md);">
+                            <strong>${LMS.t('quiz.passingScore')}:</strong><br>
+                            ${quiz.passingScore}% required
+                        </div>
+                    </div>
+                    
+                    ${quiz.prerequisites && quiz.prerequisites.length > 0 ? `
+                        <div style="margin-bottom: var(--spacing-4);">
+                            <h4 style="margin-bottom: var(--spacing-2);" data-translate="quiz.prerequisites">Prerequisites:</h4>
+                            <ul style="margin-left: var(--spacing-4);">
+                                ${quiz.prerequisites.map(prereq => `<li>${prereq}</li>`).join('')}
+                            </ul>
+                        </div>
+                    ` : ''}
+                    
+                    <div style="background: var(--bg-tertiary); padding: var(--spacing-4); border-radius: var(--radius-md); margin-bottom: var(--spacing-4);">
+                        <h4 style="margin-bottom: var(--spacing-2);" data-translate="quiz.importantInformation">Important Information:</h4>
+                        <ul style="margin-left: var(--spacing-4); margin-bottom: 0;">
+                            <li data-translate="quiz.registrationInfo1">Registration deadline: ${new Date(quiz.registrationEnd).toLocaleDateString()}</li>
+                            <li data-translate="quiz.registrationInfo2">You must complete all prerequisites before the quiz date</li>
+                            <li data-translate="quiz.registrationInfo3">Late submissions will not be accepted</li>
+                            <li data-translate="quiz.registrationInfo4">Make sure you have a stable internet connection</li>
+                        </ul>
+                    </div>
+                    
+                    <div style="display: flex; align-items: center; gap: var(--spacing-3); padding: var(--spacing-4); background: var(--color-warning-light, rgba(245, 158, 11, 0.1)); border-radius: var(--radius-md);">
+                        <input type="checkbox" id="termsCheckbox" onchange="updateRegistrationButton()">
+                        <label for="termsCheckbox" style="flex: 1;">
+                            <span data-translate="quiz.agreeToTermsShort">I agree to the</span> 
+                            <a href="#" onclick="showTermsModal(); event.preventDefault();" style="color: var(--color-primary); text-decoration: underline;">
+                                <span data-translate="quiz.termsAndConditions">terms and conditions</span>
+                            </a>
+                        </label>
+                    </div>
+                </div>
+            `;
+            
+            document.getElementById('registrationModalBackdrop').classList.add('active');
+            modal.classList.add('active');
+        }
+
+        function closeRegistrationModal() {
+            document.getElementById('registrationModalBackdrop').classList.remove('active');
+            document.getElementById('registrationModal').classList.remove('active');
+            selectedQuizForRegistration = null;
+        }
+
+        function updateRegistrationButton() {
+            const checkbox = document.getElementById('termsCheckbox');
+            const button = document.getElementById('confirmRegistrationBtn');
+            button.disabled = !checkbox.checked;
+        }
+
+        function confirmRegistration() {
+            if (!selectedQuizForRegistration) return;
+            
+            const registration = {
+                quizId: selectedQuizForRegistration.id,
+                quizTitle: selectedQuizForRegistration.title,
+                courseId: selectedQuizForRegistration.courseId,
+                courseName: selectedQuizForRegistration.courseName,
+                registeredAt: new Date().toISOString(),
+                status: 'registered'
+            };
+            
+            userRegistrations.push(registration);
+            saveUserRegistrations();
+            
+            LMS.showToast(LMS.t('quiz.registrationSuccessful'), 'success');
+            closeRegistrationModal();
+            displayQuizzes();
+        }
+
+        function unregisterFromQuiz(quizId) {
+            if (!confirm(LMS.t('quiz.unregisterConfirm'))) return;
+            
+            const index = userRegistrations.findIndex(r => r.quizId === quizId);
+            if (index !== -1) {
+                userRegistrations.splice(index, 1);
+                saveUserRegistrations();
+                LMS.showToast(LMS.t('quiz.unregistrationSuccessful'), 'success');
+                displayQuizzes();
+            }
+        }
+
+        // Terms modal functions
+        function showTermsModal() {
+            document.getElementById('termsModalBackdrop').classList.add('active');
+            document.getElementById('termsModal').classList.add('active');
+        }
+
+        function closeTermsModal() {
+            document.getElementById('termsModalBackdrop').classList.remove('active');
+            document.getElementById('termsModal').classList.remove('active');
+        }
+
+        function updateTermsButton() {
+            const checkbox = document.getElementById('termsAgreement');
+            const button = document.getElementById('acceptTermsBtn');
+            button.disabled = !checkbox.checked;
+        }
+
+        function acceptTerms() {
+            closeTermsModal();
+            // Auto-check the registration terms checkbox
+            document.getElementById('termsCheckbox').checked = true;
+            updateRegistrationButton();
+        }
+
+        // Other functions
+        function filterQuizzes() {
+            applyFilters();
+            displayQuizzes();
+        }
+
+        function refreshQuizzes() {
+            location.reload();
+        }
+
+        function viewMyRegistrations() {
+            // Filter to show only registered quizzes
+            document.getElementById('statusFilter').value = 'registered';
+            filterQuizzes();
+        }
+
+        function viewQuizDetails(quizId) {
+            // For demo, show a simple alert
+            const quiz = allQuizzes.find(q => q.id === quizId);
+            alert(`Quiz: ${quiz.title}\nDate: ${new Date(quiz.quizDate).toLocaleDateString()}\nDuration: ${quiz.duration} minutes`);
+        }
+
+        function startQuiz(quizId) {
+            window.location.href = `quiz-attempt.html?id=${quizId}`;
+        }
+
+        // Initialize on load
+        document.addEventListener('DOMContentLoaded', init);
+    </script>
+</body>
+</html>

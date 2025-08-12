@@ -357,7 +357,7 @@ This is the master TODO list for LMS Phase I development following the Foundatio
   - Create Quiz button
   - Import/Export actions
   - Filter by course
-- [ ] **3.1.2** Quiz Registration:
+- [x] **3.1.2** Quiz Registration:
   - Available quizzes list
   - Registration deadline
   - Prerequisites check
@@ -526,10 +526,10 @@ This is the master TODO list for LMS Phase I development following the Foundatio
 - Phase 0 Foundation: 38/38 tasks (100%) ✅
 - Phase I.1 User Management: 23/23 tasks (100%) ✅  
 - Phase I.2 Learning System: 18/26 tasks (69.2%) ✅ **Module hoàn thành 69%**
-- Phase I.3 Testing System: 8/24 tasks (33.3%) 🚀 **Quiz Results hoàn thành!**
+- Phase I.3 Testing System: 9/24 tasks (37.5%) 🚀 **Quiz Registration hoàn thành!**
 - Integration & Testing: 0/28 tasks (0%)
 
-**Total: 87/139 tasks (62.6%)**
+**Total: 88/139 tasks (63.3%)**
 
 ### Critical Path
 1. Phase 0 must be 100% complete
