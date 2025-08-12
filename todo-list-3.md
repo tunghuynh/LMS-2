@@ -314,14 +314,14 @@ This is the master TODO list for LMS Phase I development following the Foundatio
   - Progress tracking
   - Mark complete button
   - Next/Previous navigation
-- [ ] **2.4.2** Lesson Progress Tracking:
+- [x] **2.4.2** Lesson Progress Tracking:
   - Time spent recording
   - Completion percentage
   - Last accessed timestamp
   - Resume functionality
 
 #### 2.5 Enrollment Management
-- [ ] **2.5.1** Enrollment List (`enrollments.html`):
+- [x] **2.5.1** Enrollment List (`enrollments.html`):
   - Pending requests table
   - Approved students table
   - Bulk approve/reject
@@ -525,11 +525,11 @@ This is the master TODO list for LMS Phase I development following the Foundatio
 ### Completion Status
 - Phase 0 Foundation: 38/38 tasks (100%) ✅
 - Phase I.1 User Management: 23/23 tasks (100%) ✅
-- Phase I.2 Learning System: 11/26 tasks (42.3%)
+- Phase I.2 Learning System: 13/26 tasks (50.0%)
 - Phase I.3 Testing System: 0/24 tasks (0%)
 - Integration & Testing: 0/28 tasks (0%)
 
-**Total: 72/139 tasks (51.8%)**
+**Total: 74/139 tasks (53.2%)**
 
 ### Critical Path
 1. Phase 0 must be 100% complete

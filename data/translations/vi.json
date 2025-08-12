@@ -43,7 +43,17 @@
     "moveDown": "Di chuyển xuống",
     "chooseFile": "Chọn tệp",
     "noFileChosen": "Chưa chọn tệp",
-    "selectOption": "Chọn một tùy chọn"
+    "selectOption": "Chọn một tùy chọn",
+    "allCourses": "Tất cả khóa học",
+    "allStatuses": "Tất cả trạng thái",
+    "allDates": "Tất cả ngày",
+    "today": "Hôm nay",
+    "thisWeek": "Tuần này",
+    "thisMonth": "Tháng này",
+    "refresh": "Làm mới",
+    "export": "Xuất dữ liệu",
+    "view": "Xem",
+    "close": "Đóng"
   },
   
   "status": {
@@ -313,6 +323,49 @@
     "fileUploadError": "Tải tệp lên thất bại",
     "fileSizeError": "Kích thước tệp không được vượt quá {size}",
     "fileTypeError": "Loại tệp không hợp lệ. Các loại được phép: {types}"
+  },
+  
+  "enrollment": {
+    "title": "Quản lý đăng ký",
+    "subtitle": "Quản lý yêu cầu đăng ký và phê duyệt học viên",
+    "status": "Trạng thái đăng ký",
+    "requests": "Yêu cầu đăng ký",
+    "pendingRequests": "Yêu cầu chờ duyệt",
+    "enrolledStudents": "Học viên đã đăng ký",
+    "thisMonth": "Tháng này",
+    "totalEnrollments": "Tổng số đăng ký",
+    "requestDate": "Ngày yêu cầu",
+    "progress": "Tiến độ",
+    "approve": "Phê duyệt",
+    "reject": "Từ chối",
+    "suspend": "Tạm dừng",
+    "approved": "Phê duyệt đăng ký thành công",
+    "rejected": "Từ chối đăng ký thành công",
+    "suspended": "Tạm dừng đăng ký thành công",
+    "rejectConfirm": "Bạn có chắc muốn từ chối đăng ký này?",
+    "suspendConfirm": "Bạn có chắc muốn tạm dừng đăng ký này?",
+    "bulkApproveConfirm": "Bạn có chắc muốn phê duyệt {count} đăng ký?",
+    "bulkRejectConfirm": "Bạn có chắc muốn từ chối {count} đăng ký?",
+    "bulkInvite": "Mời hàng loạt",
+    "emailList": "Danh sách email",
+    "emailListPlaceholder": "Nhập địa chỉ email (mỗi dòng một email)...",
+    "emailListHelp": "Nhập một địa chỉ email mỗi dòng. Email không hợp lệ sẽ bị bỏ qua.",
+    "message": "Thông điệp tùy chỉnh",
+    "messagePlaceholder": "Thông điệp tùy chọn cho email mời...",
+    "sendEmailNotification": "Gửi thông báo email",
+    "sendInvites": "Gửi lời mời",
+    "invitesSent": "Đã gửi {count} lời mời thành công",
+    "noValidEmails": "Không tìm thấy địa chỉ email hợp lệ",
+    "details": "Chi tiết đăng ký",
+    "information": "Thông tin đăng ký",
+    "lastAccessed": "Truy cập lần cuối",
+    "searchPlaceholder": "Tìm kiếm theo tên, email học viên...",
+    "noRequests": "Không tìm thấy yêu cầu đăng ký"
+  },
+  
+  "student": {
+    "name": "Học viên",
+    "information": "Thông tin học viên"
   },
   
   "error": {

@@ -43,7 +43,17 @@
     "moveDown": "Move Down",
     "chooseFile": "Choose File",
     "noFileChosen": "No file chosen",
-    "selectOption": "Select an option"
+    "selectOption": "Select an option",
+    "allCourses": "All Courses",
+    "allStatuses": "All Statuses",
+    "allDates": "All Dates",
+    "today": "Today",
+    "thisWeek": "This Week",
+    "thisMonth": "This Month",
+    "refresh": "Refresh",
+    "export": "Export",
+    "view": "View",
+    "close": "Close"
   },
   
   "status": {
@@ -313,6 +323,49 @@
     "fileUploadError": "File upload failed",
     "fileSizeError": "File size must not exceed {size}",
     "fileTypeError": "Invalid file type. Allowed types: {types}"
+  },
+  
+  "enrollment": {
+    "title": "Enrollment Management",
+    "subtitle": "Manage student enrollment requests and approvals",
+    "status": "Enrollment Status",
+    "requests": "Enrollment Requests",
+    "pendingRequests": "Pending Requests",
+    "enrolledStudents": "Enrolled Students",
+    "thisMonth": "This Month",
+    "totalEnrollments": "Total Enrollments",
+    "requestDate": "Request Date",
+    "progress": "Progress",
+    "approve": "Approve",
+    "reject": "Reject",
+    "suspend": "Suspend",
+    "approved": "Enrollment approved successfully",
+    "rejected": "Enrollment rejected successfully",
+    "suspended": "Enrollment suspended successfully",
+    "rejectConfirm": "Are you sure you want to reject this enrollment?",
+    "suspendConfirm": "Are you sure you want to suspend this enrollment?",
+    "bulkApproveConfirm": "Are you sure you want to approve {count} enrollments?",
+    "bulkRejectConfirm": "Are you sure you want to reject {count} enrollments?",
+    "bulkInvite": "Bulk Invite",
+    "emailList": "Email List",
+    "emailListPlaceholder": "Enter email addresses (one per line)...",
+    "emailListHelp": "Enter one email address per line. Invalid emails will be skipped.",
+    "message": "Custom Message",
+    "messagePlaceholder": "Optional custom message for invitation email...",
+    "sendEmailNotification": "Send email notification",
+    "sendInvites": "Send Invites",
+    "invitesSent": "{count} invitations sent successfully",
+    "noValidEmails": "No valid email addresses found",
+    "details": "Enrollment Details",
+    "information": "Enrollment Information",
+    "lastAccessed": "Last Accessed",
+    "searchPlaceholder": "Search by student name, email...",
+    "noRequests": "No enrollment requests found"
+  },
+  
+  "student": {
+    "name": "Student",
+    "information": "Student Information"
   },
   
   "error": {
