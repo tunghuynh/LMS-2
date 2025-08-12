@@ -41,7 +41,21 @@ LMS.API = {
   // Load JSON file
   async loadJSON(filename) {
     try {
-      const response = await fetch(`${this.config.dataPath}${filename}`);
+      let dataPath;
+      if (window.LMS_CONFIG && window.LMS_CONFIG.getBasePath) {
+        const basePath = window.LMS_CONFIG.getBasePath();
+        dataPath = `${basePath}/data/${filename}`;
+      } else {
+        // Fallback - check if we're in a subdirectory
+        const path = window.location.pathname;
+        if (path.includes('/pages/') || path.includes('/components/')) {
+          dataPath = `../data/${filename}`;
+        } else {
+          dataPath = `data/${filename}`;
+        }
+      }
+      
+      const response = await fetch(dataPath);
       if (!response.ok) {
         throw new Error(`HTTP error! status: ${response.status}`);
       }

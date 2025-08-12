@@ -120,11 +120,20 @@ LMS.LanguageManager = {
     if (!this.LANGUAGES.includes(language)) return;
     
     try {
-      // Load translation file - use relative path
-      const basePath = window.location.pathname.includes('/pages/') || window.location.pathname.includes('/components/') 
-        ? '../' 
-        : '';
-      const response = await fetch(`${basePath}data/translations/${language}.json`);
+      // Load translation file using config path
+      let translationPath;
+      if (window.LMS_CONFIG && window.LMS_CONFIG.getBasePath) {
+        const basePath = window.LMS_CONFIG.getBasePath();
+        translationPath = `${basePath}/data/translations/${language}.json`;
+      } else {
+        // Fallback for backward compatibility
+        const basePath = window.location.pathname.includes('/pages/') || window.location.pathname.includes('/components/') 
+          ? '../' 
+          : '';
+        translationPath = `${basePath}data/translations/${language}.json`;
+      }
+      
+      const response = await fetch(translationPath);
       if (!response.ok) throw new Error('Translation file not found');
       
       this.translations = await response.json();
@@ -208,9 +217,18 @@ LMS.LanguageManager = {
     const flagIcon = document.getElementById('flagIcon');
     const langCode = document.getElementById('langCode');
     
-    if (flagIcon && langCode) {
-      const basePath = window.location.pathname.includes('/pages/') ? '../' : '';
-      flagIcon.src = `${basePath}assets/images/flags/${this.currentLanguage}.svg`;
+    if (flagIcon && langCode && this.currentLanguage) {
+      let flagPath;
+      if (window.LMS_CONFIG && window.LMS_CONFIG.getBasePath) {
+        const basePath = window.LMS_CONFIG.getBasePath();
+        flagPath = `${basePath}/assets/images/flags/${this.currentLanguage}.svg`;
+      } else {
+        // Fallback
+        const basePath = window.location.pathname.includes('/pages/') ? '../' : '';
+        flagPath = `${basePath}assets/images/flags/${this.currentLanguage}.svg`;
+      }
+      
+      flagIcon.src = flagPath;
       flagIcon.alt = this.currentLanguage === 'en' ? 'English' : 'Tiếng Việt';
       langCode.textContent = this.currentLanguage.toUpperCase();
     }
