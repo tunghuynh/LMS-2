@@ -559,7 +559,7 @@
         let allQuizHistory = [];
         let allCourses = [];
         let allQuizzes = [];
-        let currentUser = LMS.Auth.getUser();
+        let currentUser = null;
         let currentPage = 1;
         let itemsPerPage = 10;
         let filteredHistory = [];
@@ -567,6 +567,14 @@
 
         // Initialize
         async function init() {
+            // Ensure auth is loaded first
+            if (!LMS.Auth.currentUser) {
+                LMS.Auth.loadSession();
+            }
+            
+            // Get current user after auth is ready
+            currentUser = LMS.Auth.getUser();
+            
             // Check authentication - students only (or admins viewing as students)
             if (!LMS.Auth.isAuthenticated() || !currentUser) {
                 window.location.href = '../index.html';

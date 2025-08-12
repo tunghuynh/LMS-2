@@ -237,12 +237,20 @@
         let allQuizzes = [];
         let allCourses = [];
         let filteredQuizzes = [];
-        let currentUser = LMS.Auth.getUser();
+        let currentUser = null;
         let currentPage = 1;
         const rowsPerPage = 10;
 
         // Initialize
         async function init() {
+            // Ensure auth is loaded first
+            if (!LMS.Auth.currentUser) {
+                LMS.Auth.loadSession();
+            }
+            
+            // Get current user after auth is ready
+            currentUser = LMS.Auth.getUser();
+            
             // Check authentication - teachers and admins only
             if (!LMS.Auth.isAuthenticated() || !currentUser || 
                 (currentUser.role !== 'teacher' && currentUser.role !== 'admin')) {

@@ -590,11 +590,19 @@
         // State management
         let allTemplates = [];
         let filteredTemplates = [];
-        let currentUser = LMS.Auth.getUser();
+        let currentUser = null;
         let selectedTemplate = null;
 
         // Initialize
         async function init() {
+            // Ensure auth is loaded first
+            if (!LMS.Auth.currentUser) {
+                LMS.Auth.loadSession();
+            }
+            
+            // Get current user after auth is ready
+            currentUser = LMS.Auth.getUser();
+            
             // Check authentication - teachers and admins only
             if (!LMS.Auth.isAuthenticated() || !currentUser || 
                 (currentUser.role !== 'teacher' && currentUser.role !== 'admin')) {

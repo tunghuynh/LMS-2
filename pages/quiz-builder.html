@@ -539,13 +539,21 @@
         };
         
         let allCourses = [];
-        let currentUser = LMS.Auth.getUser();
+        let currentUser = null;
         let activeQuestionId = null;
         let isEditMode = false;
         let questionIdCounter = 1;
 
         // Initialize
         async function init() {
+            // Ensure auth is loaded first
+            if (!LMS.Auth.currentUser) {
+                LMS.Auth.loadSession();
+            }
+            
+            // Get current user after auth is ready
+            currentUser = LMS.Auth.getUser();
+            
             // Check authentication - teachers and admins only
             if (!LMS.Auth.isAuthenticated() || !currentUser || 
                 (currentUser.role !== 'teacher' && currentUser.role !== 'admin')) {
