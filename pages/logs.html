@@ -8,6 +8,8 @@
     <link rel="stylesheet" href="../assets/css/themes.css">
     <link rel="stylesheet" href="../assets/css/layout.css">
     <link rel="stylesheet" href="../assets/css/components.css">
+    <!-- Font Awesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 </head>
 <body>
     <div class="page-container">
@@ -18,7 +20,7 @@
                     <p class="page-subtitle">Monitor system activities and user actions</p>
                 </div>
                 <button class="btn btn--primary" onclick="exportLogs()">
-                    <span class="btn__icon">📥</span>
+                    <i class="fas fa-download" style="margin-right: 8px;"></i>
                     Export CSV
                 </button>
             </div>
@@ -328,7 +330,9 @@
                         <td class="table__cell">${log.description}</td>
                         <td class="table__cell table__cell--hide-mobile">${log.ipAddress}</td>
                         <td class="table__cell table__cell--center">
-                            <button class="btn btn--ghost btn--small" onclick="showDetails('${log.id}')">View</button>
+                            <button class="btn btn--ghost btn--small" onclick="showDetails('${log.id}')" title="View Details">
+                                <i class="fas fa-eye"></i>
+                            </button>
                         </td>
                     </tr>
                 `).join('');

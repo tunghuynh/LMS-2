@@ -8,6 +8,8 @@
     <link rel="stylesheet" href="../assets/css/themes.css">
     <link rel="stylesheet" href="../assets/css/layout.css">
     <link rel="stylesheet" href="../assets/css/components.css">
+    <!-- Font Awesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <style>
         /* Course specific styles using existing variables */
         .course-header {
@@ -216,19 +218,19 @@
                 <p id="courseDescription" style="opacity: 0.9;">Loading...</p>
                 <div class="course-header__meta">
                     <div class="course-header__meta-item">
-                        <span>👨‍🏫</span>
+                        <i class="fas fa-chalkboard-teacher"></i>
                         <span id="teacherName">Loading...</span>
                     </div>
                     <div class="course-header__meta-item">
-                        <span>📂</span>
+                        <i class="fas fa-folder"></i>
                         <span id="categoryName">Loading...</span>
                     </div>
                     <div class="course-header__meta-item">
-                        <span>⏱️</span>
+                        <i class="fas fa-clock"></i>
                         <span id="courseDuration">Loading...</span>
                     </div>
                     <div class="course-header__meta-item">
-                        <span>📊</span>
+                        <i class="fas fa-signal"></i>
                         <span id="courseDifficulty">Loading...</span>
                     </div>
                 </div>
@@ -258,21 +260,21 @@
             <div class="tabs">
                 <div class="tabs__list">
                     <button class="tabs__item tabs__item--active" onclick="switchTab('lessons')">
-                        <span class="tabs__item-icon">📖</span>
+                        <i class="fas fa-book tabs__item-icon"></i>
                         Lessons
                         <span class="tabs__item-badge" id="lessonCount">0</span>
                     </button>
                     <button class="tabs__item" onclick="switchTab('students')" id="studentsTab" style="display: none;">
-                        <span class="tabs__item-icon">👥</span>
+                        <i class="fas fa-users tabs__item-icon"></i>
                         Students
                         <span class="tabs__item-badge" id="studentCount">0</span>
                     </button>
                     <button class="tabs__item" onclick="switchTab('progress')" id="progressTab" style="display: none;">
-                        <span class="tabs__item-icon">📊</span>
+                        <i class="fas fa-chart-line tabs__item-icon"></i>
                         My Progress
                     </button>
                     <button class="tabs__item" onclick="switchTab('reviews')">
-                        <span class="tabs__item-icon">⭐</span>
+                        <i class="fas fa-star tabs__item-icon"></i>
                         Reviews
                         <span class="tabs__item-badge">4.5</span>
                     </button>
@@ -530,10 +532,10 @@
             container.innerHTML = lessonsData.map((lesson, index) => {
                 const isCompleted = completedLessons.includes(lesson.id);
                 const typeIcon = {
-                    video: '🎥',
-                    pdf: '📄',
-                    markdown: '📝'
-                }[lesson.type] || '📚';
+                    video: '<i class="fas fa-video"></i>',
+                    pdf: '<i class="fas fa-file-pdf"></i>',
+                    markdown: '<i class="fas fa-file-code"></i>'
+                }[lesson.type] || '<i class="fas fa-book"></i>';
 
                 return `
                     <div class="lesson-item ${isCompleted ? 'lesson-item--completed' : ''}" onclick="viewLesson('${lesson.id}')">

@@ -8,6 +8,8 @@
     <link rel="stylesheet" href="../assets/css/themes.css">
     <link rel="stylesheet" href="../assets/css/layout.css">
     <link rel="stylesheet" href="../assets/css/components.css">
+    <!-- Font Awesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 </head>
 <body>
     <div class="page-container">
@@ -79,7 +81,7 @@
                     <div style="display: flex; justify-content: space-between; align-items: center;">
                         <h3 class="card__title">Class Members</h3>
                         <button class="btn btn--primary btn--small" onclick="openAddStudentModal()">
-                            <span class="btn__icon">➕</span>
+                            <i class="fas fa-user-plus" style="margin-right: 8px;"></i>
                             Add Student
                         </button>
                     </div>
@@ -382,7 +384,9 @@
                                 : '<span style="color: var(--color-error);">Inactive</span>'}
                         </td>
                         <td class="table__cell table__cell--center">
-                            <button class="btn btn--ghost btn--small" onclick="removeStudent('${student.id}')">Remove</button>
+                            <button class="btn btn--ghost btn--small" onclick="removeStudent('${student.id}')" title="Remove Student">
+                                <i class="fas fa-user-minus"></i>
+                            </button>
                         </td>
                     </tr>
                 `).join('');

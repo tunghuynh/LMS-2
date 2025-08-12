@@ -2,48 +2,48 @@
    Theme System - Light and Dark Mode Variables
    ========================================================================== */
 
-/* Light Theme (Default) */
+/* Light Theme (Default) - Modern Education Style */
 [data-theme="light"],
 :root {
-  /* Backgrounds */
+  /* Backgrounds - Warmer, friendlier tones */
   --bg-primary: #FFFFFF;
-  --bg-secondary: #F9FAFB;
-  --bg-tertiary: #F3F4F6;
+  --bg-secondary: #F8FAFB;
+  --bg-tertiary: #EEF2F6;
   --bg-card: #FFFFFF;
-  --bg-hover: #F9FAFB;
-  --bg-active: #F3F4F6;
-  --bg-selected: #E0F2FE;
+  --bg-hover: #F0F4F8;
+  --bg-active: #E5EBF1;
+  --bg-selected: #E0EFFE;
   --bg-overlay: rgba(0, 0, 0, 0.5);
 
-  /* Text Colors */
-  --text-primary: #111827;
-  --text-secondary: #4B5563;
-  --text-muted: #9CA3AF;
+  /* Text Colors - Improved contrast */
+  --text-primary: #0F172A;
+  --text-secondary: #475569;
+  --text-muted: #94A3B8;
   --text-inverse: #FFFFFF;
-  --text-link: #2C6EAA;
-  --text-link-hover: #1E4F78;
+  --text-link: #3B82F6;
+  --text-link-hover: #2563EB;
 
-  /* Border Colors */
-  --border-color: #E5E7EB;
-  --border-color-dark: #D1D5DB;
-  --border-focus: #2C6EAA;
+  /* Border Colors - Softer borders */
+  --border-color: #E2E8F0;
+  --border-color-dark: #CBD5E1;
+  --border-focus: #3B82F6;
 
   /* Component Specific */
   --input-bg: #FFFFFF;
-  --input-border: #D1D5DB;
-  --input-border-focus: #2C6EAA;
-  --input-text: #111827;
-  --input-placeholder: #9CA3AF;
+  --input-border: #E2E8F0;
+  --input-border-focus: #3B82F6;
+  --input-text: #0F172A;
+  --input-placeholder: #94A3B8;
 
-  --button-primary-bg: #2C6EAA;
+  --button-primary-bg: #3B82F6;
   --button-primary-text: #FFFFFF;
-  --button-primary-hover: #1E4F78;
-  --button-primary-active: #1E4F78;
+  --button-primary-hover: #2563EB;
+  --button-primary-active: #1D4ED8;
 
-  --button-secondary-bg: #E5E7EB;
-  --button-secondary-text: #374151;
-  --button-secondary-hover: #D1D5DB;
-  --button-secondary-active: #9CA3AF;
+  --button-secondary-bg: #F1F5F9;
+  --button-secondary-text: #1E293B;
+  --button-secondary-hover: #E2E8F0;
+  --button-secondary-active: #CBD5E1;
 
   --table-header-bg: #F9FAFB;
   --table-row-hover: #F3F4F6;

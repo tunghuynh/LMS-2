@@ -8,6 +8,8 @@
     <link rel="stylesheet" href="../assets/css/themes.css">
     <link rel="stylesheet" href="../assets/css/layout.css">
     <link rel="stylesheet" href="../assets/css/components.css">
+    <!-- Font Awesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <style>
         /* Course specific styles */
         .course-grid {
@@ -155,7 +157,7 @@
                         </button>
                     </div>
                     <button class="btn btn--primary" onclick="openCreateCourseModal()">
-                        <span class="btn__icon">➕</span>
+                        <i class="fas fa-plus-circle" style="margin-right: 8px;"></i>
                         Create Course
                     </button>
                 </div>
@@ -281,6 +283,7 @@
                                 Try adjusting your filters or create your first course
                             </p>
                             <button class="btn btn--primary" onclick="openCreateCourseModal()">
+                                <i class="fas fa-plus-circle" style="margin-right: 8px;"></i>
                                 Create Course
                             </button>
                         </div>
@@ -557,8 +560,12 @@
                         <td class="table__cell table__cell--center">${course.enrolledCount || 0}</td>
                         <td class="table__cell table__cell--center">${getStatusBadge(course.status)}</td>
                         <td class="table__cell table__cell--center">
-                            <button class="btn btn--ghost btn--small" onclick="viewCourse('${course.id}')">View</button>
-                            ${canEditCourse(course) ? `<button class="btn btn--ghost btn--small" onclick="editCourse('${course.id}')">Edit</button>` : ''}
+                            <button class="btn btn--ghost btn--small" onclick="viewCourse('${course.id}')" title="View Details">
+                                <i class="fas fa-eye"></i>
+                            </button>
+                            ${canEditCourse(course) ? `<button class="btn btn--ghost btn--small" onclick="editCourse('${course.id}')" title="Edit Course">
+                                <i class="fas fa-edit"></i>
+                            </button>` : ''}
                         </td>
                     </tr>
                 `;
