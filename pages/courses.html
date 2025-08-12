@@ -378,6 +378,87 @@
         </div>
     </div>
 
+    <!-- Enrollment Confirmation Modal -->
+    <div class="modal-backdrop" id="enrollmentModalBackdrop">
+        <div class="modal modal--medium" id="enrollmentModal">
+            <div class="modal__header">
+                <h2 class="modal__title" data-translate="enrollment.confirmTitle">Confirm Enrollment</h2>
+                <button class="modal__close" onclick="closeEnrollmentModal()">×</button>
+            </div>
+            <div class="modal__body">
+                <div id="enrollmentCourseInfo">
+                    <!-- Dynamic course information -->
+                </div>
+                <div style="margin: var(--spacing-4) 0;">
+                    <h4 data-translate="enrollment.whatYouGet">What you'll get:</h4>
+                    <ul style="margin-left: var(--spacing-4); margin-top: var(--spacing-2);">
+                        <li data-translate="enrollment.benefit1">Full access to course materials</li>
+                        <li data-translate="enrollment.benefit2">Progress tracking and completion certificates</li>
+                        <li data-translate="enrollment.benefit3">Direct access to instructor feedback</li>
+                        <li data-translate="enrollment.benefit4">Community discussions and peer interaction</li>
+                    </ul>
+                </div>
+                <div style="padding: var(--spacing-4); background: var(--bg-secondary); border-radius: var(--radius-md); margin-top: var(--spacing-4);">
+                    <label class="checkbox-label">
+                        <input type="checkbox" id="enrollmentAgreement" required>
+                        <span class="checkbox-custom"></span>
+                        <span data-translate="enrollment.agreement">I agree to the course terms and conditions</span>
+                    </label>
+                </div>
+            </div>
+            <div class="modal__footer">
+                <button class="btn btn--secondary" onclick="closeEnrollmentModal()">
+                    <i class="fas fa-times" style="margin-right: 8px;"></i>
+                    <span data-translate="common.cancel">Cancel</span>
+                </button>
+                <button class="btn btn--primary" onclick="confirmEnrollment()" id="confirmEnrollBtn">
+                    <i class="fas fa-user-plus" style="margin-right: 8px;"></i>
+                    <span data-translate="enrollment.confirmEnroll">Confirm Enrollment</span>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Withdrawal Confirmation Modal -->
+    <div class="modal-backdrop" id="withdrawalModalBackdrop">
+        <div class="modal modal--medium" id="withdrawalModal">
+            <div class="modal__header">
+                <h2 class="modal__title" data-translate="enrollment.withdrawTitle">Withdraw from Course</h2>
+                <button class="modal__close" onclick="closeWithdrawalModal()">×</button>
+            </div>
+            <div class="modal__body">
+                <div style="display: flex; align-items: center; gap: var(--spacing-4); margin-bottom: var(--spacing-4);">
+                    <i class="fas fa-exclamation-triangle" style="font-size: 48px; color: var(--color-warning);"></i>
+                    <div>
+                        <h4 data-translate="enrollment.withdrawWarning">Are you sure you want to withdraw?</h4>
+                        <p style="color: var(--text-secondary);" data-translate="enrollment.withdrawConsequences">
+                            Withdrawing will remove your access to course materials and reset your progress.
+                        </p>
+                    </div>
+                </div>
+                <div id="withdrawalCourseInfo">
+                    <!-- Dynamic course information -->
+                </div>
+                <div style="margin-top: var(--spacing-4);">
+                    <label class="form-label" data-translate="enrollment.withdrawReason">Reason for withdrawal (optional)</label>
+                    <textarea id="withdrawalReason" class="form-textarea" rows="3" 
+                              placeholder="Please let us know why you're withdrawing..."
+                              data-translate-placeholder="enrollment.withdrawReasonPlaceholder"></textarea>
+                </div>
+            </div>
+            <div class="modal__footer">
+                <button class="btn btn--secondary" onclick="closeWithdrawalModal()">
+                    <i class="fas fa-times" style="margin-right: 8px;"></i>
+                    <span data-translate="common.cancel">Cancel</span>
+                </button>
+                <button class="btn btn--danger" onclick="confirmWithdrawal()" id="confirmWithdrawBtn">
+                    <i class="fas fa-user-minus" style="margin-right: 8px;"></i>
+                    <span data-translate="enrollment.confirmWithdraw">Confirm Withdrawal</span>
+                </button>
+            </div>
+        </div>
+    </div>
+
     <script src="../assets/js/global.js"></script>
     <script src="../assets/js/api.js"></script>
     <script src="../assets/js/auth.js"></script>
@@ -391,6 +472,8 @@
         let currentStatusFilter = 'all';
         let currentSort = 'date';
         let currentUser = LMS.Auth.getUser();
+        let allEnrollments = [];
+        let selectedCourseForEnrollment = null;
 
         // Load initial data
         async function loadData() {
@@ -404,6 +487,11 @@
                 const courseResponse = await fetch('../data/mock-courses.json');
                 const courseData = await courseResponse.json();
                 allCourses = courseData.data || [];
+
+                // Load enrollments
+                const enrollmentResponse = await fetch('../data/mock-enrollments.json');
+                const enrollmentData = await enrollmentResponse.json();
+                allEnrollments = enrollmentData.data || [];
 
                 // Merge with localStorage
                 const storedCourses = JSON.parse(localStorage.getItem('lms-courses') || '[]');
@@ -522,12 +610,13 @@
                             <p class="course-card__description">${course.description}</p>
                             <div class="course-card__meta">
                                 <span class="course-card__stat">
-                                    👥 ${course.enrolledCount || 0} students
+                                    <i class="fas fa-users"></i> ${course.enrolledCount || 0} students
                                 </span>
                                 <span class="course-card__stat">
-                                    ⭐ ${course.rating || 0}/5
+                                    <i class="fas fa-star"></i> ${course.rating || 0}/5
                                 </span>
                             </div>
+                            ${getEnrollmentActions(course)}
                         </div>
                     </div>
                 `;
@@ -568,6 +657,7 @@
                             ${canEditCourse(course) ? `<button class="btn btn--ghost btn--small" onclick="editCourse('${course.id}')" title="Edit Course">
                                 <i class="fas fa-edit"></i>
                             </button>` : ''}
+                            ${getTableEnrollmentActions(course)}
                         </td>
                     </tr>
                 `;
@@ -810,18 +900,229 @@
             }
         });
 
-        // Initialize
-        document.addEventListener('DOMContentLoaded', function() {
-            // Check authentication - allow teachers and admins
-            if (!LMS.Auth.isAuthenticated()) {
-                alert('Please login to access course management');
-                window.location.href = '../index.html';
+        // Enrollment functions
+        function getEnrollmentStatus(courseId) {
+            if (!currentUser) return 'not_enrolled';
+            
+            const enrollment = allEnrollments.find(e => 
+                e.courseId === courseId && e.studentId === currentUser.id
+            );
+            
+            return enrollment ? enrollment.status : 'not_enrolled';
+        }
+
+        function getEnrollmentActions(course) {
+            if (!currentUser || currentUser.role !== 'student') return '';
+            if (course.status !== 'published') return '';
+            
+            const enrollmentStatus = getEnrollmentStatus(course.id);
+            
+            switch (enrollmentStatus) {
+                case 'enrolled':
+                    return `
+                        <div style="margin-top: var(--spacing-3); display: flex; gap: var(--spacing-2);">
+                            <button class="btn btn--success btn--small" onclick="viewCourse('${course.id}')" style="flex: 1;">
+                                <i class="fas fa-play"></i> Continue Learning
+                            </button>
+                            <button class="btn btn--outline btn--small" onclick="openWithdrawalModal('${course.id}')">
+                                <i class="fas fa-sign-out-alt"></i> Withdraw
+                            </button>
+                        </div>
+                    `;
+                case 'pending':
+                    return `
+                        <div style="margin-top: var(--spacing-3);">
+                            <button class="btn btn--secondary btn--small" disabled style="width: 100%;">
+                                <i class="fas fa-clock"></i> Enrollment Pending
+                            </button>
+                        </div>
+                    `;
+                default:
+                    return `
+                        <div style="margin-top: var(--spacing-3);">
+                            <button class="btn btn--primary btn--small" onclick="openEnrollmentModal('${course.id}')" style="width: 100%;">
+                                <i class="fas fa-user-plus"></i> Enroll Now
+                            </button>
+                        </div>
+                    `;
+            }
+        }
+
+        function getTableEnrollmentActions(course) {
+            if (!currentUser || currentUser.role !== 'student') return '';
+            if (course.status !== 'published') return '';
+            
+            const enrollmentStatus = getEnrollmentStatus(course.id);
+            
+            switch (enrollmentStatus) {
+                case 'enrolled':
+                    return `
+                        <button class="btn btn--ghost btn--small text-success" onclick="viewCourse('${course.id}')" title="Continue Learning">
+                            <i class="fas fa-play"></i>
+                        </button>
+                        <button class="btn btn--ghost btn--small text-danger" onclick="openWithdrawalModal('${course.id}')" title="Withdraw">
+                            <i class="fas fa-sign-out-alt"></i>
+                        </button>
+                    `;
+                case 'pending':
+                    return `
+                        <button class="btn btn--ghost btn--small text-secondary" disabled title="Enrollment Pending">
+                            <i class="fas fa-clock"></i>
+                        </button>
+                    `;
+                default:
+                    return `
+                        <button class="btn btn--ghost btn--small text-primary" onclick="openEnrollmentModal('${course.id}')" title="Enroll Now">
+                            <i class="fas fa-user-plus"></i>
+                        </button>
+                    `;
+            }
+        }
+
+        function openEnrollmentModal(courseId) {
+            const course = allCourses.find(c => c.id === courseId);
+            if (!course) return;
+            
+            selectedCourseForEnrollment = course;
+            
+            // Populate course info
+            const courseInfo = document.getElementById('enrollmentCourseInfo');
+            courseInfo.innerHTML = `
+                <div style="display: flex; gap: var(--spacing-4); padding: var(--spacing-4); background: var(--bg-secondary); border-radius: var(--radius-md);">
+                    <div style="font-size: 48px;">${course.thumbnail || '📚'}</div>
+                    <div style="flex: 1;">
+                        <h3>${course.title}</h3>
+                        <p style="color: var(--text-secondary); margin: var(--spacing-2) 0;">${course.description}</p>
+                        <div style="display: flex; gap: var(--spacing-4); font-size: var(--font-size-sm); color: var(--text-secondary);">
+                            <span><i class="fas fa-chalkboard-teacher"></i> ${course.teacherName || 'Instructor'}</span>
+                            <span><i class="fas fa-clock"></i> ${course.duration || 0} hours</span>
+                            <span><i class="fas fa-signal"></i> ${course.difficulty || 'Beginner'}</span>
+                        </div>
+                    </div>
+                </div>
+            `;
+            
+            // Reset checkbox
+            document.getElementById('enrollmentAgreement').checked = false;
+            
+            // Show modal
+            document.getElementById('enrollmentModalBackdrop').classList.add('active');
+            document.getElementById('enrollmentModal').classList.add('active');
+        }
+
+        function closeEnrollmentModal() {
+            document.getElementById('enrollmentModalBackdrop').classList.remove('active');
+            document.getElementById('enrollmentModal').classList.remove('active');
+            selectedCourseForEnrollment = null;
+        }
+
+        function confirmEnrollment() {
+            const agreement = document.getElementById('enrollmentAgreement').checked;
+            if (!agreement) {
+                LMS.showToast('Please agree to the course terms and conditions', 'error');
                 return;
             }
             
-            if (currentUser && currentUser.role === 'student') {
-                alert('Access denied. Teachers and Administrators only.');
-                window.location.href = '../main.html';
+            if (!selectedCourseForEnrollment || !currentUser) return;
+            
+            // Create new enrollment
+            const newEnrollment = {
+                id: 'enroll_' + Date.now(),
+                courseId: selectedCourseForEnrollment.id,
+                studentId: currentUser.id,
+                enrollmentDate: new Date().toISOString(),
+                status: 'enrolled', // Auto-approve for demo
+                progress: 0,
+                completedLessons: [],
+                lastAccessed: new Date().toISOString()
+            };
+            
+            allEnrollments.push(newEnrollment);
+            
+            // Update course enrolled count
+            selectedCourseForEnrollment.enrolledCount = (selectedCourseForEnrollment.enrolledCount || 0) + 1;
+            
+            // Save to localStorage
+            localStorage.setItem('lms-enrollments', JSON.stringify(allEnrollments));
+            
+            LMS.showToast('Enrollment successful! Welcome to the course.', 'success');
+            closeEnrollmentModal();
+            
+            // Refresh display
+            renderCourses();
+        }
+
+        function openWithdrawalModal(courseId) {
+            const course = allCourses.find(c => c.id === courseId);
+            if (!course) return;
+            
+            selectedCourseForEnrollment = course;
+            
+            // Populate course info
+            const courseInfo = document.getElementById('withdrawalCourseInfo');
+            courseInfo.innerHTML = `
+                <div style="display: flex; gap: var(--spacing-4); padding: var(--spacing-4); background: var(--bg-secondary); border-radius: var(--radius-md);">
+                    <div style="font-size: 48px;">${course.thumbnail || '📚'}</div>
+                    <div style="flex: 1;">
+                        <h3>${course.title}</h3>
+                        <p style="color: var(--text-secondary); margin: var(--spacing-2) 0;">${course.description}</p>
+                        <div style="display: flex; gap: var(--spacing-4); font-size: var(--font-size-sm); color: var(--text-secondary);">
+                            <span><i class="fas fa-chalkboard-teacher"></i> ${course.teacherName || 'Instructor'}</span>
+                            <span><i class="fas fa-clock"></i> ${course.duration || 0} hours</span>
+                        </div>
+                    </div>
+                </div>
+            `;
+            
+            // Clear reason
+            document.getElementById('withdrawalReason').value = '';
+            
+            // Show modal
+            document.getElementById('withdrawalModalBackdrop').classList.add('active');
+            document.getElementById('withdrawalModal').classList.add('active');
+        }
+
+        function closeWithdrawalModal() {
+            document.getElementById('withdrawalModalBackdrop').classList.remove('active');
+            document.getElementById('withdrawalModal').classList.remove('active');
+            selectedCourseForEnrollment = null;
+        }
+
+        function confirmWithdrawal() {
+            if (!selectedCourseForEnrollment || !currentUser) return;
+            
+            // Find and remove enrollment
+            const enrollmentIndex = allEnrollments.findIndex(e => 
+                e.courseId === selectedCourseForEnrollment.id && e.studentId === currentUser.id
+            );
+            
+            if (enrollmentIndex !== -1) {
+                allEnrollments.splice(enrollmentIndex, 1);
+                
+                // Update course enrolled count
+                selectedCourseForEnrollment.enrolledCount = Math.max((selectedCourseForEnrollment.enrolledCount || 1) - 1, 0);
+                
+                // Save to localStorage
+                localStorage.setItem('lms-enrollments', JSON.stringify(allEnrollments));
+                
+                // Log withdrawal reason (in real app, would send to server)
+                const reason = document.getElementById('withdrawalReason').value.trim();
+                console.log('Withdrawal reason:', reason);
+                
+                LMS.showToast('You have successfully withdrawn from the course.', 'info');
+                closeWithdrawalModal();
+                
+                // Refresh display
+                renderCourses();
+            }
+        }
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', function() {
+            // Check authentication - allow all authenticated users
+            if (!LMS.Auth.isAuthenticated()) {
+                alert('Please login to access courses');
+                window.location.href = '../index.html';
                 return;
             }
             

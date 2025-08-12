@@ -326,7 +326,7 @@ This is the master TODO list for LMS Phase I development following the Foundatio
   - Approved students table
   - Bulk approve/reject
   - Email notification toggle
-- [ ] **2.5.2** Student Enrollment:
+- [x] **2.5.2** Student Enrollment:
   - Course catalog browsing
   - Enroll button with confirmation
   - Enrollment status display
@@ -525,11 +525,11 @@ This is the master TODO list for LMS Phase I development following the Foundatio
 ### Completion Status
 - Phase 0 Foundation: 38/38 tasks (100%) ✅
 - Phase I.1 User Management: 23/23 tasks (100%) ✅
-- Phase I.2 Learning System: 13/26 tasks (50.0%)
+- Phase I.2 Learning System: 14/26 tasks (53.8%)
 - Phase I.3 Testing System: 0/24 tasks (0%)
 - Integration & Testing: 0/28 tasks (0%)
 
-**Total: 74/139 tasks (53.2%)**
+**Total: 75/139 tasks (54.0%)**
 
 ### Critical Path
 1. Phase 0 must be 100% complete
