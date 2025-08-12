@@ -1,0 +1,157 @@
+{
+  "meta": {
+    "version": "1.0",
+    "totalCount": 45
+  },
+  "data": [
+    {
+      "id": "lesson_001",
+      "courseId": "course_001",
+      "title": "Introduction to HTML",
+      "description": "Learn the basics of HTML structure and common tags",
+      "type": "video",
+      "content": {
+        "videoUrl": "https://youtube.com/watch?v=example1",
+        "duration": 1200,
+        "transcript": "Welcome to HTML basics..."
+      },
+      "order": 1,
+      "duration": 20,
+      "isPublished": true,
+      "createdAt": "2024-01-01T10:00:00Z"
+    },
+    {
+      "id": "lesson_002",
+      "courseId": "course_001",
+      "title": "HTML Forms and Input Elements",
+      "description": "Master form creation and user input handling",
+      "type": "video",
+      "content": {
+        "videoUrl": "https://youtube.com/watch?v=example2",
+        "duration": 1800
+      },
+      "order": 2,
+      "duration": 30,
+      "isPublished": true,
+      "createdAt": "2024-01-02T10:00:00Z"
+    },
+    {
+      "id": "lesson_003",
+      "courseId": "course_001",
+      "title": "CSS Fundamentals",
+      "description": "Understanding CSS selectors, properties, and values",
+      "type": "pdf",
+      "content": {
+        "pdfUrl": "/data/pdfs/css-fundamentals.pdf",
+        "pages": 25
+      },
+      "order": 3,
+      "duration": 45,
+      "isPublished": true,
+      "createdAt": "2024-01-03T10:00:00Z"
+    },
+    {
+      "id": "lesson_004",
+      "courseId": "course_001",
+      "title": "JavaScript Basics",
+      "description": "Introduction to JavaScript programming",
+      "type": "markdown",
+      "content": {
+        "markdown": "# JavaScript Basics\n\n## Variables\n\n```javascript\nlet name = 'John';\nconst age = 25;\n```\n\n## Functions\n\n```javascript\nfunction greet(name) {\n  return `Hello, ${name}!`;\n}\n```"
+      },
+      "order": 4,
+      "duration": 60,
+      "isPublished": true,
+      "createdAt": "2024-01-04T10:00:00Z"
+    },
+    {
+      "id": "lesson_005",
+      "courseId": "course_001",
+      "title": "Building Your First Website",
+      "description": "Practical project combining HTML, CSS, and JavaScript",
+      "type": "video",
+      "content": {
+        "videoUrl": "https://youtube.com/watch?v=example3",
+        "duration": 2400
+      },
+      "order": 5,
+      "duration": 40,
+      "isPublished": false,
+      "createdAt": "2024-01-05T10:00:00Z"
+    },
+    {
+      "id": "lesson_006",
+      "courseId": "course_002",
+      "title": "React Introduction",
+      "description": "Getting started with React.js",
+      "type": "video",
+      "content": {
+        "videoUrl": "https://youtube.com/watch?v=example4",
+        "duration": 1500
+      },
+      "order": 1,
+      "duration": 25,
+      "isPublished": true,
+      "createdAt": "2024-01-10T10:00:00Z"
+    },
+    {
+      "id": "lesson_007",
+      "courseId": "course_002",
+      "title": "Components and Props",
+      "description": "Understanding React components and props",
+      "type": "markdown",
+      "content": {
+        "markdown": "# React Components\n\n## Functional Components\n\n```jsx\nfunction Welcome(props) {\n  return <h1>Hello, {props.name}</h1>;\n}\n```"
+      },
+      "order": 2,
+      "duration": 30,
+      "isPublished": true,
+      "createdAt": "2024-01-11T10:00:00Z"
+    },
+    {
+      "id": "lesson_008",
+      "courseId": "course_002",
+      "title": "State and Lifecycle",
+      "description": "Managing component state and lifecycle methods",
+      "type": "video",
+      "content": {
+        "videoUrl": "https://youtube.com/watch?v=example5",
+        "duration": 2100
+      },
+      "order": 3,
+      "duration": 35,
+      "isPublished": true,
+      "createdAt": "2024-01-12T10:00:00Z"
+    },
+    {
+      "id": "lesson_009",
+      "courseId": "course_003",
+      "title": "Python Installation and Setup",
+      "description": "Setting up Python development environment",
+      "type": "pdf",
+      "content": {
+        "pdfUrl": "/data/pdfs/python-setup.pdf",
+        "pages": 15
+      },
+      "order": 1,
+      "duration": 20,
+      "isPublished": true,
+      "createdAt": "2024-01-15T10:00:00Z"
+    },
+    {
+      "id": "lesson_010",
+      "courseId": "course_003",
+      "title": "Python Variables and Data Types",
+      "description": "Understanding Python data types and variables",
+      "type": "video",
+      "content": {
+        "videoUrl": "https://youtube.com/watch?v=example6",
+        "duration": 1800
+      },
+      "order": 2,
+      "duration": 30,
+      "isPublished": true,
+      "createdAt": "2024-01-16T10:00:00Z"
+    }
+  ]
+}

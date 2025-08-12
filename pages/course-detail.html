@@ -1,0 +1,764 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Course Detail - LMS</title>
+    <link rel="stylesheet" href="../assets/css/global.css">
+    <link rel="stylesheet" href="../assets/css/themes.css">
+    <link rel="stylesheet" href="../assets/css/layout.css">
+    <link rel="stylesheet" href="../assets/css/components.css">
+    <style>
+        /* Course specific styles using existing variables */
+        .course-header {
+            background: linear-gradient(135deg, var(--color-primary), var(--color-primary-dark));
+            color: white;
+            padding: var(--spacing-8);
+            border-radius: var(--radius-lg);
+            margin-bottom: var(--spacing-6);
+        }
+        
+        .course-header__icon {
+            font-size: 64px;
+            margin-bottom: var(--spacing-4);
+        }
+        
+        .course-header__title {
+            font-size: var(--font-size-3xl);
+            font-weight: var(--font-weight-bold);
+            margin-bottom: var(--spacing-3);
+        }
+        
+        .course-header__meta {
+            display: flex;
+            gap: var(--spacing-6);
+            flex-wrap: wrap;
+            margin-top: var(--spacing-4);
+        }
+        
+        .course-header__meta-item {
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-2);
+        }
+        
+        .course-stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: var(--spacing-4);
+            margin-bottom: var(--spacing-6);
+        }
+        
+        .course-stat {
+            background: var(--bg-card);
+            padding: var(--spacing-4);
+            border-radius: var(--radius-base);
+            text-align: center;
+            border: 1px solid var(--border-color);
+        }
+        
+        .course-stat__value {
+            font-size: var(--font-size-2xl);
+            font-weight: var(--font-weight-bold);
+            color: var(--color-primary);
+        }
+        
+        .course-stat__label {
+            color: var(--text-secondary);
+            font-size: var(--font-size-sm);
+            margin-top: var(--spacing-1);
+        }
+        
+        .lesson-item {
+            display: flex;
+            align-items: center;
+            padding: var(--spacing-4);
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-base);
+            margin-bottom: var(--spacing-3);
+            transition: all var(--transition-base);
+            cursor: pointer;
+        }
+        
+        .lesson-item:hover {
+            transform: translateX(4px);
+            box-shadow: var(--shadow-sm);
+        }
+        
+        .lesson-item--completed {
+            border-color: var(--color-success);
+        }
+        
+        .lesson-item__number {
+            width: 40px;
+            height: 40px;
+            background: var(--bg-tertiary);
+            border-radius: var(--radius-full);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: var(--font-weight-semibold);
+            margin-right: var(--spacing-4);
+        }
+        
+        .lesson-item--completed .lesson-item__number {
+            background: var(--color-success);
+            color: white;
+        }
+        
+        .lesson-item__content {
+            flex: 1;
+        }
+        
+        .lesson-item__title {
+            font-weight: var(--font-weight-medium);
+            margin-bottom: var(--spacing-1);
+        }
+        
+        .lesson-item__duration {
+            color: var(--text-secondary);
+            font-size: var(--font-size-sm);
+        }
+        
+        .lesson-item__type {
+            margin-left: var(--spacing-4);
+            padding: var(--spacing-1) var(--spacing-2);
+            background: var(--bg-tertiary);
+            border-radius: var(--radius-base);
+            font-size: var(--font-size-sm);
+        }
+        
+        .progress-bar {
+            width: 100%;
+            height: 20px;
+            background: var(--bg-tertiary);
+            border-radius: var(--radius-full);
+            overflow: hidden;
+            margin-bottom: var(--spacing-3);
+        }
+        
+        .progress-bar__fill {
+            height: 100%;
+            background: var(--color-success);
+            transition: width var(--transition-base);
+        }
+        
+        .empty-state {
+            text-align: center;
+            padding: var(--spacing-8);
+            color: var(--text-secondary);
+        }
+        
+        .empty-state__icon {
+            font-size: 48px;
+            margin-bottom: var(--spacing-3);
+            opacity: 0.5;
+        }
+        
+        @media (max-width: 768px) {
+            .course-header {
+                padding: var(--spacing-6);
+            }
+            
+            .course-header__title {
+                font-size: var(--font-size-2xl);
+            }
+            
+            .course-header__meta {
+                gap: var(--spacing-4);
+            }
+            
+            .lesson-item {
+                padding: var(--spacing-3);
+            }
+            
+            .lesson-item__type {
+                display: none;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="page-container">
+        <!-- Loading State -->
+        <div id="loadingState" style="display: none;">
+            <div class="card">
+                <div class="card__body" style="text-align: center; padding: var(--spacing-8);">
+                    <div class="spinner"></div>
+                    <p style="margin-top: var(--spacing-4);">Loading course details...</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Error State -->
+        <div id="errorState" style="display: none;">
+            <div class="card">
+                <div class="card__body" style="text-align: center; padding: var(--spacing-8);">
+                    <div style="font-size: 48px; margin-bottom: var(--spacing-4);">⚠️</div>
+                    <h3>Error Loading Course</h3>
+                    <p style="color: var(--text-secondary); margin-top: var(--spacing-2);" id="errorMessage">
+                        Course not found or you don't have permission to view it.
+                    </p>
+                    <button class="btn btn--primary" style="margin-top: var(--spacing-4);" onclick="window.history.back()">
+                        Go Back
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Course Content -->
+        <div id="courseContent" style="display: none;">
+            <!-- Course Header -->
+            <div class="course-header" id="courseHeader">
+                <div class="course-header__icon" id="courseIcon">📚</div>
+                <h1 class="course-header__title" id="courseTitle">Loading...</h1>
+                <p id="courseDescription" style="opacity: 0.9;">Loading...</p>
+                <div class="course-header__meta">
+                    <div class="course-header__meta-item">
+                        <span>👨‍🏫</span>
+                        <span id="teacherName">Loading...</span>
+                    </div>
+                    <div class="course-header__meta-item">
+                        <span>📂</span>
+                        <span id="categoryName">Loading...</span>
+                    </div>
+                    <div class="course-header__meta-item">
+                        <span>⏱️</span>
+                        <span id="courseDuration">Loading...</span>
+                    </div>
+                    <div class="course-header__meta-item">
+                        <span>📊</span>
+                        <span id="courseDifficulty">Loading...</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Course Statistics -->
+            <div class="course-stats">
+                <div class="course-stat">
+                    <div class="course-stat__value" id="totalLessons">0</div>
+                    <div class="course-stat__label">Total Lessons</div>
+                </div>
+                <div class="course-stat">
+                    <div class="course-stat__value" id="enrolledStudents">0</div>
+                    <div class="course-stat__label">Enrolled Students</div>
+                </div>
+                <div class="course-stat">
+                    <div class="course-stat__value" id="courseRating">0</div>
+                    <div class="course-stat__label">Average Rating</div>
+                </div>
+                <div class="course-stat">
+                    <div class="course-stat__value" id="completionRate">0%</div>
+                    <div class="course-stat__label">Completion Rate</div>
+                </div>
+            </div>
+
+            <!-- Tabs -->
+            <div class="tabs">
+                <div class="tabs__list">
+                    <button class="tabs__item tabs__item--active" onclick="switchTab('lessons')">
+                        <span class="tabs__item-icon">📖</span>
+                        Lessons
+                        <span class="tabs__item-badge" id="lessonCount">0</span>
+                    </button>
+                    <button class="tabs__item" onclick="switchTab('students')" id="studentsTab" style="display: none;">
+                        <span class="tabs__item-icon">👥</span>
+                        Students
+                        <span class="tabs__item-badge" id="studentCount">0</span>
+                    </button>
+                    <button class="tabs__item" onclick="switchTab('progress')" id="progressTab" style="display: none;">
+                        <span class="tabs__item-icon">📊</span>
+                        My Progress
+                    </button>
+                    <button class="tabs__item" onclick="switchTab('reviews')">
+                        <span class="tabs__item-icon">⭐</span>
+                        Reviews
+                        <span class="tabs__item-badge">4.5</span>
+                    </button>
+                </div>
+
+                <div class="tabs__content">
+                    <!-- Lessons Tab -->
+                    <div class="tabs__panel tabs__panel--active" id="lessonsPanel">
+                        <div class="card">
+                            <div class="card__header">
+                                <h3 class="card__title">Course Curriculum</h3>
+                                <div id="studentProgress" style="display: none;">
+                                    <div style="margin-bottom: var(--spacing-2); color: var(--text-secondary); font-size: var(--font-size-sm);">
+                                        Progress: <span id="progressText">0/0 completed</span>
+                                    </div>
+                                    <div class="progress-bar">
+                                        <div class="progress-bar__fill" id="progressFill" style="width: 0%;"></div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="card__body" id="lessonsList">
+                                <!-- Dynamic lesson list -->
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Students Tab (Teacher/Admin only) -->
+                    <div class="tabs__panel" id="studentsPanel">
+                        <div class="card">
+                            <div class="card__header">
+                                <h3 class="card__title">Enrolled Students</h3>
+                                <button class="btn btn--primary btn--small" onclick="openEnrollmentModal()">
+                                    Manage Enrollments
+                                </button>
+                            </div>
+                            <div class="card__body card__body--no-padding">
+                                <div class="table-wrapper">
+                                    <table class="table">
+                                        <thead>
+                                            <tr class="table__header">
+                                                <th class="table__cell table__cell--header">Student Name</th>
+                                                <th class="table__cell table__cell--header table__cell--center">Progress</th>
+                                                <th class="table__cell table__cell--header table__cell--center">Status</th>
+                                                <th class="table__cell table__cell--header">Enrolled Date</th>
+                                                <th class="table__cell table__cell--header">Last Access</th>
+                                                <th class="table__cell table__cell--header table__cell--center">Actions</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody id="studentsTableBody">
+                                            <!-- Dynamic student list -->
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Progress Tab (Student only) -->
+                    <div class="tabs__panel" id="progressPanel">
+                        <div class="card">
+                            <div class="card__header">
+                                <h3 class="card__title">My Learning Progress</h3>
+                            </div>
+                            <div class="card__body">
+                                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: var(--spacing-6); margin-bottom: var(--spacing-6);">
+                                    <div>
+                                        <h4 style="margin-bottom: var(--spacing-3);">Overall Progress</h4>
+                                        <div class="progress-bar" style="height: 30px;">
+                                            <div class="progress-bar__fill" id="myProgressFill" style="width: 0%;"></div>
+                                        </div>
+                                        <p style="text-align: center; margin-top: var(--spacing-2);">
+                                            <span id="myProgressText">0%</span> Complete
+                                        </p>
+                                    </div>
+                                    <div>
+                                        <h4 style="margin-bottom: var(--spacing-3);">Time Spent</h4>
+                                        <div style="text-align: center;">
+                                            <div style="font-size: var(--font-size-3xl); font-weight: var(--font-weight-bold); color: var(--color-primary);">
+                                                <span id="timeSpent">0</span>
+                                            </div>
+                                            <p style="color: var(--text-secondary);">hours</p>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <h4 style="margin-bottom: var(--spacing-3);">Completed Lessons</h4>
+                                <div id="completedLessonsList">
+                                    <!-- Dynamic completed lessons -->
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Reviews Tab -->
+                    <div class="tabs__panel" id="reviewsPanel">
+                        <div class="card">
+                            <div class="card__header">
+                                <h3 class="card__title">Course Reviews</h3>
+                                <button class="btn btn--primary btn--small" id="addReviewBtn" style="display: none;">
+                                    Add Review
+                                </button>
+                            </div>
+                            <div class="card__body">
+                                <div class="empty-state">
+                                    <div class="empty-state__icon">💬</div>
+                                    <p>No reviews yet. Be the first to review this course!</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Action Buttons -->
+            <div style="margin-top: var(--spacing-6); display: flex; gap: var(--spacing-3); flex-wrap: wrap;">
+                <button class="btn btn--secondary" onclick="window.history.back()">
+                    Back to Courses
+                </button>
+                <button class="btn btn--primary" id="enrollBtn" style="display: none;" onclick="enrollInCourse()">
+                    Enroll in Course
+                </button>
+                <button class="btn btn--primary" id="continueBtn" style="display: none;" onclick="continueLearning()">
+                    Continue Learning
+                </button>
+                <button class="btn btn--secondary" id="editBtn" style="display: none;" onclick="editCourse()">
+                    Edit Course
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script src="../assets/js/global.js"></script>
+    <script src="../assets/js/api.js"></script>
+    <script src="../assets/js/auth.js"></script>
+    <script>
+        // State management
+        let courseId = null;
+        let courseData = null;
+        let lessonsData = [];
+        let enrollmentsData = [];
+        let categoriesData = [];
+        let currentUser = LMS.Auth.getUser();
+        let userEnrollment = null;
+        let activeTab = 'lessons';
+
+        // Get course ID from URL
+        function getCourseIdFromUrl() {
+            const urlParams = new URLSearchParams(window.location.search);
+            return urlParams.get('id');
+        }
+
+        // Load course data
+        async function loadCourseData() {
+            courseId = getCourseIdFromUrl();
+            
+            if (!courseId) {
+                showError('No course ID provided');
+                return;
+            }
+
+            showLoading(true);
+
+            try {
+                // Load all necessary data
+                const [coursesRes, lessonsRes, enrollmentsRes, categoriesRes] = await Promise.all([
+                    fetch('../data/mock-courses.json'),
+                    fetch('../data/mock-lessons.json'),
+                    fetch('../data/mock-enrollments.json'),
+                    fetch('../data/mock-categories.json')
+                ]);
+
+                const coursesData = await coursesRes.json();
+                const lessonsDataRes = await lessonsRes.json();
+                const enrollmentsDataRes = await enrollmentsRes.json();
+                const categoriesDataRes = await categoriesRes.json();
+
+                // Find course
+                courseData = coursesData.data.find(c => c.id === courseId);
+                if (!courseData) {
+                    showError('Course not found');
+                    return;
+                }
+
+                // Get related data
+                lessonsData = lessonsDataRes.data.filter(l => l.courseId === courseId);
+                enrollmentsData = enrollmentsDataRes.data.filter(e => e.courseId === courseId);
+                categoriesData = categoriesDataRes.data;
+
+                // Check user enrollment
+                if (currentUser) {
+                    userEnrollment = enrollmentsData.find(e => e.studentId === currentUser.id);
+                }
+
+                // Display course data
+                displayCourseInfo();
+                displayLessons();
+                setupTabs();
+                showLoading(false);
+
+            } catch (error) {
+                console.error('Error loading course:', error);
+                showError('Failed to load course data');
+            }
+        }
+
+        // Display course information
+        function displayCourseInfo() {
+            const category = categoriesData.find(c => c.id === courseData.categoryId);
+            
+            document.getElementById('courseIcon').textContent = courseData.thumbnail || category?.icon || '📚';
+            document.getElementById('courseTitle').textContent = courseData.title;
+            document.getElementById('courseDescription').textContent = courseData.description;
+            document.getElementById('teacherName').textContent = courseData.teacherName || 'Unknown';
+            document.getElementById('categoryName').textContent = category?.name || 'Uncategorized';
+            document.getElementById('courseDuration').textContent = courseData.duration ? `${courseData.duration} hours` : 'Variable';
+            document.getElementById('courseDifficulty').textContent = capitalize(courseData.difficulty || 'beginner');
+
+            // Stats
+            document.getElementById('totalLessons').textContent = lessonsData.length;
+            document.getElementById('enrolledStudents').textContent = courseData.enrolledCount || 0;
+            document.getElementById('courseRating').textContent = `${courseData.rating || 0}/5`;
+            
+            // Calculate completion rate
+            const approvedEnrollments = enrollmentsData.filter(e => e.status === 'approved');
+            const completionRate = approvedEnrollments.length > 0
+                ? Math.round(approvedEnrollments.reduce((sum, e) => sum + (e.progress || 0), 0) / approvedEnrollments.length)
+                : 0;
+            document.getElementById('completionRate').textContent = `${completionRate}%`;
+
+            // Update badges
+            document.getElementById('lessonCount').textContent = lessonsData.length;
+            document.getElementById('studentCount').textContent = approvedEnrollments.length;
+        }
+
+        // Display lessons
+        function displayLessons() {
+            const container = document.getElementById('lessonsList');
+            
+            if (lessonsData.length === 0) {
+                container.innerHTML = `
+                    <div class="empty-state">
+                        <div class="empty-state__icon">📚</div>
+                        <p>No lessons available yet</p>
+                    </div>
+                `;
+                return;
+            }
+
+            // Sort lessons by order
+            lessonsData.sort((a, b) => a.order - b.order);
+
+            // Check if user is enrolled
+            const completedLessons = userEnrollment?.completedLessons || [];
+            
+            container.innerHTML = lessonsData.map((lesson, index) => {
+                const isCompleted = completedLessons.includes(lesson.id);
+                const typeIcon = {
+                    video: '🎥',
+                    pdf: '📄',
+                    markdown: '📝'
+                }[lesson.type] || '📚';
+
+                return `
+                    <div class="lesson-item ${isCompleted ? 'lesson-item--completed' : ''}" onclick="viewLesson('${lesson.id}')">
+                        <div class="lesson-item__number">
+                            ${isCompleted ? '✓' : index + 1}
+                        </div>
+                        <div class="lesson-item__content">
+                            <div class="lesson-item__title">${lesson.title}</div>
+                            <div class="lesson-item__duration">${lesson.duration} minutes</div>
+                        </div>
+                        <div class="lesson-item__type">
+                            ${typeIcon} ${capitalize(lesson.type)}
+                        </div>
+                    </div>
+                `;
+            }).join('');
+
+            // Update progress if student
+            if (userEnrollment && currentUser?.role === 'student') {
+                document.getElementById('studentProgress').style.display = 'block';
+                const progress = Math.round((completedLessons.length / lessonsData.length) * 100);
+                document.getElementById('progressText').textContent = `${completedLessons.length}/${lessonsData.length} completed`;
+                document.getElementById('progressFill').style.width = `${progress}%`;
+            }
+        }
+
+        // Setup tabs based on user role
+        function setupTabs() {
+            // Show/hide tabs based on role
+            if (currentUser) {
+                if (currentUser.role === 'teacher' || currentUser.role === 'admin') {
+                    document.getElementById('studentsTab').style.display = 'block';
+                    displayStudents();
+                } else if (currentUser.role === 'student') {
+                    document.getElementById('progressTab').style.display = 'block';
+                    displayProgress();
+                }
+
+                // Show action buttons
+                if (currentUser.role === 'student') {
+                    if (userEnrollment && userEnrollment.status === 'approved') {
+                        document.getElementById('continueBtn').style.display = 'inline-block';
+                        document.getElementById('addReviewBtn').style.display = 'inline-block';
+                    } else {
+                        document.getElementById('enrollBtn').style.display = 'inline-block';
+                    }
+                } else if (currentUser.role === 'teacher' && courseData.teacherId === currentUser.id) {
+                    document.getElementById('editBtn').style.display = 'inline-block';
+                } else if (currentUser.role === 'admin') {
+                    document.getElementById('editBtn').style.display = 'inline-block';
+                }
+            }
+        }
+
+        // Display students (Teacher/Admin view)
+        async function displayStudents() {
+            const tbody = document.getElementById('studentsTableBody');
+            const approvedEnrollments = enrollmentsData.filter(e => e.status === 'approved');
+            
+            if (approvedEnrollments.length === 0) {
+                tbody.innerHTML = `
+                    <tr>
+                        <td colspan="6" class="table__empty">
+                            <div class="table__empty-icon">👥</div>
+                            <div class="table__empty-text">No students enrolled yet</div>
+                        </td>
+                    </tr>
+                `;
+                return;
+            }
+
+            tbody.innerHTML = approvedEnrollments.map(enrollment => `
+                <tr class="table__row">
+                    <td class="table__cell">${enrollment.studentName}</td>
+                    <td class="table__cell table__cell--center">
+                        <div style="display: flex; align-items: center; gap: var(--spacing-2);">
+                            <div class="progress-bar" style="width: 100px; height: 10px; margin: 0;">
+                                <div class="progress-bar__fill" style="width: ${enrollment.progress}%;"></div>
+                            </div>
+                            <span>${enrollment.progress}%</span>
+                        </div>
+                    </td>
+                    <td class="table__cell table__cell--center">
+                        <span style="color: var(--color-success);">Active</span>
+                    </td>
+                    <td class="table__cell">${new Date(enrollment.enrolledAt).toLocaleDateString()}</td>
+                    <td class="table__cell">${enrollment.lastAccessedAt ? new Date(enrollment.lastAccessedAt).toLocaleDateString() : 'Never'}</td>
+                    <td class="table__cell table__cell--center">
+                        <button class="btn btn--ghost btn--small" onclick="viewStudentProgress('${enrollment.studentId}')">
+                            View Progress
+                        </button>
+                    </td>
+                </tr>
+            `).join('');
+        }
+
+        // Display student progress
+        function displayProgress() {
+            if (!userEnrollment) return;
+
+            const completedLessons = userEnrollment.completedLessons || [];
+            const progress = Math.round((completedLessons.length / lessonsData.length) * 100);
+            
+            document.getElementById('myProgressFill').style.width = `${progress}%`;
+            document.getElementById('myProgressText').textContent = `${progress}%`;
+            
+            // Calculate time spent (mock data)
+            const timeSpent = completedLessons.length * 45; // Average 45 mins per lesson
+            document.getElementById('timeSpent').textContent = Math.round(timeSpent / 60);
+
+            // List completed lessons
+            const completedList = document.getElementById('completedLessonsList');
+            const completed = lessonsData.filter(l => completedLessons.includes(l.id));
+            
+            if (completed.length === 0) {
+                completedList.innerHTML = '<p style="color: var(--text-secondary);">No lessons completed yet</p>';
+            } else {
+                completedList.innerHTML = completed.map(lesson => `
+                    <div class="lesson-item lesson-item--completed" style="margin-bottom: var(--spacing-2);">
+                        <div class="lesson-item__number">✓</div>
+                        <div class="lesson-item__content">
+                            <div class="lesson-item__title">${lesson.title}</div>
+                            <div class="lesson-item__duration">Completed</div>
+                        </div>
+                    </div>
+                `).join('');
+            }
+        }
+
+        // Switch tabs
+        function switchTab(tab) {
+            activeTab = tab;
+            
+            // Update tab buttons
+            document.querySelectorAll('.tabs__item').forEach(btn => {
+                btn.classList.remove('tabs__item--active');
+            });
+            event.target.closest('.tabs__item').classList.add('tabs__item--active');
+            
+            // Update panels
+            document.querySelectorAll('.tabs__panel').forEach(panel => {
+                panel.classList.remove('tabs__panel--active');
+            });
+            document.getElementById(`${tab}Panel`).classList.add('tabs__panel--active');
+        }
+
+        // Actions
+        function viewLesson(lessonId) {
+            if (!currentUser) {
+                alert('Please login to view lessons');
+                return;
+            }
+            
+            if (currentUser.role === 'student' && (!userEnrollment || userEnrollment.status !== 'approved')) {
+                alert('Please enroll in the course to access lessons');
+                return;
+            }
+            
+            // In real app, would navigate to lesson viewer
+            alert(`Lesson viewer will be implemented in Phase I.2.4\nLesson ID: ${lessonId}`);
+        }
+
+        function enrollInCourse() {
+            if (!currentUser) {
+                alert('Please login to enroll');
+                window.location.href = '../index.html';
+                return;
+            }
+            
+            // In real app, would handle enrollment
+            alert('Enrollment functionality will be implemented in Phase I.2.5');
+        }
+
+        function continueLearning() {
+            // Find next incomplete lesson
+            const completedLessons = userEnrollment?.completedLessons || [];
+            const nextLesson = lessonsData.find(l => !completedLessons.includes(l.id));
+            
+            if (nextLesson) {
+                viewLesson(nextLesson.id);
+            } else {
+                alert('Congratulations! You have completed all lessons.');
+            }
+        }
+
+        function editCourse() {
+            window.location.href = `courses.html?edit=${courseId}`;
+        }
+
+        function openEnrollmentModal() {
+            alert('Enrollment management will be implemented in Phase I.2.5');
+        }
+
+        function viewStudentProgress(studentId) {
+            alert(`Student progress details will be implemented in Phase I.2.6\nStudent ID: ${studentId}`);
+        }
+
+        // Utility functions
+        function showLoading(show) {
+            document.getElementById('loadingState').style.display = show ? 'block' : 'none';
+            document.getElementById('courseContent').style.display = show ? 'none' : 'block';
+            document.getElementById('errorState').style.display = 'none';
+        }
+
+        function showError(message) {
+            document.getElementById('errorMessage').textContent = message;
+            document.getElementById('errorState').style.display = 'block';
+            document.getElementById('loadingState').style.display = 'none';
+            document.getElementById('courseContent').style.display = 'none';
+        }
+
+        function capitalize(str) {
+            return str.charAt(0).toUpperCase() + str.slice(1);
+        }
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', function() {
+            // Check authentication
+            if (!LMS.Auth.isAuthenticated()) {
+                // Allow public view but limit functionality
+                console.log('Viewing as guest');
+            }
+            
+            loadCourseData();
+        });
+    </script>
+</body>
+</html>

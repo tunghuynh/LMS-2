@@ -673,9 +673,7 @@
         }
 
         function viewCourse(courseId) {
-            // In real app, would navigate to course detail page
-            console.log('View course:', courseId);
-            alert('Course detail page will be implemented in Phase I.2.3');
+            window.location.href = `course-detail.html?id=${courseId}`;
         }
 
         function closeCourseModal() {
