@@ -471,7 +471,7 @@
         let currentCategoryFilter = 'all';
         let currentStatusFilter = 'all';
         let currentSort = 'date';
-        let currentUser = LMS.Auth.getUser();
+        let currentUser = null;
         let allEnrollments = [];
         let selectedCourseForEnrollment = null;
 
@@ -1119,6 +1119,14 @@
 
         // Initialize
         document.addEventListener('DOMContentLoaded', function() {
+            // Ensure auth is loaded first
+            if (!LMS.Auth.currentUser) {
+                LMS.Auth.loadSession();
+            }
+            
+            // Get current user after auth is ready
+            currentUser = LMS.Auth.getUser();
+            
             // Check authentication - allow all authenticated users
             if (!LMS.Auth.isAuthenticated()) {
                 alert('Please login to access courses');

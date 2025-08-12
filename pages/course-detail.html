@@ -418,7 +418,7 @@
         let lessonsData = [];
         let enrollmentsData = [];
         let categoriesData = [];
-        let currentUser = LMS.Auth.getUser();
+        let currentUser = null;
         let userEnrollment = null;
         let activeTab = 'lessons';
 
@@ -755,6 +755,14 @@
 
         // Initialize
         document.addEventListener('DOMContentLoaded', function() {
+            // Ensure auth is loaded first
+            if (!LMS.Auth.currentUser) {
+                LMS.Auth.loadSession();
+            }
+            
+            // Get current user after auth is ready
+            currentUser = LMS.Auth.getUser();
+            
             // Check authentication
             if (!LMS.Auth.isAuthenticated()) {
                 // Allow public view but limit functionality
