@@ -327,18 +327,18 @@
     <div class="page-container">
         <!-- Page Header -->
         <div class="page-header">
-            <div style="display: flex; justify-content: space-between; align-items: center;">
+            <div class="flex-between">
                 <div>
                     <h1 class="page-title" data-translate="quiz.results">Quiz Results</h1>
                     <p class="page-subtitle" id="quizTitle">Quiz Title</p>
                 </div>
-                <div style="display: flex; gap: var(--spacing-3);">
+                <div class="flex flex-gap-3">
                     <button class="btn btn--secondary" onclick="printResults()">
-                        <i class="fas fa-print" style="margin-right: 8px;"></i>
+                        <i class="fas fa-print" class="icon-mr"></i>
                         <span data-translate="quiz.printResults">Print Results</span>
                     </button>
                     <button class="btn btn--primary" onclick="goToCourses()">
-                        <i class="fas fa-arrow-left" style="margin-right: 8px;"></i>
+                        <i class="fas fa-arrow-left" class="icon-mr"></i>
                         <span data-translate="quiz.backToCourses">Back to Courses</span>
                     </button>
                 </div>
@@ -356,32 +356,32 @@
             <!-- Statistics Grid -->
             <div class="stats-grid">
                 <div class="stat-card">
-                    <div class="stat-value" style="color: var(--color-success);" id="correctAnswers">0</div>
+                    <div class="stat-value" class="text-success" id="correctAnswers">0</div>
                     <div class="stat-label" data-translate="quiz.correctAnswers">Correct Answers</div>
                 </div>
                 <div class="stat-card">
-                    <div class="stat-value" style="color: var(--color-danger);" id="incorrectAnswers">0</div>
+                    <div class="stat-value" class="text-danger" id="incorrectAnswers">0</div>
                     <div class="stat-label" data-translate="quiz.incorrectAnswers">Incorrect Answers</div>
                 </div>
                 <div class="stat-card">
-                    <div class="stat-value" style="color: var(--color-info);" id="totalQuestions">0</div>
+                    <div class="stat-value" class="text-info" id="totalQuestions">0</div>
                     <div class="stat-label" data-translate="quiz.totalQuestions">Total Questions</div>
                 </div>
                 <div class="stat-card">
-                    <div class="stat-value" style="color: var(--color-warning);" id="timeSpent">0:00</div>
+                    <div class="stat-value" class="text-warning" id="timeSpent">0:00</div>
                     <div class="stat-label" data-translate="quiz.timeSpent">Time Spent</div>
                 </div>
             </div>
 
             <!-- Certificate Section -->
-            <div class="certificate-section" id="certificateSection" style="display: none;">
+            <div class="certificate-section" id="certificateSection" class="hidden">
                 <div class="certificate-icon">
                     <i class="fas fa-certificate"></i>
                 </div>
-                <h3 style="margin-bottom: var(--spacing-3);" data-translate="quiz.congratulations">Congratulations!</h3>
-                <p style="margin-bottom: var(--spacing-4);" data-translate="quiz.passedMessage">You have successfully passed this quiz and earned a certificate.</p>
+                <h3 class="mb-3" data-translate="quiz.congratulations">Congratulations!</h3>
+                <p class="mb-4" data-translate="quiz.passedMessage">You have successfully passed this quiz and earned a certificate.</p>
                 <button class="btn btn--success" onclick="downloadCertificate()">
-                    <i class="fas fa-download" style="margin-right: 8px;"></i>
+                    <i class="fas fa-download" class="icon-mr"></i>
                     <span data-translate="quiz.downloadCertificate">Download Certificate</span>
                 </button>
             </div>
@@ -394,13 +394,13 @@
                 <div class="card__body">
                     <div class="time-analysis">
                         <div class="time-bar">
-                            <span style="min-width: 80px; font-size: var(--font-size-sm);" data-translate="quiz.timeUsed">Time Used:</span>
+                            <span class="min-w-20 text-sm" data-translate="quiz.timeUsed">Time Used:</span>
                             <div class="time-bar-fill">
                                 <div class="time-bar-progress" id="timeProgress"></div>
                             </div>
-                            <span id="timeUsedDisplay" style="min-width: 60px; font-size: var(--font-size-sm);">0:00</span>
+                            <span id="timeUsedDisplay" class="min-w-15 text-sm">0:00</span>
                         </div>
-                        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: var(--spacing-4); margin-top: var(--spacing-4); font-size: var(--font-size-sm);">
+                        <div class="grid grid-auto-fit-sm grid-gap-4 mt-4 text-sm">
                             <div>
                                 <strong data-translate="quiz.averagePerQuestion">Avg per Question:</strong>
                                 <span id="avgTimePerQuestion">0:00</span>
@@ -421,15 +421,15 @@
             <!-- Question Review -->
             <div class="card">
                 <div class="card__header">
-                    <div style="display: flex; justify-content: space-between; align-items: center;">
+                    <div class="flex-between">
                         <h3 data-translate="quiz.questionReview">Question Review</h3>
-                        <div style="display: flex; gap: var(--spacing-3);">
+                        <div class="flex flex-gap-3">
                             <button class="btn btn--ghost btn--small" onclick="expandAllQuestions()">
-                                <i class="fas fa-expand-alt" style="margin-right: 8px;"></i>
+                                <i class="fas fa-expand-alt" class="icon-mr"></i>
                                 <span data-translate="quiz.expandAll">Expand All</span>
                             </button>
                             <button class="btn btn--ghost btn--small" onclick="collapseAllQuestions()">
-                                <i class="fas fa-compress-alt" style="margin-right: 8px;"></i>
+                                <i class="fas fa-compress-alt" class="icon-mr"></i>
                                 <span data-translate="quiz.collapseAll">Collapse All</span>
                             </button>
                         </div>
@@ -443,13 +443,13 @@
             </div>
 
             <!-- Retake Section -->
-            <div class="retake-section" id="retakeSection" style="display: none;">
-                <h3 style="margin-bottom: var(--spacing-3);" data-translate="quiz.retakeQuiz">Retake Quiz</h3>
+            <div class="retake-section" id="retakeSection" class="hidden">
+                <h3 class="mb-3" data-translate="quiz.retakeQuiz">Retake Quiz</h3>
                 <div class="retake-attempts" id="retakeAttempts">
                     <!-- Dynamic retake attempts info -->
                 </div>
                 <button class="btn btn--primary" onclick="retakeQuiz()">
-                    <i class="fas fa-redo" style="margin-right: 8px;"></i>
+                    <i class="fas fa-redo" class="icon-mr"></i>
                     <span data-translate="quiz.startNewAttempt">Start New Attempt</span>
                 </button>
             </div>
@@ -813,9 +813,9 @@
                                 
                                 return `
                                     <div class="${className}">
-                                        <span style="font-weight: var(--font-weight-medium);">${option.text}</span>
-                                        ${option.correct ? ' <i class="fas fa-check" style="color: var(--color-success);"></i>' : ''}
-                                        ${userAnswer === option.id && !option.correct ? ' <i class="fas fa-times" style="color: var(--color-danger);"></i>' : ''}
+                                        <span class="font-medium">${option.text}</span>
+                                        ${option.correct ? ' <i class="fas fa-check" class="text-success"></i>' : ''}
+                                        ${userAnswer === option.id && !option.correct ? ' <i class="fas fa-times" class="text-danger"></i>' : ''}
                                     </div>
                                 `;
                             }).join('')}
@@ -845,9 +845,9 @@
                                 
                                 return `
                                     <div class="${className}">
-                                        <span style="font-weight: var(--font-weight-medium);">${option.text}</span>
-                                        ${option.correct ? ' <i class="fas fa-check" style="color: var(--color-success);"></i>' : ''}
-                                        ${isSelected ? ' <i class="fas fa-check-square" style="color: var(--color-primary);"></i>' : ''}
+                                        <span class="font-medium">${option.text}</span>
+                                        ${option.correct ? ' <i class="fas fa-check" class="text-success"></i>' : ''}
+                                        ${isSelected ? ' <i class="fas fa-check-square" class="text-primary"></i>' : ''}
                                     </div>
                                 `;
                             }).join('')}
@@ -868,7 +868,7 @@
                             <h5>${LMS.t('quiz.correctAnswer')}:</h5>
                             <div class="answer-option correct">
                                 ${correctAnswer ? LMS.t('quiz.true') : LMS.t('quiz.false')}
-                                <i class="fas fa-check" style="color: var(--color-success);"></i>
+                                <i class="fas fa-check" class="text-success"></i>
                             </div>
                         </div>
                         <div class="answer-section">
@@ -877,8 +877,8 @@
                                 ${userBoolAnswer === true ? LMS.t('quiz.true') : 
                                   userBoolAnswer === false ? LMS.t('quiz.false') : LMS.t('quiz.noAnswer')}
                                 ${userBoolAnswer === correctAnswer ? 
-                                  '<i class="fas fa-check" style="color: var(--color-success);"></i>' : 
-                                  '<i class="fas fa-times" style="color: var(--color-danger);"></i>'}
+                                  '<i class="fas fa-check" class="text-success"></i>' : 
+                                  '<i class="fas fa-times" class="text-danger"></i>'}
                             </div>
                         </div>
                     `;

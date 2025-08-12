@@ -372,18 +372,18 @@
     <div class="page-container">
         <!-- Analytics Header -->
         <div class="analytics-header">
-            <div style="display: flex; justify-content: space-between; align-items: center;">
+            <div class="flex-between">
                 <div>
                     <h1 class="analytics-title" data-translate="quiz.analytics">Quiz Analytics</h1>
                     <p class="analytics-subtitle" data-translate="quiz.analyticsSubtitle">Comprehensive performance analysis and insights</p>
                 </div>
-                <div style="display: flex; gap: var(--spacing-3);">
-                    <button class="btn btn--secondary" style="color: white; border-color: rgba(255,255,255,0.3);" onclick="refreshAnalytics()">
-                        <i class="fas fa-sync-alt" style="margin-right: 8px;"></i>
+                <div class="flex flex-gap-3">
+                    <button class="btn btn--secondary"  onclick="refreshAnalytics()">
+                        <i class="fas fa-sync-alt" class="icon-mr"></i>
                         <span data-translate="common.refresh">Refresh</span>
                     </button>
                     <button class="btn btn--success" onclick="exportAllData()">
-                        <i class="fas fa-download" style="margin-right: 8px;"></i>
+                        <i class="fas fa-download" class="icon-mr"></i>
                         <span data-translate="quiz.exportAll">Export All</span>
                     </button>
                 </div>
@@ -430,7 +430,7 @@
             </div>
 
             <!-- Charts Section -->
-            <div style="display: grid; grid-template-columns: 2fr 1fr; gap: var(--spacing-6); margin-bottom: var(--spacing-6);">
+            <div class="grid grid-2fr-1fr grid-gap-6 mb-6">
                 <!-- Performance Trend Chart -->
                 <div class="card">
                     <div class="card__header">
@@ -471,10 +471,10 @@
             <!-- Question Difficulty Analysis -->
             <div class="card">
                 <div class="card__header">
-                    <div style="display: flex; justify-content: space-between; align-items: center;">
+                    <div class="flex-between">
                         <h3 data-translate="quiz.questionAnalysis">Question Difficulty Analysis</h3>
                         <button class="btn btn--secondary btn--small" onclick="exportQuestionAnalysis()">
-                            <i class="fas fa-download" style="margin-right: 8px;"></i>
+                            <i class="fas fa-download" class="icon-mr"></i>
                             <span data-translate="quiz.exportAnalysis">Export Analysis</span>
                         </button>
                     </div>
@@ -493,24 +493,24 @@
                 </div>
                 <div class="card__body">
                     <div class="export-section">
-                        <p style="margin-bottom: var(--spacing-4); color: var(--text-secondary);" data-translate="quiz.exportDescription">
+                        <p class="mb-4 text-secondary" data-translate="quiz.exportDescription">
                             Export detailed analytics data in various formats for further analysis.
                         </p>
                         <div class="export-options">
                             <button class="btn btn--primary" onclick="exportStudentResults()">
-                                <i class="fas fa-file-csv" style="margin-right: 8px;"></i>
+                                <i class="fas fa-file-csv" class="icon-mr"></i>
                                 <span data-translate="quiz.exportStudentResults">Student Results (CSV)</span>
                             </button>
                             <button class="btn btn--primary" onclick="exportQuestionAnalysis()">
-                                <i class="fas fa-chart-bar" style="margin-right: 8px;"></i>
+                                <i class="fas fa-chart-bar" class="icon-mr"></i>
                                 <span data-translate="quiz.exportQuestionAnalysis">Question Analysis (CSV)</span>
                             </button>
                             <button class="btn btn--primary" onclick="exportPerformanceReport()">
-                                <i class="fas fa-file-pdf" style="margin-right: 8px;"></i>
+                                <i class="fas fa-file-pdf" class="icon-mr"></i>
                                 <span data-translate="quiz.exportPerformanceReport">Performance Report (PDF)</span>
                             </button>
                             <button class="btn btn--secondary" onclick="exportRawData()">
-                                <i class="fas fa-database" style="margin-right: 8px;"></i>
+                                <i class="fas fa-database" class="icon-mr"></i>
                                 <span data-translate="quiz.exportRawData">Raw Data (JSON)</span>
                             </button>
                         </div>
@@ -1043,26 +1043,26 @@
                     
                     <div class="question-stats">
                         <div class="question-stat">
-                            <div class="question-stat-value" style="color: var(--color-success);">${question.correctRate}%</div>
+                            <div class="question-stat-value" class="text-success">${question.correctRate}%</div>
                             <div class="question-stat-label" data-translate="quiz.correctRate">Correct</div>
                         </div>
                         <div class="question-stat">
-                            <div class="question-stat-value" style="color: var(--color-info);">${question.avgTime}s</div>
+                            <div class="question-stat-value" class="text-info">${question.avgTime}s</div>
                             <div class="question-stat-label" data-translate="quiz.avgTime">Avg Time</div>
                         </div>
                         <div class="question-stat">
-                            <div class="question-stat-value" style="color: var(--color-primary);">${question.attempts}</div>
+                            <div class="question-stat-value" class="text-primary">${question.attempts}</div>
                             <div class="question-stat-label" data-translate="quiz.attempts">Attempts</div>
                         </div>
                         <div class="question-stat">
-                            <div class="question-stat-value" style="color: var(--color-warning);">${question.difficulty}</div>
+                            <div class="question-stat-value" class="text-warning">${question.difficulty}</div>
                             <div class="question-stat-label" data-translate="quiz.difficulty">Difficulty</div>
                         </div>
                     </div>
                     
                     ${question.commonMistakes.length > 0 ? `
                         <div class="common-mistakes">
-                            <h5 style="margin-bottom: var(--spacing-2); font-size: var(--font-size-sm);" data-translate="quiz.commonMistakes">Common Mistakes:</h5>
+                            <h5 class="mb-2 text-sm" data-translate="quiz.commonMistakes">Common Mistakes:</h5>
                             ${question.commonMistakes.map(mistake => `
                                 <div class="mistake-item">
                                     <span class="mistake-text">${mistake.text}</span>
