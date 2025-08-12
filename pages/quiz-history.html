@@ -1,0 +1,1233 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quiz History - LMS</title>
+    <!-- Core CSS -->
+    <link rel="stylesheet" href="../assets/css/global.css">
+    <link rel="stylesheet" href="../assets/css/components.css">
+    <link rel="stylesheet" href="../assets/css/themes.css">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <!-- Configuration -->
+    <script src="../config.js"></script>
+    
+    <style>
+        /* Quiz History Specific Styles */
+        .history-header {
+            background: linear-gradient(135deg, var(--color-primary), var(--color-primary-dark, #1E4F78));
+            color: white;
+            padding: var(--spacing-6);
+            border-radius: var(--radius-lg);
+            margin-bottom: var(--spacing-6);
+        }
+        
+        .history-title {
+            font-size: 2rem;
+            font-weight: var(--font-weight-bold);
+            margin-bottom: var(--spacing-2);
+        }
+        
+        .history-subtitle {
+            opacity: 0.9;
+            font-size: 1.1rem;
+        }
+        
+        .history-stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: var(--spacing-4);
+            margin-bottom: var(--spacing-6);
+        }
+        
+        .stat-card {
+            background: var(--bg-primary);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-lg);
+            padding: var(--spacing-5);
+            text-align: center;
+            transition: all var(--transition-base);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .stat-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: var(--stat-color, var(--color-primary));
+        }
+        
+        .stat-card:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-md);
+        }
+        
+        .stat-card.primary::before {
+            background: var(--color-primary);
+        }
+        
+        .stat-card.success::before {
+            background: var(--color-success);
+        }
+        
+        .stat-card.warning::before {
+            background: var(--color-warning);
+        }
+        
+        .stat-card.info::before {
+            background: var(--color-info, #3B82F6);
+        }
+        
+        .stat-value {
+            font-size: 2.5rem;
+            font-weight: var(--font-weight-bold);
+            margin-bottom: var(--spacing-2);
+        }
+        
+        .stat-value.primary {
+            color: var(--color-primary);
+        }
+        
+        .stat-value.success {
+            color: var(--color-success);
+        }
+        
+        .stat-value.warning {
+            color: var(--color-warning);
+        }
+        
+        .stat-value.info {
+            color: var(--color-info, #3B82F6);
+        }
+        
+        .stat-label {
+            color: var(--text-secondary);
+            font-weight: var(--font-weight-medium);
+            margin-bottom: var(--spacing-2);
+        }
+        
+        .stat-trend {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: var(--spacing-1);
+            font-size: var(--font-size-sm);
+        }
+        
+        .stat-trend.positive {
+            color: var(--color-success);
+        }
+        
+        .stat-trend.negative {
+            color: var(--color-danger);
+        }
+        
+        .stat-trend.neutral {
+            color: var(--text-secondary);
+        }
+        
+        .filter-section {
+            background: var(--bg-secondary);
+            padding: var(--spacing-4);
+            border-radius: var(--radius-lg);
+            margin-bottom: var(--spacing-6);
+        }
+        
+        .filter-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: var(--spacing-4);
+            align-items: end;
+        }
+        
+        .history-table {
+            background: var(--bg-primary);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-lg);
+            overflow: hidden;
+            margin-bottom: var(--spacing-6);
+        }
+        
+        .history-table th {
+            background: var(--bg-tertiary);
+            color: var(--text-primary);
+            font-weight: var(--font-weight-semibold);
+            padding: var(--spacing-3);
+            border-bottom: 1px solid var(--border-color);
+        }
+        
+        .history-table td {
+            padding: var(--spacing-3);
+            border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+        }
+        
+        .quiz-row {
+            transition: all var(--transition-base);
+            cursor: pointer;
+        }
+        
+        .quiz-row:hover {
+            background: var(--bg-secondary);
+        }
+        
+        .quiz-row.best-score {
+            background: var(--color-success-light, rgba(16, 185, 129, 0.05));
+            border-left: 4px solid var(--color-success);
+        }
+        
+        .quiz-title {
+            font-weight: var(--font-weight-medium);
+            margin-bottom: var(--spacing-1);
+        }
+        
+        .quiz-course {
+            font-size: var(--font-size-sm);
+            color: var(--text-secondary);
+        }
+        
+        .attempt-number {
+            background: var(--color-primary-light, rgba(44, 110, 170, 0.1));
+            color: var(--color-primary);
+            padding: 0.25rem 0.5rem;
+            border-radius: var(--radius-sm);
+            font-size: var(--font-size-xs);
+            font-weight: var(--font-weight-bold);
+        }
+        
+        .attempt-number.best {
+            background: var(--color-success);
+            color: white;
+        }
+        
+        .score-badge {
+            padding: 0.5rem 1rem;
+            border-radius: var(--radius-md);
+            font-weight: var(--font-weight-bold);
+            text-align: center;
+            min-width: 60px;
+        }
+        
+        .score-badge.excellent {
+            background: var(--color-success);
+            color: white;
+        }
+        
+        .score-badge.good {
+            background: var(--color-info, #3B82F6);
+            color: white;
+        }
+        
+        .score-badge.average {
+            background: var(--color-warning);
+            color: white;
+        }
+        
+        .score-badge.poor {
+            background: var(--color-danger);
+            color: white;
+        }
+        
+        .status-badge {
+            padding: 0.25rem 0.75rem;
+            border-radius: var(--radius-full);
+            font-size: var(--font-size-sm);
+            font-weight: var(--font-weight-medium);
+            text-transform: uppercase;
+        }
+        
+        .status-badge.passed {
+            background: var(--color-success-light, rgba(16, 185, 129, 0.2));
+            color: var(--color-success-dark, #047857);
+        }
+        
+        .status-badge.failed {
+            background: var(--color-danger-light, rgba(239, 68, 68, 0.2));
+            color: var(--color-danger-dark, #991b1b);
+        }
+        
+        .time-spent {
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-1);
+            color: var(--text-secondary);
+            font-size: var(--font-size-sm);
+        }
+        
+        .action-buttons {
+            display: flex;
+            gap: var(--spacing-2);
+        }
+        
+        .btn-icon {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: none;
+            cursor: pointer;
+            transition: all var(--transition-base);
+            font-size: var(--font-size-sm);
+        }
+        
+        .btn-icon.view {
+            background: var(--color-info-light, rgba(59, 130, 246, 0.1));
+            color: var(--color-info, #3B82F6);
+        }
+        
+        .btn-icon.view:hover {
+            background: var(--color-info, #3B82F6);
+            color: white;
+        }
+        
+        .btn-icon.retake {
+            background: var(--color-warning-light, rgba(245, 158, 11, 0.1));
+            color: var(--color-warning);
+        }
+        
+        .btn-icon.retake:hover {
+            background: var(--color-warning);
+            color: white;
+        }
+        
+        .btn-icon.disabled {
+            background: var(--bg-tertiary);
+            color: var(--text-muted);
+            cursor: not-allowed;
+        }
+        
+        .chart-container {
+            position: relative;
+            height: 300px;
+            margin-bottom: var(--spacing-4);
+        }
+        
+        .improvement-insights {
+            background: var(--bg-secondary);
+            padding: var(--spacing-4);
+            border-radius: var(--radius-lg);
+            margin-bottom: var(--spacing-6);
+        }
+        
+        .insight-item {
+            display: flex;
+            align-items: flex-start;
+            gap: var(--spacing-3);
+            padding: var(--spacing-3);
+            margin-bottom: var(--spacing-3);
+            border-radius: var(--radius-md);
+            transition: all var(--transition-base);
+        }
+        
+        .insight-item.trend-up {
+            background: var(--color-success-light, rgba(16, 185, 129, 0.1));
+            border-left: 4px solid var(--color-success);
+        }
+        
+        .insight-item.trend-down {
+            background: var(--color-danger-light, rgba(239, 68, 68, 0.1));
+            border-left: 4px solid var(--color-danger);
+        }
+        
+        .insight-item.trend-stable {
+            background: var(--color-info-light, rgba(59, 130, 246, 0.1));
+            border-left: 4px solid var(--color-info, #3B82F6);
+        }
+        
+        .insight-icon {
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.875rem;
+            color: white;
+            flex-shrink: 0;
+        }
+        
+        .insight-icon.trend-up {
+            background: var(--color-success);
+        }
+        
+        .insight-icon.trend-down {
+            background: var(--color-danger);
+        }
+        
+        .insight-icon.trend-stable {
+            background: var(--color-info, #3B82F6);
+        }
+        
+        .insight-content h5 {
+            margin: 0 0 var(--spacing-1) 0;
+            font-weight: var(--font-weight-medium);
+        }
+        
+        .insight-content p {
+            margin: 0;
+            font-size: var(--font-size-sm);
+            color: var(--text-secondary);
+            line-height: 1.5;
+        }
+        
+        .pagination {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: var(--spacing-2);
+            margin-top: var(--spacing-4);
+        }
+        
+        .pagination button {
+            padding: var(--spacing-2) var(--spacing-3);
+            border: 1px solid var(--border-color);
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            border-radius: var(--radius-sm);
+            cursor: pointer;
+            transition: all var(--transition-base);
+        }
+        
+        .pagination button:hover:not(:disabled) {
+            background: var(--color-primary);
+            color: white;
+            border-color: var(--color-primary);
+        }
+        
+        .pagination button.active {
+            background: var(--color-primary);
+            color: white;
+            border-color: var(--color-primary);
+        }
+        
+        .pagination button:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+        
+        .empty-state {
+            text-align: center;
+            padding: var(--spacing-8);
+            color: var(--text-secondary);
+        }
+        
+        .empty-state-icon {
+            font-size: 3rem;
+            margin-bottom: var(--spacing-4);
+            opacity: 0.5;
+        }
+        
+        /* Responsive */
+        @media (max-width: 768px) {
+            .history-stats {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            
+            .filter-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .history-table {
+                overflow-x: auto;
+            }
+            
+            .action-buttons {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="page-container">
+        <!-- History Header -->
+        <div class="history-header">
+            <div style="display: flex; justify-content: space-between; align-items: center;">
+                <div>
+                    <h1 class="history-title" data-translate="quiz.history">Quiz History</h1>
+                    <p class="history-subtitle" data-translate="quiz.historySubtitle">Track your quiz attempts and progress over time</p>
+                </div>
+                <div style="display: flex; gap: var(--spacing-3);">
+                    <button class="btn btn--secondary" style="color: white; border-color: rgba(255,255,255,0.3);" onclick="refreshHistory()">
+                        <i class="fas fa-sync-alt" style="margin-right: 8px;"></i>
+                        <span data-translate="common.refresh">Refresh</span>
+                    </button>
+                    <button class="btn btn--success" onclick="exportHistory()">
+                        <i class="fas fa-download" style="margin-right: 8px;"></i>
+                        <span data-translate="quiz.exportHistory">Export History</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <div class="page-content">
+            <!-- Statistics Cards -->
+            <div class="history-stats" id="historyStats">
+                <!-- Dynamic statistics cards -->
+            </div>
+
+            <!-- Filter Section -->
+            <div class="filter-section">
+                <div class="filter-grid">
+                    <div class="form-group">
+                        <label class="form-label" data-translate="course.selectCourse">Course</label>
+                        <select id="courseFilter" class="form-select" onchange="filterHistory()">
+                            <option value="" data-translate="common.allCourses">All Courses</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label" data-translate="quiz.selectQuiz">Quiz</label>
+                        <select id="quizFilter" class="form-select" onchange="filterHistory()">
+                            <option value="" data-translate="quiz.allQuizzes">All Quizzes</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label" data-translate="quiz.status">Status</label>
+                        <select id="statusFilter" class="form-select" onchange="filterHistory()">
+                            <option value="" data-translate="common.allStatuses">All Statuses</option>
+                            <option value="passed" data-translate="quiz.passed">Passed</option>
+                            <option value="failed" data-translate="quiz.failed">Failed</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label" data-translate="quiz.timePeriod">Time Period</label>
+                        <select id="timePeriodFilter" class="form-select" onchange="filterHistory()">
+                            <option value="30" selected data-translate="quiz.last30Days">Last 30 Days</option>
+                            <option value="90" data-translate="quiz.last90Days">Last 90 Days</option>
+                            <option value="180" data-translate="quiz.last6Months">Last 6 Months</option>
+                            <option value="all" data-translate="quiz.allTime">All Time</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Progress Chart -->
+            <div class="card">
+                <div class="card__header">
+                    <h3 data-translate="quiz.progressTrend">Progress Trend</h3>
+                </div>
+                <div class="card__body">
+                    <div class="chart-container">
+                        <canvas id="progressChart"></canvas>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Improvement Insights -->
+            <div class="card">
+                <div class="card__header">
+                    <h3 data-translate="quiz.improvementInsights">Improvement Insights</h3>
+                </div>
+                <div class="card__body">
+                    <div class="improvement-insights" id="improvementInsights">
+                        <!-- Dynamic insights -->
+                    </div>
+                </div>
+            </div>
+
+            <!-- Quiz History Table -->
+            <div class="card">
+                <div class="card__header">
+                    <div style="display: flex; justify-content: space-between; align-items: center;">
+                        <h3 data-translate="quiz.attemptHistory">Attempt History</h3>
+                        <div class="badge" id="totalAttempts">0 attempts</div>
+                    </div>
+                </div>
+                <div class="card__body">
+                    <div id="historyTableContainer">
+                        <!-- Dynamic table content -->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Core JavaScript -->
+    <script src="../assets/js/global.js"></script>
+    <script src="../assets/js/auth.js"></script>
+    <script src="../assets/js/api.js"></script>
+    
+    <script>
+        // State management
+        let allQuizHistory = [];
+        let allCourses = [];
+        let allQuizzes = [];
+        let currentUser = LMS.Auth.getUser();
+        let currentPage = 1;
+        let itemsPerPage = 10;
+        let filteredHistory = [];
+        let progressChart = null;
+
+        // Initialize
+        async function init() {
+            // Check authentication - students only (or admins viewing as students)
+            if (!LMS.Auth.isAuthenticated() || !currentUser) {
+                window.location.href = '../index.html';
+                return;
+            }
+
+            // Load translations
+            await LMS.LanguageManager.init();
+            LMS.LanguageManager.updatePageTranslations();
+            
+            // Load data
+            await loadData();
+            populateFilters();
+            updateStatistics();
+            updateChart();
+            updateInsights();
+            updateHistoryTable();
+        }
+
+        // Load all data
+        async function loadData() {
+            try {
+                // Load courses
+                const courseResponse = await LMS.API.loadJSON('mock-courses.json');
+                allCourses = courseResponse.data || [];
+
+                // Generate mock quiz data
+                allQuizzes = generateMockQuizzes();
+                
+                // Generate mock quiz history for current user
+                allQuizHistory = generateMockQuizHistory();
+                
+            } catch (error) {
+                console.error('Failed to load data:', error);
+                LMS.showToast(LMS.t('error.loadData'), 'error');
+            }
+        }
+
+        // Generate mock quizzes
+        function generateMockQuizzes() {
+            const quizzes = [];
+            for (let i = 0; i < 12; i++) {
+                const course = allCourses[i % allCourses.length];
+                quizzes.push({
+                    id: `quiz_${String(i + 1).padStart(3, '0')}`,
+                    title: `${course?.title || 'Course'} - Quiz ${Math.floor(i / 3) + 1}`,
+                    courseId: course?.id || 'course_001',
+                    courseName: course?.title || 'Sample Course',
+                    passingScore: 70,
+                    maxAttempts: 3,
+                    timeLimit: 30 + (i % 3) * 15 // 30, 45, or 60 minutes
+                });
+            }
+            return quizzes;
+        }
+
+        // Generate mock quiz history
+        function generateMockQuizHistory() {
+            const history = [];
+            const now = new Date();
+            
+            // Generate attempts for multiple quizzes
+            allQuizzes.slice(0, 8).forEach((quiz, quizIndex) => {
+                const numAttempts = Math.floor(Math.random() * 3) + 1; // 1-3 attempts per quiz
+                
+                for (let attempt = 1; attempt <= numAttempts; attempt++) {
+                    // Create attempts over the past few months
+                    const daysAgo = Math.floor(Math.random() * 90) + (attempt - 1) * 7;
+                    const attemptDate = new Date(now.getTime() - daysAgo * 24 * 60 * 60 * 1000);
+                    
+                    // Generate score with improvement trend
+                    let baseScore = 40 + Math.random() * 30; // 40-70 base
+                    if (attempt > 1) {
+                        baseScore += (attempt - 1) * 10 + Math.random() * 15; // Improvement
+                    }
+                    baseScore = Math.min(100, baseScore);
+                    
+                    const score = Math.floor(baseScore);
+                    const timeSpent = Math.floor(Math.random() * (quiz.timeLimit * 60 * 0.8)) + (quiz.timeLimit * 60 * 0.2);
+                    
+                    history.push({
+                        id: `attempt_${quiz.id}_${attempt}`,
+                        quizId: quiz.id,
+                        quizTitle: quiz.title,
+                        courseId: quiz.courseId,
+                        courseName: quiz.courseName,
+                        attemptNumber: attempt,
+                        score: score,
+                        maxScore: 100,
+                        status: score >= quiz.passingScore ? 'passed' : 'failed',
+                        timeSpent: timeSpent,
+                        timeLimit: quiz.timeLimit * 60,
+                        submittedAt: attemptDate.toISOString(),
+                        canRetake: attempt < quiz.maxAttempts && score < quiz.passingScore,
+                        isBestScore: false // Will be calculated later
+                    });
+                }
+            });
+
+            // Mark best scores
+            const quizGroups = {};
+            history.forEach(attempt => {
+                if (!quizGroups[attempt.quizId]) {
+                    quizGroups[attempt.quizId] = [];
+                }
+                quizGroups[attempt.quizId].push(attempt);
+            });
+
+            Object.values(quizGroups).forEach(attempts => {
+                const bestAttempt = attempts.reduce((best, current) => 
+                    current.score > best.score ? current : best
+                );
+                bestAttempt.isBestScore = true;
+            });
+
+            return history.sort((a, b) => new Date(b.submittedAt) - new Date(a.submittedAt));
+        }
+
+        // Populate filters
+        function populateFilters() {
+            // Course filter
+            const courseFilter = document.getElementById('courseFilter');
+            const uniqueCourses = [...new Set(allQuizHistory.map(h => h.courseId))]
+                .map(id => allCourses.find(c => c.id === id))
+                .filter(Boolean);
+            
+            courseFilter.innerHTML = `<option value="">${LMS.t('common.allCourses')}</option>`;
+            uniqueCourses.forEach(course => {
+                const option = document.createElement('option');
+                option.value = course.id;
+                option.textContent = course.title;
+                courseFilter.appendChild(option);
+            });
+
+            // Quiz filter
+            const quizFilter = document.getElementById('quizFilter');
+            const uniqueQuizzes = [...new Set(allQuizHistory.map(h => h.quizId))]
+                .map(id => allQuizzes.find(q => q.id === id))
+                .filter(Boolean);
+            
+            quizFilter.innerHTML = `<option value="">${LMS.t('quiz.allQuizzes')}</option>`;
+            uniqueQuizzes.forEach(quiz => {
+                const option = document.createElement('option');
+                option.value = quiz.id;
+                option.textContent = quiz.title;
+                quizFilter.appendChild(option);
+            });
+        }
+
+        // Filter history
+        function filterHistory() {
+            const courseId = document.getElementById('courseFilter').value;
+            const quizId = document.getElementById('quizFilter').value;
+            const status = document.getElementById('statusFilter').value;
+            const timePeriod = document.getElementById('timePeriodFilter').value;
+
+            filteredHistory = allQuizHistory.filter(attempt => {
+                // Course filter
+                if (courseId && attempt.courseId !== courseId) return false;
+                
+                // Quiz filter
+                if (quizId && attempt.quizId !== quizId) return false;
+                
+                // Status filter
+                if (status && attempt.status !== status) return false;
+                
+                // Time period filter
+                if (timePeriod !== 'all') {
+                    const cutoffDate = new Date();
+                    cutoffDate.setDate(cutoffDate.getDate() - parseInt(timePeriod));
+                    if (new Date(attempt.submittedAt) < cutoffDate) return false;
+                }
+                
+                return true;
+            });
+
+            currentPage = 1;
+            updateStatistics();
+            updateChart();
+            updateInsights();
+            updateHistoryTable();
+        }
+
+        // Update statistics
+        function updateStatistics() {
+            const stats = calculateStatistics();
+            
+            document.getElementById('historyStats').innerHTML = `
+                <div class="stat-card primary">
+                    <div class="stat-value primary">${stats.totalAttempts}</div>
+                    <div class="stat-label" data-translate="quiz.totalAttempts">Total Attempts</div>
+                    <div class="stat-trend ${stats.attemptTrend}">
+                        <i class="fas fa-arrow-${stats.attemptTrend === 'positive' ? 'up' : stats.attemptTrend === 'negative' ? 'down' : 'right'}"></i>
+                        <span>${stats.attemptTrendText}</span>
+                    </div>
+                </div>
+                <div class="stat-card success">
+                    <div class="stat-value success">${stats.averageScore}%</div>
+                    <div class="stat-label" data-translate="quiz.averageScore">Average Score</div>
+                    <div class="stat-trend ${stats.scoreTrend}">
+                        <i class="fas fa-arrow-${stats.scoreTrend === 'positive' ? 'up' : stats.scoreTrend === 'negative' ? 'down' : 'right'}"></i>
+                        <span>${stats.scoreTrendText}</span>
+                    </div>
+                </div>
+                <div class="stat-card warning">
+                    <div class="stat-value warning">${stats.bestScore}%</div>
+                    <div class="stat-label" data-translate="quiz.bestScore">Best Score</div>
+                    <div class="stat-trend positive">
+                        <i class="fas fa-trophy"></i>
+                        <span data-translate="quiz.personalRecord">Personal Record</span>
+                    </div>
+                </div>
+                <div class="stat-card info">
+                    <div class="stat-value info">${stats.passRate}%</div>
+                    <div class="stat-label" data-translate="quiz.passRate">Pass Rate</div>
+                    <div class="stat-trend ${stats.passRateTrend}">
+                        <i class="fas fa-arrow-${stats.passRateTrend === 'positive' ? 'up' : stats.passRateTrend === 'negative' ? 'down' : 'right'}"></i>
+                        <span>${stats.passRateTrendText}</span>
+                    </div>
+                </div>
+            `;
+        }
+
+        // Calculate statistics
+        function calculateStatistics() {
+            const attempts = filteredHistory.length > 0 ? filteredHistory : allQuizHistory;
+            
+            if (attempts.length === 0) {
+                return {
+                    totalAttempts: 0,
+                    averageScore: 0,
+                    bestScore: 0,
+                    passRate: 0,
+                    attemptTrend: 'neutral',
+                    attemptTrendText: 'No data',
+                    scoreTrend: 'neutral',
+                    scoreTrendText: 'No data',
+                    passRateTrend: 'neutral',
+                    passRateTrendText: 'No data'
+                };
+            }
+
+            const totalAttempts = attempts.length;
+            const averageScore = Math.round(attempts.reduce((sum, a) => sum + a.score, 0) / totalAttempts);
+            const bestScore = Math.max(...attempts.map(a => a.score));
+            const passedAttempts = attempts.filter(a => a.status === 'passed').length;
+            const passRate = Math.round((passedAttempts / totalAttempts) * 100);
+
+            // Calculate trends (simplified)
+            const recentAttempts = attempts.slice(0, Math.min(5, Math.floor(totalAttempts / 2)));
+            const olderAttempts = attempts.slice(Math.max(0, totalAttempts - Math.min(5, Math.floor(totalAttempts / 2))));
+
+            let scoreTrend = 'neutral';
+            let scoreTrendText = 'Stable';
+            if (recentAttempts.length > 0 && olderAttempts.length > 0) {
+                const recentAvg = recentAttempts.reduce((sum, a) => sum + a.score, 0) / recentAttempts.length;
+                const olderAvg = olderAttempts.reduce((sum, a) => sum + a.score, 0) / olderAttempts.length;
+                
+                if (recentAvg > olderAvg + 5) {
+                    scoreTrend = 'positive';
+                    scoreTrendText = 'Improving';
+                } else if (recentAvg < olderAvg - 5) {
+                    scoreTrend = 'negative';
+                    scoreTrendText = 'Declining';
+                }
+            }
+
+            return {
+                totalAttempts,
+                averageScore,
+                bestScore,
+                passRate,
+                attemptTrend: 'positive',
+                attemptTrendText: 'Active',
+                scoreTrend,
+                scoreTrendText,
+                passRateTrend: passRate >= 70 ? 'positive' : 'neutral',
+                passRateTrendText: passRate >= 70 ? 'Good' : 'Needs work'
+            };
+        }
+
+        // Update chart
+        function updateChart() {
+            const ctx = document.getElementById('progressChart').getContext('2d');
+            
+            // Destroy existing chart
+            if (progressChart) {
+                progressChart.destroy();
+            }
+
+            // Prepare data for last 30 days
+            const chartData = prepareChartData();
+
+            progressChart = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: chartData.labels,
+                    datasets: [
+                        {
+                            label: 'Quiz Scores (%)',
+                            data: chartData.scores,
+                            borderColor: 'rgb(44, 110, 170)',
+                            backgroundColor: 'rgba(44, 110, 170, 0.1)',
+                            tension: 0.3,
+                            fill: true
+                        },
+                        {
+                            label: 'Passing Score (70%)',
+                            data: chartData.passingLine,
+                            borderColor: 'rgb(16, 185, 129)',
+                            backgroundColor: 'transparent',
+                            borderDash: [5, 5],
+                            pointRadius: 0,
+                            tension: 0
+                        }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    interaction: {
+                        mode: 'index',
+                        intersect: false,
+                    },
+                    scales: {
+                        x: {
+                            display: true,
+                            title: {
+                                display: true,
+                                text: 'Attempt Date'
+                            }
+                        },
+                        y: {
+                            display: true,
+                            title: {
+                                display: true,
+                                text: 'Score (%)'
+                            },
+                            min: 0,
+                            max: 100
+                        }
+                    },
+                    plugins: {
+                        legend: {
+                            position: 'bottom'
+                        }
+                    }
+                }
+            });
+        }
+
+        // Prepare chart data
+        function prepareChartData() {
+            const attempts = (filteredHistory.length > 0 ? filteredHistory : allQuizHistory)
+                .sort((a, b) => new Date(a.submittedAt) - new Date(b.submittedAt))
+                .slice(-10); // Last 10 attempts
+
+            const labels = attempts.map(attempt => 
+                new Date(attempt.submittedAt).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })
+            );
+            
+            const scores = attempts.map(attempt => attempt.score);
+            const passingLine = attempts.map(() => 70);
+
+            return { labels, scores, passingLine };
+        }
+
+        // Update insights
+        function updateInsights() {
+            const insights = generateInsights();
+            
+            document.getElementById('improvementInsights').innerHTML = insights.map(insight => `
+                <div class="insight-item ${insight.type}">
+                    <div class="insight-icon ${insight.type}">
+                        <i class="fas fa-${insight.icon}"></i>
+                    </div>
+                    <div class="insight-content">
+                        <h5>${insight.title}</h5>
+                        <p>${insight.description}</p>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        // Generate insights
+        function generateInsights() {
+            const stats = calculateStatistics();
+            const insights = [];
+
+            // Score trend insight
+            if (stats.scoreTrend === 'positive') {
+                insights.push({
+                    type: 'trend-up',
+                    icon: 'trending-up',
+                    title: LMS.t('quiz.improvingPerformance'),
+                    description: LMS.t('quiz.improvingPerformanceDesc')
+                });
+            } else if (stats.scoreTrend === 'negative') {
+                insights.push({
+                    type: 'trend-down',
+                    icon: 'trending-down',
+                    title: LMS.t('quiz.decliningPerformance'),
+                    description: LMS.t('quiz.decliningPerformanceDesc')
+                });
+            } else {
+                insights.push({
+                    type: 'trend-stable',
+                    icon: 'minus',
+                    title: LMS.t('quiz.stablePerformance'),
+                    description: LMS.t('quiz.stablePerformanceDesc')
+                });
+            }
+
+            // Best score insight
+            if (stats.bestScore >= 90) {
+                insights.push({
+                    type: 'trend-up',
+                    icon: 'star',
+                    title: LMS.t('quiz.excellentResult'),
+                    description: LMS.t('quiz.excellentResultDesc')
+                });
+            }
+
+            // Pass rate insight
+            if (stats.passRate < 50) {
+                insights.push({
+                    type: 'trend-down',
+                    icon: 'exclamation-triangle',
+                    title: LMS.t('quiz.needsImprovement'),
+                    description: LMS.t('quiz.needsImprovementDesc')
+                });
+            } else if (stats.passRate >= 80) {
+                insights.push({
+                    type: 'trend-up',
+                    icon: 'check-circle',
+                    title: LMS.t('quiz.consistentPerformance'),
+                    description: LMS.t('quiz.consistentPerformanceDesc')
+                });
+            }
+
+            return insights;
+        }
+
+        // Update history table
+        function updateHistoryTable() {
+            const attempts = filteredHistory.length > 0 ? filteredHistory : allQuizHistory;
+            
+            // Update total count
+            document.getElementById('totalAttempts').textContent = 
+                `${attempts.length} ${LMS.t('quiz.attempts')}`;
+
+            if (attempts.length === 0) {
+                document.getElementById('historyTableContainer').innerHTML = `
+                    <div class="empty-state">
+                        <div class="empty-state-icon">
+                            <i class="fas fa-clipboard-list"></i>
+                        </div>
+                        <h3 data-translate="quiz.noAttempts">No quiz attempts found</h3>
+                        <p data-translate="quiz.noAttemptsDesc">You haven't taken any quizzes yet. Start learning!</p>
+                    </div>
+                `;
+                return;
+            }
+
+            // Pagination
+            const totalPages = Math.ceil(attempts.length / itemsPerPage);
+            const startIndex = (currentPage - 1) * itemsPerPage;
+            const endIndex = startIndex + itemsPerPage;
+            const pageAttempts = attempts.slice(startIndex, endIndex);
+
+            // Generate table
+            const tableHTML = `
+                <table class="history-table table">
+                    <thead>
+                        <tr>
+                            <th data-translate="quiz.quiz">Quiz</th>
+                            <th data-translate="quiz.attempt">Attempt</th>
+                            <th data-translate="quiz.score">Score</th>
+                            <th data-translate="quiz.status">Status</th>
+                            <th data-translate="quiz.timeSpent">Time</th>
+                            <th data-translate="quiz.submittedAt">Date</th>
+                            <th data-translate="common.actions">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        ${pageAttempts.map(attempt => `
+                            <tr class="quiz-row ${attempt.isBestScore ? 'best-score' : ''}" onclick="viewAttempt('${attempt.id}')">
+                                <td>
+                                    <div class="quiz-title">${attempt.quizTitle}</div>
+                                    <div class="quiz-course">${attempt.courseName}</div>
+                                </td>
+                                <td>
+                                    <span class="attempt-number ${attempt.isBestScore ? 'best' : ''}">#${attempt.attemptNumber}</span>
+                                    ${attempt.isBestScore ? '<i class="fas fa-crown" style="margin-left: 8px; color: var(--color-warning);"></i>' : ''}
+                                </td>
+                                <td>
+                                    <div class="score-badge ${getScoreClass(attempt.score)}">
+                                        ${attempt.score}%
+                                    </div>
+                                </td>
+                                <td>
+                                    <span class="status-badge ${attempt.status}">${LMS.t(`quiz.${attempt.status}`)}</span>
+                                </td>
+                                <td>
+                                    <div class="time-spent">
+                                        <i class="fas fa-clock"></i>
+                                        <span>${formatTime(attempt.timeSpent)}</span>
+                                    </div>
+                                </td>
+                                <td>${new Date(attempt.submittedAt).toLocaleDateString()}</td>
+                                <td onclick="event.stopPropagation()">
+                                    <div class="action-buttons">
+                                        <button class="btn-icon view" onclick="viewResults('${attempt.id}')" title="${LMS.t('quiz.viewResults')}">
+                                            <i class="fas fa-eye"></i>
+                                        </button>
+                                        <button class="btn-icon retake ${!attempt.canRetake ? 'disabled' : ''}" 
+                                                onclick="retakeQuiz('${attempt.quizId}')" 
+                                                ${!attempt.canRetake ? 'disabled' : ''}
+                                                title="${LMS.t('quiz.retake')}">
+                                            <i class="fas fa-redo"></i>
+                                        </button>
+                                    </div>
+                                </td>
+                            </tr>
+                        `).join('')}
+                    </tbody>
+                </table>
+                
+                ${totalPages > 1 ? `
+                    <div class="pagination">
+                        <button onclick="changePage(${currentPage - 1})" ${currentPage === 1 ? 'disabled' : ''}>
+                            <i class="fas fa-chevron-left"></i>
+                        </button>
+                        ${generatePaginationNumbers(currentPage, totalPages)}
+                        <button onclick="changePage(${currentPage + 1})" ${currentPage === totalPages ? 'disabled' : ''}>
+                            <i class="fas fa-chevron-right"></i>
+                        </button>
+                    </div>
+                ` : ''}
+            `;
+
+            document.getElementById('historyTableContainer').innerHTML = tableHTML;
+        }
+
+        // Get score class for styling
+        function getScoreClass(score) {
+            if (score >= 90) return 'excellent';
+            if (score >= 80) return 'good';
+            if (score >= 70) return 'average';
+            return 'poor';
+        }
+
+        // Format time
+        function formatTime(seconds) {
+            const hours = Math.floor(seconds / 3600);
+            const minutes = Math.floor((seconds % 3600) / 60);
+            const secs = seconds % 60;
+            
+            if (hours > 0) {
+                return `${hours}h ${minutes}m`;
+            } else if (minutes > 0) {
+                return `${minutes}m ${secs}s`;
+            } else {
+                return `${secs}s`;
+            }
+        }
+
+        // Generate pagination numbers
+        function generatePaginationNumbers(current, total) {
+            let html = '';
+            const maxVisible = 5;
+            let start = Math.max(1, current - Math.floor(maxVisible / 2));
+            let end = Math.min(total, start + maxVisible - 1);
+            
+            if (end - start + 1 < maxVisible) {
+                start = Math.max(1, end - maxVisible + 1);
+            }
+            
+            for (let i = start; i <= end; i++) {
+                html += `<button onclick="changePage(${i})" class="${i === current ? 'active' : ''}">${i}</button>`;
+            }
+            
+            return html;
+        }
+
+        // Change page
+        function changePage(page) {
+            const attempts = filteredHistory.length > 0 ? filteredHistory : allQuizHistory;
+            const totalPages = Math.ceil(attempts.length / itemsPerPage);
+            
+            if (page >= 1 && page <= totalPages) {
+                currentPage = page;
+                updateHistoryTable();
+            }
+        }
+
+        // Action functions
+        function viewAttempt(attemptId) {
+            // For demo, just show details
+            const attempt = allQuizHistory.find(a => a.id === attemptId);
+            if (attempt) {
+                LMS.showToast(`Viewing attempt: ${attempt.quizTitle} - ${attempt.score}%`, 'info');
+            }
+        }
+
+        function viewResults(attemptId) {
+            const attempt = allQuizHistory.find(a => a.id === attemptId);
+            if (attempt) {
+                // In real implementation, navigate to quiz results page
+                window.open(`quiz-results.html?attempt=${attemptId}`, '_blank');
+            }
+        }
+
+        function retakeQuiz(quizId) {
+            const quiz = allQuizzes.find(q => q.id === quizId);
+            if (quiz) {
+                // In real implementation, navigate to quiz attempt page
+                window.open(`quiz-attempt.html?quiz=${quizId}`, '_blank');
+            }
+        }
+
+        function exportHistory() {
+            const attempts = filteredHistory.length > 0 ? filteredHistory : allQuizHistory;
+            const csvContent = generateHistoryCSV(attempts);
+            downloadCSV(csvContent, 'quiz_history.csv');
+        }
+
+        function generateHistoryCSV(attempts) {
+            const headers = ['Quiz', 'Course', 'Attempt', 'Score (%)', 'Status', 'Time Spent', 'Date'];
+            const rows = attempts.map(attempt => [
+                attempt.quizTitle,
+                attempt.courseName,
+                attempt.attemptNumber,
+                attempt.score,
+                attempt.status,
+                formatTime(attempt.timeSpent),
+                new Date(attempt.submittedAt).toLocaleDateString()
+            ]);
+            
+            return [headers, ...rows].map(row => row.map(cell => `"${cell}"`).join(',')).join('\n');
+        }
+
+        function downloadCSV(content, filename) {
+            const blob = new Blob([content], { type: 'text/csv' });
+            const url = window.URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = filename;
+            a.click();
+            window.URL.revokeObjectURL(url);
+            LMS.showToast(LMS.t('quiz.exportSuccess'), 'success');
+        }
+
+        function refreshHistory() {
+            // In real implementation, reload data from server
+            filterHistory();
+            LMS.showToast(LMS.t('quiz.historyRefreshed'), 'success');
+        }
+
+        // Initialize on load
+        document.addEventListener('DOMContentLoaded', init);
+    </script>
+</body>
+</html>

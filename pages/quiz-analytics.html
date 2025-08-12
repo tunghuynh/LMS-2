@@ -1,0 +1,1201 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quiz Analytics - LMS</title>
+    <!-- Core CSS -->
+    <link rel="stylesheet" href="../assets/css/global.css">
+    <link rel="stylesheet" href="../assets/css/components.css">
+    <link rel="stylesheet" href="../assets/css/themes.css">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <!-- Configuration -->
+    <script src="../config.js"></script>
+    
+    <style>
+        /* Quiz Analytics Specific Styles */
+        .analytics-header {
+            background: linear-gradient(135deg, var(--color-primary), var(--color-primary-dark, #1E4F78));
+            color: white;
+            padding: var(--spacing-6);
+            border-radius: var(--radius-lg);
+            margin-bottom: var(--spacing-6);
+        }
+        
+        .analytics-title {
+            font-size: 2rem;
+            font-weight: var(--font-weight-bold);
+            margin-bottom: var(--spacing-2);
+        }
+        
+        .analytics-subtitle {
+            opacity: 0.9;
+            font-size: 1.1rem;
+        }
+        
+        .analytics-filters {
+            background: var(--bg-secondary);
+            padding: var(--spacing-4);
+            border-radius: var(--radius-lg);
+            margin-bottom: var(--spacing-6);
+        }
+        
+        .filters-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: var(--spacing-4);
+            align-items: end;
+        }
+        
+        .analytics-stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: var(--spacing-4);
+            margin-bottom: var(--spacing-6);
+        }
+        
+        .stat-card {
+            background: var(--bg-primary);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-lg);
+            padding: var(--spacing-5);
+            text-align: center;
+            transition: all var(--transition-base);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .stat-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: var(--stat-color, var(--color-primary));
+        }
+        
+        .stat-card:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-md);
+        }
+        
+        .stat-card.primary::before {
+            background: var(--color-primary);
+        }
+        
+        .stat-card.success::before {
+            background: var(--color-success);
+        }
+        
+        .stat-card.warning::before {
+            background: var(--color-warning);
+        }
+        
+        .stat-card.danger::before {
+            background: var(--color-danger);
+        }
+        
+        .stat-value {
+            font-size: 2.5rem;
+            font-weight: var(--font-weight-bold);
+            margin-bottom: var(--spacing-2);
+        }
+        
+        .stat-value.primary {
+            color: var(--color-primary);
+        }
+        
+        .stat-value.success {
+            color: var(--color-success);
+        }
+        
+        .stat-value.warning {
+            color: var(--color-warning);
+        }
+        
+        .stat-value.danger {
+            color: var(--color-danger);
+        }
+        
+        .stat-label {
+            color: var(--text-secondary);
+            font-weight: var(--font-weight-medium);
+            margin-bottom: var(--spacing-2);
+        }
+        
+        .stat-change {
+            font-size: var(--font-size-sm);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: var(--spacing-1);
+        }
+        
+        .stat-change.positive {
+            color: var(--color-success);
+        }
+        
+        .stat-change.negative {
+            color: var(--color-danger);
+        }
+        
+        .chart-container {
+            position: relative;
+            height: 400px;
+            margin-bottom: var(--spacing-4);
+        }
+        
+        .chart-container.small {
+            height: 300px;
+        }
+        
+        .difficulty-analysis {
+            margin-bottom: var(--spacing-6);
+        }
+        
+        .question-item {
+            background: var(--bg-primary);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-md);
+            padding: var(--spacing-4);
+            margin-bottom: var(--spacing-3);
+            transition: all var(--transition-base);
+        }
+        
+        .question-item:hover {
+            border-color: var(--color-primary);
+            transform: translateX(4px);
+        }
+        
+        .question-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: var(--spacing-3);
+        }
+        
+        .question-number {
+            font-weight: var(--font-weight-bold);
+            color: var(--color-primary);
+        }
+        
+        .difficulty-badge {
+            padding: 0.25rem 0.75rem;
+            border-radius: var(--radius-full);
+            font-size: var(--font-size-sm);
+            font-weight: var(--font-weight-medium);
+            text-transform: uppercase;
+        }
+        
+        .difficulty-badge.easy {
+            background: var(--color-success-light, rgba(16, 185, 129, 0.2));
+            color: var(--color-success-dark, #047857);
+        }
+        
+        .difficulty-badge.medium {
+            background: var(--color-warning-light, rgba(245, 158, 11, 0.2));
+            color: var(--color-warning-dark, #92400e);
+        }
+        
+        .difficulty-badge.hard {
+            background: var(--color-danger-light, rgba(239, 68, 68, 0.2));
+            color: var(--color-danger-dark, #991b1b);
+        }
+        
+        .question-stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+            gap: var(--spacing-3);
+            margin-bottom: var(--spacing-3);
+        }
+        
+        .question-stat {
+            text-align: center;
+            padding: var(--spacing-2);
+            background: var(--bg-secondary);
+            border-radius: var(--radius-sm);
+        }
+        
+        .question-stat-value {
+            font-size: 1.2rem;
+            font-weight: var(--font-weight-bold);
+            margin-bottom: var(--spacing-1);
+        }
+        
+        .question-stat-label {
+            font-size: var(--font-size-xs);
+            color: var(--text-secondary);
+            text-transform: uppercase;
+        }
+        
+        .common-mistakes {
+            background: var(--color-danger-light, rgba(239, 68, 68, 0.1));
+            border: 1px solid var(--color-danger);
+            border-radius: var(--radius-md);
+            padding: var(--spacing-3);
+        }
+        
+        .mistake-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: var(--spacing-2) 0;
+            border-bottom: 1px solid rgba(239, 68, 68, 0.2);
+        }
+        
+        .mistake-item:last-child {
+            border-bottom: none;
+        }
+        
+        .mistake-text {
+            flex: 1;
+            font-size: var(--font-size-sm);
+        }
+        
+        .mistake-count {
+            background: var(--color-danger);
+            color: white;
+            padding: 0.25rem 0.5rem;
+            border-radius: var(--radius-sm);
+            font-size: var(--font-size-xs);
+            font-weight: var(--font-weight-bold);
+        }
+        
+        .export-section {
+            background: var(--bg-secondary);
+            padding: var(--spacing-4);
+            border-radius: var(--radius-lg);
+            margin-bottom: var(--spacing-6);
+        }
+        
+        .export-options {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: var(--spacing-3);
+        }
+        
+        .performance-insights {
+            background: var(--bg-secondary);
+            padding: var(--spacing-4);
+            border-radius: var(--radius-lg);
+            margin-bottom: var(--spacing-6);
+        }
+        
+        .insight-item {
+            display: flex;
+            align-items: flex-start;
+            gap: var(--spacing-3);
+            padding: var(--spacing-3);
+            margin-bottom: var(--spacing-3);
+            border-radius: var(--radius-md);
+            transition: all var(--transition-base);
+        }
+        
+        .insight-item.info {
+            background: var(--color-info-light, rgba(59, 130, 246, 0.1));
+            border-left: 4px solid var(--color-info);
+        }
+        
+        .insight-item.warning {
+            background: var(--color-warning-light, rgba(245, 158, 11, 0.1));
+            border-left: 4px solid var(--color-warning);
+        }
+        
+        .insight-item.success {
+            background: var(--color-success-light, rgba(16, 185, 129, 0.1));
+            border-left: 4px solid var(--color-success);
+        }
+        
+        .insight-icon {
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.875rem;
+            color: white;
+            flex-shrink: 0;
+        }
+        
+        .insight-icon.info {
+            background: var(--color-info);
+        }
+        
+        .insight-icon.warning {
+            background: var(--color-warning);
+        }
+        
+        .insight-icon.success {
+            background: var(--color-success);
+        }
+        
+        .insight-content h5 {
+            margin: 0 0 var(--spacing-1) 0;
+            font-weight: var(--font-weight-medium);
+        }
+        
+        .insight-content p {
+            margin: 0;
+            font-size: var(--font-size-sm);
+            color: var(--text-secondary);
+            line-height: 1.5;
+        }
+        
+        /* Responsive */
+        @media (max-width: 768px) {
+            .analytics-stats {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            
+            .filters-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .export-options {
+                grid-template-columns: 1fr;
+            }
+            
+            .question-stats {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="page-container">
+        <!-- Analytics Header -->
+        <div class="analytics-header">
+            <div style="display: flex; justify-content: space-between; align-items: center;">
+                <div>
+                    <h1 class="analytics-title" data-translate="quiz.analytics">Quiz Analytics</h1>
+                    <p class="analytics-subtitle" data-translate="quiz.analyticsSubtitle">Comprehensive performance analysis and insights</p>
+                </div>
+                <div style="display: flex; gap: var(--spacing-3);">
+                    <button class="btn btn--secondary" style="color: white; border-color: rgba(255,255,255,0.3);" onclick="refreshAnalytics()">
+                        <i class="fas fa-sync-alt" style="margin-right: 8px;"></i>
+                        <span data-translate="common.refresh">Refresh</span>
+                    </button>
+                    <button class="btn btn--success" onclick="exportAllData()">
+                        <i class="fas fa-download" style="margin-right: 8px;"></i>
+                        <span data-translate="quiz.exportAll">Export All</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <div class="page-content">
+            <!-- Filters Section -->
+            <div class="analytics-filters">
+                <div class="filters-grid">
+                    <div class="form-group">
+                        <label class="form-label" data-translate="quiz.selectQuiz">Select Quiz</label>
+                        <select id="quizFilter" class="form-select" onchange="updateAnalytics()">
+                            <option value="" data-translate="quiz.allQuizzes">All Quizzes</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label" data-translate="course.selectCourse">Course</label>
+                        <select id="courseFilter" class="form-select" onchange="updateAnalytics()">
+                            <option value="" data-translate="common.allCourses">All Courses</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label" data-translate="quiz.timePeriod">Time Period</label>
+                        <select id="timePeriodFilter" class="form-select" onchange="updateAnalytics()">
+                            <option value="7" data-translate="quiz.last7Days">Last 7 Days</option>
+                            <option value="30" selected data-translate="quiz.last30Days">Last 30 Days</option>
+                            <option value="90" data-translate="quiz.last90Days">Last 90 Days</option>
+                            <option value="all" data-translate="quiz.allTime">All Time</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label" data-translate="class.selectClass">Class</label>
+                        <select id="classFilter" class="form-select" onchange="updateAnalytics()">
+                            <option value="" data-translate="common.allClasses">All Classes</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Statistics Cards -->
+            <div class="analytics-stats" id="analyticsStats">
+                <!-- Dynamic statistics cards -->
+            </div>
+
+            <!-- Charts Section -->
+            <div style="display: grid; grid-template-columns: 2fr 1fr; gap: var(--spacing-6); margin-bottom: var(--spacing-6);">
+                <!-- Performance Trend Chart -->
+                <div class="card">
+                    <div class="card__header">
+                        <h3 data-translate="quiz.performanceTrend">Performance Trend</h3>
+                    </div>
+                    <div class="card__body">
+                        <div class="chart-container">
+                            <canvas id="performanceChart"></canvas>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Score Distribution -->
+                <div class="card">
+                    <div class="card__header">
+                        <h3 data-translate="quiz.scoreDistribution">Score Distribution</h3>
+                    </div>
+                    <div class="card__body">
+                        <div class="chart-container small">
+                            <canvas id="distributionChart"></canvas>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Performance Insights -->
+            <div class="card">
+                <div class="card__header">
+                    <h3 data-translate="quiz.performanceInsights">Performance Insights</h3>
+                </div>
+                <div class="card__body">
+                    <div class="performance-insights" id="performanceInsights">
+                        <!-- Dynamic insights -->
+                    </div>
+                </div>
+            </div>
+
+            <!-- Question Difficulty Analysis -->
+            <div class="card">
+                <div class="card__header">
+                    <div style="display: flex; justify-content: space-between; align-items: center;">
+                        <h3 data-translate="quiz.questionAnalysis">Question Difficulty Analysis</h3>
+                        <button class="btn btn--secondary btn--small" onclick="exportQuestionAnalysis()">
+                            <i class="fas fa-download" style="margin-right: 8px;"></i>
+                            <span data-translate="quiz.exportAnalysis">Export Analysis</span>
+                        </button>
+                    </div>
+                </div>
+                <div class="card__body">
+                    <div class="difficulty-analysis" id="difficultyAnalysis">
+                        <!-- Dynamic question analysis -->
+                    </div>
+                </div>
+            </div>
+
+            <!-- Export Section -->
+            <div class="card">
+                <div class="card__header">
+                    <h3 data-translate="quiz.dataExport">Data Export</h3>
+                </div>
+                <div class="card__body">
+                    <div class="export-section">
+                        <p style="margin-bottom: var(--spacing-4); color: var(--text-secondary);" data-translate="quiz.exportDescription">
+                            Export detailed analytics data in various formats for further analysis.
+                        </p>
+                        <div class="export-options">
+                            <button class="btn btn--primary" onclick="exportStudentResults()">
+                                <i class="fas fa-file-csv" style="margin-right: 8px;"></i>
+                                <span data-translate="quiz.exportStudentResults">Student Results (CSV)</span>
+                            </button>
+                            <button class="btn btn--primary" onclick="exportQuestionAnalysis()">
+                                <i class="fas fa-chart-bar" style="margin-right: 8px;"></i>
+                                <span data-translate="quiz.exportQuestionAnalysis">Question Analysis (CSV)</span>
+                            </button>
+                            <button class="btn btn--primary" onclick="exportPerformanceReport()">
+                                <i class="fas fa-file-pdf" style="margin-right: 8px;"></i>
+                                <span data-translate="quiz.exportPerformanceReport">Performance Report (PDF)</span>
+                            </button>
+                            <button class="btn btn--secondary" onclick="exportRawData()">
+                                <i class="fas fa-database" style="margin-right: 8px;"></i>
+                                <span data-translate="quiz.exportRawData">Raw Data (JSON)</span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Core JavaScript -->
+    <script src="../assets/js/global.js"></script>
+    <script src="../assets/js/auth.js"></script>
+    <script src="../assets/js/api.js"></script>
+    
+    <script>
+        // State management
+        let allQuizzes = [];
+        let allCourses = [];
+        let allClasses = [];
+        let quizSubmissions = [];
+        let currentUser = LMS.Auth.getUser();
+        let charts = {};
+
+        // Initialize
+        async function init() {
+            // Check authentication - teachers and admins only
+            if (!LMS.Auth.isAuthenticated() || !currentUser || 
+                (currentUser.role !== 'teacher' && currentUser.role !== 'admin')) {
+                window.location.href = '../index.html';
+                return;
+            }
+
+            // Load translations
+            await LMS.LanguageManager.init();
+            LMS.LanguageManager.updatePageTranslations();
+            
+            // Load data
+            await loadData();
+            populateFilters();
+            updateAnalytics();
+        }
+
+        // Load all data
+        async function loadData() {
+            try {
+                // Load courses
+                const courseResponse = await LMS.API.loadJSON('mock-courses.json');
+                allCourses = courseResponse.data || [];
+
+                // Load classes
+                const classResponse = await LMS.API.loadJSON('mock-classes.json');
+                allClasses = classResponse.data || [];
+
+                // Generate mock quiz data
+                allQuizzes = generateMockQuizData();
+                
+                // Generate mock submission data
+                quizSubmissions = generateMockSubmissionData();
+                
+            } catch (error) {
+                console.error('Failed to load data:', error);
+                LMS.showToast(LMS.t('error.loadData'), 'error');
+            }
+        }
+
+        // Generate mock quiz data
+        function generateMockQuizData() {
+            const quizzes = [];
+            for (let i = 0; i < 8; i++) {
+                const course = allCourses[i % allCourses.length];
+                quizzes.push({
+                    id: `quiz_${String(i + 1).padStart(3, '0')}`,
+                    title: `${course?.title || 'Course'} - Quiz ${i + 1}`,
+                    courseId: course?.id || 'course_001',
+                    courseName: course?.title || 'Sample Course',
+                    questionCount: Math.floor(Math.random() * 20) + 10,
+                    createdAt: new Date(Date.now() - Math.random() * 60 * 24 * 60 * 60 * 1000).toISOString(),
+                    createdBy: currentUser.role === 'teacher' ? currentUser.id : 'teacher_001'
+                });
+            }
+            
+            // Filter for teachers
+            if (currentUser.role === 'teacher') {
+                return quizzes.filter(q => q.createdBy === currentUser.id);
+            }
+            
+            return quizzes;
+        }
+
+        // Generate mock submission data
+        function generateMockSubmissionData() {
+            const submissions = [];
+            const studentIds = ['student_001', 'student_002', 'student_003', 'student_004', 'student_005'];
+            
+            allQuizzes.forEach(quiz => {
+                // Generate 15-30 submissions per quiz
+                const submissionCount = Math.floor(Math.random() * 16) + 15;
+                
+                for (let i = 0; i < submissionCount; i++) {
+                    const studentId = studentIds[i % studentIds.length];
+                    const score = Math.floor(Math.random() * 100);
+                    const timeSpent = Math.floor(Math.random() * 1800) + 300; // 5-35 minutes
+                    
+                    submissions.push({
+                        id: `submission_${quiz.id}_${studentId}_${i}`,
+                        quizId: quiz.id,
+                        studentId: studentId,
+                        score: score,
+                        timeSpent: timeSpent,
+                        submittedAt: new Date(Date.now() - Math.random() * 30 * 24 * 60 * 60 * 1000).toISOString(),
+                        questionResults: generateQuestionResults(quiz.questionCount, score)
+                    });
+                }
+            });
+            
+            return submissions;
+        }
+
+        // Generate question results
+        function generateQuestionResults(questionCount, overallScore) {
+            const results = [];
+            for (let i = 0; i < questionCount; i++) {
+                const isCorrect = Math.random() < (overallScore / 100);
+                results.push({
+                    questionId: `q${i + 1}`,
+                    isCorrect: isCorrect,
+                    timeSpent: Math.floor(Math.random() * 180) + 30, // 30-210 seconds
+                    selectedAnswer: isCorrect ? 'correct_answer' : 'wrong_answer'
+                });
+            }
+            return results;
+        }
+
+        // Populate filters
+        function populateFilters() {
+            // Quiz filter
+            const quizFilter = document.getElementById('quizFilter');
+            quizFilter.innerHTML = `<option value="">${LMS.t('quiz.allQuizzes')}</option>`;
+            allQuizzes.forEach(quiz => {
+                const option = document.createElement('option');
+                option.value = quiz.id;
+                option.textContent = quiz.title;
+                quizFilter.appendChild(option);
+            });
+
+            // Course filter
+            const courseFilter = document.getElementById('courseFilter');
+            const uniqueCourses = [...new Set(allQuizzes.map(q => q.courseId))]
+                .map(id => allCourses.find(c => c.id === id))
+                .filter(Boolean);
+            
+            courseFilter.innerHTML = `<option value="">${LMS.t('common.allCourses')}</option>`;
+            uniqueCourses.forEach(course => {
+                const option = document.createElement('option');
+                option.value = course.id;
+                option.textContent = course.title;
+                courseFilter.appendChild(option);
+            });
+
+            // Class filter
+            const classFilter = document.getElementById('classFilter');
+            classFilter.innerHTML = `<option value="">${LMS.t('common.allClasses')}</option>`;
+            allClasses.forEach(cls => {
+                const option = document.createElement('option');
+                option.value = cls.id;
+                option.textContent = cls.name;
+                classFilter.appendChild(option);
+            });
+        }
+
+        // Update analytics
+        function updateAnalytics() {
+            const filteredData = getFilteredData();
+            updateStatistics(filteredData);
+            updateCharts(filteredData);
+            updateInsights(filteredData);
+            updateQuestionAnalysis(filteredData);
+        }
+
+        // Get filtered data
+        function getFilteredData() {
+            let filteredSubmissions = [...quizSubmissions];
+            let filteredQuizzes = [...allQuizzes];
+
+            // Quiz filter
+            const quizId = document.getElementById('quizFilter').value;
+            if (quizId) {
+                filteredSubmissions = filteredSubmissions.filter(s => s.quizId === quizId);
+                filteredQuizzes = filteredQuizzes.filter(q => q.id === quizId);
+            }
+
+            // Course filter
+            const courseId = document.getElementById('courseFilter').value;
+            if (courseId) {
+                const courseQuizIds = allQuizzes.filter(q => q.courseId === courseId).map(q => q.id);
+                filteredSubmissions = filteredSubmissions.filter(s => courseQuizIds.includes(s.quizId));
+                filteredQuizzes = filteredQuizzes.filter(q => q.courseId === courseId);
+            }
+
+            // Time period filter
+            const timePeriod = document.getElementById('timePeriodFilter').value;
+            if (timePeriod !== 'all') {
+                const cutoffDate = new Date();
+                cutoffDate.setDate(cutoffDate.getDate() - parseInt(timePeriod));
+                filteredSubmissions = filteredSubmissions.filter(s => 
+                    new Date(s.submittedAt) >= cutoffDate
+                );
+            }
+
+            return {
+                submissions: filteredSubmissions,
+                quizzes: filteredQuizzes
+            };
+        }
+
+        // Update statistics
+        function updateStatistics(data) {
+            const stats = calculateStatistics(data);
+            
+            document.getElementById('analyticsStats').innerHTML = `
+                <div class="stat-card primary">
+                    <div class="stat-value primary">${stats.totalSubmissions}</div>
+                    <div class="stat-label" data-translate="quiz.totalSubmissions">Total Submissions</div>
+                    <div class="stat-change positive">
+                        <i class="fas fa-arrow-up"></i>
+                        <span>+${stats.submissionChange}%</span>
+                    </div>
+                </div>
+                <div class="stat-card success">
+                    <div class="stat-value success">${stats.averageScore}%</div>
+                    <div class="stat-label" data-translate="quiz.averageScore">Average Score</div>
+                    <div class="stat-change ${stats.scoreChange >= 0 ? 'positive' : 'negative'}">
+                        <i class="fas fa-arrow-${stats.scoreChange >= 0 ? 'up' : 'down'}"></i>
+                        <span>${stats.scoreChange >= 0 ? '+' : ''}${stats.scoreChange}%</span>
+                    </div>
+                </div>
+                <div class="stat-card warning">
+                    <div class="stat-value warning">${stats.passRate}%</div>
+                    <div class="stat-label" data-translate="quiz.passRate">Pass Rate</div>
+                    <div class="stat-change ${stats.passRateChange >= 0 ? 'positive' : 'negative'}">
+                        <i class="fas fa-arrow-${stats.passRateChange >= 0 ? 'up' : 'down'}"></i>
+                        <span>${stats.passRateChange >= 0 ? '+' : ''}${stats.passRateChange}%</span>
+                    </div>
+                </div>
+                <div class="stat-card danger">
+                    <div class="stat-value danger">${stats.averageTime}m</div>
+                    <div class="stat-label" data-translate="quiz.averageTime">Average Time</div>
+                    <div class="stat-change ${stats.timeChange <= 0 ? 'positive' : 'negative'}">
+                        <i class="fas fa-arrow-${stats.timeChange <= 0 ? 'down' : 'up'}"></i>
+                        <span>${stats.timeChange <= 0 ? '' : '+'}${stats.timeChange}%</span>
+                    </div>
+                </div>
+            `;
+        }
+
+        // Calculate statistics
+        function calculateStatistics(data) {
+            const submissions = data.submissions;
+            
+            if (submissions.length === 0) {
+                return {
+                    totalSubmissions: 0,
+                    averageScore: 0,
+                    passRate: 0,
+                    averageTime: 0,
+                    submissionChange: 0,
+                    scoreChange: 0,
+                    passRateChange: 0,
+                    timeChange: 0
+                };
+            }
+
+            const totalSubmissions = submissions.length;
+            const averageScore = Math.round(submissions.reduce((sum, s) => sum + s.score, 0) / totalSubmissions);
+            const passedSubmissions = submissions.filter(s => s.score >= 70).length;
+            const passRate = Math.round((passedSubmissions / totalSubmissions) * 100);
+            const averageTime = Math.round(submissions.reduce((sum, s) => sum + s.timeSpent, 0) / totalSubmissions / 60);
+
+            // Mock percentage changes
+            return {
+                totalSubmissions,
+                averageScore,
+                passRate,
+                averageTime,
+                submissionChange: Math.floor(Math.random() * 20) + 5,
+                scoreChange: Math.floor(Math.random() * 10) - 5,
+                passRateChange: Math.floor(Math.random() * 8) - 3,
+                timeChange: Math.floor(Math.random() * 6) - 3
+            };
+        }
+
+        // Update charts
+        function updateCharts(data) {
+            updatePerformanceChart(data);
+            updateDistributionChart(data);
+        }
+
+        // Update performance trend chart
+        function updatePerformanceChart(data) {
+            const ctx = document.getElementById('performanceChart').getContext('2d');
+            
+            // Destroy existing chart
+            if (charts.performance) {
+                charts.performance.destroy();
+            }
+
+            // Generate trend data (last 7 days)
+            const labels = [];
+            const scores = [];
+            const submissions = [];
+            
+            for (let i = 6; i >= 0; i--) {
+                const date = new Date();
+                date.setDate(date.getDate() - i);
+                labels.push(date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' }));
+                
+                // Mock data for each day
+                scores.push(Math.floor(Math.random() * 20) + 70);
+                submissions.push(Math.floor(Math.random() * 10) + 5);
+            }
+
+            charts.performance = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: labels,
+                    datasets: [
+                        {
+                            label: 'Average Score (%)',
+                            data: scores,
+                            borderColor: 'rgb(44, 110, 170)',
+                            backgroundColor: 'rgba(44, 110, 170, 0.1)',
+                            tension: 0.3,
+                            yAxisID: 'y'
+                        },
+                        {
+                            label: 'Submissions',
+                            data: submissions,
+                            borderColor: 'rgb(16, 185, 129)',
+                            backgroundColor: 'rgba(16, 185, 129, 0.1)',
+                            tension: 0.3,
+                            yAxisID: 'y1'
+                        }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    interaction: {
+                        mode: 'index',
+                        intersect: false,
+                    },
+                    scales: {
+                        x: {
+                            display: true,
+                            title: {
+                                display: true,
+                                text: 'Date'
+                            }
+                        },
+                        y: {
+                            type: 'linear',
+                            display: true,
+                            position: 'left',
+                            title: {
+                                display: true,
+                                text: 'Average Score (%)'
+                            },
+                            min: 0,
+                            max: 100
+                        },
+                        y1: {
+                            type: 'linear',
+                            display: true,
+                            position: 'right',
+                            title: {
+                                display: true,
+                                text: 'Number of Submissions'
+                            },
+                            grid: {
+                                drawOnChartArea: false,
+                            },
+                        }
+                    }
+                }
+            });
+        }
+
+        // Update score distribution chart
+        function updateDistributionChart(data) {
+            const ctx = document.getElementById('distributionChart').getContext('2d');
+            
+            // Destroy existing chart
+            if (charts.distribution) {
+                charts.distribution.destroy();
+            }
+
+            // Calculate score distribution
+            const ranges = ['0-40', '41-60', '61-70', '71-80', '81-90', '91-100'];
+            const counts = [0, 0, 0, 0, 0, 0];
+            
+            data.submissions.forEach(submission => {
+                const score = submission.score;
+                if (score <= 40) counts[0]++;
+                else if (score <= 60) counts[1]++;
+                else if (score <= 70) counts[2]++;
+                else if (score <= 80) counts[3]++;
+                else if (score <= 90) counts[4]++;
+                else counts[5]++;
+            });
+
+            const colors = [
+                'rgba(239, 68, 68, 0.8)',    // Red
+                'rgba(245, 158, 11, 0.8)',   // Orange
+                'rgba(251, 191, 36, 0.8)',   // Yellow
+                'rgba(34, 197, 94, 0.8)',    // Green
+                'rgba(59, 130, 246, 0.8)',   // Blue
+                'rgba(147, 51, 234, 0.8)'    // Purple
+            ];
+
+            charts.distribution = new Chart(ctx, {
+                type: 'doughnut',
+                data: {
+                    labels: ranges,
+                    datasets: [{
+                        data: counts,
+                        backgroundColor: colors,
+                        borderWidth: 2,
+                        borderColor: '#fff'
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            position: 'bottom',
+                        }
+                    }
+                }
+            });
+        }
+
+        // Update insights
+        function updateInsights(data) {
+            const insights = generateInsights(data);
+            
+            document.getElementById('performanceInsights').innerHTML = insights.map(insight => `
+                <div class="insight-item ${insight.type}">
+                    <div class="insight-icon ${insight.type}">
+                        <i class="fas fa-${insight.icon}"></i>
+                    </div>
+                    <div class="insight-content">
+                        <h5>${insight.title}</h5>
+                        <p>${insight.description}</p>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        // Generate insights
+        function generateInsights(data) {
+            const stats = calculateStatistics(data);
+            const insights = [];
+
+            if (stats.averageScore >= 80) {
+                insights.push({
+                    type: 'success',
+                    icon: 'thumbs-up',
+                    title: LMS.t('quiz.excellentPerformance'),
+                    description: LMS.t('quiz.excellentPerformanceDesc')
+                });
+            } else if (stats.averageScore < 60) {
+                insights.push({
+                    type: 'warning',
+                    icon: 'exclamation-triangle',
+                    title: LMS.t('quiz.lowPerformance'),
+                    description: LMS.t('quiz.lowPerformanceDesc')
+                });
+            }
+
+            if (stats.passRate < 70) {
+                insights.push({
+                    type: 'warning',
+                    icon: 'chart-line',
+                    title: LMS.t('quiz.lowPassRate'),
+                    description: LMS.t('quiz.lowPassRateDesc')
+                });
+            }
+
+            if (stats.averageTime > 45) {
+                insights.push({
+                    type: 'info',
+                    icon: 'clock',
+                    title: LMS.t('quiz.longDuration'),
+                    description: LMS.t('quiz.longDurationDesc')
+                });
+            }
+
+            // Default insight if no specific issues
+            if (insights.length === 0) {
+                insights.push({
+                    type: 'info',
+                    icon: 'info-circle',
+                    title: LMS.t('quiz.normalPerformance'),
+                    description: LMS.t('quiz.normalPerformanceDesc')
+                });
+            }
+
+            return insights;
+        }
+
+        // Update question analysis
+        function updateQuestionAnalysis(data) {
+            const analysis = analyzeQuestions(data);
+            
+            document.getElementById('difficultyAnalysis').innerHTML = analysis.map((question, index) => `
+                <div class="question-item">
+                    <div class="question-header">
+                        <span class="question-number">${LMS.t('quiz.question')} ${index + 1}</span>
+                        <span class="difficulty-badge ${question.difficulty}">${question.difficulty.toUpperCase()}</span>
+                    </div>
+                    
+                    <div class="question-stats">
+                        <div class="question-stat">
+                            <div class="question-stat-value" style="color: var(--color-success);">${question.correctRate}%</div>
+                            <div class="question-stat-label" data-translate="quiz.correctRate">Correct</div>
+                        </div>
+                        <div class="question-stat">
+                            <div class="question-stat-value" style="color: var(--color-info);">${question.avgTime}s</div>
+                            <div class="question-stat-label" data-translate="quiz.avgTime">Avg Time</div>
+                        </div>
+                        <div class="question-stat">
+                            <div class="question-stat-value" style="color: var(--color-primary);">${question.attempts}</div>
+                            <div class="question-stat-label" data-translate="quiz.attempts">Attempts</div>
+                        </div>
+                        <div class="question-stat">
+                            <div class="question-stat-value" style="color: var(--color-warning);">${question.difficulty}</div>
+                            <div class="question-stat-label" data-translate="quiz.difficulty">Difficulty</div>
+                        </div>
+                    </div>
+                    
+                    ${question.commonMistakes.length > 0 ? `
+                        <div class="common-mistakes">
+                            <h5 style="margin-bottom: var(--spacing-2); font-size: var(--font-size-sm);" data-translate="quiz.commonMistakes">Common Mistakes:</h5>
+                            ${question.commonMistakes.map(mistake => `
+                                <div class="mistake-item">
+                                    <span class="mistake-text">${mistake.text}</span>
+                                    <span class="mistake-count">${mistake.count}</span>
+                                </div>
+                            `).join('')}
+                        </div>
+                    ` : ''}
+                </div>
+            `).join('');
+        }
+
+        // Analyze questions
+        function analyzeQuestions(data) {
+            const analysis = [];
+            const maxQuestions = 5; // Show analysis for first 5 questions
+            
+            for (let i = 0; i < maxQuestions; i++) {
+                const questionResults = data.submissions.flatMap(s => 
+                    s.questionResults.filter(qr => qr.questionId === `q${i + 1}`)
+                );
+                
+                if (questionResults.length === 0) continue;
+                
+                const correctCount = questionResults.filter(qr => qr.isCorrect).length;
+                const correctRate = Math.round((correctCount / questionResults.length) * 100);
+                const avgTime = Math.round(questionResults.reduce((sum, qr) => sum + qr.timeSpent, 0) / questionResults.length);
+                
+                let difficulty = 'easy';
+                if (correctRate < 50) difficulty = 'hard';
+                else if (correctRate < 75) difficulty = 'medium';
+                
+                // Generate mock common mistakes
+                const commonMistakes = [];
+                if (correctRate < 80) {
+                    commonMistakes.push(
+                        { text: 'Selected option B instead of correct option A', count: Math.floor(Math.random() * 5) + 3 },
+                        { text: 'Misunderstood the question requirements', count: Math.floor(Math.random() * 3) + 2 }
+                    );
+                }
+                
+                analysis.push({
+                    questionId: `q${i + 1}`,
+                    correctRate,
+                    avgTime,
+                    attempts: questionResults.length,
+                    difficulty,
+                    commonMistakes
+                });
+            }
+            
+            return analysis;
+        }
+
+        // Export functions
+        function exportAllData() {
+            exportStudentResults();
+            exportQuestionAnalysis();
+            LMS.showToast(LMS.t('quiz.exportComplete'), 'success');
+        }
+
+        function exportStudentResults() {
+            const data = getFilteredData();
+            const csvContent = generateStudentResultsCSV(data);
+            downloadCSV(csvContent, 'student_results.csv');
+        }
+
+        function exportQuestionAnalysis() {
+            const data = getFilteredData();
+            const analysis = analyzeQuestions(data);
+            const csvContent = generateQuestionAnalysisCSV(analysis);
+            downloadCSV(csvContent, 'question_analysis.csv');
+        }
+
+        function exportPerformanceReport() {
+            // For demo, just show a toast
+            LMS.showToast(LMS.t('quiz.pdfExportNotImplemented'), 'info');
+        }
+
+        function exportRawData() {
+            const data = getFilteredData();
+            const jsonContent = JSON.stringify(data, null, 2);
+            const blob = new Blob([jsonContent], { type: 'application/json' });
+            const url = window.URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'quiz_analytics_raw_data.json';
+            a.click();
+            window.URL.revokeObjectURL(url);
+        }
+
+        // Generate student results CSV
+        function generateStudentResultsCSV(data) {
+            const headers = ['Student ID', 'Quiz', 'Score (%)', 'Time Spent (min)', 'Pass/Fail', 'Submitted At'];
+            const rows = data.submissions.map(submission => {
+                const quiz = data.quizzes.find(q => q.id === submission.quizId);
+                return [
+                    submission.studentId,
+                    quiz?.title || 'Unknown Quiz',
+                    submission.score,
+                    Math.round(submission.timeSpent / 60),
+                    submission.score >= 70 ? 'Pass' : 'Fail',
+                    new Date(submission.submittedAt).toLocaleDateString()
+                ];
+            });
+            
+            return [headers, ...rows].map(row => row.map(cell => `"${cell}"`).join(',')).join('\n');
+        }
+
+        // Generate question analysis CSV
+        function generateQuestionAnalysisCSV(analysis) {
+            const headers = ['Question', 'Correct Rate (%)', 'Average Time (s)', 'Attempts', 'Difficulty'];
+            const rows = analysis.map(question => [
+                question.questionId,
+                question.correctRate,
+                question.avgTime,
+                question.attempts,
+                question.difficulty
+            ]);
+            
+            return [headers, ...rows].map(row => row.map(cell => `"${cell}"`).join(',')).join('\n');
+        }
+
+        // Download CSV helper
+        function downloadCSV(content, filename) {
+            const blob = new Blob([content], { type: 'text/csv' });
+            const url = window.URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = filename;
+            a.click();
+            window.URL.revokeObjectURL(url);
+            LMS.showToast(LMS.t('quiz.exportSuccess'), 'success');
+        }
+
+        // Refresh analytics
+        function refreshAnalytics() {
+            updateAnalytics();
+            LMS.showToast(LMS.t('quiz.analyticsRefreshed'), 'success');
+        }
+
+        // Initialize on load
+        document.addEventListener('DOMContentLoaded', init);
+    </script>
+</body>
+</html>
