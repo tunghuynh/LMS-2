@@ -1,0 +1,705 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quiz Management - LMS</title>
+    <!-- Core CSS -->
+    <link rel="stylesheet" href="../assets/css/global.css">
+    <link rel="stylesheet" href="../assets/css/components.css">
+    <link rel="stylesheet" href="../assets/css/themes.css">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <!-- Configuration -->
+    <script src="../config.js"></script>
+</head>
+<body>
+    <div class="page-container">
+        <!-- Page Header -->
+        <div class="page-header">
+            <div style="display: flex; justify-content: space-between; align-items: center;">
+                <div>
+                    <h1 class="page-title" data-translate="quiz.management">Quiz Management</h1>
+                    <p class="page-subtitle" data-translate="quiz.subtitle">Create, manage and track quizzes for your courses</p>
+                </div>
+                <div style="display: flex; gap: var(--spacing-3);">
+                    <button class="btn btn--secondary" onclick="importQuiz()">
+                        <i class="fas fa-upload" style="margin-right: 8px;"></i>
+                        <span data-translate="quiz.import">Import Quiz</span>
+                    </button>
+                    <button class="btn btn--secondary" onclick="exportQuizzes()">
+                        <i class="fas fa-download" style="margin-right: 8px;"></i>
+                        <span data-translate="quiz.export">Export All</span>
+                    </button>
+                    <button class="btn btn--primary" onclick="createQuiz()">
+                        <i class="fas fa-plus-circle" style="margin-right: 8px;"></i>
+                        <span data-translate="quiz.create">Create Quiz</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <div class="page-content">
+            <!-- Statistics Cards -->
+            <div class="grid grid--4-cols" style="margin-bottom: var(--spacing-6);">
+                <div class="card">
+                    <div class="card__body" style="text-align: center;">
+                        <div style="font-size: 2rem; font-weight: var(--font-weight-bold); color: var(--color-primary);" id="totalQuizzes">0</div>
+                        <div style="color: var(--text-secondary);" data-translate="quiz.totalQuizzes">Total Quizzes</div>
+                    </div>
+                </div>
+                <div class="card">
+                    <div class="card__body" style="text-align: center;">
+                        <div style="font-size: 2rem; font-weight: var(--font-weight-bold); color: var(--color-success);" id="activeQuizzes">0</div>
+                        <div style="color: var(--text-secondary);" data-translate="quiz.activeQuizzes">Active Quizzes</div>
+                    </div>
+                </div>
+                <div class="card">
+                    <div class="card__body" style="text-align: center;">
+                        <div style="font-size: 2rem; font-weight: var(--font-weight-bold); color: var(--color-warning);" id="draftQuizzes">0</div>
+                        <div style="color: var(--text-secondary);" data-translate="quiz.draftQuizzes">Draft Quizzes</div>
+                    </div>
+                </div>
+                <div class="card">
+                    <div class="card__body" style="text-align: center;">
+                        <div style="font-size: 2rem; font-weight: var(--font-weight-bold); color: var(--color-info);" id="totalAttempts">0</div>
+                        <div style="color: var(--text-secondary);" data-translate="quiz.totalAttempts">Total Attempts</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Filters and Search -->
+            <div class="card" style="margin-bottom: var(--spacing-6);">
+                <div class="card__body">
+                    <div style="display: grid; grid-template-columns: 2fr 1fr 1fr auto; gap: var(--spacing-4); align-items: end;">
+                        <div class="form-group">
+                            <label class="form-label" data-translate="common.search">Search</label>
+                            <input type="text" id="searchInput" class="form-input" 
+                                   placeholder="Search quizzes by title, description..."
+                                   data-translate-placeholder="quiz.searchPlaceholder"
+                                   onkeyup="filterQuizzes()">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label" data-translate="course.selectCourse">Course</label>
+                            <select id="courseFilter" class="form-select" onchange="filterQuizzes()">
+                                <option value="" data-translate="common.allCourses">All Courses</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label" data-translate="common.status">Status</label>
+                            <select id="statusFilter" class="form-select" onchange="filterQuizzes()">
+                                <option value="" data-translate="common.allStatuses">All Statuses</option>
+                                <option value="draft" data-translate="status.draft">Draft</option>
+                                <option value="active" data-translate="status.active">Active</option>
+                                <option value="archived" data-translate="status.archived">Archived</option>
+                            </select>
+                        </div>
+                        <button class="btn btn--secondary" onclick="refreshData()">
+                            <i class="fas fa-sync-alt" style="margin-right: 8px;"></i>
+                            <span data-translate="common.refresh">Refresh</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Quiz Table -->
+            <div class="card">
+                <div class="card__header">
+                    <h3 data-translate="quiz.quizList">Quiz List</h3>
+                </div>
+                <div class="card__body">
+                    <!-- Table Container -->
+                    <div class="table-container">
+                        <table class="table">
+                            <thead>
+                                <tr>
+                                    <th data-translate="quiz.title">Quiz Title</th>
+                                    <th data-translate="course.title">Course</th>
+                                    <th data-translate="quiz.questions">Questions</th>
+                                    <th data-translate="quiz.timeLimit">Time Limit</th>
+                                    <th data-translate="quiz.attempts">Attempts</th>
+                                    <th data-translate="common.status">Status</th>
+                                    <th data-translate="quiz.createdDate">Created</th>
+                                    <th width="150" data-translate="common.actions">Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="quizTableBody">
+                                <!-- Dynamic quiz rows -->
+                            </tbody>
+                        </table>
+                        
+                        <!-- Empty State -->
+                        <div id="emptyState" class="empty-state" style="display: none;">
+                            <i class="fas fa-question-circle" style="font-size: 48px; color: var(--text-muted); margin-bottom: var(--spacing-3);"></i>
+                            <p data-translate="quiz.noQuizzes">No quizzes found</p>
+                            <button class="btn btn--primary" onclick="createQuiz()">
+                                <i class="fas fa-plus" style="margin-right: 8px;"></i>
+                                <span data-translate="quiz.createFirst">Create Your First Quiz</span>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Pagination -->
+                    <div style="display: flex; justify-content: between; align-items: center; margin-top: var(--spacing-4);">
+                        <div style="color: var(--text-secondary);">
+                            <span data-translate="pagination.showing">Showing</span>
+                            <span id="startRow">1</span> - <span id="endRow">10</span>
+                            <span data-translate="pagination.of">of</span>
+                            <span id="totalRows">0</span>
+                        </div>
+                        <div id="paginationControls" class="table__pagination">
+                            <!-- Dynamic pagination -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Import Quiz Modal -->
+    <div class="modal-backdrop" id="importModalBackdrop">
+        <div class="modal modal--medium" id="importModal">
+            <div class="modal__header">
+                <h2 class="modal__title" data-translate="quiz.importTitle">Import Quiz</h2>
+                <button class="modal__close" onclick="closeImportModal()">×</button>
+            </div>
+            <div class="modal__body">
+                <div class="form-group">
+                    <label class="form-label" data-translate="quiz.importFile">Select Quiz File</label>
+                    <input type="file" id="importFile" class="form-input" accept=".json,.xlsx,.csv">
+                    <span class="form-help" data-translate="quiz.importHelp">Supported formats: JSON, Excel (.xlsx), CSV</span>
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label" data-translate="course.selectCourse">Target Course</label>
+                    <select id="importCourseId" class="form-select">
+                        <option value="" data-translate="common.selectOption">Select a course...</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label class="checkbox-label">
+                        <input type="checkbox" id="overwriteExisting">
+                        <span class="checkbox-custom"></span>
+                        <span data-translate="quiz.overwriteExisting">Overwrite existing quizzes with same name</span>
+                    </label>
+                </div>
+
+                <div id="importPreview" style="display: none; margin-top: var(--spacing-4);">
+                    <h4 data-translate="quiz.importPreview">Import Preview</h4>
+                    <div id="importPreviewContent" style="background: var(--bg-secondary); padding: var(--spacing-4); border-radius: var(--radius-md);">
+                        <!-- Dynamic preview content -->
+                    </div>
+                </div>
+            </div>
+            <div class="modal__footer">
+                <button class="btn btn--secondary" onclick="closeImportModal()">
+                    <i class="fas fa-times" style="margin-right: 8px;"></i>
+                    <span data-translate="common.cancel">Cancel</span>
+                </button>
+                <button class="btn btn--primary" onclick="executeImport()" id="importBtn" disabled>
+                    <i class="fas fa-upload" style="margin-right: 8px;"></i>
+                    <span data-translate="quiz.import">Import Quiz</span>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Quiz Detail Modal -->
+    <div class="modal-backdrop" id="detailModalBackdrop">
+        <div class="modal modal--large" id="detailModal">
+            <div class="modal__header">
+                <h2 class="modal__title" id="detailModalTitle">Quiz Details</h2>
+                <button class="modal__close" onclick="closeDetailModal()">×</button>
+            </div>
+            <div class="modal__body" id="detailModalContent">
+                <!-- Dynamic detail content -->
+            </div>
+            <div class="modal__footer">
+                <button class="btn btn--secondary" onclick="closeDetailModal()">
+                    <i class="fas fa-times" style="margin-right: 8px;"></i>
+                    <span data-translate="common.close">Close</span>
+                </button>
+                <div id="detailModalActions" style="display: flex; gap: var(--spacing-2);">
+                    <!-- Dynamic action buttons -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Core JavaScript -->
+    <script src="../assets/js/global.js"></script>
+    <script src="../assets/js/auth.js"></script>
+    <script src="../assets/js/api.js"></script>
+    
+    <script>
+        // State management
+        let allQuizzes = [];
+        let allCourses = [];
+        let filteredQuizzes = [];
+        let currentUser = LMS.Auth.getUser();
+        let currentPage = 1;
+        const rowsPerPage = 10;
+
+        // Initialize
+        async function init() {
+            // Check authentication - teachers and admins only
+            if (!LMS.Auth.isAuthenticated() || !currentUser || 
+                (currentUser.role !== 'teacher' && currentUser.role !== 'admin')) {
+                window.location.href = '../index.html';
+                return;
+            }
+
+            // Load translations
+            await LMS.LanguageManager.init();
+            LMS.LanguageManager.updatePageTranslations();
+            
+            // Load data
+            await loadData();
+            populateCourseFilters();
+            updateStatistics();
+            displayQuizzes();
+        }
+
+        // Load all data
+        async function loadData() {
+            try {
+                // Load courses
+                const courseResponse = await LMS.API.loadJSON('mock-courses.json');
+                allCourses = courseResponse.data || [];
+
+                // Generate mock quizzes (since we don't have quiz data yet)
+                allQuizzes = generateMockQuizzes();
+                
+                // Filter by user role
+                if (currentUser.role === 'teacher') {
+                    // Teachers only see quizzes for their courses
+                    const teacherCourses = allCourses.filter(c => c.teacherId === currentUser.id);
+                    const teacherCourseIds = teacherCourses.map(c => c.id);
+                    allQuizzes = allQuizzes.filter(q => teacherCourseIds.includes(q.courseId));
+                }
+
+                // Apply filters
+                applyFilters();
+                
+            } catch (error) {
+                console.error('Failed to load data:', error);
+                LMS.showToast(LMS.t('error.loadData'), 'error');
+            }
+        }
+
+        // Generate mock quiz data
+        function generateMockQuizzes() {
+            const quizzes = [];
+            const statuses = ['draft', 'active', 'archived'];
+            const quizTitles = [
+                'JavaScript Fundamentals Quiz',
+                'HTML & CSS Basics Test',
+                'React Components Assessment',
+                'Database Design Quiz',
+                'Python Programming Test',
+                'Web Security Assessment',
+                'API Development Quiz',
+                'Data Structures Test',
+                'Algorithm Challenge',
+                'Final Course Exam'
+            ];
+
+            for (let i = 0; i < 15; i++) {
+                const courseId = allCourses[i % allCourses.length]?.id || 'course_001';
+                const quiz = {
+                    id: `quiz_${String(i + 1).padStart(3, '0')}`,
+                    title: quizTitles[i % quizTitles.length],
+                    description: `Assessment quiz for ${quizTitles[i % quizTitles.length]}`,
+                    courseId: courseId,
+                    questionCount: Math.floor(Math.random() * 20) + 5,
+                    timeLimit: [30, 45, 60, 90, 120][Math.floor(Math.random() * 5)],
+                    passingScore: 70,
+                    maxAttempts: Math.floor(Math.random() * 3) + 1,
+                    status: statuses[i % statuses.length],
+                    attempts: Math.floor(Math.random() * 50),
+                    createdAt: new Date(Date.now() - Math.random() * 90 * 24 * 60 * 60 * 1000).toISOString(),
+                    createdBy: currentUser.id,
+                    isActive: statuses[i % statuses.length] === 'active'
+                };
+                quizzes.push(quiz);
+            }
+
+            return quizzes;
+        }
+
+        // Populate course filters
+        function populateCourseFilters() {
+            const courseFilter = document.getElementById('courseFilter');
+            const importCourseFilter = document.getElementById('importCourseId');
+            
+            let coursesToShow = allCourses;
+            if (currentUser.role === 'teacher') {
+                coursesToShow = allCourses.filter(c => c.teacherId === currentUser.id);
+            }
+            
+            // Course filter dropdown
+            courseFilter.innerHTML = `<option value="">${LMS.t('common.allCourses')}</option>`;
+            coursesToShow.forEach(course => {
+                const option = document.createElement('option');
+                option.value = course.id;
+                option.textContent = course.title;
+                courseFilter.appendChild(option);
+            });
+
+            // Import course dropdown
+            importCourseFilter.innerHTML = `<option value="">${LMS.t('common.selectOption')}</option>`;
+            coursesToShow.forEach(course => {
+                const option = document.createElement('option');
+                option.value = course.id;
+                option.textContent = course.title;
+                importCourseFilter.appendChild(option);
+            });
+        }
+
+        // Apply filters
+        function applyFilters() {
+            filteredQuizzes = [...allQuizzes];
+
+            // Course filter
+            const courseFilter = document.getElementById('courseFilter').value;
+            if (courseFilter) {
+                filteredQuizzes = filteredQuizzes.filter(q => q.courseId === courseFilter);
+            }
+
+            // Status filter
+            const statusFilter = document.getElementById('statusFilter').value;
+            if (statusFilter) {
+                filteredQuizzes = filteredQuizzes.filter(q => q.status === statusFilter);
+            }
+
+            // Search filter
+            const searchTerm = document.getElementById('searchInput').value.toLowerCase();
+            if (searchTerm) {
+                filteredQuizzes = filteredQuizzes.filter(quiz => 
+                    quiz.title.toLowerCase().includes(searchTerm) ||
+                    quiz.description.toLowerCase().includes(searchTerm)
+                );
+            }
+
+            currentPage = 1;
+        }
+
+        // Update statistics
+        function updateStatistics() {
+            const total = allQuizzes.length;
+            const active = allQuizzes.filter(q => q.status === 'active').length;
+            const draft = allQuizzes.filter(q => q.status === 'draft').length;
+            const totalAttempts = allQuizzes.reduce((sum, q) => sum + (q.attempts || 0), 0);
+            
+            document.getElementById('totalQuizzes').textContent = total;
+            document.getElementById('activeQuizzes').textContent = active;
+            document.getElementById('draftQuizzes').textContent = draft;
+            document.getElementById('totalAttempts').textContent = totalAttempts;
+        }
+
+        // Display quizzes
+        function displayQuizzes() {
+            const tbody = document.getElementById('quizTableBody');
+            const emptyState = document.getElementById('emptyState');
+            
+            if (filteredQuizzes.length === 0) {
+                tbody.innerHTML = '';
+                emptyState.style.display = 'block';
+                updatePagination();
+                return;
+            }
+            
+            emptyState.style.display = 'none';
+            
+            // Pagination
+            const startIndex = (currentPage - 1) * rowsPerPage;
+            const endIndex = startIndex + rowsPerPage;
+            const pageQuizzes = filteredQuizzes.slice(startIndex, endIndex);
+            
+            tbody.innerHTML = pageQuizzes.map(quiz => {
+                const course = allCourses.find(c => c.id === quiz.courseId);
+                
+                return `
+                    <tr>
+                        <td>
+                            <div>
+                                <div style="font-weight: var(--font-weight-medium);">${quiz.title}</div>
+                                <div style="font-size: var(--font-size-sm); color: var(--text-secondary);">${quiz.description}</div>
+                            </div>
+                        </td>
+                        <td>
+                            <div style="font-weight: var(--font-weight-medium);">${course?.title || 'Unknown Course'}</div>
+                        </td>
+                        <td class="table__cell--center">${quiz.questionCount}</td>
+                        <td class="table__cell--center">${quiz.timeLimit} min</td>
+                        <td class="table__cell--center">${quiz.attempts || 0}</td>
+                        <td class="table__cell--center">${getStatusBadge(quiz.status)}</td>
+                        <td class="table__cell--center">${new Date(quiz.createdAt).toLocaleDateString()}</td>
+                        <td class="table__cell--center">
+                            <div class="action-buttons">
+                                <button class="btn btn--ghost btn--small" onclick="viewQuiz('${quiz.id}')" title="${LMS.t('common.view')}">
+                                    <i class="fas fa-eye"></i>
+                                </button>
+                                <button class="btn btn--ghost btn--small" onclick="editQuiz('${quiz.id}')" title="${LMS.t('common.edit')}">
+                                    <i class="fas fa-edit"></i>
+                                </button>
+                                <button class="btn btn--ghost btn--small" onclick="duplicateQuiz('${quiz.id}')" title="${LMS.t('quiz.duplicate')}">
+                                    <i class="fas fa-copy"></i>
+                                </button>
+                                <button class="btn btn--ghost btn--small text-danger" onclick="deleteQuiz('${quiz.id}')" title="${LMS.t('common.delete')}">
+                                    <i class="fas fa-trash-alt"></i>
+                                </button>
+                            </div>
+                        </td>
+                    </tr>
+                `;
+            }).join('');
+            
+            updatePagination();
+        }
+
+        // Get status badge
+        function getStatusBadge(status) {
+            const badges = {
+                draft: '<span class="badge badge--warning">Draft</span>',
+                active: '<span class="badge badge--success">Active</span>',
+                archived: '<span class="badge badge--secondary">Archived</span>'
+            };
+            return badges[status] || `<span class="badge badge--secondary">${status}</span>`;
+        }
+
+        // Update pagination
+        function updatePagination() {
+            const totalPages = Math.ceil(filteredQuizzes.length / rowsPerPage);
+            const startRow = (currentPage - 1) * rowsPerPage + 1;
+            const endRow = Math.min(currentPage * rowsPerPage, filteredQuizzes.length);
+            
+            document.getElementById('startRow').textContent = filteredQuizzes.length > 0 ? startRow : 0;
+            document.getElementById('endRow').textContent = endRow;
+            document.getElementById('totalRows').textContent = filteredQuizzes.length;
+            
+            // Pagination controls
+            const controls = document.getElementById('paginationControls');
+            let html = '';
+            
+            if (totalPages > 1) {
+                html += `<button class="table__pagination-button" onclick="goToPage(1)" ${currentPage === 1 ? 'disabled' : ''}>${LMS.t('pagination.first')}</button>`;
+                html += `<button class="table__pagination-button" onclick="goToPage(${currentPage - 1})" ${currentPage === 1 ? 'disabled' : ''}>${LMS.t('pagination.previous')}</button>`;
+                
+                for (let i = Math.max(1, currentPage - 2); i <= Math.min(totalPages, currentPage + 2); i++) {
+                    html += `<button class="table__pagination-button ${i === currentPage ? 'table__pagination-button--active' : ''}" onclick="goToPage(${i})">${i}</button>`;
+                }
+                
+                html += `<button class="table__pagination-button" onclick="goToPage(${currentPage + 1})" ${currentPage === totalPages ? 'disabled' : ''}>${LMS.t('pagination.next')}</button>`;
+                html += `<button class="table__pagination-button" onclick="goToPage(${totalPages})" ${currentPage === totalPages ? 'disabled' : ''}>${LMS.t('pagination.last')}</button>`;
+            }
+            
+            controls.innerHTML = html;
+        }
+
+        // Filter functions
+        function filterQuizzes() {
+            applyFilters();
+            displayQuizzes();
+        }
+
+        function refreshData() {
+            location.reload();
+        }
+
+        // Quiz actions
+        function createQuiz() {
+            window.location.href = 'quiz-builder.html';
+        }
+
+        function viewQuiz(quizId) {
+            const quiz = allQuizzes.find(q => q.id === quizId);
+            const course = allCourses.find(c => c.id === quiz.courseId);
+            
+            document.getElementById('detailModalTitle').textContent = quiz.title;
+            document.getElementById('detailModalContent').innerHTML = `
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: var(--spacing-6);">
+                    <div>
+                        <h4>${LMS.t('quiz.basicInfo')}</h4>
+                        <p><strong>${LMS.t('quiz.title')}:</strong> ${quiz.title}</p>
+                        <p><strong>${LMS.t('quiz.description')}:</strong> ${quiz.description}</p>
+                        <p><strong>${LMS.t('course.title')}:</strong> ${course?.title || 'Unknown'}</p>
+                        <p><strong>${LMS.t('common.status')}:</strong> ${getStatusBadge(quiz.status)}</p>
+                        <p><strong>${LMS.t('quiz.createdDate')}:</strong> ${new Date(quiz.createdAt).toLocaleDateString()}</p>
+                    </div>
+                    <div>
+                        <h4>${LMS.t('quiz.settings')}</h4>
+                        <p><strong>${LMS.t('quiz.questions')}:</strong> ${quiz.questionCount} questions</p>
+                        <p><strong>${LMS.t('quiz.timeLimit')}:</strong> ${quiz.timeLimit} minutes</p>
+                        <p><strong>${LMS.t('quiz.passingScore')}:</strong> ${quiz.passingScore}%</p>
+                        <p><strong>${LMS.t('quiz.maxAttempts')}:</strong> ${quiz.maxAttempts}</p>
+                        <p><strong>${LMS.t('quiz.attempts')}:</strong> ${quiz.attempts || 0} total</p>
+                    </div>
+                </div>
+            `;
+            
+            document.getElementById('detailModalActions').innerHTML = `
+                <button class="btn btn--primary" onclick="editQuiz('${quiz.id}'); closeDetailModal();">
+                    <i class="fas fa-edit" style="margin-right: 8px;"></i>
+                    ${LMS.t('common.edit')}
+                </button>
+                <button class="btn btn--secondary" onclick="duplicateQuiz('${quiz.id}'); closeDetailModal();">
+                    <i class="fas fa-copy" style="margin-right: 8px;"></i>
+                    ${LMS.t('quiz.duplicate')}
+                </button>
+            `;
+            
+            document.getElementById('detailModalBackdrop').classList.add('active');
+            document.getElementById('detailModal').classList.add('active');
+        }
+
+        function editQuiz(quizId) {
+            window.location.href = `quiz-builder.html?id=${quizId}`;
+        }
+
+        function duplicateQuiz(quizId) {
+            if (!confirm(LMS.t('quiz.duplicateConfirm'))) return;
+            
+            const originalQuiz = allQuizzes.find(q => q.id === quizId);
+            if (!originalQuiz) return;
+            
+            const newQuiz = {
+                ...originalQuiz,
+                id: 'quiz_' + Date.now(),
+                title: originalQuiz.title + ' (Copy)',
+                status: 'draft',
+                attempts: 0,
+                createdAt: new Date().toISOString()
+            };
+            
+            allQuizzes.push(newQuiz);
+            LMS.showToast(LMS.t('quiz.duplicated'), 'success');
+            displayQuizzes();
+            updateStatistics();
+        }
+
+        function deleteQuiz(quizId) {
+            if (!confirm(LMS.t('quiz.deleteConfirm'))) return;
+            
+            const index = allQuizzes.findIndex(q => q.id === quizId);
+            if (index !== -1) {
+                allQuizzes.splice(index, 1);
+                LMS.showToast(LMS.t('quiz.deleted'), 'success');
+                applyFilters();
+                displayQuizzes();
+                updateStatistics();
+            }
+        }
+
+        // Import/Export functions
+        function importQuiz() {
+            document.getElementById('importModalBackdrop').classList.add('active');
+            document.getElementById('importModal').classList.add('active');
+        }
+
+        function closeImportModal() {
+            document.getElementById('importModalBackdrop').classList.remove('active');
+            document.getElementById('importModal').classList.remove('active');
+            
+            // Reset form
+            document.getElementById('importFile').value = '';
+            document.getElementById('importCourseId').value = '';
+            document.getElementById('overwriteExisting').checked = false;
+            document.getElementById('importPreview').style.display = 'none';
+            document.getElementById('importBtn').disabled = true;
+        }
+
+        function executeImport() {
+            const file = document.getElementById('importFile').files[0];
+            const courseId = document.getElementById('importCourseId').value;
+            
+            if (!file || !courseId) {
+                LMS.showToast(LMS.t('validation.required'), 'error');
+                return;
+            }
+            
+            // Simulate import process
+            LMS.showToast(LMS.t('quiz.importing'), 'info');
+            
+            setTimeout(() => {
+                LMS.showToast(LMS.t('quiz.importSuccess'), 'success');
+                closeImportModal();
+                refreshData();
+            }, 2000);
+        }
+
+        function exportQuizzes() {
+            const data = filteredQuizzes.map(quiz => {
+                const course = allCourses.find(c => c.id === quiz.courseId);
+                return {
+                    'Quiz Title': quiz.title,
+                    'Description': quiz.description,
+                    'Course': course?.title || 'Unknown',
+                    'Questions': quiz.questionCount,
+                    'Time Limit': quiz.timeLimit + ' min',
+                    'Passing Score': quiz.passingScore + '%',
+                    'Max Attempts': quiz.maxAttempts,
+                    'Status': quiz.status,
+                    'Total Attempts': quiz.attempts || 0,
+                    'Created Date': new Date(quiz.createdAt).toLocaleDateString()
+                };
+            });
+            
+            // Convert to CSV
+            const headers = Object.keys(data[0] || {});
+            const csvContent = [
+                headers.join(','),
+                ...data.map(row => headers.map(header => `"${row[header]}"`).join(','))
+            ].join('\n');
+            
+            // Download
+            const blob = new Blob([csvContent], { type: 'text/csv' });
+            const url = window.URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `quizzes_${new Date().toISOString().split('T')[0]}.csv`;
+            a.click();
+            window.URL.revokeObjectURL(url);
+        }
+
+        function closeDetailModal() {
+            document.getElementById('detailModalBackdrop').classList.remove('active');
+            document.getElementById('detailModal').classList.remove('active');
+        }
+
+        // Pagination
+        function goToPage(page) {
+            currentPage = page;
+            displayQuizzes();
+        }
+
+        // File input change handler
+        document.addEventListener('DOMContentLoaded', function() {
+            document.getElementById('importFile').addEventListener('change', function(e) {
+                const file = e.target.files[0];
+                const courseId = document.getElementById('importCourseId').value;
+                
+                if (file && courseId) {
+                    document.getElementById('importBtn').disabled = false;
+                    
+                    // Show preview
+                    document.getElementById('importPreview').style.display = 'block';
+                    document.getElementById('importPreviewContent').innerHTML = `
+                        <p><strong>File:</strong> ${file.name}</p>
+                        <p><strong>Size:</strong> ${(file.size / 1024).toFixed(2)} KB</p>
+                        <p><strong>Type:</strong> ${file.type || 'Unknown'}</p>
+                        <p><strong>Target Course:</strong> ${document.getElementById('importCourseId').selectedOptions[0]?.text}</p>
+                    `;
+                } else {
+                    document.getElementById('importBtn').disabled = true;
+                    document.getElementById('importPreview').style.display = 'none';
+                }
+            });
+        });
+
+        // Initialize on load
+        document.addEventListener('DOMContentLoaded', init);
+    </script>
+</body>
+</html>
