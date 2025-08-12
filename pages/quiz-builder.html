@@ -1,0 +1,1162 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quiz Builder - LMS</title>
+    <!-- Core CSS -->
+    <link rel="stylesheet" href="../assets/css/global.css">
+    <link rel="stylesheet" href="../assets/css/components.css">
+    <link rel="stylesheet" href="../assets/css/themes.css">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <!-- Configuration -->
+    <script src="../config.js"></script>
+    
+    <style>
+        /* Quiz Builder Specific Styles */
+        .quiz-builder {
+            display: grid;
+            grid-template-columns: 300px 1fr;
+            gap: var(--spacing-6);
+            height: calc(100vh - 120px);
+        }
+        
+        .builder-sidebar {
+            background: var(--bg-secondary);
+            border-radius: var(--radius-lg);
+            padding: var(--spacing-4);
+            overflow-y: auto;
+        }
+        
+        .builder-main {
+            overflow-y: auto;
+        }
+        
+        .question-item {
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-md);
+            margin-bottom: var(--spacing-4);
+            background: var(--bg-primary);
+            transition: all var(--transition-base);
+        }
+        
+        .question-item:hover {
+            border-color: var(--color-primary);
+            transform: translateY(-1px);
+        }
+        
+        .question-item.active {
+            border-color: var(--color-primary);
+            box-shadow: var(--shadow-md);
+        }
+        
+        .question-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: var(--spacing-4);
+            border-bottom: 1px solid var(--border-color);
+            cursor: pointer;
+        }
+        
+        .question-body {
+            padding: var(--spacing-4);
+            display: none;
+        }
+        
+        .question-item.active .question-body {
+            display: block;
+        }
+        
+        .question-type-badge {
+            font-size: var(--font-size-xs);
+            padding: 0.25rem 0.5rem;
+            border-radius: var(--radius-sm);
+            font-weight: var(--font-weight-medium);
+        }
+        
+        .option-item {
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-3);
+            padding: var(--spacing-3);
+            margin-bottom: var(--spacing-2);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-md);
+            background: var(--bg-secondary);
+        }
+        
+        .option-item.correct {
+            border-color: var(--color-success);
+            background: var(--color-success-light, rgba(16, 185, 129, 0.1));
+        }
+        
+        .question-sidebar-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: var(--spacing-3);
+            margin-bottom: var(--spacing-2);
+            border-radius: var(--radius-md);
+            cursor: pointer;
+            transition: all var(--transition-base);
+        }
+        
+        .question-sidebar-item:hover {
+            background: var(--bg-tertiary);
+        }
+        
+        .question-sidebar-item.active {
+            background: var(--color-primary);
+            color: white;
+        }
+        
+        .quiz-preview {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+            opacity: 0;
+            visibility: hidden;
+            transition: all var(--transition-base);
+        }
+        
+        .quiz-preview.active {
+            opacity: 1;
+            visibility: visible;
+        }
+        
+        .quiz-preview-content {
+            background: var(--bg-primary);
+            border-radius: var(--radius-lg);
+            max-width: 800px;
+            width: 90%;
+            max-height: 90%;
+            overflow-y: auto;
+            padding: var(--spacing-6);
+        }
+        
+        .question-counter {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            background: var(--color-primary);
+            color: white;
+            font-size: var(--font-size-sm);
+            font-weight: var(--font-weight-bold);
+        }
+        
+        /* Responsive */
+        @media (max-width: 968px) {
+            .quiz-builder {
+                grid-template-columns: 1fr;
+                gap: var(--spacing-4);
+            }
+            
+            .builder-sidebar {
+                order: 2;
+                max-height: 300px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="page-container">
+        <!-- Page Header -->
+        <div class="page-header">
+            <div style="display: flex; justify-content: space-between; align-items: center;">
+                <div>
+                    <h1 class="page-title" id="pageTitle" data-translate="quiz.createQuiz">Create Quiz</h1>
+                    <p class="page-subtitle" data-translate="quiz.builderSubtitle">Build your quiz with questions and settings</p>
+                </div>
+                <div style="display: flex; gap: var(--spacing-3);">
+                    <button class="btn btn--secondary" onclick="previewQuiz()">
+                        <i class="fas fa-eye" style="margin-right: 8px;"></i>
+                        <span data-translate="quiz.preview">Preview</span>
+                    </button>
+                    <button class="btn btn--secondary" onclick="saveDraft()" id="saveDraftBtn">
+                        <i class="fas fa-save" style="margin-right: 8px;"></i>
+                        <span data-translate="quiz.saveDraft">Save Draft</span>
+                    </button>
+                    <button class="btn btn--success" onclick="publishQuiz()" id="publishBtn">
+                        <i class="fas fa-rocket" style="margin-right: 8px;"></i>
+                        <span data-translate="quiz.publish">Publish</span>
+                    </button>
+                    <button class="btn btn--ghost" onclick="goBack()">
+                        <i class="fas fa-times" style="margin-right: 8px;"></i>
+                        <span data-translate="common.cancel">Cancel</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <div class="page-content">
+            <div class="quiz-builder">
+                <!-- Sidebar -->
+                <div class="builder-sidebar">
+                    <!-- Quiz Info Section -->
+                    <div class="card" style="margin-bottom: var(--spacing-4);">
+                        <div class="card__header">
+                            <h3 data-translate="quiz.basicInfo">Basic Information</h3>
+                        </div>
+                        <div class="card__body">
+                            <div class="form-group">
+                                <label class="form-label" data-translate="quiz.title">Quiz Title</label>
+                                <input type="text" id="quizTitle" class="form-input" placeholder="Enter quiz title..." 
+                                       data-translate-placeholder="quiz.titlePlaceholder">
+                            </div>
+                            
+                            <div class="form-group">
+                                <label class="form-label" data-translate="quiz.description">Description</label>
+                                <textarea id="quizDescription" class="form-input" rows="3" placeholder="Enter quiz description..."
+                                          data-translate-placeholder="quiz.descriptionPlaceholder"></textarea>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label class="form-label" data-translate="course.selectCourse">Course</label>
+                                <select id="quizCourse" class="form-select">
+                                    <option value="" data-translate="common.selectOption">Select a course...</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Quiz Settings -->
+                    <div class="card" style="margin-bottom: var(--spacing-4);">
+                        <div class="card__header">
+                            <h3 data-translate="quiz.settings">Quiz Settings</h3>
+                        </div>
+                        <div class="card__body">
+                            <div class="form-group">
+                                <label class="form-label" data-translate="quiz.timeLimit">Time Limit (minutes)</label>
+                                <input type="number" id="quizTimeLimit" class="form-input" value="60" min="1" max="300">
+                            </div>
+                            
+                            <div class="form-group">
+                                <label class="form-label" data-translate="quiz.passingScore">Passing Score (%)</label>
+                                <input type="number" id="quizPassingScore" class="form-input" value="70" min="0" max="100">
+                            </div>
+                            
+                            <div class="form-group">
+                                <label class="form-label" data-translate="quiz.maxAttempts">Max Attempts</label>
+                                <select id="quizMaxAttempts" class="form-select">
+                                    <option value="1">1 attempt</option>
+                                    <option value="2">2 attempts</option>
+                                    <option value="3" selected>3 attempts</option>
+                                    <option value="5">5 attempts</option>
+                                    <option value="-1" data-translate="quiz.unlimited">Unlimited</option>
+                                </select>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label class="checkbox-label">
+                                    <input type="checkbox" id="quizShuffleQuestions">
+                                    <span class="checkbox-custom"></span>
+                                    <span data-translate="quiz.shuffleQuestions">Shuffle Questions</span>
+                                </label>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label class="checkbox-label">
+                                    <input type="checkbox" id="quizShowResults">
+                                    <span class="checkbox-custom"></span>
+                                    <span data-translate="quiz.showResults">Show Results Immediately</span>
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Questions List -->
+                    <div class="card">
+                        <div class="card__header">
+                            <div style="display: flex; justify-content: space-between; align-items: center;">
+                                <h3 data-translate="quiz.questions">Questions</h3>
+                                <span class="badge badge--primary" id="questionCount">0</span>
+                            </div>
+                        </div>
+                        <div class="card__body">
+                            <div id="questionsList">
+                                <!-- Dynamic questions list -->
+                            </div>
+                            
+                            <button class="btn btn--primary btn--small" onclick="addQuestion()" style="width: 100%;">
+                                <i class="fas fa-plus" style="margin-right: 8px;"></i>
+                                <span data-translate="quiz.addQuestion">Add Question</span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Main Content Area -->
+                <div class="builder-main">
+                    <div id="questionsContainer">
+                        <!-- Welcome State -->
+                        <div id="welcomeState" class="card" style="text-align: center; padding: var(--spacing-8);">
+                            <i class="fas fa-question-circle" style="font-size: 64px; color: var(--text-muted); margin-bottom: var(--spacing-4);"></i>
+                            <h3 data-translate="quiz.welcomeTitle">Welcome to Quiz Builder</h3>
+                            <p style="color: var(--text-secondary); margin-bottom: var(--spacing-6);" data-translate="quiz.welcomeMessage">
+                                Start by filling in the quiz information on the left, then add your first question.
+                            </p>
+                            <button class="btn btn--primary" onclick="addQuestion()">
+                                <i class="fas fa-plus-circle" style="margin-right: 8px;"></i>
+                                <span data-translate="quiz.addFirstQuestion">Add Your First Question</span>
+                            </button>
+                        </div>
+
+                        <!-- Questions will be dynamically added here -->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Add Question Type Modal -->
+    <div class="modal-backdrop" id="questionTypeModalBackdrop">
+        <div class="modal modal--medium" id="questionTypeModal">
+            <div class="modal__header">
+                <h2 class="modal__title" data-translate="quiz.selectQuestionType">Select Question Type</h2>
+                <button class="modal__close" onclick="closeQuestionTypeModal()">×</button>
+            </div>
+            <div class="modal__body">
+                <div class="grid grid--2-cols" style="gap: var(--spacing-4);">
+                    <div class="question-type-option" onclick="createQuestion('multiple-choice')">
+                        <div style="text-align: center; padding: var(--spacing-4); border: 2px solid var(--border-color); border-radius: var(--radius-md); cursor: pointer; transition: all var(--transition-base);">
+                            <i class="fas fa-list" style="font-size: 2rem; color: var(--color-primary); margin-bottom: var(--spacing-2);"></i>
+                            <h4 data-translate="quiz.multipleChoice">Multiple Choice</h4>
+                            <p style="font-size: var(--font-size-sm); color: var(--text-secondary);" data-translate="quiz.multipleChoiceDesc">
+                                Single correct answer from multiple options
+                            </p>
+                        </div>
+                    </div>
+                    
+                    <div class="question-type-option" onclick="createQuestion('true-false')">
+                        <div style="text-align: center; padding: var(--spacing-4); border: 2px solid var(--border-color); border-radius: var(--radius-md); cursor: pointer; transition: all var(--transition-base);">
+                            <i class="fas fa-check-circle" style="font-size: 2rem; color: var(--color-success); margin-bottom: var(--spacing-2);"></i>
+                            <h4 data-translate="quiz.trueFalse">True / False</h4>
+                            <p style="font-size: var(--font-size-sm); color: var(--text-secondary);" data-translate="quiz.trueFalseDesc">
+                                Simple true or false question
+                            </p>
+                        </div>
+                    </div>
+                    
+                    <div class="question-type-option" onclick="createQuestion('text-input')">
+                        <div style="text-align: center; padding: var(--spacing-4); border: 2px solid var(--border-color); border-radius: var(--radius-md); cursor: pointer; transition: all var(--transition-base);">
+                            <i class="fas fa-keyboard" style="font-size: 2rem; color: var(--color-info); margin-bottom: var(--spacing-2);"></i>
+                            <h4 data-translate="quiz.textInput">Text Input</h4>
+                            <p style="font-size: var(--font-size-sm); color: var(--text-secondary);" data-translate="quiz.textInputDesc">
+                                Open-ended text answer
+                            </p>
+                        </div>
+                    </div>
+                    
+                    <div class="question-type-option" onclick="createQuestion('multiple-select')">
+                        <div style="text-align: center; padding: var(--spacing-4); border: 2px solid var(--border-color); border-radius: var(--radius-md); cursor: pointer; transition: all var(--transition-base);">
+                            <i class="fas fa-check-square" style="font-size: 2rem; color: var(--color-warning); margin-bottom: var(--spacing-2);"></i>
+                            <h4 data-translate="quiz.multipleSelect">Multiple Select</h4>
+                            <p style="font-size: var(--font-size-sm); color: var(--text-secondary);" data-translate="quiz.multipleSelectDesc">
+                                Multiple correct answers
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Quiz Preview Modal -->
+    <div class="quiz-preview" id="quizPreview">
+        <div class="quiz-preview-content">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: var(--spacing-6);">
+                <h2 data-translate="quiz.previewTitle">Quiz Preview</h2>
+                <button class="btn btn--ghost" onclick="closePreview()">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div id="previewContent">
+                <!-- Dynamic preview content -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Core JavaScript -->
+    <script src="../assets/js/global.js"></script>
+    <script src="../assets/js/auth.js"></script>
+    <script src="../assets/js/api.js"></script>
+    
+    <script>
+        // State management
+        let currentQuiz = {
+            id: null,
+            title: '',
+            description: '',
+            courseId: '',
+            timeLimit: 60,
+            passingScore: 70,
+            maxAttempts: 3,
+            shuffleQuestions: false,
+            showResults: false,
+            questions: [],
+            status: 'draft'
+        };
+        
+        let allCourses = [];
+        let currentUser = LMS.Auth.getUser();
+        let activeQuestionId = null;
+        let isEditMode = false;
+        let questionIdCounter = 1;
+
+        // Initialize
+        async function init() {
+            // Check authentication - teachers and admins only
+            if (!LMS.Auth.isAuthenticated() || !currentUser || 
+                (currentUser.role !== 'teacher' && currentUser.role !== 'admin')) {
+                window.location.href = '../index.html';
+                return;
+            }
+
+            // Load translations
+            await LMS.LanguageManager.init();
+            LMS.LanguageManager.updatePageTranslations();
+            
+            // Check if editing existing quiz
+            const urlParams = new URLSearchParams(window.location.search);
+            const quizId = urlParams.get('id');
+            
+            if (quizId) {
+                isEditMode = true;
+                document.getElementById('pageTitle').textContent = LMS.t('quiz.editQuiz');
+                await loadQuiz(quizId);
+            }
+            
+            // Load data
+            await loadCourses();
+            setupEventListeners();
+            updateUI();
+        }
+
+        // Load courses for dropdown
+        async function loadCourses() {
+            try {
+                const response = await LMS.API.loadJSON('mock-courses.json');
+                allCourses = response.data || [];
+                
+                // Filter courses for teachers
+                if (currentUser.role === 'teacher') {
+                    allCourses = allCourses.filter(c => c.teacherId === currentUser.id);
+                }
+                
+                populateCourseDropdown();
+                
+            } catch (error) {
+                console.error('Failed to load courses:', error);
+                LMS.showToast(LMS.t('error.loadData'), 'error');
+            }
+        }
+
+        // Load existing quiz for editing
+        async function loadQuiz(quizId) {
+            try {
+                // In a real app, this would load from API
+                // For demo, we'll simulate loading
+                LMS.showToast(LMS.t('quiz.loading'), 'info');
+                
+                // Simulate loading delay
+                await new Promise(resolve => setTimeout(resolve, 1000));
+                
+                // For demo, create sample quiz data
+                currentQuiz = {
+                    id: quizId,
+                    title: 'Sample Quiz',
+                    description: 'This is a sample quiz for demonstration',
+                    courseId: allCourses[0]?.id || '',
+                    timeLimit: 45,
+                    passingScore: 80,
+                    maxAttempts: 2,
+                    shuffleQuestions: true,
+                    showResults: true,
+                    status: 'draft',
+                    questions: [
+                        {
+                            id: 'q1',
+                            type: 'multiple-choice',
+                            question: 'What is the capital of France?',
+                            points: 1,
+                            options: [
+                                { id: 'o1', text: 'London', correct: false },
+                                { id: 'o2', text: 'Paris', correct: true },
+                                { id: 'o3', text: 'Berlin', correct: false },
+                                { id: 'o4', text: 'Madrid', correct: false }
+                            ]
+                        },
+                        {
+                            id: 'q2',
+                            type: 'true-false',
+                            question: 'The Earth is flat.',
+                            points: 1,
+                            answer: false
+                        }
+                    ]
+                };
+                
+                questionIdCounter = currentQuiz.questions.length + 1;
+                
+            } catch (error) {
+                console.error('Failed to load quiz:', error);
+                LMS.showToast(LMS.t('error.loadData'), 'error');
+            }
+        }
+
+        // Populate course dropdown
+        function populateCourseDropdown() {
+            const select = document.getElementById('quizCourse');
+            select.innerHTML = `<option value="">${LMS.t('common.selectOption')}</option>`;
+            
+            allCourses.forEach(course => {
+                const option = document.createElement('option');
+                option.value = course.id;
+                option.textContent = course.title;
+                if (course.id === currentQuiz.courseId) {
+                    option.selected = true;
+                }
+                select.appendChild(option);
+            });
+        }
+
+        // Setup event listeners
+        function setupEventListeners() {
+            // Quiz info fields
+            document.getElementById('quizTitle').addEventListener('input', (e) => {
+                currentQuiz.title = e.target.value;
+            });
+            
+            document.getElementById('quizDescription').addEventListener('input', (e) => {
+                currentQuiz.description = e.target.value;
+            });
+            
+            document.getElementById('quizCourse').addEventListener('change', (e) => {
+                currentQuiz.courseId = e.target.value;
+            });
+            
+            // Quiz settings
+            document.getElementById('quizTimeLimit').addEventListener('input', (e) => {
+                currentQuiz.timeLimit = parseInt(e.target.value);
+            });
+            
+            document.getElementById('quizPassingScore').addEventListener('input', (e) => {
+                currentQuiz.passingScore = parseInt(e.target.value);
+            });
+            
+            document.getElementById('quizMaxAttempts').addEventListener('change', (e) => {
+                currentQuiz.maxAttempts = parseInt(e.target.value);
+            });
+            
+            document.getElementById('quizShuffleQuestions').addEventListener('change', (e) => {
+                currentQuiz.shuffleQuestions = e.target.checked;
+            });
+            
+            document.getElementById('quizShowResults').addEventListener('change', (e) => {
+                currentQuiz.showResults = e.target.checked;
+            });
+
+            // Question type modal styles
+            document.addEventListener('click', function(e) {
+                if (e.target.closest('.question-type-option')) {
+                    const option = e.target.closest('.question-type-option');
+                    const div = option.querySelector('div');
+                    div.style.borderColor = 'var(--color-primary)';
+                    div.style.backgroundColor = 'var(--color-primary-light, rgba(44, 110, 170, 0.1))';
+                }
+            });
+        }
+
+        // Update UI with current quiz data
+        function updateUI() {
+            // Update form fields
+            document.getElementById('quizTitle').value = currentQuiz.title;
+            document.getElementById('quizDescription').value = currentQuiz.description;
+            document.getElementById('quizCourse').value = currentQuiz.courseId;
+            document.getElementById('quizTimeLimit').value = currentQuiz.timeLimit;
+            document.getElementById('quizPassingScore').value = currentQuiz.passingScore;
+            document.getElementById('quizMaxAttempts').value = currentQuiz.maxAttempts;
+            document.getElementById('quizShuffleQuestions').checked = currentQuiz.shuffleQuestions;
+            document.getElementById('quizShowResults').checked = currentQuiz.showResults;
+            
+            // Update questions
+            updateQuestionsList();
+            updateQuestionsContainer();
+            updateQuestionCount();
+        }
+
+        // Update questions list in sidebar
+        function updateQuestionsList() {
+            const container = document.getElementById('questionsList');
+            
+            if (currentQuiz.questions.length === 0) {
+                container.innerHTML = `
+                    <div style="text-align: center; color: var(--text-secondary); padding: var(--spacing-4);">
+                        <p data-translate="quiz.noQuestions">No questions yet</p>
+                    </div>
+                `;
+                return;
+            }
+            
+            container.innerHTML = currentQuiz.questions.map((question, index) => `
+                <div class="question-sidebar-item ${question.id === activeQuestionId ? 'active' : ''}" 
+                     onclick="selectQuestion('${question.id}')">
+                    <div style="display: flex; align-items: center; gap: var(--spacing-2);">
+                        <div class="question-counter">${index + 1}</div>
+                        <div>
+                            <div style="font-weight: var(--font-weight-medium); font-size: var(--font-size-sm);">
+                                ${question.question.length > 30 ? question.question.substring(0, 30) + '...' : question.question}
+                            </div>
+                            <div style="font-size: var(--font-size-xs); color: var(--text-secondary);">
+                                ${getQuestionTypeName(question.type)}
+                            </div>
+                        </div>
+                    </div>
+                    <button class="btn btn--ghost btn--small" onclick="deleteQuestion('${question.id}'); event.stopPropagation();" title="Delete">
+                        <i class="fas fa-trash-alt"></i>
+                    </button>
+                </div>
+            `).join('');
+        }
+
+        // Update main questions container
+        function updateQuestionsContainer() {
+            const container = document.getElementById('questionsContainer');
+            
+            if (currentQuiz.questions.length === 0) {
+                container.innerHTML = `
+                    <div id="welcomeState" class="card" style="text-align: center; padding: var(--spacing-8);">
+                        <i class="fas fa-question-circle" style="font-size: 64px; color: var(--text-muted); margin-bottom: var(--spacing-4);"></i>
+                        <h3 data-translate="quiz.welcomeTitle">Welcome to Quiz Builder</h3>
+                        <p style="color: var(--text-secondary); margin-bottom: var(--spacing-6);" data-translate="quiz.welcomeMessage">
+                            Start by filling in the quiz information on the left, then add your first question.
+                        </p>
+                        <button class="btn btn--primary" onclick="addQuestion()">
+                            <i class="fas fa-plus-circle" style="margin-right: 8px;"></i>
+                            <span data-translate="quiz.addFirstQuestion">Add Your First Question</span>
+                        </button>
+                    </div>
+                `;
+                return;
+            }
+            
+            container.innerHTML = currentQuiz.questions.map((question, index) => `
+                <div class="question-item ${question.id === activeQuestionId ? 'active' : ''}" id="question-${question.id}">
+                    <div class="question-header" onclick="selectQuestion('${question.id}')">
+                        <div style="display: flex; align-items: center; gap: var(--spacing-3);">
+                            <div class="question-counter">${index + 1}</div>
+                            <div>
+                                <div style="font-weight: var(--font-weight-medium);">${question.question}</div>
+                                <div style="display: flex; align-items: center; gap: var(--spacing-2); margin-top: var(--spacing-1);">
+                                    <span class="question-type-badge badge badge--info">${getQuestionTypeName(question.type)}</span>
+                                    <span style="font-size: var(--font-size-sm); color: var(--text-secondary);">${question.points || 1} ${question.points === 1 ? 'point' : 'points'}</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div style="display: flex; gap: var(--spacing-2);">
+                            <button class="btn btn--ghost btn--small" onclick="editQuestion('${question.id}'); event.stopPropagation();" title="Edit">
+                                <i class="fas fa-edit"></i>
+                            </button>
+                            <button class="btn btn--ghost btn--small" onclick="duplicateQuestion('${question.id}'); event.stopPropagation();" title="Duplicate">
+                                <i class="fas fa-copy"></i>
+                            </button>
+                            <button class="btn btn--ghost btn--small text-danger" onclick="deleteQuestion('${question.id}'); event.stopPropagation();" title="Delete">
+                                <i class="fas fa-trash-alt"></i>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="question-body">
+                        ${renderQuestionEditor(question)}
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        // Render question editor based on type
+        function renderQuestionEditor(question) {
+            switch (question.type) {
+                case 'multiple-choice':
+                case 'multiple-select':
+                    return renderMultipleChoiceEditor(question);
+                case 'true-false':
+                    return renderTrueFalseEditor(question);
+                case 'text-input':
+                    return renderTextInputEditor(question);
+                default:
+                    return '<p>Unknown question type</p>';
+            }
+        }
+
+        // Render multiple choice editor
+        function renderMultipleChoiceEditor(question) {
+            return `
+                <div class="form-group">
+                    <label class="form-label" data-translate="quiz.questionText">Question Text</label>
+                    <textarea class="form-input" rows="3" onchange="updateQuestionText('${question.id}', this.value)">${question.question}</textarea>
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label" data-translate="quiz.points">Points</label>
+                    <input type="number" class="form-input" value="${question.points || 1}" min="0" max="10" onchange="updateQuestionPoints('${question.id}', this.value)" style="width: 100px;">
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label" data-translate="quiz.answerOptions">Answer Options</label>
+                    <div id="options-${question.id}">
+                        ${question.options.map(option => `
+                            <div class="option-item ${option.correct ? 'correct' : ''}">
+                                ${question.type === 'multiple-choice' ? 
+                                    `<input type="radio" name="correct-${question.id}" ${option.correct ? 'checked' : ''} onchange="setCorrectOption('${question.id}', '${option.id}')">` :
+                                    `<input type="checkbox" ${option.correct ? 'checked' : ''} onchange="toggleCorrectOption('${question.id}', '${option.id}')">`
+                                }
+                                <input type="text" class="form-input" value="${option.text}" onchange="updateOptionText('${question.id}', '${option.id}', this.value)" style="flex: 1;">
+                                <button class="btn btn--ghost btn--small text-danger" onclick="removeOption('${question.id}', '${option.id}')" title="Remove">
+                                    <i class="fas fa-times"></i>
+                                </button>
+                            </div>
+                        `).join('')}
+                    </div>
+                    <button class="btn btn--secondary btn--small" onclick="addOption('${question.id}')" style="margin-top: var(--spacing-2);">
+                        <i class="fas fa-plus" style="margin-right: 8px;"></i>
+                        <span data-translate="quiz.addOption">Add Option</span>
+                    </button>
+                </div>
+            `;
+        }
+
+        // Render true/false editor
+        function renderTrueFalseEditor(question) {
+            return `
+                <div class="form-group">
+                    <label class="form-label" data-translate="quiz.questionText">Question Text</label>
+                    <textarea class="form-input" rows="3" onchange="updateQuestionText('${question.id}', this.value)">${question.question}</textarea>
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label" data-translate="quiz.points">Points</label>
+                    <input type="number" class="form-input" value="${question.points || 1}" min="0" max="10" onchange="updateQuestionPoints('${question.id}', this.value)" style="width: 100px;">
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label" data-translate="quiz.correctAnswer">Correct Answer</label>
+                    <div style="display: flex; gap: var(--spacing-4);">
+                        <label class="radio-label">
+                            <input type="radio" name="answer-${question.id}" value="true" ${question.answer === true ? 'checked' : ''} onchange="updateTrueFalseAnswer('${question.id}', true)">
+                            <span class="radio-custom"></span>
+                            <span data-translate="quiz.true">True</span>
+                        </label>
+                        <label class="radio-label">
+                            <input type="radio" name="answer-${question.id}" value="false" ${question.answer === false ? 'checked' : ''} onchange="updateTrueFalseAnswer('${question.id}', false)">
+                            <span class="radio-custom"></span>
+                            <span data-translate="quiz.false">False</span>
+                        </label>
+                    </div>
+                </div>
+            `;
+        }
+
+        // Render text input editor
+        function renderTextInputEditor(question) {
+            return `
+                <div class="form-group">
+                    <label class="form-label" data-translate="quiz.questionText">Question Text</label>
+                    <textarea class="form-input" rows="3" onchange="updateQuestionText('${question.id}', this.value)">${question.question}</textarea>
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label" data-translate="quiz.points">Points</label>
+                    <input type="number" class="form-input" value="${question.points || 1}" min="0" max="10" onchange="updateQuestionPoints('${question.id}', this.value)" style="width: 100px;">
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label" data-translate="quiz.expectedAnswer">Expected Answer (for reference)</label>
+                    <textarea class="form-input" rows="2" placeholder="Enter the expected answer for grading reference..." 
+                              onchange="updateTextAnswer('${question.id}', this.value)">${question.expectedAnswer || ''}</textarea>
+                    <span class="form-help" data-translate="quiz.textAnswerHelp">This answer will be used as a reference during manual grading.</span>
+                </div>
+            `;
+        }
+
+        // Get question type display name
+        function getQuestionTypeName(type) {
+            const names = {
+                'multiple-choice': LMS.t('quiz.multipleChoice'),
+                'multiple-select': LMS.t('quiz.multipleSelect'),
+                'true-false': LMS.t('quiz.trueFalse'),
+                'text-input': LMS.t('quiz.textInput')
+            };
+            return names[type] || type;
+        }
+
+        // Question management functions
+        function addQuestion() {
+            document.getElementById('questionTypeModalBackdrop').classList.add('active');
+            document.getElementById('questionTypeModal').classList.add('active');
+        }
+
+        function closeQuestionTypeModal() {
+            document.getElementById('questionTypeModalBackdrop').classList.remove('active');
+            document.getElementById('questionTypeModal').classList.remove('active');
+        }
+
+        function createQuestion(type) {
+            const questionId = 'q' + questionIdCounter++;
+            
+            let newQuestion = {
+                id: questionId,
+                type: type,
+                question: 'Enter your question here...',
+                points: 1
+            };
+            
+            switch (type) {
+                case 'multiple-choice':
+                case 'multiple-select':
+                    newQuestion.options = [
+                        { id: 'o1', text: 'Option 1', correct: false },
+                        { id: 'o2', text: 'Option 2', correct: false },
+                        { id: 'o3', text: 'Option 3', correct: false },
+                        { id: 'o4', text: 'Option 4', correct: false }
+                    ];
+                    break;
+                case 'true-false':
+                    newQuestion.answer = true;
+                    break;
+                case 'text-input':
+                    newQuestion.expectedAnswer = '';
+                    break;
+            }
+            
+            currentQuiz.questions.push(newQuestion);
+            activeQuestionId = questionId;
+            
+            closeQuestionTypeModal();
+            updateUI();
+            
+            // Scroll to new question
+            setTimeout(() => {
+                const element = document.getElementById(`question-${questionId}`);
+                if (element) {
+                    element.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                }
+            }, 100);
+        }
+
+        function selectQuestion(questionId) {
+            activeQuestionId = questionId;
+            updateQuestionsList();
+            updateQuestionsContainer();
+        }
+
+        function deleteQuestion(questionId) {
+            if (!confirm(LMS.t('quiz.deleteQuestionConfirm'))) return;
+            
+            const index = currentQuiz.questions.findIndex(q => q.id === questionId);
+            if (index !== -1) {
+                currentQuiz.questions.splice(index, 1);
+                
+                // Reset active question if deleted
+                if (activeQuestionId === questionId) {
+                    activeQuestionId = null;
+                }
+                
+                updateUI();
+                LMS.showToast(LMS.t('quiz.questionDeleted'), 'success');
+            }
+        }
+
+        function duplicateQuestion(questionId) {
+            const originalQuestion = currentQuiz.questions.find(q => q.id === questionId);
+            if (!originalQuestion) return;
+            
+            const newQuestion = {
+                ...originalQuestion,
+                id: 'q' + questionIdCounter++,
+                question: originalQuestion.question + ' (Copy)'
+            };
+            
+            // Duplicate options if they exist
+            if (newQuestion.options) {
+                newQuestion.options = newQuestion.options.map((option, index) => ({
+                    ...option,
+                    id: 'o' + (index + 1)
+                }));
+            }
+            
+            currentQuiz.questions.push(newQuestion);
+            activeQuestionId = newQuestion.id;
+            updateUI();
+            
+            LMS.showToast(LMS.t('quiz.questionDuplicated'), 'success');
+        }
+
+        // Question editing functions
+        function updateQuestionText(questionId, text) {
+            const question = currentQuiz.questions.find(q => q.id === questionId);
+            if (question) {
+                question.question = text;
+                updateQuestionsList();
+            }
+        }
+
+        function updateQuestionPoints(questionId, points) {
+            const question = currentQuiz.questions.find(q => q.id === questionId);
+            if (question) {
+                question.points = parseInt(points) || 1;
+            }
+        }
+
+        function updateTrueFalseAnswer(questionId, answer) {
+            const question = currentQuiz.questions.find(q => q.id === questionId);
+            if (question) {
+                question.answer = answer;
+            }
+        }
+
+        function updateTextAnswer(questionId, answer) {
+            const question = currentQuiz.questions.find(q => q.id === questionId);
+            if (question) {
+                question.expectedAnswer = answer;
+            }
+        }
+
+        function updateOptionText(questionId, optionId, text) {
+            const question = currentQuiz.questions.find(q => q.id === questionId);
+            if (question && question.options) {
+                const option = question.options.find(o => o.id === optionId);
+                if (option) {
+                    option.text = text;
+                }
+            }
+        }
+
+        function setCorrectOption(questionId, optionId) {
+            const question = currentQuiz.questions.find(q => q.id === questionId);
+            if (question && question.options) {
+                question.options.forEach(option => {
+                    option.correct = option.id === optionId;
+                });
+                updateQuestionsContainer();
+            }
+        }
+
+        function toggleCorrectOption(questionId, optionId) {
+            const question = currentQuiz.questions.find(q => q.id === questionId);
+            if (question && question.options) {
+                const option = question.options.find(o => o.id === optionId);
+                if (option) {
+                    option.correct = !option.correct;
+                    updateQuestionsContainer();
+                }
+            }
+        }
+
+        function addOption(questionId) {
+            const question = currentQuiz.questions.find(q => q.id === questionId);
+            if (question && question.options) {
+                const newOptionId = 'o' + (question.options.length + 1);
+                question.options.push({
+                    id: newOptionId,
+                    text: `Option ${question.options.length + 1}`,
+                    correct: false
+                });
+                updateQuestionsContainer();
+            }
+        }
+
+        function removeOption(questionId, optionId) {
+            const question = currentQuiz.questions.find(q => q.id === questionId);
+            if (question && question.options && question.options.length > 2) {
+                const index = question.options.findIndex(o => o.id === optionId);
+                if (index !== -1) {
+                    question.options.splice(index, 1);
+                    updateQuestionsContainer();
+                }
+            } else {
+                LMS.showToast(LMS.t('quiz.minimumOptions'), 'warning');
+            }
+        }
+
+        function updateQuestionCount() {
+            document.getElementById('questionCount').textContent = currentQuiz.questions.length;
+        }
+
+        // Quiz actions
+        function saveDraft() {
+            if (!validateQuiz()) return;
+            
+            currentQuiz.status = 'draft';
+            saveQuiz();
+        }
+
+        function publishQuiz() {
+            if (!validateQuiz(true)) return;
+            
+            currentQuiz.status = 'active';
+            saveQuiz();
+        }
+
+        function saveQuiz() {
+            // In a real app, this would save to API
+            LMS.showToast(LMS.t('quiz.saving'), 'info');
+            
+            setTimeout(() => {
+                LMS.showToast(LMS.t('quiz.saved'), 'success');
+                // Redirect to quiz list
+                window.location.href = 'quizzes.html';
+            }, 1000);
+        }
+
+        function validateQuiz(forPublish = false) {
+            if (!currentQuiz.title.trim()) {
+                LMS.showToast(LMS.t('validation.titleRequired'), 'error');
+                document.getElementById('quizTitle').focus();
+                return false;
+            }
+            
+            if (!currentQuiz.courseId) {
+                LMS.showToast(LMS.t('validation.courseRequired'), 'error');
+                document.getElementById('quizCourse').focus();
+                return false;
+            }
+            
+            if (forPublish) {
+                if (currentQuiz.questions.length === 0) {
+                    LMS.showToast(LMS.t('validation.questionsRequired'), 'error');
+                    return false;
+                }
+                
+                // Validate each question has correct answers
+                for (let question of currentQuiz.questions) {
+                    if (question.type === 'multiple-choice' || question.type === 'multiple-select') {
+                        const hasCorrect = question.options.some(o => o.correct);
+                        if (!hasCorrect) {
+                            LMS.showToast(LMS.t('validation.correctAnswerRequired'), 'error');
+                            selectQuestion(question.id);
+                            return false;
+                        }
+                    }
+                }
+            }
+            
+            return true;
+        }
+
+        function previewQuiz() {
+            if (currentQuiz.questions.length === 0) {
+                LMS.showToast(LMS.t('quiz.noQuestionsToPreview'), 'warning');
+                return;
+            }
+            
+            generatePreview();
+            document.getElementById('quizPreview').classList.add('active');
+        }
+
+        function generatePreview() {
+            const content = document.getElementById('previewContent');
+            
+            content.innerHTML = `
+                <div class="card">
+                    <div class="card__header">
+                        <h3>${currentQuiz.title}</h3>
+                        <p style="color: var(--text-secondary);">${currentQuiz.description}</p>
+                        <div style="display: flex; gap: var(--spacing-4); margin-top: var(--spacing-3); font-size: var(--font-size-sm);">
+                            <span><i class="fas fa-clock"></i> ${currentQuiz.timeLimit} minutes</span>
+                            <span><i class="fas fa-question-circle"></i> ${currentQuiz.questions.length} questions</span>
+                            <span><i class="fas fa-trophy"></i> ${currentQuiz.passingScore}% to pass</span>
+                        </div>
+                    </div>
+                    <div class="card__body">
+                        ${currentQuiz.questions.map((question, index) => `
+                            <div style="margin-bottom: var(--spacing-6); padding-bottom: var(--spacing-4); border-bottom: 1px solid var(--border-color);">
+                                <h4 style="display: flex; align-items: center; gap: var(--spacing-2);">
+                                    <span class="question-counter">${index + 1}</span>
+                                    ${question.question}
+                                </h4>
+                                ${renderQuestionPreview(question)}
+                            </div>
+                        `).join('')}
+                    </div>
+                </div>
+            `;
+        }
+
+        function renderQuestionPreview(question) {
+            switch (question.type) {
+                case 'multiple-choice':
+                    return `
+                        <div style="margin-top: var(--spacing-3);">
+                            ${question.options.map(option => `
+                                <label class="radio-label" style="display: block; margin-bottom: var(--spacing-2);">
+                                    <input type="radio" name="preview-${question.id}" disabled>
+                                    <span class="radio-custom"></span>
+                                    <span>${option.text}</span>
+                                </label>
+                            `).join('')}
+                        </div>
+                    `;
+                case 'multiple-select':
+                    return `
+                        <div style="margin-top: var(--spacing-3);">
+                            ${question.options.map(option => `
+                                <label class="checkbox-label" style="display: block; margin-bottom: var(--spacing-2);">
+                                    <input type="checkbox" disabled>
+                                    <span class="checkbox-custom"></span>
+                                    <span>${option.text}</span>
+                                </label>
+                            `).join('')}
+                        </div>
+                    `;
+                case 'true-false':
+                    return `
+                        <div style="margin-top: var(--spacing-3); display: flex; gap: var(--spacing-4);">
+                            <label class="radio-label">
+                                <input type="radio" name="preview-${question.id}" disabled>
+                                <span class="radio-custom"></span>
+                                <span>True</span>
+                            </label>
+                            <label class="radio-label">
+                                <input type="radio" name="preview-${question.id}" disabled>
+                                <span class="radio-custom"></span>
+                                <span>False</span>
+                            </label>
+                        </div>
+                    `;
+                case 'text-input':
+                    return `
+                        <div style="margin-top: var(--spacing-3);">
+                            <textarea class="form-input" rows="3" placeholder="Type your answer here..." disabled></textarea>
+                        </div>
+                    `;
+                default:
+                    return '';
+            }
+        }
+
+        function closePreview() {
+            document.getElementById('quizPreview').classList.remove('active');
+        }
+
+        function goBack() {
+            if (confirm(LMS.t('quiz.unsavedChanges'))) {
+                window.location.href = 'quizzes.html';
+            }
+        }
+
+        // Initialize on load
+        document.addEventListener('DOMContentLoaded', init);
+    </script>
+</body>
+</html>
