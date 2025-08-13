@@ -1,0 +1,743 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Class Attendance - LMS</title>
+    <!-- Core CSS -->
+    <link rel="stylesheet" href="../assets/css/global.css">
+    <link rel="stylesheet" href="../assets/css/themes.css">
+    <link rel="stylesheet" href="../assets/css/layout.css">
+    <link rel="stylesheet" href="../assets/css/components.css">
+    <link rel="stylesheet" href="../assets/css/utilities.css">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        /* Attendance specific styles */
+        .attendance-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: var(--spacing-4);
+            flex-wrap: wrap;
+            gap: var(--spacing-3);
+        }
+        
+        .class-info {
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-3);
+        }
+        
+        .class-icon {
+            width: 48px;
+            height: 48px;
+            background: var(--color-primary);
+            color: white;
+            border-radius: var(--radius-base);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+        }
+        
+        .class-details h2 {
+            margin: 0;
+            font-size: 1.5rem;
+        }
+        
+        .class-meta {
+            color: var(--text-secondary);
+            font-size: var(--font-size-sm);
+        }
+        
+        .attendance-stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: var(--spacing-4);
+            margin-bottom: var(--spacing-6);
+        }
+        
+        .stat-card {
+            background: var(--bg-surface);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-lg);
+            padding: var(--spacing-4);
+            text-align: center;
+        }
+        
+        .stat-value {
+            font-size: 2rem;
+            font-weight: var(--font-weight-bold);
+            color: var(--color-primary);
+            margin: var(--spacing-2) 0;
+        }
+        
+        .stat-label {
+            color: var(--text-secondary);
+            font-size: var(--font-size-sm);
+        }
+        
+        .attendance-table {
+            background: var(--bg-surface);
+            border-radius: var(--radius-lg);
+            overflow: hidden;
+        }
+        
+        .attendance-filters {
+            padding: var(--spacing-4);
+            border-bottom: 1px solid var(--border-color);
+            display: flex;
+            gap: var(--spacing-3);
+            flex-wrap: wrap;
+        }
+        
+        .attendance-grid {
+            overflow-x: auto;
+        }
+        
+        .attendance-cell {
+            padding: var(--spacing-2);
+            text-align: center;
+            border: 1px solid var(--border-color);
+            cursor: pointer;
+            transition: all var(--transition-base);
+        }
+        
+        .attendance-cell:hover {
+            background: var(--bg-hover);
+        }
+        
+        .attendance-cell.present {
+            background: var(--color-success-light);
+            color: var(--color-success-dark);
+        }
+        
+        .attendance-cell.absent {
+            background: var(--color-danger-light);
+            color: var(--color-danger-dark);
+        }
+        
+        .attendance-cell.late {
+            background: var(--color-warning-light);
+            color: var(--color-warning-dark);
+        }
+        
+        .attendance-cell.excused {
+            background: var(--color-info-light);
+            color: var(--color-info-dark);
+        }
+        
+        .student-row {
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-2);
+            padding: var(--spacing-3);
+            border-bottom: 1px solid var(--border-color);
+        }
+        
+        .student-avatar {
+            width: 36px;
+            height: 36px;
+            border-radius: var(--radius-full);
+            background: var(--bg-tertiary);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: var(--font-weight-bold);
+            color: var(--color-primary);
+        }
+        
+        .attendance-legend {
+            display: flex;
+            gap: var(--spacing-4);
+            padding: var(--spacing-3);
+            border-top: 1px solid var(--border-color);
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+        
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-2);
+            font-size: var(--font-size-sm);
+        }
+        
+        .legend-color {
+            width: 20px;
+            height: 20px;
+            border-radius: var(--radius-sm);
+        }
+        
+        @media (max-width: 768px) {
+            .attendance-header {
+                flex-direction: column;
+                align-items: stretch;
+            }
+            
+            .attendance-stats {
+                grid-template-columns: 1fr 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="page-container">
+        <!-- Page Header -->
+        <div class="page-header">
+            <div class="attendance-header">
+                <div class="class-info">
+                    <div class="class-icon">
+                        <i class="fas fa-users"></i>
+                    </div>
+                    <div class="class-details">
+                        <h2 id="className">Mathematics 101</h2>
+                        <div class="class-meta">
+                            <span id="classTeacher">John Doe</span> • 
+                            <span id="classSchedule">Mon, Wed, Fri - 9:00 AM</span> • 
+                            <span id="studentCount">30 students</span>
+                        </div>
+                    </div>
+                </div>
+                <div style="display: flex; gap: var(--spacing-3);">
+                    <button class="btn btn--secondary" onclick="exportAttendance()">
+                        <i class="fas fa-download"></i>
+                        <span data-translate="attendance.export">Export</span>
+                    </button>
+                    <button class="btn btn--primary" onclick="markAllPresent()">
+                        <i class="fas fa-check-double"></i>
+                        <span data-translate="attendance.markAllPresent">Mark All Present</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <div class="page-content">
+            <!-- Attendance Statistics -->
+            <div class="attendance-stats">
+                <div class="stat-card">
+                    <div class="stat-label" data-translate="attendance.overallAttendance">Overall Attendance</div>
+                    <div class="stat-value" id="overallAttendance">92%</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-label" data-translate="attendance.todayAttendance">Today's Attendance</div>
+                    <div class="stat-value" id="todayAttendance">28/30</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-label" data-translate="attendance.avgAttendance">Average Attendance</div>
+                    <div class="stat-value" id="avgAttendance">27.6</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-label" data-translate="attendance.perfectAttendance">Perfect Attendance</div>
+                    <div class="stat-value" id="perfectAttendance">12</div>
+                </div>
+            </div>
+
+            <!-- Attendance Chart -->
+            <div class="card" style="margin-bottom: var(--spacing-6);">
+                <div class="card__header">
+                    <h3 data-translate="attendance.attendanceTrend">Attendance Trend</h3>
+                </div>
+                <div class="card__body">
+                    <div style="position: relative; height: 300px;">
+                        <canvas id="attendanceChart"></canvas>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Attendance Table -->
+            <div class="card attendance-table">
+                <div class="attendance-filters">
+                    <div class="input-group" style="flex: 1; max-width: 300px;">
+                        <input type="date" id="dateFilter" class="input" onchange="filterByDate()">
+                    </div>
+                    <button class="btn btn--ghost" onclick="showToday()">
+                        <i class="fas fa-calendar-day"></i>
+                        <span data-translate="attendance.today">Today</span>
+                    </button>
+                    <button class="btn btn--ghost" onclick="showWeek()">
+                        <i class="fas fa-calendar-week"></i>
+                        <span data-translate="attendance.thisWeek">This Week</span>
+                    </button>
+                    <button class="btn btn--ghost" onclick="showMonth()">
+                        <i class="fas fa-calendar-alt"></i>
+                        <span data-translate="attendance.thisMonth">This Month</span>
+                    </button>
+                </div>
+                
+                <div class="attendance-grid">
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th style="width: 200px;" data-translate="attendance.student">Student</th>
+                                <th id="dateHeaders">
+                                    <!-- Dynamic date headers -->
+                                </th>
+                                <th style="width: 100px;" data-translate="attendance.percentage">%</th>
+                            </tr>
+                        </thead>
+                        <tbody id="attendanceBody">
+                            <!-- Dynamic attendance data -->
+                        </tbody>
+                    </table>
+                </div>
+                
+                <div class="attendance-legend">
+                    <div class="legend-item">
+                        <div class="legend-color" style="background: var(--color-success-light);"></div>
+                        <span data-translate="attendance.present">Present</span>
+                    </div>
+                    <div class="legend-item">
+                        <div class="legend-color" style="background: var(--color-danger-light);"></div>
+                        <span data-translate="attendance.absent">Absent</span>
+                    </div>
+                    <div class="legend-item">
+                        <div class="legend-color" style="background: var(--color-warning-light);"></div>
+                        <span data-translate="attendance.late">Late</span>
+                    </div>
+                    <div class="legend-item">
+                        <div class="legend-color" style="background: var(--color-info-light);"></div>
+                        <span data-translate="attendance.excused">Excused</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Core JavaScript -->
+    <script src="../config.js"></script>
+    <script src="../assets/js/global.js"></script>
+    <script src="../assets/js/auth.js"></script>
+    <script src="../assets/js/api.js"></script>
+    <script>
+        // State management
+        let classData = null;
+        let attendanceData = [];
+        let currentView = 'week';
+        let currentDate = new Date();
+
+        // Initialize page
+        async function init() {
+            // Check authentication
+            const currentUser = LMS.Auth.getUser();
+            if (!LMS.Auth.isAuthenticated() || !currentUser) {
+                window.location.href = '../index.html';
+                return;
+            }
+
+            // Only teachers and admins can view attendance
+            if (currentUser.role === 'student') {
+                window.location.href = 'access-denied.html';
+                return;
+            }
+
+            // Initialize language
+            await LMS.LanguageManager.init();
+            LMS.LanguageManager.updateUI();
+
+            // Load class data
+            loadClassData();
+            loadAttendanceData();
+            initializeChart();
+        }
+
+        // Load class data
+        async function loadClassData() {
+            // In real app, would get class ID from URL params
+            const classId = new URLSearchParams(window.location.search).get('id') || 'class_001';
+            
+            // Mock class data
+            classData = {
+                id: classId,
+                name: 'Mathematics 101',
+                teacher: 'John Doe',
+                schedule: 'Mon, Wed, Fri - 9:00 AM',
+                students: generateMockStudents(30)
+            };
+
+            // Update UI
+            document.getElementById('className').textContent = classData.name;
+            document.getElementById('classTeacher').textContent = classData.teacher;
+            document.getElementById('classSchedule').textContent = classData.schedule;
+            document.getElementById('studentCount').textContent = `${classData.students.length} students`;
+        }
+
+        // Generate mock students
+        function generateMockStudents(count) {
+            const students = [];
+            const firstNames = ['John', 'Jane', 'Alex', 'Sarah', 'Mike', 'Emma', 'David', 'Lisa'];
+            const lastNames = ['Smith', 'Johnson', 'Williams', 'Brown', 'Jones', 'Garcia', 'Miller', 'Davis'];
+            
+            for (let i = 0; i < count; i++) {
+                const firstName = firstNames[Math.floor(Math.random() * firstNames.length)];
+                const lastName = lastNames[Math.floor(Math.random() * lastNames.length)];
+                students.push({
+                    id: `student_${i + 1}`,
+                    name: `${firstName} ${lastName}`,
+                    avatar: `${firstName[0]}${lastName[0]}`,
+                    email: `${firstName.toLowerCase()}.${lastName.toLowerCase()}@student.com`
+                });
+            }
+            
+            return students;
+        }
+
+        // Load attendance data
+        async function loadAttendanceData() {
+            // Generate mock attendance data
+            attendanceData = generateMockAttendance();
+            
+            // Update statistics
+            updateStatistics();
+            
+            // Render attendance table
+            renderAttendanceTable();
+        }
+
+        // Generate mock attendance
+        function generateMockAttendance() {
+            const data = [];
+            const statuses = ['present', 'present', 'present', 'present', 'absent', 'late', 'excused'];
+            
+            // Generate for past 30 days
+            for (let d = 29; d >= 0; d--) {
+                const date = new Date();
+                date.setDate(date.getDate() - d);
+                
+                // Skip weekends
+                if (date.getDay() === 0 || date.getDay() === 6) continue;
+                
+                const dayData = {
+                    date: date.toISOString().split('T')[0],
+                    attendance: {}
+                };
+                
+                classData.students.forEach(student => {
+                    dayData.attendance[student.id] = statuses[Math.floor(Math.random() * statuses.length)];
+                });
+                
+                data.push(dayData);
+            }
+            
+            return data;
+        }
+
+        // Update statistics
+        function updateStatistics() {
+            let totalPresent = 0;
+            let totalEntries = 0;
+            let todayPresent = 0;
+            let perfectAttendanceCount = 0;
+            
+            const today = new Date().toISOString().split('T')[0];
+            const todayData = attendanceData.find(d => d.date === today);
+            
+            // Calculate overall statistics
+            attendanceData.forEach(dayData => {
+                Object.values(dayData.attendance).forEach(status => {
+                    if (status === 'present' || status === 'late') {
+                        totalPresent++;
+                    }
+                    totalEntries++;
+                });
+            });
+            
+            // Today's attendance
+            if (todayData) {
+                Object.values(todayData.attendance).forEach(status => {
+                    if (status === 'present' || status === 'late') {
+                        todayPresent++;
+                    }
+                });
+            }
+            
+            // Perfect attendance
+            classData.students.forEach(student => {
+                let perfect = true;
+                attendanceData.forEach(dayData => {
+                    if (dayData.attendance[student.id] !== 'present' && 
+                        dayData.attendance[student.id] !== 'excused') {
+                        perfect = false;
+                    }
+                });
+                if (perfect) perfectAttendanceCount++;
+            });
+            
+            // Update UI
+            const overallPercentage = Math.round((totalPresent / totalEntries) * 100);
+            document.getElementById('overallAttendance').textContent = overallPercentage + '%';
+            document.getElementById('todayAttendance').textContent = `${todayPresent}/${classData.students.length}`;
+            document.getElementById('avgAttendance').textContent = (totalPresent / attendanceData.length).toFixed(1);
+            document.getElementById('perfectAttendance').textContent = perfectAttendanceCount;
+        }
+
+        // Initialize attendance chart
+        function initializeChart() {
+            const ctx = document.getElementById('attendanceChart').getContext('2d');
+            
+            // Prepare data for chart
+            const labels = [];
+            const presentData = [];
+            const absentData = [];
+            const lateData = [];
+            
+            // Get last 7 class days
+            const recentData = attendanceData.slice(-7);
+            
+            recentData.forEach(dayData => {
+                const date = new Date(dayData.date);
+                labels.push(date.toLocaleDateString('en', { weekday: 'short', month: 'short', day: 'numeric' }));
+                
+                let present = 0, absent = 0, late = 0;
+                Object.values(dayData.attendance).forEach(status => {
+                    if (status === 'present') present++;
+                    else if (status === 'absent') absent++;
+                    else if (status === 'late') late++;
+                });
+                
+                presentData.push(present);
+                absentData.push(absent);
+                lateData.push(late);
+            });
+            
+            new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: labels,
+                    datasets: [
+                        {
+                            label: 'Present',
+                            data: presentData,
+                            backgroundColor: 'rgba(16, 185, 129, 0.8)',
+                            stack: 'Stack 0'
+                        },
+                        {
+                            label: 'Late',
+                            data: lateData,
+                            backgroundColor: 'rgba(245, 158, 11, 0.8)',
+                            stack: 'Stack 0'
+                        },
+                        {
+                            label: 'Absent',
+                            data: absentData,
+                            backgroundColor: 'rgba(239, 68, 68, 0.8)',
+                            stack: 'Stack 0'
+                        }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        x: {
+                            stacked: true
+                        },
+                        y: {
+                            stacked: true,
+                            beginAtZero: true,
+                            max: classData.students.length
+                        }
+                    },
+                    plugins: {
+                        legend: {
+                            position: 'top'
+                        },
+                        tooltip: {
+                            mode: 'index',
+                            intersect: false
+                        }
+                    }
+                }
+            });
+        }
+
+        // Render attendance table
+        function renderAttendanceTable() {
+            const dateHeaders = document.getElementById('dateHeaders');
+            const tbody = document.getElementById('attendanceBody');
+            
+            // Get dates for current view
+            const dates = getViewDates();
+            
+            // Render date headers
+            dateHeaders.innerHTML = dates.map(date => {
+                const d = new Date(date);
+                return `<th style="min-width: 60px; text-align: center;">
+                    ${d.toLocaleDateString('en', { month: 'short', day: 'numeric' })}
+                </th>`;
+            }).join('');
+            
+            // Render student rows
+            tbody.innerHTML = classData.students.map(student => {
+                const attendancePercentage = calculateStudentAttendance(student.id);
+                
+                return `
+                    <tr>
+                        <td>
+                            <div class="student-row">
+                                <div class="student-avatar">${student.avatar}</div>
+                                <div>
+                                    <div style="font-weight: var(--font-weight-medium);">${student.name}</div>
+                                    <div style="font-size: var(--font-size-xs); color: var(--text-muted);">${student.email}</div>
+                                </div>
+                            </div>
+                        </td>
+                        ${dates.map(date => {
+                            const dayData = attendanceData.find(d => d.date === date);
+                            const status = dayData ? dayData.attendance[student.id] : '';
+                            return `<td class="attendance-cell ${status}" onclick="toggleAttendance('${student.id}', '${date}')">
+                                ${getStatusIcon(status)}
+                            </td>`;
+                        }).join('')}
+                        <td style="text-align: center; font-weight: var(--font-weight-medium);">
+                            ${attendancePercentage}%
+                        </td>
+                    </tr>
+                `;
+            }).join('');
+        }
+
+        // Get dates for current view
+        function getViewDates() {
+            const dates = [];
+            const endDate = new Date(currentDate);
+            let startDate = new Date(currentDate);
+            
+            if (currentView === 'day') {
+                dates.push(endDate.toISOString().split('T')[0]);
+            } else if (currentView === 'week') {
+                startDate.setDate(endDate.getDate() - 6);
+                for (let d = new Date(startDate); d <= endDate; d.setDate(d.getDate() + 1)) {
+                    if (d.getDay() !== 0 && d.getDay() !== 6) { // Skip weekends
+                        dates.push(d.toISOString().split('T')[0]);
+                    }
+                }
+            } else if (currentView === 'month') {
+                startDate = new Date(endDate.getFullYear(), endDate.getMonth(), 1);
+                for (let d = new Date(startDate); d <= endDate; d.setDate(d.getDate() + 1)) {
+                    if (d.getDay() !== 0 && d.getDay() !== 6) { // Skip weekends
+                        dates.push(d.toISOString().split('T')[0]);
+                    }
+                }
+            }
+            
+            return dates;
+        }
+
+        // Calculate student attendance percentage
+        function calculateStudentAttendance(studentId) {
+            let present = 0;
+            let total = 0;
+            
+            attendanceData.forEach(dayData => {
+                const status = dayData.attendance[studentId];
+                if (status === 'present' || status === 'late' || status === 'excused') {
+                    present++;
+                }
+                total++;
+            });
+            
+            return Math.round((present / total) * 100);
+        }
+
+        // Get status icon
+        function getStatusIcon(status) {
+            const icons = {
+                present: '✓',
+                absent: '✗',
+                late: '⏰',
+                excused: 'E'
+            };
+            return icons[status] || '';
+        }
+
+        // Toggle attendance status
+        function toggleAttendance(studentId, date) {
+            const dayData = attendanceData.find(d => d.date === date);
+            if (!dayData) return;
+            
+            const currentStatus = dayData.attendance[studentId];
+            const statuses = ['present', 'absent', 'late', 'excused'];
+            const currentIndex = statuses.indexOf(currentStatus);
+            const nextIndex = (currentIndex + 1) % statuses.length;
+            
+            dayData.attendance[studentId] = statuses[nextIndex];
+            
+            // Update UI
+            updateStatistics();
+            renderAttendanceTable();
+            
+            // Show toast
+            LMS.showToast('Attendance updated', 'success');
+        }
+
+        // Filter by date
+        function filterByDate() {
+            const dateInput = document.getElementById('dateFilter');
+            currentDate = new Date(dateInput.value);
+            currentView = 'day';
+            renderAttendanceTable();
+        }
+
+        // Show today
+        function showToday() {
+            currentDate = new Date();
+            currentView = 'day';
+            renderAttendanceTable();
+        }
+
+        // Show week
+        function showWeek() {
+            currentDate = new Date();
+            currentView = 'week';
+            renderAttendanceTable();
+        }
+
+        // Show month
+        function showMonth() {
+            currentDate = new Date();
+            currentView = 'month';
+            renderAttendanceTable();
+        }
+
+        // Mark all present
+        function markAllPresent() {
+            const today = new Date().toISOString().split('T')[0];
+            let todayData = attendanceData.find(d => d.date === today);
+            
+            if (!todayData) {
+                todayData = {
+                    date: today,
+                    attendance: {}
+                };
+                attendanceData.push(todayData);
+            }
+            
+            classData.students.forEach(student => {
+                todayData.attendance[student.id] = 'present';
+            });
+            
+            updateStatistics();
+            renderAttendanceTable();
+            LMS.showToast('All students marked as present', 'success');
+        }
+
+        // Export attendance
+        function exportAttendance() {
+            // In real app, would generate CSV or Excel file
+            LMS.showToast('Exporting attendance data...', 'info');
+            
+            // Simulate download
+            setTimeout(() => {
+                LMS.showToast('Attendance exported successfully', 'success');
+            }, 1000);
+        }
+
+        // Initialize on page load
+        document.addEventListener('DOMContentLoaded', init);
+    </script>
+</body>
+</html>

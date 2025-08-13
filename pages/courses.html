@@ -616,8 +616,10 @@
             
             container.innerHTML = filteredCourses.map(course => {
                 const category = allCategories.find(cat => cat.id === course.categoryId);
+                const isEnrolled = getEnrollmentStatus(course.id) === 'enrolled';
+                const canView = currentUser && (currentUser.role === 'admin' || currentUser.role === 'teacher' || isEnrolled);
                 return `
-                    <div class="course-card" onclick="viewCourse('${course.id}')">
+                    <div class="course-card" onclick="${canView ? `viewCourse('${course.id}')` : `previewCourse('${course.id}')`}">
                         <div class="course-card__image">
                             <span>${course.thumbnail || category?.icon || '📚'}</span>
                             <span class="course-card__badge">${getStatusBadge(course.status)}</span>
@@ -633,6 +635,16 @@
                                     <i class="fas fa-star"></i> ${course.rating || 0}/5
                                 </span>
                             </div>
+                            ${canEditCourse(course) ? `
+                                <div style="display: flex; gap: var(--spacing-2); margin-top: var(--spacing-3);">
+                                    <button class="btn btn--ghost btn--small" onclick="event.stopPropagation(); editCourse('${course.id}')" style="flex: 1;">
+                                        <i class="fas fa-edit"></i> Edit
+                                    </button>
+                                    <button class="btn btn--ghost btn--small" onclick="event.stopPropagation(); previewCourse('${course.id}')" style="flex: 1;">
+                                        <i class="fas fa-eye"></i> Preview
+                                    </button>
+                                </div>
+                            ` : ''}
                             ${getEnrollmentActions(course)}
                         </div>
                     </div>
@@ -668,6 +680,9 @@
                         <td class="table__cell table__cell--center">${course.enrolledCount || 0}</td>
                         <td class="table__cell table__cell--center">${getStatusBadge(course.status)}</td>
                         <td class="table__cell table__cell--center">
+                            <button class="btn btn--ghost btn--small" onclick="previewCourse('${course.id}')" title="Preview Course">
+                                <i class="fas fa-search"></i>
+                            </button>
                             <button class="btn btn--ghost btn--small" onclick="viewCourse('${course.id}')" title="View Details">
                                 <i class="fas fa-eye"></i>
                             </button>
@@ -1065,6 +1080,136 @@
             }
         }
 
+        // Course Preview Functions
+        function previewCourse(courseId) {
+            const course = allCourses.find(c => c.id === courseId);
+            if (!course) return;
+            
+            // Populate preview modal
+            document.getElementById('previewCourseTitle').textContent = course.title;
+            document.getElementById('previewCourseTitle').dataset.courseId = course.id;
+            document.getElementById('previewCourseDescription').textContent = course.description;
+            document.getElementById('previewTeacherName').textContent = course.teacherName || 'Instructor';
+            document.getElementById('previewDuration').textContent = course.duration || 0;
+            document.getElementById('previewDifficulty').textContent = capitalize(course.difficulty);
+            document.getElementById('previewCategory').textContent = categories.find(c => c.id === course.categoryId)?.name || 'General';
+            document.getElementById('previewEnrolled').textContent = course.enrolledCount;
+            document.getElementById('previewRating').textContent = course.rating.toFixed(1);
+            document.getElementById('previewPrerequisites').textContent = course.prerequisites || 'None';
+            
+            // Populate lesson preview
+            const lessonList = document.getElementById('previewLessonList');
+            const mockLessons = generateMockLessons(course.id);
+            lessonList.innerHTML = mockLessons.slice(0, 5).map((lesson, index) => `
+                <div class="preview-lesson-item">
+                    <div class="preview-lesson-number">${index + 1}</div>
+                    <div class="preview-lesson-content">
+                        <div class="preview-lesson-title">${lesson.title}</div>
+                        <div class="preview-lesson-meta">
+                            <span><i class="fas fa-clock"></i> ${lesson.duration} mins</span>
+                            <span><i class="fas fa-${getTypeIcon(lesson.type)}"></i> ${capitalize(lesson.type)}</span>
+                            ${index === 0 ? '<span class="badge badge--success">Free Preview</span>' : ''}
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+            
+            if (mockLessons.length > 5) {
+                lessonList.innerHTML += `<div style="text-align: center; color: var(--text-secondary); padding: var(--spacing-3);">
+                    + ${mockLessons.length - 5} more lessons
+                </div>`;
+            }
+            
+            // Populate reviews
+            const reviewsList = document.getElementById('previewReviewsList');
+            reviewsList.innerHTML = generateMockReviews(course.id).map(review => `
+                <div class="preview-review">
+                    <div class="preview-review-header">
+                        <div>
+                            <div class="preview-review-name">${review.name}</div>
+                            <div class="preview-review-meta">${review.date}</div>
+                        </div>
+                        <div class="preview-review-rating">
+                            ${generateStars(review.rating)}
+                        </div>
+                    </div>
+                    <div class="preview-review-text">${review.comment}</div>
+                </div>
+            `).join('');
+            
+            // Show modal
+            document.getElementById('previewModal').classList.add('modal--active');
+        }
+        
+        function closePreviewModal() {
+            document.getElementById('previewModal').classList.remove('modal--active');
+        }
+        
+        function generateMockLessons(courseId) {
+            const lessonTypes = ['video', 'document', 'quiz'];
+            const lessonCount = Math.floor(Math.random() * 10) + 8;
+            const lessons = [];
+            
+            for (let i = 1; i <= lessonCount; i++) {
+                lessons.push({
+                    id: `lesson_${courseId}_${i}`,
+                    title: `Lesson ${i}: ${getLessonTitle(i)}`,
+                    type: lessonTypes[Math.floor(Math.random() * lessonTypes.length)],
+                    duration: Math.floor(Math.random() * 30) + 15
+                });
+            }
+            
+            return lessons;
+        }
+        
+        function getLessonTitle(index) {
+            const titles = [
+                'Introduction and Overview',
+                'Core Concepts and Fundamentals',
+                'Advanced Techniques',
+                'Practical Applications',
+                'Best Practices',
+                'Common Pitfalls to Avoid',
+                'Real World Examples',
+                'Hands-on Exercise',
+                'Review and Summary',
+                'Final Assessment'
+            ];
+            return titles[index % titles.length];
+        }
+        
+        function getTypeIcon(type) {
+            const icons = {
+                video: 'play-circle',
+                document: 'file-alt',
+                quiz: 'question-circle'
+            };
+            return icons[type] || 'book';
+        }
+        
+        function generateMockReviews(courseId) {
+            const reviews = [
+                { name: 'John Doe', rating: 5, comment: 'Excellent course! Very comprehensive and well-structured.', date: '2 days ago' },
+                { name: 'Jane Smith', rating: 4, comment: 'Great content, but could use more practical examples.', date: '1 week ago' },
+                { name: 'Mike Johnson', rating: 5, comment: 'Best course I\'ve taken on this topic. Highly recommended!', date: '2 weeks ago' }
+            ];
+            return reviews;
+        }
+        
+        function generateStars(rating) {
+            let stars = '';
+            for (let i = 1; i <= 5; i++) {
+                stars += `<i class="fas fa-star" style="color: ${i <= rating ? 'var(--color-warning)' : 'var(--text-muted)'}"></i>`;
+            }
+            return stars;
+        }
+        
+        function enrollFromPreview() {
+            const courseId = document.getElementById('previewCourseTitle').dataset.courseId;
+            closePreviewModal();
+            openEnrollmentModal(courseId);
+        }
+
         // Initialize
         document.addEventListener('DOMContentLoaded', function() {
             // Ensure auth is loaded first
@@ -1088,6 +1233,220 @@
             
             loadData();
         });
+    </script>
+
+    <!-- Course Preview Modal -->
+    <div class="modal" id="previewModal">
+        <div class="modal__backdrop" onclick="closePreviewModal()"></div>
+        <div class="modal__content modal__content--large" style="max-width: 900px;">
+            <div class="modal__header">
+                <h3 class="modal__title" data-translate="course.previewTitle">Course Preview</h3>
+                <button class="modal__close" onclick="closePreviewModal()">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            
+            <div class="modal__body">
+                <!-- Course Header -->
+                <div style="margin-bottom: var(--spacing-6);">
+                    <h2 id="previewCourseTitle" style="margin-bottom: var(--spacing-3);"></h2>
+                    <p id="previewCourseDescription" style="color: var(--text-secondary); margin-bottom: var(--spacing-4);"></p>
+                    
+                    <div style="display: flex; gap: var(--spacing-6); flex-wrap: wrap; font-size: var(--font-size-sm);">
+                        <div>
+                            <i class="fas fa-chalkboard-teacher"></i>
+                            <span data-translate="course.instructor">Instructor:</span>
+                            <strong id="previewTeacherName"></strong>
+                        </div>
+                        <div>
+                            <i class="fas fa-clock"></i>
+                            <span id="previewDuration"></span> <span data-translate="course.hours">hours</span>
+                        </div>
+                        <div>
+                            <i class="fas fa-signal"></i>
+                            <span data-translate="course.level">Level:</span>
+                            <strong id="previewDifficulty"></strong>
+                        </div>
+                        <div>
+                            <i class="fas fa-folder"></i>
+                            <span data-translate="course.category">Category:</span>
+                            <strong id="previewCategory"></strong>
+                        </div>
+                    </div>
+                    
+                    <div style="display: flex; gap: var(--spacing-4); margin-top: var(--spacing-4);">
+                        <div class="course-stat" style="padding: var(--spacing-3); min-width: 120px;">
+                            <div class="course-stat__value" id="previewEnrolled">0</div>
+                            <div class="course-stat__label" data-translate="course.studentsEnrolled">Students Enrolled</div>
+                        </div>
+                        <div class="course-stat" style="padding: var(--spacing-3); min-width: 120px;">
+                            <div class="course-stat__value">
+                                <span id="previewRating">0</span>
+                                <i class="fas fa-star" style="color: var(--color-warning); font-size: var(--font-size-base);"></i>
+                            </div>
+                            <div class="course-stat__label" data-translate="course.rating">Rating</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Tabs -->
+                <div class="tabs">
+                    <div class="tabs__list">
+                        <button class="tabs__item tabs__item--active" onclick="switchPreviewTab(event, 'about')">
+                            <i class="fas fa-info-circle"></i>
+                            <span data-translate="course.about">About</span>
+                        </button>
+                        <button class="tabs__item" onclick="switchPreviewTab(event, 'curriculum')">
+                            <i class="fas fa-list"></i>
+                            <span data-translate="course.curriculum">Curriculum</span>
+                        </button>
+                        <button class="tabs__item" onclick="switchPreviewTab(event, 'instructor')">
+                            <i class="fas fa-user-tie"></i>
+                            <span data-translate="course.instructor">Instructor</span>
+                        </button>
+                        <button class="tabs__item" onclick="switchPreviewTab(event, 'reviews')">
+                            <i class="fas fa-star"></i>
+                            <span data-translate="course.reviews">Reviews</span>
+                        </button>
+                    </div>
+                    
+                    <!-- About Tab -->
+                    <div class="tabs__panel tabs__panel--active" id="aboutPanel">
+                        <h4 data-translate="course.whatYouLearn">What you'll learn</h4>
+                        <ul style="margin: var(--spacing-4) 0; padding-left: var(--spacing-5);">
+                            <li>Master the fundamental concepts and principles</li>
+                            <li>Apply practical techniques in real-world scenarios</li>
+                            <li>Build projects to reinforce your learning</li>
+                            <li>Gain confidence in your skills and knowledge</li>
+                        </ul>
+                        
+                        <h4 data-translate="course.prerequisites">Prerequisites</h4>
+                        <p id="previewPrerequisites" style="margin: var(--spacing-3) 0;"></p>
+                        
+                        <h4 data-translate="course.targetAudience">Target Audience</h4>
+                        <p>This course is designed for students who want to deepen their understanding and develop practical skills in this subject area.</p>
+                    </div>
+                    
+                    <!-- Curriculum Tab -->
+                    <div class="tabs__panel" id="curriculumPanel">
+                        <div id="previewLessonList"></div>
+                    </div>
+                    
+                    <!-- Instructor Tab -->
+                    <div class="tabs__panel" id="instructorPanel">
+                        <div style="display: flex; gap: var(--spacing-4); align-items: start;">
+                            <div style="width: 100px; height: 100px; background: var(--bg-tertiary); border-radius: var(--radius-full); display: flex; align-items: center; justify-content: center;">
+                                <i class="fas fa-user" style="font-size: 48px; color: var(--text-secondary);"></i>
+                            </div>
+                            <div>
+                                <h4 id="instructorName"></h4>
+                                <p style="color: var(--text-secondary); margin: var(--spacing-2) 0;">Expert Instructor</p>
+                                <p>Experienced educator with a passion for teaching and helping students achieve their goals. Specializes in creating engaging and practical learning experiences.</p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Reviews Tab -->
+                    <div class="tabs__panel" id="reviewsPanel">
+                        <div id="previewReviewsList"></div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="modal__footer">
+                <button class="btn btn--secondary" onclick="closePreviewModal()">
+                    <span data-translate="common.close">Close</span>
+                </button>
+                <button class="btn btn--primary" onclick="enrollFromPreview()">
+                    <i class="fas fa-user-plus"></i>
+                    <span data-translate="course.enrollNow">Enroll Now</span>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <style>
+        .preview-lesson-item {
+            display: flex;
+            align-items: center;
+            padding: var(--spacing-3);
+            border-bottom: 1px solid var(--border-color);
+        }
+        
+        .preview-lesson-number {
+            width: 32px;
+            height: 32px;
+            background: var(--bg-tertiary);
+            border-radius: var(--radius-full);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: var(--font-weight-bold);
+            margin-right: var(--spacing-3);
+        }
+        
+        .preview-lesson-content {
+            flex: 1;
+        }
+        
+        .preview-lesson-title {
+            font-weight: var(--font-weight-medium);
+            margin-bottom: var(--spacing-1);
+        }
+        
+        .preview-lesson-meta {
+            display: flex;
+            gap: var(--spacing-3);
+            font-size: var(--font-size-sm);
+            color: var(--text-secondary);
+        }
+        
+        .preview-review {
+            padding: var(--spacing-4);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-base);
+            margin-bottom: var(--spacing-3);
+        }
+        
+        .preview-review-header {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: var(--spacing-3);
+        }
+        
+        .preview-review-name {
+            font-weight: var(--font-weight-medium);
+        }
+        
+        .preview-review-meta {
+            font-size: var(--font-size-sm);
+            color: var(--text-secondary);
+        }
+        
+        .preview-review-rating i {
+            font-size: var(--font-size-sm);
+        }
+    </style>
+    
+    <script>
+        function switchPreviewTab(event, tabName) {
+            // Update tab buttons
+            document.querySelectorAll('#previewModal .tabs__item').forEach(btn => {
+                btn.classList.remove('tabs__item--active');
+            });
+            event.target.closest('.tabs__item').classList.add('tabs__item--active');
+            
+            // Update panels
+            document.querySelectorAll('#previewModal .tabs__panel').forEach(panel => {
+                panel.classList.remove('tabs__panel--active');
+            });
+            document.getElementById(`${tabName}Panel`).classList.add('tabs__panel--active');
+            
+            // Update instructor name if needed
+            if (tabName === 'instructor') {
+                document.getElementById('instructorName').textContent = document.getElementById('previewTeacherName').textContent;
+            }
+        }
     </script>
 </body>
 </html>

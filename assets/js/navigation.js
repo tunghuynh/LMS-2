@@ -127,6 +127,12 @@ LMS.Navigation = {
             icon: 'fa-clipboard-list',
             label: 'nav.enrollment',
             href: 'pages/enrollments.html'
+          },
+          {
+            id: 'attendance',
+            icon: 'fa-calendar-check',
+            label: 'nav.attendance',
+            href: 'pages/class-attendance.html'
           }
         ]
       },
@@ -228,6 +234,70 @@ LMS.Navigation = {
             icon: 'fa-folder',
             label: 'nav.categories',
             href: 'pages/categories.html'
+          },
+          {
+            id: 'enrollments',
+            icon: 'fa-clipboard-list',
+            label: 'nav.enrollment',
+            href: 'pages/enrollments.html'
+          },
+          {
+            id: 'attendance',
+            icon: 'fa-calendar-check',
+            label: 'nav.attendance',
+            href: 'pages/class-attendance.html'
+          }
+        ]
+      },
+      {
+        section: 'nav.sections.learning',
+        items: [
+          {
+            id: 'progress',
+            icon: 'fa-chart-bar',
+            label: 'nav.progress',
+            href: 'pages/progress.html'
+          },
+          {
+            id: 'certificates',
+            icon: 'fa-certificate',
+            label: 'nav.certificates',
+            href: 'pages/certificates.html'
+          }
+        ]
+      },
+      {
+        section: 'nav.sections.assessment',
+        items: [
+          {
+            id: 'quiz-builder',
+            icon: 'fa-hammer',
+            label: 'nav.quizBuilder',
+            href: 'pages/quiz-builder.html'
+          },
+          {
+            id: 'quizzes',
+            icon: 'fa-file-alt',
+            label: 'nav.quizzes',
+            href: 'pages/quizzes.html'
+          },
+          {
+            id: 'quiz-results',
+            icon: 'fa-chart-line',
+            label: 'nav.quizResults',
+            href: 'pages/quiz-results.html'
+          },
+          {
+            id: 'quiz-templates',
+            icon: 'fa-clipboard-check',
+            label: 'nav.quizTemplates',
+            href: 'pages/quiz-templates.html'
+          },
+          {
+            id: 'quiz-analytics',
+            icon: 'fa-analytics',
+            label: 'nav.quizAnalytics',
+            href: 'pages/quiz-analytics.html'
           }
         ]
       },
@@ -245,17 +315,6 @@ LMS.Navigation = {
             icon: 'fa-chart-bar',
             label: 'nav.reports',
             href: 'pages/reports.html'
-          }
-        ]
-      },
-      {
-        section: 'nav.sections.assessment',
-        items: [
-          {
-            id: 'quiz-templates',
-            icon: 'fa-clipboard-check',
-            label: 'nav.quizTemplates',
-            href: 'pages/quiz-templates.html'
           }
         ]
       },

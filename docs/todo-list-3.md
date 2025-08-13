@@ -309,7 +309,7 @@ This is the master TODO list for LMS Phase I development following the Foundatio
   - Class name, description
   - Assign teacher dropdown
   - Initial students selection
-- [ ] **1.5.4** Enhanced Class Management:
+- [x] **1.5.4** Enhanced Class Management:
   - **NEW**: Class schedule management
   - Student attendance tracking
   - Class performance analytics
@@ -388,14 +388,14 @@ This is the master TODO list for LMS Phase I development following the Foundatio
   - Inline editing for Teacher
   - Lesson reordering
   - Publish/Unpublish toggle
-- [ ] **2.2.5** Course Management Modal (NEW):
+- [x] **2.2.5** Course Management Modal (NEW):
   - **NEW**: Modal quản lý khóa học với tabs
   - Thống kê tổng quan (enrollment trends, completion rates)
   - Danh sách học viên và progress detailed view
   - Cài đặt khóa học (access rules, pricing, certificates)
   - Export báo cáo (PDF/Excel reports)
   - Student communication tools
-- [ ] **2.2.6** Course Preview System (NEW):
+- [x] **2.2.6** Course Preview System (NEW):
   - **NEW**: Modal xem trước khóa học
   - Tab giới thiệu, nội dung, giảng viên
   - Preview bài học (first lesson free access)
@@ -922,13 +922,13 @@ This is the master TODO list for LMS Phase I development following the Foundatio
 
 ### Completion Status
 - **Phase 0 Foundation**: 43/43 tasks (100%) ✅ **Hoàn thành tất cả base components!**
-- **Phase I.1 User Management**: 29/29 tasks (100%) ✅ **Hoàn thành tất cả User Management tasks!**
-- **Phase I.2 Learning System**: 26/42 tasks (61.9%) 🚀 **Còn 16 tasks advanced features**
+- **Phase I.1 User Management**: 30/30 tasks (100%) ✅ **Hoàn thành tất cả User Management tasks!**
+- **Phase I.2 Learning System**: 29/42 tasks (69.0%) 🚀 **Còn 13 tasks advanced features**
 - **Phase I.3 Testing System**: 17/35 tasks (48.6%) 🚀 **Còn 18 tasks import/export + security**
 - **Phase I.4 Navigation & Integration**: 2/8 tasks (25%) 🚀 **Hoàn thành navigation enhancement**
 - **Integration & Testing**: 0/32 tasks (0%)
 
-**Total: 117/189 tasks (61.9%)**
+**Total: 121/189 tasks (64.0%)**
 
 ### Updated Critical Path
 1. **Phase 0**: ✅ 100% Complete - Foundation ready

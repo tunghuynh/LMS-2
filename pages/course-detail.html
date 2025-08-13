@@ -404,6 +404,14 @@
                 <button class="btn btn--secondary" id="editBtn" style="display: none;" onclick="editCourse()">
                     Edit Course
                 </button>
+                <button class="btn btn--secondary" id="manageCourseBtn" style="display: none;" onclick="openManagementModal()">
+                    <i class="fas fa-cog"></i>
+                    Manage Course
+                </button>
+                <button class="btn btn--primary" id="manageEnrollBtn" style="display: none;" onclick="openEnrollmentModal()">
+                    <i class="fas fa-user-plus"></i>
+                    Manage Enrollments
+                </button>
             </div>
         </div>
     </div>
@@ -586,8 +594,12 @@
                     }
                 } else if (currentUser.role === 'teacher' && courseData.teacherId === currentUser.id) {
                     document.getElementById('editBtn').style.display = 'inline-block';
+                    document.getElementById('manageCourseBtn').style.display = 'inline-block';
+                    document.getElementById('manageEnrollBtn').style.display = 'inline-block';
                 } else if (currentUser.role === 'admin') {
                     document.getElementById('editBtn').style.display = 'inline-block';
+                    document.getElementById('manageCourseBtn').style.display = 'inline-block';
+                    document.getElementById('manageEnrollBtn').style.display = 'inline-block';
                 }
             }
         }
@@ -753,6 +765,102 @@
             return str.charAt(0).toUpperCase() + str.slice(1);
         }
 
+        // Course Management Modal Functions
+        function openManagementModal() {
+            document.getElementById('managementModal').classList.add('modal--active');
+            switchManagementTab('analytics');
+        }
+
+        function closeManagementModal() {
+            document.getElementById('managementModal').classList.remove('modal--active');
+        }
+
+        function switchManagementTab(tab) {
+            // Update tab buttons
+            document.querySelectorAll('.management-tab').forEach(btn => {
+                btn.classList.remove('tabs__item--active');
+            });
+            document.querySelector(`[data-tab="${tab}"]`).classList.add('tabs__item--active');
+            
+            // Update panels
+            document.querySelectorAll('.management-panel').forEach(panel => {
+                panel.classList.remove('tabs__panel--active');
+            });
+            document.getElementById(`${tab}Panel`).classList.add('tabs__panel--active');
+            
+            // Load data for specific tab
+            if (tab === 'analytics') {
+                loadAnalytics();
+            }
+        }
+
+        function loadAnalytics() {
+            // Load enrollment chart
+            const ctx = document.getElementById('enrollmentChart').getContext('2d');
+            new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'],
+                    datasets: [{
+                        label: 'Enrollments',
+                        data: [12, 19, 23, 25, 32, 35],
+                        borderColor: 'rgb(44, 110, 170)',
+                        backgroundColor: 'rgba(44, 110, 170, 0.1)',
+                        tension: 0.4
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            display: false
+                        }
+                    }
+                }
+            });
+
+            // Load completion chart
+            const ctx2 = document.getElementById('completionChart').getContext('2d');
+            new Chart(ctx2, {
+                type: 'doughnut',
+                data: {
+                    labels: ['Completed', 'In Progress', 'Not Started'],
+                    datasets: [{
+                        data: [15, 12, 8],
+                        backgroundColor: [
+                            'rgb(16, 185, 129)',
+                            'rgb(245, 158, 11)',
+                            'rgb(239, 68, 68)'
+                        ]
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false
+                }
+            });
+        }
+
+        function exportReport() {
+            LMS.showToast('Exporting course report...', 'info');
+            setTimeout(() => {
+                LMS.showToast('Report exported successfully!', 'success');
+            }, 1500);
+        }
+
+        function updateCourseSettings() {
+            const settings = {
+                maxStudents: document.getElementById('maxStudents').value,
+                enrollmentType: document.getElementById('enrollmentType').value,
+                accessDuration: document.getElementById('accessDuration').value,
+                certificateEnabled: document.getElementById('certificateEnabled').checked
+            };
+            
+            LMS.showToast('Course settings updated successfully!', 'success');
+            closeManagementModal();
+        }
+
         // Initialize
         document.addEventListener('DOMContentLoaded', function() {
             // Ensure auth is loaded first
@@ -772,5 +880,179 @@
             loadCourseData();
         });
     </script>
+
+    <!-- Course Management Modal -->
+    <div class="modal" id="managementModal">
+        <div class="modal__backdrop" onclick="closeManagementModal()"></div>
+        <div class="modal__content modal__content--large" style="max-width: 900px;">
+            <div class="modal__header">
+                <h3 class="modal__title" data-translate="course.managementTitle">Course Management</h3>
+                <button class="modal__close" onclick="closeManagementModal()">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            
+            <div class="modal__body" style="padding: 0;">
+                <!-- Management Tabs -->
+                <div class="tabs" style="padding: var(--spacing-4) var(--spacing-6) 0;">
+                    <div class="tabs__list">
+                        <button class="tabs__item management-tab tabs__item--active" data-tab="analytics" onclick="switchManagementTab('analytics')">
+                            <i class="fas fa-chart-bar"></i>
+                            <span data-translate="course.analytics">Analytics</span>
+                        </button>
+                        <button class="tabs__item management-tab" data-tab="students" onclick="switchManagementTab('students')">
+                            <i class="fas fa-users"></i>
+                            <span data-translate="course.studentsList">Students</span>
+                        </button>
+                        <button class="tabs__item management-tab" data-tab="settings" onclick="switchManagementTab('settings')">
+                            <i class="fas fa-cog"></i>
+                            <span data-translate="course.settings">Settings</span>
+                        </button>
+                        <button class="tabs__item management-tab" data-tab="export" onclick="switchManagementTab('export')">
+                            <i class="fas fa-download"></i>
+                            <span data-translate="course.export">Export</span>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Analytics Panel -->
+                <div class="tabs__panel management-panel tabs__panel--active" id="analyticsPanel" style="padding: var(--spacing-6);">
+                    <div class="grid" style="grid-template-columns: repeat(4, 1fr); gap: var(--spacing-4); margin-bottom: var(--spacing-6);">
+                        <div class="course-stat">
+                            <div class="course-stat__value">35</div>
+                            <div class="course-stat__label" data-translate="course.totalEnrollments">Total Enrollments</div>
+                        </div>
+                        <div class="course-stat">
+                            <div class="course-stat__value">85%</div>
+                            <div class="course-stat__label" data-translate="course.completionRate">Completion Rate</div>
+                        </div>
+                        <div class="course-stat">
+                            <div class="course-stat__value">4.8</div>
+                            <div class="course-stat__label" data-translate="course.avgRating">Average Rating</div>
+                        </div>
+                        <div class="course-stat">
+                            <div class="course-stat__value">92%</div>
+                            <div class="course-stat__label" data-translate="course.satisfaction">Satisfaction</div>
+                        </div>
+                    </div>
+
+                    <div class="grid" style="grid-template-columns: 1fr 1fr; gap: var(--spacing-6);">
+                        <div>
+                            <h4 style="margin-bottom: var(--spacing-3);" data-translate="course.enrollmentTrend">Enrollment Trend</h4>
+                            <div style="position: relative; height: 250px;">
+                                <canvas id="enrollmentChart"></canvas>
+                            </div>
+                        </div>
+                        <div>
+                            <h4 style="margin-bottom: var(--spacing-3);" data-translate="course.completionStatus">Completion Status</h4>
+                            <div style="position: relative; height: 250px;">
+                                <canvas id="completionChart"></canvas>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Students Panel -->
+                <div class="tabs__panel management-panel" id="studentsPanel" style="padding: var(--spacing-6);">
+                    <div style="margin-bottom: var(--spacing-4);">
+                        <input type="text" class="input" placeholder="Search students..." data-translate-placeholder="course.searchStudents">
+                    </div>
+                    <div class="table-container">
+                        <table class="table">
+                            <thead>
+                                <tr>
+                                    <th data-translate="course.student">Student</th>
+                                    <th data-translate="course.progress">Progress</th>
+                                    <th data-translate="course.lastAccess">Last Access</th>
+                                    <th data-translate="course.grade">Grade</th>
+                                    <th data-translate="course.actions">Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>John Doe</td>
+                                    <td>
+                                        <div class="progress-bar" style="width: 100px;">
+                                            <div class="progress-bar__fill" style="width: 75%;"></div>
+                                        </div>
+                                    </td>
+                                    <td>2 hours ago</td>
+                                    <td>B+</td>
+                                    <td>
+                                        <button class="btn btn--ghost btn--small">
+                                            <i class="fas fa-eye"></i>
+                                        </button>
+                                        <button class="btn btn--ghost btn--small">
+                                            <i class="fas fa-envelope"></i>
+                                        </button>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- Settings Panel -->
+                <div class="tabs__panel management-panel" id="settingsPanel" style="padding: var(--spacing-6);">
+                    <form class="form">
+                        <div class="form-group">
+                            <label class="form-label" data-translate="course.maxStudents">Maximum Students</label>
+                            <input type="number" id="maxStudents" class="input" value="50">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label" data-translate="course.enrollmentType">Enrollment Type</label>
+                            <select id="enrollmentType" class="input">
+                                <option value="open">Open Enrollment</option>
+                                <option value="approval">Requires Approval</option>
+                                <option value="invite">Invite Only</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label" data-translate="course.accessDuration">Access Duration</label>
+                            <select id="accessDuration" class="input">
+                                <option value="lifetime">Lifetime Access</option>
+                                <option value="6months">6 Months</option>
+                                <option value="1year">1 Year</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label class="checkbox">
+                                <input type="checkbox" id="certificateEnabled" checked>
+                                <span class="checkbox__checkmark"></span>
+                                <span data-translate="course.enableCertificate">Enable Certificate</span>
+                            </label>
+                        </div>
+                    </form>
+                </div>
+
+                <!-- Export Panel -->
+                <div class="tabs__panel management-panel" id="exportPanel" style="padding: var(--spacing-6);">
+                    <div class="grid" style="grid-template-columns: repeat(2, 1fr); gap: var(--spacing-4);">
+                        <div class="card" style="text-align: center; padding: var(--spacing-6); cursor: pointer;" onclick="exportReport()">
+                            <i class="fas fa-file-pdf" style="font-size: 48px; color: var(--color-danger); margin-bottom: var(--spacing-3);"></i>
+                            <h4 data-translate="course.exportPDF">Export to PDF</h4>
+                            <p style="color: var(--text-secondary);" data-translate="course.exportPDFDesc">Generate complete course report in PDF format</p>
+                        </div>
+                        <div class="card" style="text-align: center; padding: var(--spacing-6); cursor: pointer;" onclick="exportReport()">
+                            <i class="fas fa-file-excel" style="font-size: 48px; color: var(--color-success); margin-bottom: var(--spacing-3);"></i>
+                            <h4 data-translate="course.exportExcel">Export to Excel</h4>
+                            <p style="color: var(--text-secondary);" data-translate="course.exportExcelDesc">Export student data and analytics to Excel</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="modal__footer">
+                <button class="btn btn--secondary" onclick="closeManagementModal()">
+                    <span data-translate="common.close">Close</span>
+                </button>
+                <button class="btn btn--primary" onclick="updateCourseSettings()">
+                    <span data-translate="common.saveChanges">Save Changes</span>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </body>
 </html>
