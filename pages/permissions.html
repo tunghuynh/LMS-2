@@ -13,51 +13,47 @@
     <!-- Font Awesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <style>
-        .permissions-page {
-            padding: var(--spacing-6);
-            max-width: 1400px;
-            margin: 0 auto;
+        /* Use existing page layout styles */
+        
+        .page-actions {
+            display: flex;
+            gap: var(--spacing-3);
         }
         
-        .permissions-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: var(--spacing-4);
             margin-bottom: var(--spacing-6);
         }
         
-        .permissions-info {
-            display: flex;
-            gap: var(--spacing-6);
-            margin-bottom: var(--spacing-4);
-        }
-        
-        .info-card {
-            flex: 1;
+        .stat-card {
             background-color: var(--bg-surface);
             border: 1px solid var(--border-color);
             border-radius: var(--radius-lg);
             padding: var(--spacing-4);
         }
         
-        .info-card h3 {
+        .stat-card__label {
             font-size: var(--font-size-sm);
             color: var(--text-secondary);
             margin-bottom: var(--spacing-2);
         }
         
-        .info-card p {
+        .stat-card__value {
             font-size: var(--font-size-xl);
             font-weight: 600;
             color: var(--text-primary);
         }
         
+        /* Table alignment fixes */
         .permissions-table {
             width: 100%;
             background-color: var(--bg-surface);
             border: 1px solid var(--border-color);
             border-radius: var(--radius-lg);
             overflow: hidden;
+            table-layout: fixed;
         }
         
         .permissions-table th {
@@ -71,7 +67,7 @@
         
         .permissions-table th.role-header {
             text-align: center;
-            min-width: 120px;
+            width: 160px;
         }
         
         .permissions-table td {
@@ -142,64 +138,74 @@
             font-weight: 600;
         }
         
-        .actions {
+        .page-footer-actions {
             display: flex;
             gap: var(--spacing-3);
             margin-top: var(--spacing-6);
             justify-content: flex-end;
         }
         
+        /* Center align checkboxes in table cells */
+        .permissions-table .checkbox {
+            margin: 0 auto;
+            width: fit-content;
+        }
+        
         @media (max-width: 768px) {
-            .permissions-header {
-                flex-direction: column;
-                align-items: flex-start;
-                gap: var(--spacing-3);
-            }
-            
-            .permissions-info {
-                flex-direction: column;
+            .stats-grid {
+                grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
             }
             
             .permissions-table {
                 overflow-x: auto;
                 display: block;
             }
+            
+            .page-footer-actions {
+                flex-wrap: wrap;
+                justify-content: center;
+            }
         }
     </style>
 </head>
 <body>
-    <div class="permissions-page">
+    <div class="page-wrapper">
         <!-- Header -->
-        <div class="permissions-header">
-            <div>
-                <h1 data-translate="permissions.title">User Permissions Management</h1>
-                <p data-translate="permissions.subtitle">Configure access rights for different user roles</p>
+        <div class="page-header">
+            <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: var(--spacing-4);">
+                <div>
+                    <h1 class="page-title" data-translate="permissions.title">User Permissions Management</h1>
+                    <p class="page-subtitle" data-translate="permissions.subtitle">Configure access rights for different user roles</p>
+                </div>
+                <div class="page-actions">
+                    <button class="btn btn--primary" onclick="savePermissions()">
+                        <i class="fas fa-save" class="icon-mr"></i>
+                        <span data-translate="common.save">Save Changes</span>
+                    </button>
+                </div>
             </div>
-            <button class="button button--primary" onclick="savePermissions()">
-                <i class="fas fa-save"></i>
-                <span data-translate="common.save">Save Changes</span>
-            </button>
         </div>
 
-        <!-- Info Cards -->
-        <div class="permissions-info">
-            <div class="info-card">
-                <h3 data-translate="permissions.totalFeatures">Total Features</h3>
-                <p id="totalFeatures">24</p>
+        <div class="page-content">
+            <!-- Stats Cards -->
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-card__label" data-translate="permissions.totalFeatures">Total Features</div>
+                    <div class="stat-card__value" id="totalFeatures">24</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-card__label" data-translate="permissions.adminAccess">Admin Access</div>
+                    <div class="stat-card__value" id="adminAccess">24/24</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-card__label" data-translate="permissions.teacherAccess">Teacher Access</div>
+                    <div class="stat-card__value" id="teacherAccess">15/24</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-card__label" data-translate="permissions.studentAccess">Student Access</div>
+                    <div class="stat-card__value" id="studentAccess">8/24</div>
+                </div>
             </div>
-            <div class="info-card">
-                <h3 data-translate="permissions.adminAccess">Admin Access</h3>
-                <p id="adminAccess">24/24</p>
-            </div>
-            <div class="info-card">
-                <h3 data-translate="permissions.teacherAccess">Teacher Access</h3>
-                <p id="teacherAccess">15/24</p>
-            </div>
-            <div class="info-card">
-                <h3 data-translate="permissions.studentAccess">Student Access</h3>
-                <p id="studentAccess">8/24</p>
-            </div>
-        </div>
 
         <!-- Permissions Table -->
         <table class="permissions-table">
@@ -236,25 +242,29 @@
             </tbody>
         </table>
 
-        <!-- Actions -->
-        <div class="actions">
-            <button class="button button--ghost" onclick="resetToDefault()">
-                <i class="fas fa-undo"></i>
-                <span data-translate="permissions.resetDefault">Reset to Default</span>
-            </button>
-            <button class="button button--secondary" onclick="exportPermissions()">
-                <i class="fas fa-download"></i>
-                <span data-translate="permissions.export">Export</span>
-            </button>
-            <button class="button button--primary" onclick="savePermissions()">
-                <i class="fas fa-save"></i>
-                <span data-translate="common.save">Save Changes</span>
-            </button>
+            <!-- Actions -->
+            <div class="page-footer-actions">
+                <button class="btn btn--ghost" onclick="resetToDefault()">
+                    <i class="fas fa-undo" class="icon-mr"></i>
+                    <span data-translate="permissions.resetDefault">Reset to Default</span>
+                </button>
+                <button class="btn btn--secondary" onclick="exportPermissions()">
+                    <i class="fas fa-download" class="icon-mr"></i>
+                    <span data-translate="permissions.export">Export</span>
+                </button>
+                <button class="btn btn--primary" onclick="savePermissions()">
+                    <i class="fas fa-save" class="icon-mr"></i>
+                    <span data-translate="common.save">Save Changes</span>
+                </button>
+            </div>
         </div>
     </div>
 
-    <!-- JavaScript -->
+    <!-- Core JavaScript -->
+    <script src="../config.js"></script>
     <script src="../assets/js/global.js"></script>
+    <script src="../assets/js/auth.js"></script>
+    <script src="../assets/js/api.js"></script>
     <script>
         // Permission features structure
         const features = [
@@ -572,7 +582,7 @@
             localStorage.setItem('lms_permissions', JSON.stringify(permissions));
             
             // Show success message
-            alert('Permissions saved successfully!');
+            alert(LMS.t('permissions.saved'));
         }
 
         // Load saved permissions
@@ -602,7 +612,7 @@
 
         // Reset to default permissions
         function resetToDefault() {
-            if (confirm('Are you sure you want to reset all permissions to default?')) {
+            if (confirm(LMS.t('permissions.resetConfirm'))) {
                 // Default permissions logic
                 features.forEach(feature => {
                     switch(feature.id) {

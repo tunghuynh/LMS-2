@@ -8,6 +8,7 @@
     <link rel="stylesheet" href="../assets/css/themes.css">
     <link rel="stylesheet" href="../assets/css/layout.css">
     <link rel="stylesheet" href="../assets/css/components.css">
+    <link rel="stylesheet" href="../assets/css/utilities.css">
     <!-- Font Awesome Icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <!-- Configuration -->
@@ -114,6 +115,166 @@
                     <div class="card__body" style="text-align: center;">
                         <div style="font-size: var(--font-size-3xl); font-weight: var(--font-weight-bold); color: var(--color-info);">4.7⭐</div>
                         <p style="color: var(--text-secondary);">Average Rating</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Teaching Schedule Calendar -->
+            <div class="card" style="margin-bottom: var(--spacing-6);">
+                <div class="card__header">
+                    <h3 class="card__title">
+                        <i class="fas fa-calendar-alt" style="margin-right: var(--spacing-2);"></i>
+                        Teaching Schedule
+                    </h3>
+                </div>
+                <div class="card__body">
+                    <div id="calendar-container" style="min-height: 300px;">
+                        <!-- Simple weekly view -->
+                        <div class="schedule-week">
+                            <div style="display: grid; grid-template-columns: 100px repeat(7, 1fr); gap: 1px; background: var(--border-color);">
+                                <!-- Header -->
+                                <div style="background: var(--bg-surface); padding: var(--spacing-2); font-weight: 600;">Time</div>
+                                <div style="background: var(--bg-surface); padding: var(--spacing-2); text-align: center; font-weight: 600;">Mon</div>
+                                <div style="background: var(--bg-surface); padding: var(--spacing-2); text-align: center; font-weight: 600;">Tue</div>
+                                <div style="background: var(--bg-surface); padding: var(--spacing-2); text-align: center; font-weight: 600;">Wed</div>
+                                <div style="background: var(--bg-surface); padding: var(--spacing-2); text-align: center; font-weight: 600;">Thu</div>
+                                <div style="background: var(--bg-surface); padding: var(--spacing-2); text-align: center; font-weight: 600;">Fri</div>
+                                <div style="background: var(--bg-surface); padding: var(--spacing-2); text-align: center; font-weight: 600;">Sat</div>
+                                <div style="background: var(--bg-surface); padding: var(--spacing-2); text-align: center; font-weight: 600;">Sun</div>
+                                
+                                <!-- Sample schedule items -->
+                                <div style="background: var(--bg-surface); padding: var(--spacing-2);">9:00 AM</div>
+                                <div style="background: var(--color-primary-lighter); padding: var(--spacing-2); text-align: center;">
+                                    <small>Web Dev 101</small>
+                                </div>
+                                <div style="background: var(--bg-surface); padding: var(--spacing-2);"></div>
+                                <div style="background: var(--color-primary-lighter); padding: var(--spacing-2); text-align: center;">
+                                    <small>Web Dev 101</small>
+                                </div>
+                                <div style="background: var(--bg-surface); padding: var(--spacing-2);"></div>
+                                <div style="background: var(--color-success-lighter); padding: var(--spacing-2); text-align: center;">
+                                    <small>JavaScript Adv</small>
+                                </div>
+                                <div style="background: var(--bg-surface); padding: var(--spacing-2);"></div>
+                                <div style="background: var(--bg-surface); padding: var(--spacing-2);"></div>
+                                
+                                <div style="background: var(--bg-surface); padding: var(--spacing-2);">2:00 PM</div>
+                                <div style="background: var(--bg-surface); padding: var(--spacing-2);"></div>
+                                <div style="background: var(--color-warning-lighter); padding: var(--spacing-2); text-align: center;">
+                                    <small>React Course</small>
+                                </div>
+                                <div style="background: var(--bg-surface); padding: var(--spacing-2);"></div>
+                                <div style="background: var(--color-warning-lighter); padding: var(--spacing-2); text-align: center;">
+                                    <small>React Course</small>
+                                </div>
+                                <div style="background: var(--bg-surface); padding: var(--spacing-2);"></div>
+                                <div style="background: var(--color-info-lighter); padding: var(--spacing-2); text-align: center;">
+                                    <small>Office Hours</small>
+                                </div>
+                                <div style="background: var(--bg-surface); padding: var(--spacing-2);"></div>
+                            </div>
+                        </div>
+                        <div style="margin-top: var(--spacing-4); display: flex; gap: var(--spacing-4); flex-wrap: wrap; font-size: var(--font-size-sm);">
+                            <div><span style="display: inline-block; width: 12px; height: 12px; background: var(--color-primary-lighter); border-radius: 2px;"></span> Web Development</div>
+                            <div><span style="display: inline-block; width: 12px; height: 12px; background: var(--color-success-lighter); border-radius: 2px;"></span> JavaScript</div>
+                            <div><span style="display: inline-block; width: 12px; height: 12px; background: var(--color-warning-lighter); border-radius: 2px;"></span> React</div>
+                            <div><span style="display: inline-block; width: 12px; height: 12px; background: var(--color-info-lighter); border-radius: 2px;"></span> Office Hours</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Teaching Achievements -->
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: var(--spacing-4); margin-bottom: var(--spacing-6);">
+                <!-- Course Ratings -->
+                <div class="card">
+                    <div class="card__header">
+                        <h3 class="card__title">
+                            <i class="fas fa-star" style="margin-right: var(--spacing-2); color: var(--color-warning);"></i>
+                            Course Ratings
+                        </h3>
+                    </div>
+                    <div class="card__body">
+                        <div style="display: flex; flex-direction: column; gap: var(--spacing-3);">
+                            <div>
+                                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: var(--spacing-1);">
+                                    <span>Web Development Basics</span>
+                                    <span style="color: var(--color-warning);">4.8 ⭐</span>
+                                </div>
+                                <div style="height: 4px; background: var(--bg-secondary); border-radius: 2px; overflow: hidden;">
+                                    <div style="width: 96%; height: 100%; background: var(--color-warning);"></div>
+                                </div>
+                            </div>
+                            <div>
+                                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: var(--spacing-1);">
+                                    <span>JavaScript Advanced</span>
+                                    <span style="color: var(--color-warning);">4.9 ⭐</span>
+                                </div>
+                                <div style="height: 4px; background: var(--bg-secondary); border-radius: 2px; overflow: hidden;">
+                                    <div style="width: 98%; height: 100%; background: var(--color-warning);"></div>
+                                </div>
+                            </div>
+                            <div>
+                                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: var(--spacing-1);">
+                                    <span>React.js Complete Guide</span>
+                                    <span style="color: var(--color-warning);">4.6 ⭐</span>
+                                </div>
+                                <div style="height: 4px; background: var(--bg-secondary); border-radius: 2px; overflow: hidden;">
+                                    <div style="width: 92%; height: 100%; background: var(--color-warning);"></div>
+                                </div>
+                            </div>
+                            <div>
+                                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: var(--spacing-1);">
+                                    <span>Vue.js Fundamentals</span>
+                                    <span style="color: var(--color-warning);">4.5 ⭐</span>
+                                </div>
+                                <div style="height: 4px; background: var(--bg-secondary); border-radius: 2px; overflow: hidden;">
+                                    <div style="width: 90%; height: 100%; background: var(--color-warning);"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Achievements & Certifications -->
+                <div class="card">
+                    <div class="card__header">
+                        <h3 class="card__title">
+                            <i class="fas fa-trophy" style="margin-right: var(--spacing-2); color: var(--color-success);"></i>
+                            Achievements & Certifications
+                        </h3>
+                    </div>
+                    <div class="card__body">
+                        <div style="display: flex; flex-direction: column; gap: var(--spacing-3);">
+                            <div style="display: flex; align-items: center; gap: var(--spacing-3);">
+                                <i class="fas fa-award" style="color: var(--color-primary); font-size: 24px;"></i>
+                                <div>
+                                    <div style="font-weight: 600;">Top Instructor 2024</div>
+                                    <small style="color: var(--text-secondary);">Awarded for excellence in teaching</small>
+                                </div>
+                            </div>
+                            <div style="display: flex; align-items: center; gap: var(--spacing-3);">
+                                <i class="fas fa-certificate" style="color: var(--color-success); font-size: 24px;"></i>
+                                <div>
+                                    <div style="font-weight: 600;">Certified Web Developer</div>
+                                    <small style="color: var(--text-secondary);">Google Professional Certificate</small>
+                                </div>
+                            </div>
+                            <div style="display: flex; align-items: center; gap: var(--spacing-3);">
+                                <i class="fas fa-medal" style="color: var(--color-warning); font-size: 24px;"></i>
+                                <div>
+                                    <div style="font-weight: 600;">100+ Students Milestone</div>
+                                    <small style="color: var(--text-secondary);">Reached 100 students enrolled</small>
+                                </div>
+                            </div>
+                            <div style="display: flex; align-items: center; gap: var(--spacing-3);">
+                                <i class="fas fa-graduation-cap" style="color: var(--color-info); font-size: 24px;"></i>
+                                <div>
+                                    <div style="font-weight: 600;">Master's in Computer Science</div>
+                                    <small style="color: var(--text-secondary);">Stanford University, 2020</small>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>

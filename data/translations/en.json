@@ -296,6 +296,20 @@
     "requestDate": "Request Date"
   },
   
+  "permissions": {
+    "title": "User Permissions Management",
+    "subtitle": "Configure access rights for different user roles",
+    "totalFeatures": "Total Features",
+    "adminAccess": "Admin Access",
+    "teacherAccess": "Teacher Access", 
+    "studentAccess": "Student Access",
+    "feature": "Feature / Action",
+    "resetDefault": "Reset to Default",
+    "export": "Export",
+    "saved": "Permissions saved successfully!",
+    "resetConfirm": "Are you sure you want to reset all permissions to default?"
+  },
+  
   "validation": {
     "required": "This field is required",
     "email": "Please enter a valid email address",

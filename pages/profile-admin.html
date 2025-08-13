@@ -8,6 +8,7 @@
     <link rel="stylesheet" href="../assets/css/themes.css">
     <link rel="stylesheet" href="../assets/css/layout.css">
     <link rel="stylesheet" href="../assets/css/components.css">
+    <link rel="stylesheet" href="../assets/css/utilities.css">
     <!-- Font Awesome Icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <!-- Configuration -->
@@ -96,6 +97,169 @@
                     <div class="card__body" style="text-align: center;">
                         <div style="font-size: var(--font-size-3xl); font-weight: var(--font-weight-bold); color: var(--color-info);">15</div>
                         <p style="color: var(--text-secondary);">Total Classes</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- System Health Monitoring -->
+            <div class="card" style="margin-bottom: var(--spacing-6);">
+                <div class="card__header">
+                    <h3 class="card__title">
+                        <i class="fas fa-heartbeat" style="margin-right: var(--spacing-2); color: var(--color-success);"></i>
+                        System Health
+                    </h3>
+                </div>
+                <div class="card__body">
+                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: var(--spacing-4);">
+                        <!-- Server Status -->
+                        <div>
+                            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: var(--spacing-2);">
+                                <span>Server Status</span>
+                                <span class="badge badge--success">Online</span>
+                            </div>
+                            <div style="font-size: var(--font-size-sm); color: var(--text-secondary);">
+                                Uptime: 99.9% (30 days)
+                            </div>
+                        </div>
+                        
+                        <!-- Database -->
+                        <div>
+                            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: var(--spacing-2);">
+                                <span>Database</span>
+                                <span class="badge badge--success">Healthy</span>
+                            </div>
+                            <div style="font-size: var(--font-size-sm); color: var(--text-secondary);">
+                                Response time: 45ms
+                            </div>
+                        </div>
+                        
+                        <!-- Storage -->
+                        <div>
+                            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: var(--spacing-2);">
+                                <span>Storage Usage</span>
+                                <span style="font-weight: 600;">65%</span>
+                            </div>
+                            <div style="height: 8px; background: var(--bg-secondary); border-radius: 4px; overflow: hidden;">
+                                <div style="width: 65%; height: 100%; background: var(--color-warning);"></div>
+                            </div>
+                            <div style="font-size: var(--font-size-sm); color: var(--text-secondary); margin-top: var(--spacing-1);">
+                                6.5 GB / 10 GB used
+                            </div>
+                        </div>
+                        
+                        <!-- Memory -->
+                        <div>
+                            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: var(--spacing-2);">
+                                <span>Memory Usage</span>
+                                <span style="font-weight: 600;">42%</span>
+                            </div>
+                            <div style="height: 8px; background: var(--bg-secondary); border-radius: 4px; overflow: hidden;">
+                                <div style="width: 42%; height: 100%; background: var(--color-success);"></div>
+                            </div>
+                            <div style="font-size: var(--font-size-sm); color: var(--text-secondary); margin-top: var(--spacing-1);">
+                                1.7 GB / 4 GB used
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- System Alerts -->
+                    <div style="margin-top: var(--spacing-6);">
+                        <h4 style="margin-bottom: var(--spacing-3);">System Alerts</h4>
+                        <div style="display: flex; flex-direction: column; gap: var(--spacing-2);">
+                            <div class="alert alert--warning">
+                                <i class="fas fa-exclamation-triangle alert__icon"></i>
+                                <div class="alert__content">
+                                    <div class="alert__title">Storage Warning</div>
+                                    <div class="alert__description">Storage usage is above 60%. Consider cleanup or upgrade.</div>
+                                </div>
+                            </div>
+                            <div class="alert alert--info">
+                                <i class="fas fa-info-circle alert__icon"></i>
+                                <div class="alert__content">
+                                    <div class="alert__title">Scheduled Maintenance</div>
+                                    <div class="alert__description">System maintenance scheduled for Sunday 2:00 AM - 4:00 AM</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Recent Administrative Actions -->
+            <div class="card" style="margin-bottom: var(--spacing-6);">
+                <div class="card__header">
+                    <div style="display: flex; justify-content: space-between; align-items: center;">
+                        <h3 class="card__title">
+                            <i class="fas fa-history" style="margin-right: var(--spacing-2); color: var(--color-info);"></i>
+                            Recent Administrative Actions
+                        </h3>
+                        <a href="logs.html" class="btn btn--ghost btn--small">View All</a>
+                    </div>
+                </div>
+                <div class="card__body">
+                    <div class="table-wrapper">
+                        <table class="table">
+                            <thead>
+                                <tr class="table__header">
+                                    <th class="table__cell table__cell--header">Action</th>
+                                    <th class="table__cell table__cell--header">Target</th>
+                                    <th class="table__cell table__cell--header">Time</th>
+                                    <th class="table__cell table__cell--header">Status</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr class="table__row">
+                                    <td class="table__cell">
+                                        <span class="tag tag--primary tag--small">User Created</span>
+                                    </td>
+                                    <td class="table__cell">john.doe@example.com</td>
+                                    <td class="table__cell">5 mins ago</td>
+                                    <td class="table__cell">
+                                        <span class="badge badge--success">Success</span>
+                                    </td>
+                                </tr>
+                                <tr class="table__row">
+                                    <td class="table__cell">
+                                        <span class="tag tag--warning tag--small">Course Updated</span>
+                                    </td>
+                                    <td class="table__cell">Web Development Basics</td>
+                                    <td class="table__cell">1 hour ago</td>
+                                    <td class="table__cell">
+                                        <span class="badge badge--success">Success</span>
+                                    </td>
+                                </tr>
+                                <tr class="table__row">
+                                    <td class="table__cell">
+                                        <span class="tag tag--danger tag--small">User Deleted</span>
+                                    </td>
+                                    <td class="table__cell">spam.user@fake.com</td>
+                                    <td class="table__cell">2 hours ago</td>
+                                    <td class="table__cell">
+                                        <span class="badge badge--success">Success</span>
+                                    </td>
+                                </tr>
+                                <tr class="table__row">
+                                    <td class="table__cell">
+                                        <span class="tag tag--info tag--small">Backup Created</span>
+                                    </td>
+                                    <td class="table__cell">Full System Backup</td>
+                                    <td class="table__cell">6 hours ago</td>
+                                    <td class="table__cell">
+                                        <span class="badge badge--success">Success</span>
+                                    </td>
+                                </tr>
+                                <tr class="table__row">
+                                    <td class="table__cell">
+                                        <span class="tag tag--secondary tag--small">Permission Updated</span>
+                                    </td>
+                                    <td class="table__cell">Teacher Role Permissions</td>
+                                    <td class="table__cell">1 day ago</td>
+                                    <td class="table__cell">
+                                        <span class="badge badge--success">Success</span>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
                     </div>
                 </div>
             </div>

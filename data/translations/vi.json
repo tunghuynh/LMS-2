@@ -296,6 +296,20 @@
     "requestDate": "Ngày yêu cầu"
   },
   
+  "permissions": {
+    "title": "Quản lý Phân quyền Người dùng",
+    "subtitle": "Cấu hình quyền truy cập cho các vai trò người dùng khác nhau",
+    "totalFeatures": "Tổng số tính năng",
+    "adminAccess": "Quyền Admin",
+    "teacherAccess": "Quyền Giáo viên", 
+    "studentAccess": "Quyền Học sinh",
+    "feature": "Tính năng / Hành động",
+    "resetDefault": "Đặt lại mặc định",
+    "export": "Xuất file",
+    "saved": "Lưu phân quyền thành công!",
+    "resetConfirm": "Bạn có chắc chắn muốn đặt lại tất cả phân quyền về mặc định?"
+  },
+  
   "validation": {
     "required": "Trường này là bắt buộc",
     "email": "Vui lòng nhập địa chỉ email hợp lệ",
