@@ -491,9 +491,17 @@
                                 <i class="fas fa-certificate" style="margin-right: 8px;"></i>
                                 <span data-translate="progress.getCertificate">Get Certificate</span>
                             </button>
-                            <select id="courseFilterDetails" class="form-select" onchange="filterLessonProgress()">
-                                <option value="" data-translate="common.allCourses">All Courses</option>
-                            </select>
+                            <div class="dropdown dropdown--block" id="courseFilterDetailsDropdown">
+                                <button class="dropdown__trigger">
+                                    <span data-translate="common.allCourses">All Courses</span>
+                                    <span class="dropdown__arrow"></span>
+                                </button>
+                                <div class="dropdown__menu">
+                                    <div class="dropdown__list" id="courseFilterDetailsList">
+                                        <!-- Course options will be populated dynamically -->
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -795,7 +803,7 @@
         // Display detailed lesson progress
         function displayLessonProgress() {
             const container = document.getElementById('lessonProgressContainer');
-            const selectedCourseId = document.getElementById('courseFilterDetails').value;
+            const selectedCourseId = LMS.Dropdown.getValue('courseFilterDetailsDropdown');
             
             let enrollmentsToShow = userProgress.enrollments;
             if (selectedCourseId) {
@@ -863,17 +871,20 @@
 
         // Populate course filter for details
         function populateDetailsFilter() {
-            const select = document.getElementById('courseFilterDetails');
-            select.innerHTML = `<option value="">${LMS.t('common.allCourses')}</option>`;
+            const courseOptions = [{value: '', text: LMS.t('common.allCourses')}];
             
             userProgress.enrollments.forEach(enrollment => {
                 const course = allCourses.find(c => c.id === enrollment.courseId);
                 if (course) {
-                    const option = document.createElement('option');
-                    option.value = course.id;
-                    option.textContent = course.title;
-                    select.appendChild(option);
+                    courseOptions.push({value: course.id, text: course.title});
                 }
+            });
+            
+            LMS.Dropdown.populate('courseFilterDetailsDropdown', courseOptions);
+            
+            // Initialize dropdown
+            LMS.Dropdown.init('courseFilterDetailsDropdown', {
+                onSelect: () => filterLessonProgress()
             });
         }
 

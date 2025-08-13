@@ -120,6 +120,52 @@ This is the master TODO list for LMS Phase I development following the Foundatio
   - Search/filter option
   - Custom item rendering
   - Keyboard navigation
+- [ ] **0.5.7** Date Picker Component (`date-picker.html`):
+  - Types: date, datetime
+  - With label, placeholder, help text
+  - Validation states: normal, error, success, disabled, active
+  - Required/optional indicators
+  - Clear button option
+  - Calendar popup for date selection
+  - Time picker for datetime type
+  - Support for keyboard navigation and accessibility
+- [ ] **0.5.8** Tag Component (`tag.html`):
+  - Text label with optional border
+  - Customizable border radius
+  - Variants: filled, outlined
+  - Optional close/remove icon
+  - Color themes (e.g., primary, success, warning, danger)
+  - Sizes: small, medium, large
+- [ ] **0.5.9** Radio Group Component (`radio.html`):
+  - Single-select radio group
+  - With label, help text
+  - Required/optional indicators
+  - Horizontal or vertical layout
+  - Disabled state for individual options or entire group
+  - Keyboard navigation support
+- [ ] **0.5.10** Checkbox Component (`checkbox.html`):
+  - Single or multi-select checkboxes
+  - With label, help text
+  - Required/optional indicators
+  - Indeterminate state
+  - Horizontal or vertical layout
+  - Disabled state for individual items or entire group
+- [ ] **0.5.11** Upload Component (`upload.html`):
+  - Upload area for drag-and-drop
+  - Button to select file(s) from device
+  - With help text, uploaded filename, file extension
+  - Display modes:
+    - List view for uploaded files (multi-upload)
+    - Image preview for supported formats
+    - "Upload more" option for adding files
+  - Upload types: single or multiple
+  - Sizes:
+    - Small: button only
+    - Medium: button + file list
+    - Extra: full feature set (drag-drop + list + preview)
+  - Required/optional indicators
+  - Validation for file type and size
+  - Progress indicator for uploads
 
 ### 0.6 Main Layout & Navigation
 - [x] **0.6.1** Create `main.html` with iframe structure:
@@ -146,7 +192,7 @@ This is the master TODO list for LMS Phase I development following the Foundatio
 
 ## 📘 PHASE I: BUSINESS LOGIC IMPLEMENTATION
 
-### 1. USER MANAGEMENT MODULE (Dev1)
+### 1. USER MANAGEMENT MODULE (Dev1)  [Phase I – User Management.md](Phase I – User Management.md) 
 
 #### 1.1 Landing & Authentication Pages
 - [x] **1.1.1** Landing Page (`index.html`):
@@ -189,7 +235,7 @@ This is the master TODO list for LMS Phase I development following the Foundatio
   - System statistics overview
   - User management quick stats
 
-#### 1.3 User Management (Admin)
+#### 1.3 User Management (Admin) 
 - [x] **1.3.1** User List Page (`users.html`):
   - Table with pagination
   - Search by username/email
@@ -205,6 +251,9 @@ This is the master TODO list for LMS Phase I development following the Foundatio
   - Warning modal
   - Impact description
   - Confirm/Cancel buttons
+- [ ] **1.3.4** Phân quyền người dùng. Màn hình phân quyền chức năng cho role dạng TableTree gồm:
+    - [ ] Row là Danh sách các chức năng, cấp row nhỏ hơn của chức năng là các button tương ứng trong từng màn hình
+    - [ ] Col là 3 role Admin/Teacher/Student. Các cột có checkbox để tick phân quyền cho role nào được sử dụng chức năng gì
 
 #### 1.4 Class Management
 - [x] **1.4.1** Class List Page (`classes.html`):
@@ -244,7 +293,7 @@ This is the master TODO list for LMS Phase I development following the Foundatio
   - Token validation (mock)
   - Success redirect to login
 
-### 2. LEARNING SYSTEM MODULE (Dev2)
+### 2. LEARNING SYSTEM MODULE (Dev2)  [Phase I – Learning System.md](Phase I – Learning System.md) 
 
 #### 2.1 Course Category Management
 - [x] **2.1.1** Category List Component:
@@ -348,7 +397,7 @@ This is the master TODO list for LMS Phase I development following the Foundatio
   - Quiz scores integration
   - Downloadable certificate
 
-### 3. TESTING SYSTEM MODULE (Dev3)
+### 3. TESTING SYSTEM MODULE (Dev3)  [Phase I – Testing System.md](Phase I – Testing System.md) 
 
 #### 3.1 Quiz Management
 - [x] **3.1.1** Quiz List Page (`quizzes.html`):
@@ -732,5 +781,3 @@ Notes:
 
 ---
 
-Last Updated: 2024-01-XX
-Version: 1.0.0

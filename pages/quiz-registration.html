@@ -6,8 +6,9 @@
     <title>Quiz Registration - LMS</title>
     <!-- Core CSS -->
     <link rel="stylesheet" href="../assets/css/global.css">
-    <link rel="stylesheet" href="../assets/css/components.css">
     <link rel="stylesheet" href="../assets/css/themes.css">
+    <link rel="stylesheet" href="../assets/css/layout.css">
+    <link rel="stylesheet" href="../assets/css/components.css">
     <link rel="stylesheet" href="../assets/css/utilities.css">
     <link rel="stylesheet" href="../assets/css/quiz-styles.css">
     <!-- Font Awesome -->
@@ -309,18 +310,18 @@
     <div class="page-container">
         <!-- Page Header -->
         <div class="page-header">
-            <div style="display: flex; justify-content: space-between; align-items: center;">
+            <div class="flex-between">
                 <div>
                     <h1 class="page-title" data-translate="quiz.registration">Quiz Registration</h1>
                     <p class="page-subtitle" data-translate="quiz.registrationSubtitle">Register for available quizzes and track your progress</p>
                 </div>
-                <div style="display: flex; gap: var(--spacing-3);">
+                <div class="flex flex-gap-3">
                     <button class="btn btn--secondary" onclick="refreshQuizzes()">
-                        <i class="fas fa-sync-alt" style="margin-right: 8px;"></i>
+                        <i class="fas fa-sync-alt" class="icon-mr"></i>
                         <span data-translate="common.refresh">Refresh</span>
                     </button>
                     <button class="btn btn--primary" onclick="viewMyRegistrations()">
-                        <i class="fas fa-list" style="margin-right: 8px;"></i>
+                        <i class="fas fa-list" class="icon-mr"></i>
                         <span data-translate="quiz.myRegistrations">My Registrations</span>
                     </button>
                 </div>
@@ -331,37 +332,61 @@
             <!-- Filters Section -->
             <div class="filters-section">
                 <div class="filters-grid">
-                    <div class="form-group">
-                        <label class="form-label" data-translate="common.search">Search</label>
-                        <input type="text" id="searchInput" class="form-input" 
+                    <div class="input-group">
+                        <label class="input-group__label" data-translate="common.search">Search</label>
+                        <input type="text" id="searchInput" class="input" 
                                placeholder="Search quizzes by title or description..."
                                data-translate-placeholder="quiz.searchPlaceholder"
                                onkeyup="filterQuizzes()">
                     </div>
-                    <div class="form-group">
-                        <label class="form-label" data-translate="course.selectCourse">Course</label>
-                        <select id="courseFilter" class="form-select" onchange="filterQuizzes()">
-                            <option value="" data-translate="common.allCourses">All Courses</option>
-                        </select>
+                    <div class="input-group">
+                        <label class="input-group__label" data-translate="course.selectCourse">Course</label>
+                        <div class="dropdown dropdown--block" id="courseFilterDropdown">
+                            <button class="dropdown__trigger">
+                                <span data-translate="common.allCourses">All Courses</span>
+                                <span class="dropdown__arrow"></span>
+                            </button>
+                            <div class="dropdown__menu">
+                                <div class="dropdown__list" id="courseFilterList">
+                                    <!-- Course options will be populated dynamically -->
+                                </div>
+                            </div>
+                        </div>
                     </div>
-                    <div class="form-group">
-                        <label class="form-label" data-translate="quiz.registrationStatus">Status</label>
-                        <select id="statusFilter" class="form-select" onchange="filterQuizzes()">
-                            <option value="" data-translate="common.allStatuses">All Statuses</option>
-                            <option value="available" data-translate="quiz.available">Available</option>
-                            <option value="registered" data-translate="quiz.registered">Registered</option>
-                            <option value="closed" data-translate="quiz.closed">Registration Closed</option>
-                            <option value="upcoming" data-translate="quiz.upcoming">Upcoming</option>
-                        </select>
+                    <div class="input-group">
+                        <label class="input-group__label" data-translate="quiz.registrationStatus">Status</label>
+                        <div class="dropdown dropdown--block" id="statusFilterDropdown">
+                            <button class="dropdown__trigger">
+                                <span data-translate="common.allStatuses">All Statuses</span>
+                                <span class="dropdown__arrow"></span>
+                            </button>
+                            <div class="dropdown__menu">
+                                <div class="dropdown__list">
+                                    <div class="dropdown__item" data-value="" data-translate="common.allStatuses">All Statuses</div>
+                                    <div class="dropdown__item" data-value="available" data-translate="quiz.available">Available</div>
+                                    <div class="dropdown__item" data-value="registered" data-translate="quiz.registered">Registered</div>
+                                    <div class="dropdown__item" data-value="closed" data-translate="quiz.closed">Registration Closed</div>
+                                    <div class="dropdown__item" data-value="upcoming" data-translate="quiz.upcoming">Upcoming</div>
+                                </div>
+                            </div>
+                        </div>
                     </div>
-                    <div class="form-group">
-                        <label class="form-label" data-translate="quiz.difficulty">Difficulty</label>
-                        <select id="difficultyFilter" class="form-select" onchange="filterQuizzes()">
-                            <option value="" data-translate="quiz.allDifficulties">All Difficulties</option>
-                            <option value="beginner" data-translate="quiz.beginner">Beginner</option>
-                            <option value="intermediate" data-translate="quiz.intermediate">Intermediate</option>
-                            <option value="advanced" data-translate="quiz.advanced">Advanced</option>
-                        </select>
+                    <div class="input-group">
+                        <label class="input-group__label" data-translate="quiz.difficulty">Difficulty</label>
+                        <div class="dropdown dropdown--block" id="difficultyFilterDropdown">
+                            <button class="dropdown__trigger">
+                                <span data-translate="quiz.allDifficulties">All Difficulties</span>
+                                <span class="dropdown__arrow"></span>
+                            </button>
+                            <div class="dropdown__menu">
+                                <div class="dropdown__list">
+                                    <div class="dropdown__item" data-value="" data-translate="quiz.allDifficulties">All Difficulties</div>
+                                    <div class="dropdown__item" data-value="beginner" data-translate="quiz.beginner">Beginner</div>
+                                    <div class="dropdown__item" data-value="intermediate" data-translate="quiz.intermediate">Intermediate</div>
+                                    <div class="dropdown__item" data-value="advanced" data-translate="quiz.advanced">Advanced</div>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -372,7 +397,7 @@
             </div>
 
             <!-- Empty State -->
-            <div class="empty-state" id="emptyState" style="display: none;">
+            <div class="empty-state" id="emptyState" class="hidden">
                 <div class="empty-state-icon">
                     <i class="fas fa-clipboard-list"></i>
                 </div>
@@ -394,11 +419,11 @@
             </div>
             <div class="modal__footer">
                 <button class="btn btn--secondary" onclick="closeRegistrationModal()">
-                    <i class="fas fa-times" style="margin-right: 8px;"></i>
+                    <i class="fas fa-times" class="icon-mr"></i>
                     <span data-translate="common.cancel">Cancel</span>
                 </button>
                 <button class="btn btn--primary" onclick="confirmRegistration()" id="confirmRegistrationBtn" disabled>
-                    <i class="fas fa-check" style="margin-right: 8px;"></i>
+                    <i class="fas fa-check" class="icon-mr"></i>
                     <span data-translate="quiz.confirmRegistration">Confirm Registration</span>
                 </button>
             </div>
@@ -448,11 +473,11 @@
             </div>
             <div class="modal__footer">
                 <button class="btn btn--secondary" onclick="closeTermsModal()">
-                    <i class="fas fa-times" style="margin-right: 8px;"></i>
+                    <i class="fas fa-times" class="icon-mr"></i>
                     <span data-translate="common.cancel">Cancel</span>
                 </button>
                 <button class="btn btn--primary" onclick="acceptTerms()" id="acceptTermsBtn" disabled>
-                    <i class="fas fa-check" style="margin-right: 8px;"></i>
+                    <i class="fas fa-check" class="icon-mr"></i>
                     <span data-translate="quiz.acceptTerms">Accept Terms</span>
                 </button>
             </div>
@@ -572,19 +597,28 @@
 
         // Populate filter dropdowns
         function populateFilters() {
-            const courseFilter = document.getElementById('courseFilter');
-            
             // Get unique courses from quizzes
             const uniqueCourses = [...new Set(allQuizzes.map(q => q.courseId))]
                 .map(id => allCourses.find(c => c.id === id))
                 .filter(Boolean);
             
-            courseFilter.innerHTML = `<option value="">${LMS.t('common.allCourses')}</option>`;
+            const courseOptions = [{value: '', text: LMS.t('common.allCourses')}];
             uniqueCourses.forEach(course => {
-                const option = document.createElement('option');
-                option.value = course.id;
-                option.textContent = course.title;
-                courseFilter.appendChild(option);
+                courseOptions.push({value: course.id, text: course.title});
+            });
+            LMS.Dropdown.populate('courseFilterDropdown', courseOptions);
+            
+            // Initialize dropdowns
+            LMS.Dropdown.init('courseFilterDropdown', {
+                onSelect: () => filterQuizzes()
+            });
+            
+            LMS.Dropdown.init('statusFilterDropdown', {
+                onSelect: () => filterQuizzes()
+            });
+            
+            LMS.Dropdown.init('difficultyFilterDropdown', {
+                onSelect: () => filterQuizzes()
             });
         }
 
@@ -593,13 +627,13 @@
             filteredQuizzes = [...allQuizzes];
 
             // Course filter
-            const courseFilter = document.getElementById('courseFilter').value;
+            const courseFilter = LMS.Dropdown.getValue('courseFilterDropdown');
             if (courseFilter) {
                 filteredQuizzes = filteredQuizzes.filter(q => q.courseId === courseFilter);
             }
 
             // Status filter
-            const statusFilter = document.getElementById('statusFilter').value;
+            const statusFilter = LMS.Dropdown.getValue('statusFilterDropdown');
             if (statusFilter) {
                 filteredQuizzes = filteredQuizzes.filter(quiz => {
                     const status = getQuizRegistrationStatus(quiz);
@@ -608,7 +642,7 @@
             }
 
             // Difficulty filter
-            const difficultyFilter = document.getElementById('difficultyFilter').value;
+            const difficultyFilter = LMS.Dropdown.getValue('difficultyFilterDropdown');
             if (difficultyFilter) {
                 filteredQuizzes = filteredQuizzes.filter(q => q.difficulty === difficultyFilter);
             }
@@ -708,7 +742,7 @@
                         <div class="quiz-card__footer">
                             <div class="registration-status">
                                 <span class="status-badge ${status}" data-translate="quiz.${status}">${status.charAt(0).toUpperCase() + status.slice(1)}</span>
-                                ${status === 'registered' ? `<span style="font-size: var(--font-size-sm); color: var(--text-secondary);">Registered: ${new Date(registration.registeredAt).toLocaleDateString()}</span>` : ''}
+                                ${status === 'registered' ? `<span class="text-sm text-secondary">Registered: ${new Date(registration.registeredAt).toLocaleDateString()}</span>` : ''}
                             </div>
                             ${renderActionButton(quiz, status, isRegistered)}
                         </div>
@@ -732,7 +766,7 @@
             
             return `
                 <div class="quiz-requirements">
-                    <h5 style="margin-bottom: var(--spacing-2); font-size: var(--font-size-sm); color: var(--text-secondary);" data-translate="quiz.prerequisites">Prerequisites:</h5>
+                    <h5 class="mb-2 text-sm text-secondary" data-translate="quiz.prerequisites">Prerequisites:</h5>
                     ${quiz.prerequisites.map(prereq => {
                         const isMet = Math.random() > 0.3; // Mock prerequisite check
                         return `
@@ -790,9 +824,9 @@
                     return `
                         <button class="btn btn--primary" 
                                 onclick="registerForQuiz('${quiz.id}')" 
-                                style="width: 100%;"
+                                class="w-full"
                                 ${hasUnmetPrerequisites ? 'disabled title="Prerequisites not met"' : ''}>
-                            <i class="fas fa-user-plus" style="margin-right: 8px;"></i>
+                            <i class="fas fa-user-plus" class="icon-mr"></i>
                             <span data-translate="quiz.register">Register</span>
                         </button>
                     `;
@@ -803,20 +837,20 @@
                     
                     if (canTakeQuiz) {
                         return `
-                            <button class="btn btn--success" onclick="startQuiz('${quiz.id}')" style="width: 100%;">
-                                <i class="fas fa-play" style="margin-right: 8px;"></i>
+                            <button class="btn btn--success" onclick="startQuiz('${quiz.id}')" class="w-full">
+                                <i class="fas fa-play" class="icon-mr"></i>
                                 <span data-translate="quiz.startQuiz">Start Quiz</span>
                             </button>
                         `;
                     } else {
                         return `
-                            <div style="display: flex; gap: var(--spacing-2);">
-                                <button class="btn btn--ghost" onclick="viewQuizDetails('${quiz.id}')" style="flex: 1;">
-                                    <i class="fas fa-info-circle" style="margin-right: 8px;"></i>
+                            <div class="flex flex-gap-2">
+                                <button class="btn btn--ghost" onclick="viewQuizDetails('${quiz.id}')" class="flex-1">
+                                    <i class="fas fa-info-circle" class="icon-mr"></i>
                                     <span data-translate="quiz.viewDetails">Details</span>
                                 </button>
-                                <button class="btn btn--danger" onclick="unregisterFromQuiz('${quiz.id}')" style="flex: 1;">
-                                    <i class="fas fa-user-minus" style="margin-right: 8px;"></i>
+                                <button class="btn btn--danger" onclick="unregisterFromQuiz('${quiz.id}')" class="flex-1">
+                                    <i class="fas fa-user-minus" class="icon-mr"></i>
                                     <span data-translate="quiz.unregister">Unregister</span>
                                 </button>
                             </div>
@@ -825,16 +859,16 @@
                     
                 case 'closed':
                     return `
-                        <button class="btn btn--secondary" disabled style="width: 100%;">
-                            <i class="fas fa-lock" style="margin-right: 8px;"></i>
+                        <button class="btn btn--secondary" disabled class="w-full">
+                            <i class="fas fa-lock" class="icon-mr"></i>
                             <span data-translate="quiz.registrationClosed">Registration Closed</span>
                         </button>
                     `;
                     
                 case 'upcoming':
                     return `
-                        <button class="btn btn--ghost" onclick="viewQuizDetails('${quiz.id}')" style="width: 100%;">
-                            <i class="fas fa-calendar-alt" style="margin-right: 8px;"></i>
+                        <button class="btn btn--ghost" onclick="viewQuizDetails('${quiz.id}')" class="w-full">
+                            <i class="fas fa-calendar-alt" class="icon-mr"></i>
                             <span data-translate="quiz.viewDetails">View Details</span>
                         </button>
                     `;
@@ -858,41 +892,41 @@
             const content = document.getElementById('registrationModalContent');
             
             content.innerHTML = `
-                <div style="margin-bottom: var(--spacing-6);">
-                    <h3 style="margin-bottom: var(--spacing-3);">${quiz.title}</h3>
-                    <p style="color: var(--text-secondary); margin-bottom: var(--spacing-4);">${quiz.description}</p>
+                <div class="mb-6">
+                    <h3 class="mb-3">${quiz.title}</h3>
+                    <p class="text-secondary mb-4">${quiz.description}</p>
                     
-                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: var(--spacing-4); margin-bottom: var(--spacing-4);">
-                        <div style="background: var(--bg-secondary); padding: var(--spacing-3); border-radius: var(--radius-md);">
+                    <div class="grid grid-auto-fit grid-gap-4 mb-4">
+                        <div class="bg-secondary-p3-rounded">
                             <strong>${LMS.t('quiz.quizDate')}:</strong><br>
                             ${new Date(quiz.quizDate).toLocaleDateString()} at ${new Date(quiz.quizDate).toLocaleTimeString()}
                         </div>
-                        <div style="background: var(--bg-secondary); padding: var(--spacing-3); border-radius: var(--radius-md);">
+                        <div class="bg-secondary-p3-rounded">
                             <strong>${LMS.t('quiz.duration')}:</strong><br>
                             ${quiz.duration} minutes
                         </div>
-                        <div style="background: var(--bg-secondary); padding: var(--spacing-3); border-radius: var(--radius-md);">
+                        <div class="bg-secondary-p3-rounded">
                             <strong>${LMS.t('quiz.attempts')}:</strong><br>
                             ${quiz.maxAttempts} ${quiz.maxAttempts === 1 ? 'attempt' : 'attempts'}
                         </div>
-                        <div style="background: var(--bg-secondary); padding: var(--spacing-3); border-radius: var(--radius-md);">
+                        <div class="bg-secondary-p3-rounded">
                             <strong>${LMS.t('quiz.passingScore')}:</strong><br>
                             ${quiz.passingScore}% required
                         </div>
                     </div>
                     
                     ${quiz.prerequisites && quiz.prerequisites.length > 0 ? `
-                        <div style="margin-bottom: var(--spacing-4);">
-                            <h4 style="margin-bottom: var(--spacing-2);" data-translate="quiz.prerequisites">Prerequisites:</h4>
-                            <ul style="margin-left: var(--spacing-4);">
+                        <div class="mb-4">
+                            <h4 class="mb-2" data-translate="quiz.prerequisites">Prerequisites:</h4>
+                            <ul class="ml-4">
                                 ${quiz.prerequisites.map(prereq => `<li>${prereq}</li>`).join('')}
                             </ul>
                         </div>
                     ` : ''}
                     
-                    <div style="background: var(--bg-tertiary); padding: var(--spacing-4); border-radius: var(--radius-md); margin-bottom: var(--spacing-4);">
-                        <h4 style="margin-bottom: var(--spacing-2);" data-translate="quiz.importantInformation">Important Information:</h4>
-                        <ul style="margin-left: var(--spacing-4); margin-bottom: 0;">
+                    <div class="bg-tertiary-p4-rounded mb-4">
+                        <h4 class="mb-2" data-translate="quiz.importantInformation">Important Information:</h4>
+                        <ul class="ml-4 mb-0">
                             <li data-translate="quiz.registrationInfo1">Registration deadline: ${new Date(quiz.registrationEnd).toLocaleDateString()}</li>
                             <li data-translate="quiz.registrationInfo2">You must complete all prerequisites before the quiz date</li>
                             <li data-translate="quiz.registrationInfo3">Late submissions will not be accepted</li>
@@ -900,11 +934,11 @@
                         </ul>
                     </div>
                     
-                    <div style="display: flex; align-items: center; gap: var(--spacing-3); padding: var(--spacing-4); background: var(--color-warning-light, rgba(245, 158, 11, 0.1)); border-radius: var(--radius-md);">
+                    <div class="warning-notice">
                         <input type="checkbox" id="termsCheckbox" onchange="updateRegistrationButton()">
-                        <label for="termsCheckbox" style="flex: 1;">
+                        <label for="termsCheckbox" class="flex-1">
                             <span data-translate="quiz.agreeToTermsShort">I agree to the</span> 
-                            <a href="#" onclick="showTermsModal(); event.preventDefault();" style="color: var(--color-primary); text-decoration: underline;">
+                            <a href="#" onclick="showTermsModal(); event.preventDefault();" class="text-primary underline">
                                 <span data-translate="quiz.termsAndConditions">terms and conditions</span>
                             </a>
                         </label>
@@ -996,7 +1030,7 @@
 
         function viewMyRegistrations() {
             // Filter to show only registered quizzes
-            document.getElementById('statusFilter').value = 'registered';
+            LMS.Dropdown.setValue('statusFilterDropdown', 'registered');
             filterQuizzes();
         }
 

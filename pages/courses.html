@@ -306,7 +306,7 @@
                 <form id="courseForm">
                     <input type="hidden" id="courseId">
                     
-                    <div class="form-grid" style="display: grid; grid-template-columns: 1fr 1fr; gap: var(--spacing-4);">
+                    <div class="grid" style="display: grid; grid-template-columns: 1fr 1fr; gap: var(--spacing-4);">
                         <div class="input-group">
                             <label class="input-group__label input-group__label--required">Course Title</label>
                             <input type="text" class="input" id="courseTitle" name="title" required>
@@ -334,7 +334,7 @@
                         <textarea class="input input--textarea" id="courseDescription" name="description" rows="4" required></textarea>
                     </div>
                     
-                    <div class="form-grid" style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: var(--spacing-4);">
+                    <div class="grid" style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: var(--spacing-4);">
                         <div class="input-group">
                             <label class="input-group__label">Duration (hours)</label>
                             <input type="number" class="input" id="courseDuration" name="duration" min="1" placeholder="e.g., 40">
@@ -342,20 +342,36 @@
                         
                         <div class="input-group">
                             <label class="input-group__label">Difficulty</label>
-                            <select class="input" id="courseDifficulty" name="difficulty">
-                                <option value="beginner">Beginner</option>
-                                <option value="intermediate">Intermediate</option>
-                                <option value="advanced">Advanced</option>
-                            </select>
+                            <div class="dropdown dropdown--block" id="courseDifficultyDropdown">
+                                <button class="dropdown__trigger">
+                                    <span>Beginner</span>
+                                    <span class="dropdown__arrow"></span>
+                                </button>
+                                <div class="dropdown__menu">
+                                    <div class="dropdown__list">
+                                        <div class="dropdown__item dropdown__item--selected" data-value="beginner">Beginner</div>
+                                        <div class="dropdown__item" data-value="intermediate">Intermediate</div>
+                                        <div class="dropdown__item" data-value="advanced">Advanced</div>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                         
                         <div class="input-group">
                             <label class="input-group__label">Status</label>
-                            <select class="input" id="courseStatus" name="status">
-                                <option value="draft">Draft</option>
-                                <option value="published">Published</option>
-                                <option value="archived">Archived</option>
-                            </select>
+                            <div class="dropdown dropdown--block" id="courseStatusDropdown">
+                                <button class="dropdown__trigger">
+                                    <span>Draft</span>
+                                    <span class="dropdown__arrow"></span>
+                                </button>
+                                <div class="dropdown__menu">
+                                    <div class="dropdown__list">
+                                        <div class="dropdown__item dropdown__item--selected" data-value="draft">Draft</div>
+                                        <div class="dropdown__item" data-value="published">Published</div>
+                                        <div class="dropdown__item" data-value="archived">Archived</div>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                     </div>
                     
@@ -440,8 +456,8 @@
                     <!-- Dynamic course information -->
                 </div>
                 <div style="margin-top: var(--spacing-4);">
-                    <label class="form-label" data-translate="enrollment.withdrawReason">Reason for withdrawal (optional)</label>
-                    <textarea id="withdrawalReason" class="form-textarea" rows="3" 
+                    <label class="input-group__label" data-translate="enrollment.withdrawReason">Reason for withdrawal (optional)</label>
+                    <textarea id="withdrawalReason" class="input input--textarea" rows="3" 
                               placeholder="Please let us know why you're withdrawing..."
                               data-translate-placeholder="enrollment.withdrawReasonPlaceholder"></textarea>
                 </div>
@@ -762,8 +778,8 @@
             document.getElementById('selectedCategory').textContent = category ? category.name : 'Select category';
             
             document.getElementById('courseDuration').value = course.duration || '';
-            document.getElementById('courseDifficulty').value = course.difficulty || 'beginner';
-            document.getElementById('courseStatus').value = course.status || 'draft';
+            LMS.Dropdown.setValue('courseDifficultyDropdown', course.difficulty || 'beginner');
+            LMS.Dropdown.setValue('courseStatusDropdown', course.status || 'draft');
             document.getElementById('coursePrerequisites').value = course.prerequisites || '';
             document.getElementById('courseThumbnail').value = course.thumbnail || '';
             
@@ -794,8 +810,8 @@
                 description: document.getElementById('courseDescription').value,
                 categoryId: document.getElementById('categoryId').value,
                 duration: parseInt(document.getElementById('courseDuration').value) || null,
-                difficulty: document.getElementById('courseDifficulty').value,
-                status: document.getElementById('courseStatus').value,
+                difficulty: LMS.Dropdown.getValue('courseDifficultyDropdown') || 'beginner',
+                status: LMS.Dropdown.getValue('courseStatusDropdown') || 'draft',
                 prerequisites: document.getElementById('coursePrerequisites').value,
                 thumbnail: document.getElementById('courseThumbnail').value,
                 teacherId: currentUser?.id || 'user_002',
@@ -1126,6 +1142,10 @@
             
             // Get current user after auth is ready
             currentUser = LMS.Auth.getUser();
+            
+            // Initialize dropdowns
+            LMS.Dropdown.init('courseDifficultyDropdown');
+            LMS.Dropdown.init('courseStatusDropdown');
             
             // Check authentication - allow all authenticated users
             if (!LMS.Auth.isAuthenticated()) {

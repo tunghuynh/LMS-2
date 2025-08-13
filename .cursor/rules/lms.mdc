@@ -1,0 +1,31 @@
+---
+alwaysApply: true
+---
+### QUY TẮC NGHIÊM CẤM
+```
+🚫 KHÔNG tạo style inline trong HTML
+🚫 KHÔNG tạo CSS custom trong file page  
+🚫 KHÔNG sửa đổi global.css, components.css, layout.css
+🚫 KHÔNG sử dụng !important (trừ trường hợp đặc biệt)
+🚫 KHÔNG tạo component mới mà không thảo luận
+🚫 KHÔNG sử dụng OS commands trong development
+🚫 KHÔNG hardcode text - PHẢI dùng translation keys
+🚫 KHÔNG hardcode colors - PHẢI dùng CSS variables
+🚫 KHÔNG store business data trong localStorage
+```
+
+### QUY TẮC BẮT BUỘC
+```
+✅ PHẢI sử dụng CSS variables cho all colors
+✅ PHẢI sử dụng translation keys cho all text
+✅ PHẢI load data từ JSON files
+✅ PHẢI support dark/light theme
+✅ PHẢI support multi-language
+✅ PHẢI sử dụng class names từ component system
+✅ PHẢI tuân thủ BEM naming convention
+✅ PHẢI sử dụng iframe cho page content
+✅ PHẢI validate HTML trước khi hoàn thành
+✅ PHẢI test responsive trên tất cả breakpoints
+✅ PHẢI test both dark/light themes
+✅ PHẢI test với multiple languages
+```

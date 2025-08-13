@@ -80,13 +80,13 @@
             display: flex;
             gap: var(--spacing-2);
         }
-        .form-grid {
+        .grid {
             display: grid;
             grid-template-columns: 1fr 1fr;
             gap: var(--spacing-4);
         }
         @media (max-width: 768px) {
-            .form-grid {
+            .grid {
                 grid-template-columns: 1fr;
             }
         }
@@ -126,7 +126,7 @@
                     <input type="email" class="input" id="email" name="email" placeholder="your@email.com" required>
                 </div>
 
-                <div class="form-grid">
+                <div class="grid">
                     <div class="input-group">
                         <label class="input-group__label input-group__label--required" data-translate="auth.password">Password</label>
                         <input type="password" class="input" id="password" name="password" placeholder="Min 6 characters" required minlength="6">

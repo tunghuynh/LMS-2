@@ -42,11 +42,19 @@
                     <h3 data-translate="lesson.courseSelection">Course Selection</h3>
                 </div>
                 <div class="card__body">
-                    <div class="form-group">
-                        <label class="form-label required" data-translate="lesson.selectCourse">Select Course</label>
-                        <select id="courseSelect" class="form-select" onchange="loadCourseLessons()">
-                            <option value="" data-translate="common.selectOption">Select a course...</option>
-                        </select>
+                    <div class="input-group">
+                        <label class="input-group__label required" data-translate="lesson.selectCourse">Select Course</label>
+                        <div class="dropdown dropdown--block" id="courseSelectDropdown">
+                            <button class="dropdown__trigger">
+                                <span data-translate="common.selectOption">Select a course...</span>
+                                <span class="dropdown__arrow"></span>
+                            </button>
+                            <div class="dropdown__menu">
+                                <div class="dropdown__list" id="courseSelectList">
+                                    <!-- Course options will be populated dynamically -->
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -58,8 +66,8 @@
                 </div>
                 <div class="card__body">
                     <!-- Lesson Type Selection -->
-                    <div class="form-group">
-                        <label class="form-label required" data-translate="lesson.type">Lesson Type</label>
+                    <div class="input-group">
+                        <label class="input-group__label required" data-translate="lesson.type">Lesson Type</label>
                         <div class="radio-group" style="display: flex; gap: var(--spacing-4); margin-bottom: var(--spacing-4);">
                             <label class="radio-label">
                                 <input type="radio" name="lessonType" value="video" onchange="toggleContentArea('video')" checked>
@@ -84,22 +92,22 @@
 
                     <!-- Basic Information -->
                     <div style="display: grid; grid-template-columns: 1fr 1fr; gap: var(--spacing-4);">
-                        <div class="form-group">
-                            <label class="form-label required" data-translate="lesson.title">Lesson Title</label>
-                            <input type="text" id="lessonTitle" class="form-input" 
+                        <div class="input-group">
+                            <label class="input-group__label required" data-translate="lesson.title">Lesson Title</label>
+                            <input type="text" id="lessonTitle" class="input" 
                                    placeholder="Enter lesson title..." data-translate-placeholder="lesson.titlePlaceholder">
-                            <span class="form-error" data-translate="validation.required" style="display: none;">This field is required</span>
+                            <span class="input-group__error" data-translate="validation.required" style="display: none;">This field is required</span>
                         </div>
-                        <div class="form-group">
-                            <label class="form-label required" data-translate="lesson.duration">Duration (minutes)</label>
-                            <input type="number" id="lessonDuration" class="form-input" min="1" value="30"
+                        <div class="input-group">
+                            <label class="input-group__label required" data-translate="lesson.duration">Duration (minutes)</label>
+                            <input type="number" id="lessonDuration" class="input" min="1" value="30"
                                    placeholder="30" data-translate-placeholder="lesson.durationPlaceholder">
                         </div>
                     </div>
 
-                    <div class="form-group">
-                        <label class="form-label" data-translate="lesson.description">Description</label>
-                        <textarea id="lessonDescription" class="form-textarea" rows="3"
+                    <div class="input-group">
+                        <label class="input-group__label" data-translate="lesson.description">Description</label>
+                        <textarea id="lessonDescription" class="input input--textarea" rows="3"
                                   placeholder="Enter lesson description..." 
                                   data-translate-placeholder="lesson.descriptionPlaceholder"></textarea>
                     </div>
@@ -107,16 +115,16 @@
                     <!-- Content Areas -->
                     <!-- Video Content -->
                     <div id="videoContent" class="content-area">
-                        <div class="form-group">
-                            <label class="form-label required" data-translate="lesson.video.url">Video URL</label>
-                            <input type="url" id="videoUrl" class="form-input" 
+                        <div class="input-group">
+                            <label class="input-group__label required" data-translate="lesson.video.url">Video URL</label>
+                            <input type="url" id="videoUrl" class="input" 
                                    placeholder="https://youtube.com/watch?v=..." 
                                    data-translate-placeholder="lesson.video.urlPlaceholder"
                                    onchange="previewVideo()">
-                            <span class="form-help" data-translate="lesson.video.help">YouTube, Vimeo, or direct video URLs supported</span>
+                            <span class="input-group__help" data-translate="lesson.video.help">YouTube, Vimeo, or direct video URLs supported</span>
                         </div>
                         <div id="videoPreview" style="margin-top: var(--spacing-4); display: none;">
-                            <label class="form-label" data-translate="lesson.preview">Preview</label>
+                            <label class="input-group__label" data-translate="lesson.preview">Preview</label>
                             <div style="position: relative; padding-bottom: 56.25%; height: 0; overflow: hidden; max-width: 100%; background: var(--bg-secondary); border-radius: var(--radius-md);">
                                 <iframe id="videoFrame" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; border: 0;"></iframe>
                             </div>
@@ -125,8 +133,8 @@
 
                     <!-- PDF Content -->
                     <div id="pdfContent" class="content-area" style="display: none;">
-                        <div class="form-group">
-                            <label class="form-label required" data-translate="lesson.pdf.upload">Upload PDF</label>
+                        <div class="input-group">
+                            <label class="input-group__label required" data-translate="lesson.pdf.upload">Upload PDF</label>
                             <div class="file-upload">
                                 <input type="file" id="pdfFile" accept=".pdf" onchange="handlePdfUpload(event)" style="display: none;">
                                 <button class="btn btn--secondary" onclick="document.getElementById('pdfFile').click()">
@@ -135,10 +143,10 @@
                                 </button>
                                 <span id="pdfFileName" style="margin-left: var(--spacing-3);" data-translate="common.noFileChosen">No file chosen</span>
                             </div>
-                            <span class="form-help" data-translate="lesson.pdf.help">Maximum file size: 10MB</span>
+                            <span class="input-group__help" data-translate="lesson.pdf.help">Maximum file size: 10MB</span>
                         </div>
                         <div id="pdfPreview" style="margin-top: var(--spacing-4); display: none;">
-                            <label class="form-label" data-translate="lesson.preview">Preview</label>
+                            <label class="input-group__label" data-translate="lesson.preview">Preview</label>
                             <div style="padding: var(--spacing-4); background: var(--bg-secondary); border-radius: var(--radius-md); text-align: center;">
                                 <i class="fas fa-file-pdf" style="font-size: 48px; color: #dc2626; margin-bottom: var(--spacing-2);"></i>
                                 <p id="pdfInfo"></p>
@@ -148,12 +156,12 @@
 
                     <!-- Markdown Content -->
                     <div id="markdownContent" class="content-area" style="display: none;">
-                        <div class="form-group">
-                            <label class="form-label required" data-translate="lesson.markdown.content">Content</label>
+                        <div class="input-group">
+                            <label class="input-group__label required" data-translate="lesson.markdown.content">Content</label>
                             <div style="display: grid; grid-template-columns: 1fr 1fr; gap: var(--spacing-4);">
                                 <div>
                                     <div style="display: flex; justify-content: between; align-items: center; margin-bottom: var(--spacing-2);">
-                                        <span class="form-label" style="margin: 0;" data-translate="lesson.markdown.editor">Editor</span>
+                                        <span class="input-group__label" style="margin: 0;" data-translate="lesson.markdown.editor">Editor</span>
                                         <div class="btn-group" style="margin-left: auto;">
                                             <button class="btn btn--sm" onclick="insertMarkdown('**', '**')" title="Bold">
                                                 <i class="fas fa-bold"></i>
@@ -172,33 +180,41 @@
                                             </button>
                                         </div>
                                     </div>
-                                    <textarea id="markdownEditor" class="form-textarea" rows="15" 
+                                    <textarea id="markdownEditor" class="input input--textarea" rows="15" 
                                               placeholder="Enter markdown content..." 
                                               data-translate-placeholder="lesson.markdown.placeholder"
                                               oninput="updateMarkdownPreview()"></textarea>
                                 </div>
                                 <div>
-                                    <span class="form-label" data-translate="lesson.markdown.preview">Preview</span>
+                                    <span class="input-group__label" data-translate="lesson.markdown.preview">Preview</span>
                                     <div id="markdownPreview" style="padding: var(--spacing-4); background: var(--bg-secondary); border: 1px solid var(--border-color); border-radius: var(--radius-md); height: 400px; overflow-y: auto;">
                                         <p style="color: var(--text-secondary);" data-translate="lesson.markdown.noContent">No content to preview</p>
                                     </div>
                                 </div>
                             </div>
-                            <span class="form-help" data-translate="lesson.markdown.help">Supports standard Markdown syntax</span>
+                            <span class="input-group__help" data-translate="lesson.markdown.help">Supports standard Markdown syntax</span>
                         </div>
                     </div>
 
                     <!-- Order and Publishing -->
                     <div style="display: grid; grid-template-columns: 1fr 1fr; gap: var(--spacing-4); margin-top: var(--spacing-6);">
-                        <div class="form-group">
-                            <label class="form-label" data-translate="lesson.order">Lesson Order</label>
-                            <select id="lessonOrder" class="form-select">
-                                <option value="0" data-translate="lesson.order.last">Add to end</option>
-                            </select>
-                            <span class="form-help" data-translate="lesson.order.help">Position within the course</span>
+                        <div class="input-group">
+                            <label class="input-group__label" data-translate="lesson.order">Lesson Order</label>
+                            <div class="dropdown dropdown--block" id="lessonOrderDropdown">
+                                <button class="dropdown__trigger">
+                                    <span data-translate="lesson.order.last">Add to end</span>
+                                    <span class="dropdown__arrow"></span>
+                                </button>
+                                <div class="dropdown__menu">
+                                    <div class="dropdown__list" id="lessonOrderList">
+                                        <div class="dropdown__item" data-value="0" data-translate="lesson.order.last">Add to end</div>
+                                    </div>
+                                </div>
+                            </div>
+                            <span class="input-group__help" data-translate="lesson.order.help">Position within the course</span>
                         </div>
-                        <div class="form-group">
-                            <label class="form-label" data-translate="lesson.status">Status</label>
+                        <div class="input-group">
+                            <label class="input-group__label" data-translate="lesson.status">Status</label>
                             <div class="checkbox-group">
                                 <label class="checkbox-label">
                                     <input type="checkbox" id="publishStatus" checked>
@@ -206,17 +222,17 @@
                                     <span data-translate="lesson.published">Published</span>
                                 </label>
                             </div>
-                            <span class="form-help" data-translate="lesson.status.help">Unpublished lessons are not visible to students</span>
+                            <span class="input-group__help" data-translate="lesson.status.help">Unpublished lessons are not visible to students</span>
                         </div>
                     </div>
 
                     <!-- Notes Section -->
-                    <div class="form-group">
-                        <label class="form-label" data-translate="lesson.notes">Instructor Notes</label>
-                        <textarea id="instructorNotes" class="form-textarea" rows="3"
+                    <div class="input-group">
+                        <label class="input-group__label" data-translate="lesson.notes">Instructor Notes</label>
+                        <textarea id="instructorNotes" class="input input--textarea" rows="3"
                                   placeholder="Private notes for instructors..." 
                                   data-translate-placeholder="lesson.notes.placeholder"></textarea>
-                        <span class="form-help" data-translate="lesson.notes.help">These notes are only visible to instructors</span>
+                        <span class="input-group__help" data-translate="lesson.notes.help">These notes are only visible to instructors</span>
                     </div>
                 </div>
             </div>
@@ -286,20 +302,22 @@
                 const response = await LMS.API.loadJSON('mock-courses.json');
                 courses = response.data || [];
                 
-                const select = document.getElementById('courseSelect');
-                select.innerHTML = '<option value="">' + LMS.t('common.selectOption') + '</option>';
-                
                 const user = LMS.Auth.getUser();
                 // Filter courses for teachers (only their courses)
                 const userCourses = user.role === 'teacher' 
                     ? courses.filter(c => c.teacherId === user.id)
                     : courses;
                 
+                const courseOptions = [{value: '', text: LMS.t('common.selectOption')}];
                 userCourses.forEach(course => {
-                    const option = document.createElement('option');
-                    option.value = course.id;
-                    option.textContent = course.title;
-                    select.appendChild(option);
+                    courseOptions.push({value: course.id, text: course.title});
+                });
+                
+                LMS.Dropdown.populate('courseSelectDropdown', courseOptions);
+                
+                // Initialize dropdown
+                LMS.Dropdown.init('courseSelectDropdown', {
+                    onSelect: () => loadCourseLessons()
                 });
             } catch (error) {
                 console.error('Failed to load courses:', error);
@@ -308,7 +326,7 @@
         }
 
         async function loadCourseLessons() {
-            const courseId = document.getElementById('courseSelect').value;
+            const courseId = LMS.Dropdown.getValue('courseSelectDropdown');
             if (!courseId) {
                 document.getElementById('lessonForm').style.display = 'none';
                 document.getElementById('existingLessons').style.display = 'none';
@@ -385,15 +403,21 @@
         }
 
         function updateOrderSelect() {
-            const select = document.getElementById('lessonOrder');
-            select.innerHTML = `<option value="0">${LMS.t('lesson.order.last')}</option>`;
+            const orderOptions = [{value: '0', text: LMS.t('lesson.order.last')}];
             
             lessons.forEach((lesson, index) => {
-                const option = document.createElement('option');
-                option.value = lesson.order;
-                option.textContent = `${LMS.t('lesson.order.after')} ${index + 1}. ${lesson.title}`;
-                select.appendChild(option);
+                orderOptions.push({
+                    value: lesson.order.toString(),
+                    text: `${LMS.t('lesson.order.after')} ${index + 1}. ${lesson.title}`
+                });
             });
+            
+            LMS.Dropdown.populate('lessonOrderDropdown', orderOptions);
+            
+            // Initialize if not already done
+            if (!document.getElementById('lessonOrderDropdown')._dropdownConfig) {
+                LMS.Dropdown.init('lessonOrderDropdown');
+            }
         }
 
         function toggleContentArea(type) {
@@ -549,10 +573,10 @@
             
             // Title validation
             if (!title) {
-                document.querySelector('#lessonTitle + .form-error').style.display = 'block';
+                document.querySelector('#lessonTitle + .input-group__error').style.display = 'block';
                 isValid = false;
             } else {
-                document.querySelector('#lessonTitle + .form-error').style.display = 'none';
+                document.querySelector('#lessonTitle + .input-group__error').style.display = 'none';
             }
             
             // Type-specific validation
@@ -581,7 +605,7 @@
 
         function collectFormData() {
             const type = document.querySelector('input[name="lessonType"]:checked').value;
-            const order = parseInt(document.getElementById('lessonOrder').value) || lessons.length + 1;
+            const order = parseInt(LMS.Dropdown.getValue('lessonOrderDropdown')) || lessons.length + 1;
             
             const data = {
                 id: currentLessonId || 'lesson_' + Date.now(),
@@ -649,7 +673,7 @@
             document.getElementById('lessonDuration').value = lesson.duration;
             document.getElementById('instructorNotes').value = lesson.notes || '';
             document.getElementById('publishStatus').checked = lesson.published;
-            document.getElementById('lessonOrder').value = lesson.order;
+            LMS.Dropdown.setValue('lessonOrderDropdown', lesson.order.toString());
             
             // Set type and content
             document.querySelector(`input[name="lessonType"][value="${lesson.type}"]`).checked = true;

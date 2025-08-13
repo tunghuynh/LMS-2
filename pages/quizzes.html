@@ -6,8 +6,9 @@
     <title>Quiz Management - LMS</title>
     <!-- Core CSS -->
     <link rel="stylesheet" href="../assets/css/global.css">
-    <link rel="stylesheet" href="../assets/css/components.css">
     <link rel="stylesheet" href="../assets/css/themes.css">
+    <link rel="stylesheet" href="../assets/css/layout.css">
+    <link rel="stylesheet" href="../assets/css/components.css">
     <link rel="stylesheet" href="../assets/css/utilities.css">
     <link rel="stylesheet" href="../assets/css/quiz-styles.css">
     <!-- Font Awesome -->
@@ -19,22 +20,22 @@
     <div class="page-container">
         <!-- Page Header -->
         <div class="page-header">
-            <div style="display: flex; justify-content: space-between; align-items: center;">
+            <div class="flex-between">
                 <div>
                     <h1 class="page-title" data-translate="quiz.management">Quiz Management</h1>
                     <p class="page-subtitle" data-translate="quiz.subtitle">Create, manage and track quizzes for your courses</p>
                 </div>
-                <div style="display: flex; gap: var(--spacing-3);">
+                <div class="flex flex-gap-3">
                     <button class="btn btn--secondary" onclick="importQuiz()">
-                        <i class="fas fa-upload" style="margin-right: 8px;"></i>
+                        <i class="fas fa-upload" class="icon-mr"></i>
                         <span data-translate="quiz.import">Import Quiz</span>
                     </button>
                     <button class="btn btn--secondary" onclick="exportQuizzes()">
-                        <i class="fas fa-download" style="margin-right: 8px;"></i>
+                        <i class="fas fa-download" class="icon-mr"></i>
                         <span data-translate="quiz.export">Export All</span>
                     </button>
                     <button class="btn btn--primary" onclick="createQuiz()">
-                        <i class="fas fa-plus-circle" style="margin-right: 8px;"></i>
+                        <i class="fas fa-plus-circle" class="icon-mr"></i>
                         <span data-translate="quiz.create">Create Quiz</span>
                     </button>
                 </div>
@@ -43,61 +44,77 @@
 
         <div class="page-content">
             <!-- Statistics Cards -->
-            <div class="grid grid--4-cols" style="margin-bottom: var(--spacing-6);">
+            <div class="grid grid--4-cols" class="mb-6">
                 <div class="card">
-                    <div class="card__body" style="text-align: center;">
-                        <div style="font-size: 2rem; font-weight: var(--font-weight-bold); color: var(--color-primary);" id="totalQuizzes">0</div>
-                        <div style="color: var(--text-secondary);" data-translate="quiz.totalQuizzes">Total Quizzes</div>
+                    <div class="card__body" class="text-center">
+                        <div class="text-2xl font-bold text-primary" id="totalQuizzes">0</div>
+                        <div class="text-secondary" data-translate="quiz.totalQuizzes">Total Quizzes</div>
                     </div>
                 </div>
                 <div class="card">
-                    <div class="card__body" style="text-align: center;">
-                        <div style="font-size: 2rem; font-weight: var(--font-weight-bold); color: var(--color-success);" id="activeQuizzes">0</div>
-                        <div style="color: var(--text-secondary);" data-translate="quiz.activeQuizzes">Active Quizzes</div>
+                    <div class="card__body" class="text-center">
+                        <div class="text-2xl font-bold text-success" id="activeQuizzes">0</div>
+                        <div class="text-secondary" data-translate="quiz.activeQuizzes">Active Quizzes</div>
                     </div>
                 </div>
                 <div class="card">
-                    <div class="card__body" style="text-align: center;">
-                        <div style="font-size: 2rem; font-weight: var(--font-weight-bold); color: var(--color-warning);" id="draftQuizzes">0</div>
-                        <div style="color: var(--text-secondary);" data-translate="quiz.draftQuizzes">Draft Quizzes</div>
+                    <div class="card__body" class="text-center">
+                        <div class="text-2xl font-bold text-warning" id="draftQuizzes">0</div>
+                        <div class="text-secondary" data-translate="quiz.draftQuizzes">Draft Quizzes</div>
                     </div>
                 </div>
                 <div class="card">
-                    <div class="card__body" style="text-align: center;">
-                        <div style="font-size: 2rem; font-weight: var(--font-weight-bold); color: var(--color-info);" id="totalAttempts">0</div>
-                        <div style="color: var(--text-secondary);" data-translate="quiz.totalAttempts">Total Attempts</div>
+                    <div class="card__body" class="text-center">
+                        <div class="text-2xl font-bold text-info" id="totalAttempts">0</div>
+                        <div class="text-secondary" data-translate="quiz.totalAttempts">Total Attempts</div>
                     </div>
                 </div>
             </div>
 
             <!-- Filters and Search -->
-            <div class="card" style="margin-bottom: var(--spacing-6);">
+            <div class="card" class="mb-6">
                 <div class="card__body">
-                    <div style="display: grid; grid-template-columns: 2fr 1fr 1fr auto; gap: var(--spacing-4); align-items: end;">
-                        <div class="form-group">
-                            <label class="form-label" data-translate="common.search">Search</label>
-                            <input type="text" id="searchInput" class="form-input" 
+                    <div class="grid grid-2fr-1fr-1fr-auto grid-gap-4 items-end">
+                        <div class="input-group">
+                            <label class="input-group__label" data-translate="common.search">Search</label>
+                            <input type="text" id="searchInput" class="input" 
                                    placeholder="Search quizzes by title, description..."
                                    data-translate-placeholder="quiz.searchPlaceholder"
                                    onkeyup="filterQuizzes()">
                         </div>
-                        <div class="form-group">
-                            <label class="form-label" data-translate="course.selectCourse">Course</label>
-                            <select id="courseFilter" class="form-select" onchange="filterQuizzes()">
-                                <option value="" data-translate="common.allCourses">All Courses</option>
-                            </select>
+                        <div class="input-group">
+                            <label class="input-group__label" data-translate="course.selectCourse">Course</label>
+                            <div class="dropdown dropdown--block" id="courseFilterDropdown">
+                                <button class="dropdown__trigger">
+                                    <span data-translate="common.allCourses">All Courses</span>
+                                    <span class="dropdown__arrow"></span>
+                                </button>
+                                <div class="dropdown__menu">
+                                    <div class="dropdown__list" id="courseFilterList">
+                                        <!-- Course options will be populated dynamically -->
+                                    </div>
+                                </div>
+                            </div>
                         </div>
-                        <div class="form-group">
-                            <label class="form-label" data-translate="common.status">Status</label>
-                            <select id="statusFilter" class="form-select" onchange="filterQuizzes()">
-                                <option value="" data-translate="common.allStatuses">All Statuses</option>
-                                <option value="draft" data-translate="status.draft">Draft</option>
-                                <option value="active" data-translate="status.active">Active</option>
-                                <option value="archived" data-translate="status.archived">Archived</option>
-                            </select>
+                        <div class="input-group">
+                            <label class="input-group__label" data-translate="common.status">Status</label>
+                            <div class="dropdown dropdown--block" id="statusFilterDropdown">
+                                <button class="dropdown__trigger">
+                                    <span data-translate="common.allStatuses">All Statuses</span>
+                                    <span class="dropdown__arrow"></span>
+                                </button>
+                                <div class="dropdown__menu">
+                                    <div class="dropdown__list">
+                                        <div class="dropdown__item" data-value="" data-translate="common.allStatuses">All Statuses</div>
+                                        <div class="dropdown__item" data-value="draft" data-translate="status.draft">Draft</div>
+                                        <div class="dropdown__item" data-value="active" data-translate="status.active">Active</div>
+                                        <div class="dropdown__item" data-value="archived" data-translate="status.archived">Archived</div>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                         <button class="btn btn--secondary" onclick="refreshData()">
-                            <i class="fas fa-sync-alt" style="margin-right: 8px;"></i>
+                            <i class="fas fa-sync-alt" class="icon-mr"></i>
                             <span data-translate="common.refresh">Refresh</span>
                         </button>
                     </div>
@@ -131,19 +148,19 @@
                         </table>
                         
                         <!-- Empty State -->
-                        <div id="emptyState" class="empty-state" style="display: none;">
-                            <i class="fas fa-question-circle" style="font-size: 48px; color: var(--text-muted); margin-bottom: var(--spacing-3);"></i>
+                        <div id="emptyState" class="empty-state" class="hidden">
+                            <i class="fas fa-question-circle" class="text-48 text-muted mb-3"></i>
                             <p data-translate="quiz.noQuizzes">No quizzes found</p>
                             <button class="btn btn--primary" onclick="createQuiz()">
-                                <i class="fas fa-plus" style="margin-right: 8px;"></i>
+                                <i class="fas fa-plus" class="icon-mr"></i>
                                 <span data-translate="quiz.createFirst">Create Your First Quiz</span>
                             </button>
                         </div>
                     </div>
 
                     <!-- Pagination -->
-                    <div style="display: flex; justify-content: between; align-items: center; margin-top: var(--spacing-4);">
-                        <div style="color: var(--text-secondary);">
+                    <div class="flex flex-between mt-4">
+                        <div class="text-secondary">
                             <span data-translate="pagination.showing">Showing</span>
                             <span id="startRow">1</span> - <span id="endRow">10</span>
                             <span data-translate="pagination.of">of</span>
@@ -166,20 +183,28 @@
                 <button class="modal__close" onclick="closeImportModal()">×</button>
             </div>
             <div class="modal__body">
-                <div class="form-group">
-                    <label class="form-label" data-translate="quiz.importFile">Select Quiz File</label>
-                    <input type="file" id="importFile" class="form-input" accept=".json,.xlsx,.csv">
-                    <span class="form-help" data-translate="quiz.importHelp">Supported formats: JSON, Excel (.xlsx), CSV</span>
+                <div class="input-group">
+                    <label class="input-group__label" data-translate="quiz.importFile">Select Quiz File</label>
+                    <input type="file" id="importFile" class="input" accept=".json,.xlsx,.csv">
+                    <span class="input-group__help" data-translate="quiz.importHelp">Supported formats: JSON, Excel (.xlsx), CSV</span>
                 </div>
                 
-                <div class="form-group">
-                    <label class="form-label" data-translate="course.selectCourse">Target Course</label>
-                    <select id="importCourseId" class="form-select">
-                        <option value="" data-translate="common.selectOption">Select a course...</option>
-                    </select>
+                <div class="input-group">
+                    <label class="input-group__label" data-translate="course.selectCourse">Target Course</label>
+                    <div class="dropdown dropdown--block" id="importCourseDropdown">
+                        <button class="dropdown__trigger">
+                            <span data-translate="common.selectOption">Select a course...</span>
+                            <span class="dropdown__arrow"></span>
+                        </button>
+                        <div class="dropdown__menu">
+                            <div class="dropdown__list" id="importCourseList">
+                                <!-- Course options will be populated dynamically -->
+                            </div>
+                        </div>
+                    </div>
                 </div>
 
-                <div class="form-group">
+                <div class="input-group">
                     <label class="checkbox-label">
                         <input type="checkbox" id="overwriteExisting">
                         <span class="checkbox-custom"></span>
@@ -187,20 +212,20 @@
                     </label>
                 </div>
 
-                <div id="importPreview" style="display: none; margin-top: var(--spacing-4);">
+                <div id="importPreview" class="hidden mt-4">
                     <h4 data-translate="quiz.importPreview">Import Preview</h4>
-                    <div id="importPreviewContent" style="background: var(--bg-secondary); padding: var(--spacing-4); border-radius: var(--radius-md);">
+                    <div id="importPreviewContent" class="bg-secondary p-4 rounded-md">
                         <!-- Dynamic preview content -->
                     </div>
                 </div>
             </div>
             <div class="modal__footer">
                 <button class="btn btn--secondary" onclick="closeImportModal()">
-                    <i class="fas fa-times" style="margin-right: 8px;"></i>
+                    <i class="fas fa-times" class="icon-mr"></i>
                     <span data-translate="common.cancel">Cancel</span>
                 </button>
                 <button class="btn btn--primary" onclick="executeImport()" id="importBtn" disabled>
-                    <i class="fas fa-upload" style="margin-right: 8px;"></i>
+                    <i class="fas fa-upload" class="icon-mr"></i>
                     <span data-translate="quiz.import">Import Quiz</span>
                 </button>
             </div>
@@ -219,10 +244,10 @@
             </div>
             <div class="modal__footer">
                 <button class="btn btn--secondary" onclick="closeDetailModal()">
-                    <i class="fas fa-times" style="margin-right: 8px;"></i>
+                    <i class="fas fa-times" class="icon-mr"></i>
                     <span data-translate="common.close">Close</span>
                 </button>
-                <div id="detailModalActions" style="display: flex; gap: var(--spacing-2);">
+                <div id="detailModalActions" class="flex flex-gap-2">
                     <!-- Dynamic action buttons -->
                 </div>
             </div>
@@ -340,30 +365,54 @@
 
         // Populate course filters
         function populateCourseFilters() {
-            const courseFilter = document.getElementById('courseFilter');
-            const importCourseFilter = document.getElementById('importCourseId');
-            
             let coursesToShow = allCourses;
             if (currentUser.role === 'teacher') {
                 coursesToShow = allCourses.filter(c => c.teacherId === currentUser.id);
             }
             
             // Course filter dropdown
-            courseFilter.innerHTML = `<option value="">${LMS.t('common.allCourses')}</option>`;
+            const courseOptions = [{value: '', text: LMS.t('common.allCourses')}];
             coursesToShow.forEach(course => {
-                const option = document.createElement('option');
-                option.value = course.id;
-                option.textContent = course.title;
-                courseFilter.appendChild(option);
+                courseOptions.push({value: course.id, text: course.title});
             });
+            LMS.Dropdown.populate('courseFilterDropdown', courseOptions);
 
             // Import course dropdown
-            importCourseFilter.innerHTML = `<option value="">${LMS.t('common.selectOption')}</option>`;
+            const importOptions = [{value: '', text: LMS.t('common.selectOption')}];
             coursesToShow.forEach(course => {
-                const option = document.createElement('option');
-                option.value = course.id;
-                option.textContent = course.title;
-                importCourseFilter.appendChild(option);
+                importOptions.push({value: course.id, text: course.title});
+            });
+            LMS.Dropdown.populate('importCourseDropdown', importOptions);
+            
+            // Initialize dropdowns
+            LMS.Dropdown.init('courseFilterDropdown', {
+                onSelect: () => filterQuizzes()
+            });
+            
+            LMS.Dropdown.init('statusFilterDropdown', {
+                onSelect: () => filterQuizzes()
+            });
+            
+            LMS.Dropdown.init('importCourseDropdown', {
+                onSelect: () => {
+                    const file = document.getElementById('importFile').files[0];
+                    const courseId = LMS.Dropdown.getValue('importCourseDropdown');
+                    
+                    if (file && courseId) {
+                        document.getElementById('importBtn').disabled = false;
+                        const courseText = LMS.Dropdown.getText('importCourseDropdown');
+                        document.getElementById('importPreview').innerHTML = `
+                            <p><strong>File:</strong> ${file.name}</p>
+                            <p><strong>Size:</strong> ${(file.size / 1024).toFixed(2)} KB</p>
+                            <p><strong>Type:</strong> ${file.type || 'Unknown'}</p>
+                            <p><strong>Target Course:</strong> ${courseText}</p>
+                        `;
+                        document.getElementById('importPreview').style.display = 'block';
+                    } else {
+                        document.getElementById('importBtn').disabled = true;
+                        document.getElementById('importPreview').style.display = 'none';
+                    }
+                }
             });
         }
 
@@ -372,13 +421,13 @@
             filteredQuizzes = [...allQuizzes];
 
             // Course filter
-            const courseFilter = document.getElementById('courseFilter').value;
+            const courseFilter = LMS.Dropdown.getValue('courseFilterDropdown');
             if (courseFilter) {
                 filteredQuizzes = filteredQuizzes.filter(q => q.courseId === courseFilter);
             }
 
             // Status filter
-            const statusFilter = document.getElementById('statusFilter').value;
+            const statusFilter = LMS.Dropdown.getValue('statusFilterDropdown');
             if (statusFilter) {
                 filteredQuizzes = filteredQuizzes.filter(q => q.status === statusFilter);
             }
@@ -434,12 +483,12 @@
                     <tr>
                         <td>
                             <div>
-                                <div style="font-weight: var(--font-weight-medium);">${quiz.title}</div>
-                                <div style="font-size: var(--font-size-sm); color: var(--text-secondary);">${quiz.description}</div>
+                                <div class="font-medium">${quiz.title}</div>
+                                <div class="text-sm text-secondary">${quiz.description}</div>
                             </div>
                         </td>
                         <td>
-                            <div style="font-weight: var(--font-weight-medium);">${course?.title || 'Unknown Course'}</div>
+                            <div class="font-medium">${course?.title || 'Unknown Course'}</div>
                         </td>
                         <td class="table__cell--center">${quiz.questionCount}</td>
                         <td class="table__cell--center">${quiz.timeLimit} min</td>
@@ -529,7 +578,7 @@
             
             document.getElementById('detailModalTitle').textContent = quiz.title;
             document.getElementById('detailModalContent').innerHTML = `
-                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: var(--spacing-6);">
+                <div class="grid grid-1fr-1fr grid-gap-6">
                     <div>
                         <h4>${LMS.t('quiz.basicInfo')}</h4>
                         <p><strong>${LMS.t('quiz.title')}:</strong> ${quiz.title}</p>
@@ -551,11 +600,11 @@
             
             document.getElementById('detailModalActions').innerHTML = `
                 <button class="btn btn--primary" onclick="editQuiz('${quiz.id}'); closeDetailModal();">
-                    <i class="fas fa-edit" style="margin-right: 8px;"></i>
+                    <i class="fas fa-edit" class="icon-mr"></i>
                     ${LMS.t('common.edit')}
                 </button>
                 <button class="btn btn--secondary" onclick="duplicateQuiz('${quiz.id}'); closeDetailModal();">
-                    <i class="fas fa-copy" style="margin-right: 8px;"></i>
+                    <i class="fas fa-copy" class="icon-mr"></i>
                     ${LMS.t('quiz.duplicate')}
                 </button>
             `;
@@ -614,7 +663,7 @@
             
             // Reset form
             document.getElementById('importFile').value = '';
-            document.getElementById('importCourseId').value = '';
+            LMS.Dropdown.setValue('importCourseDropdown', '');
             document.getElementById('overwriteExisting').checked = false;
             document.getElementById('importPreview').style.display = 'none';
             document.getElementById('importBtn').disabled = true;
@@ -622,7 +671,7 @@
 
         function executeImport() {
             const file = document.getElementById('importFile').files[0];
-            const courseId = document.getElementById('importCourseId').value;
+            const courseId = LMS.Dropdown.getValue('importCourseDropdown');
             
             if (!file || !courseId) {
                 LMS.showToast(LMS.t('validation.required'), 'error');
@@ -688,7 +737,7 @@
         document.addEventListener('DOMContentLoaded', function() {
             document.getElementById('importFile').addEventListener('change', function(e) {
                 const file = e.target.files[0];
-                const courseId = document.getElementById('importCourseId').value;
+                const courseId = LMS.Dropdown.getValue('importCourseDropdown');
                 
                 if (file && courseId) {
                     document.getElementById('importBtn').disabled = false;
@@ -699,7 +748,7 @@
                         <p><strong>File:</strong> ${file.name}</p>
                         <p><strong>Size:</strong> ${(file.size / 1024).toFixed(2)} KB</p>
                         <p><strong>Type:</strong> ${file.type || 'Unknown'}</p>
-                        <p><strong>Target Course:</strong> ${document.getElementById('importCourseId').selectedOptions[0]?.text}</p>
+                        <p><strong>Target Course:</strong> ${LMS.Dropdown.getText('importCourseDropdown')}</p>
                     `;
                 } else {
                     document.getElementById('importBtn').disabled = true;

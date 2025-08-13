@@ -6,8 +6,10 @@
     <title>Enrollment Management</title>
     <!-- Core CSS -->
     <link rel="stylesheet" href="../assets/css/global.css">
-    <link rel="stylesheet" href="../assets/css/components.css">
     <link rel="stylesheet" href="../assets/css/themes.css">
+    <link rel="stylesheet" href="../assets/css/layout.css">
+    <link rel="stylesheet" href="../assets/css/components.css">
+    <link rel="stylesheet" href="../assets/css/utilities.css">
     <!-- Font Awesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <!-- Chart.js for Analytics -->
@@ -43,21 +45,37 @@
             <div class="card" style="margin-bottom: var(--spacing-6);">
                 <div class="card__body">
                     <div style="display: grid; grid-template-columns: 1fr 1fr auto; gap: var(--spacing-4); align-items: end;">
-                        <div class="form-group">
-                            <label class="form-label" data-translate="course.selectCourse">Select Course</label>
-                            <select id="courseFilter" class="form-select" onchange="filterByCourse()">
-                                <option value="" data-translate="common.allCourses">All Courses</option>
-                            </select>
+                        <div class="input-group">
+                            <label class="input-group__label" data-translate="course.selectCourse">Select Course</label>
+                            <div class="dropdown dropdown--block" id="courseFilterDropdown">
+                                <button class="dropdown__trigger">
+                                    <span data-translate="common.allCourses">All Courses</span>
+                                    <span class="dropdown__arrow"></span>
+                                </button>
+                                <div class="dropdown__menu">
+                                    <div class="dropdown__list" id="courseFilterList">
+                                        <!-- Course options will be populated dynamically -->
+                                    </div>
+                                </div>
+                            </div>
                         </div>
-                        <div class="form-group">
-                            <label class="form-label" data-translate="enrollment.status">Enrollment Status</label>
-                            <select id="statusFilter" class="form-select" onchange="filterByStatus()">
-                                <option value="" data-translate="common.allStatuses">All Statuses</option>
-                                <option value="pending" data-translate="status.pending">Pending</option>
-                                <option value="approved" data-translate="status.approved">Approved</option>
-                                <option value="rejected" data-translate="status.rejected">Rejected</option>
-                                <option value="enrolled" data-translate="status.enrolled">Enrolled</option>
-                            </select>
+                        <div class="input-group">
+                            <label class="input-group__label" data-translate="enrollment.status">Enrollment Status</label>
+                            <div class="dropdown dropdown--block" id="statusFilterDropdown">
+                                <button class="dropdown__trigger">
+                                    <span data-translate="common.allStatuses">All Statuses</span>
+                                    <span class="dropdown__arrow"></span>
+                                </button>
+                                <div class="dropdown__menu">
+                                    <div class="dropdown__list">
+                                        <div class="dropdown__item" data-value="" data-translate="common.allStatuses">All Statuses</div>
+                                        <div class="dropdown__item" data-value="pending" data-translate="status.pending">Pending</div>
+                                        <div class="dropdown__item" data-value="approved" data-translate="status.approved">Approved</div>
+                                        <div class="dropdown__item" data-value="rejected" data-translate="status.rejected">Rejected</div>
+                                        <div class="dropdown__item" data-value="enrolled" data-translate="status.enrolled">Enrolled</div>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                         <button class="btn btn--secondary" onclick="refreshData()">
                             <i class="fas fa-sync-alt" style="margin-right: 8px;"></i>
@@ -232,18 +250,26 @@
                     <!-- Search and Filter Bar -->
                     <div style="display: flex; gap: var(--spacing-4); margin-bottom: var(--spacing-4);">
                         <div style="flex: 1;">
-                            <input type="text" id="searchInput" class="form-input" 
+                            <input type="text" id="searchInput" class="input" 
                                    placeholder="Search by student name, email..." 
                                    data-translate-placeholder="enrollment.searchPlaceholder"
                                    onkeyup="filterEnrollments()">
                         </div>
                         <div>
-                            <select id="dateFilter" class="form-select" onchange="filterByDate()">
-                                <option value="" data-translate="common.allDates">All Dates</option>
-                                <option value="today" data-translate="common.today">Today</option>
-                                <option value="week" data-translate="common.thisWeek">This Week</option>
-                                <option value="month" data-translate="common.thisMonth">This Month</option>
-                            </select>
+                            <div class="dropdown dropdown--block" id="dateFilterDropdown">
+                                <button class="dropdown__trigger">
+                                    <span data-translate="common.allDates">All Dates</span>
+                                    <span class="dropdown__arrow"></span>
+                                </button>
+                                <div class="dropdown__menu">
+                                    <div class="dropdown__list">
+                                        <div class="dropdown__item" data-value="" data-translate="common.allDates">All Dates</div>
+                                        <div class="dropdown__item" data-value="today" data-translate="common.today">Today</div>
+                                        <div class="dropdown__item" data-value="week" data-translate="common.thisWeek">This Week</div>
+                                        <div class="dropdown__item" data-value="month" data-translate="common.thisMonth">This Month</div>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                     </div>
 
@@ -300,29 +326,37 @@
                 <button class="modal__close" onclick="closeBulkInviteModal()">×</button>
             </div>
             <div class="modal__body">
-                <div class="form-group">
-                    <label class="form-label required" data-translate="course.selectCourse">Select Course</label>
-                    <select id="inviteCourseId" class="form-select">
-                        <option value="" data-translate="common.selectOption">Select a course...</option>
-                    </select>
+                <div class="input-group">
+                    <label class="input-group__label required" data-translate="course.selectCourse">Select Course</label>
+                    <div class="dropdown dropdown--block" id="inviteCourseDropdown">
+                        <button class="dropdown__trigger">
+                            <span data-translate="common.selectOption">Select a course...</span>
+                            <span class="dropdown__arrow"></span>
+                        </button>
+                        <div class="dropdown__menu">
+                            <div class="dropdown__list" id="inviteCourseList">
+                                <!-- Course options will be populated dynamically -->
+                            </div>
+                        </div>
+                    </div>
                 </div>
                 
-                <div class="form-group">
-                    <label class="form-label required" data-translate="enrollment.emailList">Email List</label>
-                    <textarea id="emailList" class="form-textarea" rows="8" 
+                <div class="input-group">
+                    <label class="input-group__label required" data-translate="enrollment.emailList">Email List</label>
+                    <textarea id="emailList" class="input input--textarea" rows="8" 
                               placeholder="Enter email addresses (one per line)..."
                               data-translate-placeholder="enrollment.emailListPlaceholder"></textarea>
-                    <span class="form-help" data-translate="enrollment.emailListHelp">Enter one email address per line. Invalid emails will be skipped.</span>
+                    <span class="input-group__help" data-translate="enrollment.emailListHelp">Enter one email address per line. Invalid emails will be skipped.</span>
                 </div>
 
-                <div class="form-group">
-                    <label class="form-label" data-translate="enrollment.message">Custom Message</label>
-                    <textarea id="inviteMessage" class="form-textarea" rows="4" 
+                <div class="input-group">
+                    <label class="input-group__label" data-translate="enrollment.message">Custom Message</label>
+                    <textarea id="inviteMessage" class="input input--textarea" rows="4" 
                               placeholder="Optional custom message for invitation email..."
                               data-translate-placeholder="enrollment.messagePlaceholder"></textarea>
                 </div>
 
-                <div class="form-group">
+                <div class="input-group">
                     <label class="checkbox-label">
                         <input type="checkbox" id="sendNotification" checked>
                         <span class="checkbox-custom"></span>
@@ -438,9 +472,6 @@
 
         // Populate course filter
         function populateCourseFilter() {
-            const select = document.getElementById('courseFilter');
-            const inviteSelect = document.getElementById('inviteCourseId');
-            
             const currentUser = LMS.Auth.getUser();
             let coursesToShow = allCourses;
             
@@ -449,17 +480,27 @@
             }
             
             // Course filter dropdown
-            select.innerHTML = `<option value="">${LMS.t('common.allCourses')}</option>`;
+            const courseOptions = [{value: '', text: LMS.t('common.allCourses')}];
             coursesToShow.forEach(course => {
-                const option = document.createElement('option');
-                option.value = course.id;
-                option.textContent = course.title;
-                select.appendChild(option);
+                courseOptions.push({value: course.id, text: course.title});
+            });
+            LMS.Dropdown.populate('courseFilterDropdown', courseOptions);
+            
+            // Initialize dropdowns
+            LMS.Dropdown.init('courseFilterDropdown', {
+                onSelect: () => filterByCourse()
+            });
+            
+            LMS.Dropdown.init('statusFilterDropdown', {
+                onSelect: () => filterByStatus()
+            });
+            
+            LMS.Dropdown.init('dateFilterDropdown', {
+                onSelect: () => filterByDate()
             });
         }
 
         function populateInviteCourseFilter() {
-            const inviteSelect = document.getElementById('inviteCourseId');
             const currentUser = LMS.Auth.getUser();
             let coursesToShow = allCourses;
             
@@ -468,13 +509,16 @@
             }
             
             // Invite course dropdown
-            inviteSelect.innerHTML = `<option value="">${LMS.t('common.selectOption')}</option>`;
+            const inviteOptions = [{value: '', text: LMS.t('common.selectOption')}];
             coursesToShow.forEach(course => {
-                const option = document.createElement('option');
-                option.value = course.id;
-                option.textContent = course.title;
-                inviteSelect.appendChild(option);
+                inviteOptions.push({value: course.id, text: course.title});
             });
+            LMS.Dropdown.populate('inviteCourseDropdown', inviteOptions);
+            
+            // Initialize dropdown
+            if (!document.getElementById('inviteCourseDropdown')._dropdownConfig) {
+                LMS.Dropdown.init('inviteCourseDropdown');
+            }
         }
 
         // Apply filters
@@ -482,13 +526,13 @@
             filteredEnrollments = [...allEnrollments];
 
             // Course filter
-            const courseFilter = document.getElementById('courseFilter').value;
+            const courseFilter = LMS.Dropdown.getValue('courseFilterDropdown');
             if (courseFilter) {
                 filteredEnrollments = filteredEnrollments.filter(e => e.courseId === courseFilter);
             }
 
             // Status filter
-            const statusFilter = document.getElementById('statusFilter').value;
+            const statusFilter = LMS.Dropdown.getValue('statusFilterDropdown');
             if (statusFilter) {
                 filteredEnrollments = filteredEnrollments.filter(e => e.status === statusFilter);
             }
@@ -508,7 +552,7 @@
             }
 
             // Date filter
-            const dateFilter = document.getElementById('dateFilter').value;
+            const dateFilter = LMS.Dropdown.getValue('dateFilterDropdown');
             if (dateFilter) {
                 const now = new Date();
                 filteredEnrollments = filteredEnrollments.filter(enrollment => {
@@ -872,7 +916,7 @@
             document.getElementById('bulkInviteModal').classList.remove('active');
             
             // Reset form
-            document.getElementById('inviteCourseId').value = '';
+            LMS.Dropdown.setValue('inviteCourseDropdown', '');
             document.getElementById('emailList').value = '';
             document.getElementById('inviteMessage').value = '';
             document.getElementById('sendNotification').checked = true;
@@ -885,7 +929,7 @@
 
         // Bulk invite
         function sendBulkInvites() {
-            const courseId = document.getElementById('inviteCourseId').value;
+            const courseId = LMS.Dropdown.getValue('inviteCourseDropdown');
             const emailListText = document.getElementById('emailList').value.trim();
             const message = document.getElementById('inviteMessage').value.trim();
             const sendNotification = document.getElementById('sendNotification').checked;

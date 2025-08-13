@@ -6,8 +6,9 @@
     <title>Quiz Builder - LMS</title>
     <!-- Core CSS -->
     <link rel="stylesheet" href="../assets/css/global.css">
-    <link rel="stylesheet" href="../assets/css/components.css">
     <link rel="stylesheet" href="../assets/css/themes.css">
+    <link rel="stylesheet" href="../assets/css/layout.css">
+    <link rel="stylesheet" href="../assets/css/components.css">
     <link rel="stylesheet" href="../assets/css/utilities.css">
     <link rel="stylesheet" href="../assets/css/quiz-styles.css">
     <!-- Font Awesome -->
@@ -19,30 +20,30 @@
     <div class="page-container">
         <!-- Page Header -->
         <div class="page-header">
-            <div style="display: flex; justify-content: space-between; align-items: center;">
+            <div class="flex-between">
                 <div>
                     <h1 class="page-title" id="pageTitle" data-translate="quiz.createQuiz">Create Quiz</h1>
                     <p class="page-subtitle" data-translate="quiz.builderSubtitle">Build your quiz with questions and settings</p>
                 </div>
-                <div style="display: flex; gap: var(--spacing-3);">
+                <div class="flex flex-gap-3">
                     <button class="btn btn--secondary" onclick="previewQuiz()">
-                        <i class="fas fa-eye" style="margin-right: 8px;"></i>
+                        <i class="fas fa-eye" class="icon-mr"></i>
                         <span data-translate="quiz.preview">Preview</span>
                     </button>
                     <button class="btn btn--secondary" onclick="saveAsTemplate()" id="saveTemplateBtn">
-                        <i class="fas fa-file-archive" style="margin-right: 8px;"></i>
+                        <i class="fas fa-file-archive" class="icon-mr"></i>
                         <span data-translate="quiz.saveAsTemplate">Save as Template</span>
                     </button>
                     <button class="btn btn--secondary" onclick="saveDraft()" id="saveDraftBtn">
-                        <i class="fas fa-save" style="margin-right: 8px;"></i>
+                        <i class="fas fa-save" class="icon-mr"></i>
                         <span data-translate="quiz.saveDraft">Save Draft</span>
                     </button>
                     <button class="btn btn--success" onclick="publishQuiz()" id="publishBtn">
-                        <i class="fas fa-rocket" style="margin-right: 8px;"></i>
+                        <i class="fas fa-rocket" class="icon-mr"></i>
                         <span data-translate="quiz.publish">Publish</span>
                     </button>
                     <button class="btn btn--ghost" onclick="goBack()">
-                        <i class="fas fa-times" style="margin-right: 8px;"></i>
+                        <i class="fas fa-times" class="icon-mr"></i>
                         <span data-translate="common.cancel">Cancel</span>
                     </button>
                 </div>
@@ -50,64 +51,81 @@
         </div>
 
         <div class="page-content">
-            <div class="quiz-builder">
+            <!-- Two Column Layout: Sidebar + Main Content -->
+            <div class="two-column-layout">
                 <!-- Sidebar -->
-                <div class="builder-sidebar">
+                <div class="sidebar-column">
                     <!-- Quiz Info Section -->
-                    <div class="card" style="margin-bottom: var(--spacing-4);">
+                    <div class="card mb-4">
                         <div class="card__header">
                             <h3 data-translate="quiz.basicInfo">Basic Information</h3>
                         </div>
                         <div class="card__body">
-                            <div class="form-group">
-                                <label class="form-label" data-translate="quiz.title">Quiz Title</label>
-                                <input type="text" id="quizTitle" class="form-input" placeholder="Enter quiz title..." 
+                            <div class="input-group">
+                                <label class="input-group__label" data-translate="quiz.title">Quiz Title</label>
+                                <input type="text" id="quizTitle" class="input" placeholder="Enter quiz title..." 
                                        data-translate-placeholder="quiz.titlePlaceholder">
                             </div>
                             
-                            <div class="form-group">
-                                <label class="form-label" data-translate="quiz.description">Description</label>
-                                <textarea id="quizDescription" class="form-input" rows="3" placeholder="Enter quiz description..."
+                            <div class="input-group">
+                                <label class="input-group__label" data-translate="quiz.description">Description</label>
+                                <textarea id="quizDescription" class="input" rows="3" placeholder="Enter quiz description..."
                                           data-translate-placeholder="quiz.descriptionPlaceholder"></textarea>
                             </div>
                             
-                            <div class="form-group">
-                                <label class="form-label" data-translate="course.selectCourse">Course</label>
-                                <select id="quizCourse" class="form-select">
-                                    <option value="" data-translate="common.selectOption">Select a course...</option>
-                                </select>
+                            <div class="input-group">
+                                <label class="input-group__label" data-translate="course.selectCourse">Course</label>
+                                <div class="dropdown dropdown--block" id="quizCourseDropdown">
+                                    <button class="dropdown__trigger">
+                                        <span data-translate="common.selectOption">Select a course...</span>
+                                        <span class="dropdown__arrow"></span>
+                                    </button>
+                                    <div class="dropdown__menu">
+                                        <div class="dropdown__list" id="quizCourseList">
+                                            <!-- Course options will be populated dynamically -->
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>
 
                     <!-- Quiz Settings -->
-                    <div class="card" style="margin-bottom: var(--spacing-4);">
+                    <div class="card" class="mb-4">
                         <div class="card__header">
                             <h3 data-translate="quiz.settings">Quiz Settings</h3>
                         </div>
                         <div class="card__body">
-                            <div class="form-group">
-                                <label class="form-label" data-translate="quiz.timeLimit">Time Limit (minutes)</label>
-                                <input type="number" id="quizTimeLimit" class="form-input" value="60" min="1" max="300">
+                            <div class="input-group">
+                                <label class="input-group__label" data-translate="quiz.timeLimit">Time Limit (minutes)</label>
+                                <input type="number" id="quizTimeLimit" class="input" value="60" min="1" max="300">
                             </div>
                             
-                            <div class="form-group">
-                                <label class="form-label" data-translate="quiz.passingScore">Passing Score (%)</label>
-                                <input type="number" id="quizPassingScore" class="form-input" value="70" min="0" max="100">
+                            <div class="input-group">
+                                <label class="input-group__label" data-translate="quiz.passingScore">Passing Score (%)</label>
+                                <input type="number" id="quizPassingScore" class="input" value="70" min="0" max="100">
                             </div>
                             
-                            <div class="form-group">
-                                <label class="form-label" data-translate="quiz.maxAttempts">Max Attempts</label>
-                                <select id="quizMaxAttempts" class="form-select">
-                                    <option value="1">1 attempt</option>
-                                    <option value="2">2 attempts</option>
-                                    <option value="3" selected>3 attempts</option>
-                                    <option value="5">5 attempts</option>
-                                    <option value="-1" data-translate="quiz.unlimited">Unlimited</option>
-                                </select>
+                            <div class="input-group">
+                                <label class="input-group__label" data-translate="quiz.maxAttempts">Max Attempts</label>
+                                <div class="dropdown dropdown--block" id="quizMaxAttemptsDropdown">
+                                    <button class="dropdown__trigger">
+                                        <span>3 attempts</span>
+                                        <span class="dropdown__arrow"></span>
+                                    </button>
+                                    <div class="dropdown__menu">
+                                        <div class="dropdown__list">
+                                            <div class="dropdown__item" data-value="1">1 attempt</div>
+                                            <div class="dropdown__item" data-value="2">2 attempts</div>
+                                            <div class="dropdown__item dropdown__item--selected" data-value="3">3 attempts</div>
+                                            <div class="dropdown__item" data-value="5">5 attempts</div>
+                                            <div class="dropdown__item" data-value="-1" data-translate="quiz.unlimited">Unlimited</div>
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
                             
-                            <div class="form-group">
+                            <div class="input-group">
                                 <label class="checkbox-label">
                                     <input type="checkbox" id="quizShuffleQuestions">
                                     <span class="checkbox-custom"></span>
@@ -115,7 +133,7 @@
                                 </label>
                             </div>
                             
-                            <div class="form-group">
+                            <div class="input-group">
                                 <label class="checkbox-label">
                                     <input type="checkbox" id="quizShowResults">
                                     <span class="checkbox-custom"></span>
@@ -128,7 +146,7 @@
                     <!-- Questions List -->
                     <div class="card">
                         <div class="card__header">
-                            <div style="display: flex; justify-content: space-between; align-items: center;">
+                            <div class="flex-between">
                                 <h3 data-translate="quiz.questions">Questions</h3>
                                 <span class="badge badge--primary" id="questionCount">0</span>
                             </div>
@@ -138,8 +156,8 @@
                                 <!-- Dynamic questions list -->
                             </div>
                             
-                            <button class="btn btn--primary btn--small" onclick="addQuestion()" style="width: 100%;">
-                                <i class="fas fa-plus" style="margin-right: 8px;"></i>
+                            <button class="btn btn--primary btn--small" onclick="addQuestion()" class="w-full">
+                                <i class="fas fa-plus" class="icon-mr"></i>
                                 <span data-translate="quiz.addQuestion">Add Question</span>
                             </button>
                         </div>
@@ -147,17 +165,17 @@
                 </div>
 
                 <!-- Main Content Area -->
-                <div class="builder-main">
+                <div class="main-column">
                     <div id="questionsContainer">
                         <!-- Welcome State -->
-                        <div id="welcomeState" class="card" style="text-align: center; padding: var(--spacing-8);">
-                            <i class="fas fa-question-circle" style="font-size: 64px; color: var(--text-muted); margin-bottom: var(--spacing-4);"></i>
+                        <div id="welcomeState" class="card" class="text-center p-8">
+                            <i class="fas fa-question-circle" class="text-64 text-muted mb-4"></i>
                             <h3 data-translate="quiz.welcomeTitle">Welcome to Quiz Builder</h3>
-                            <p style="color: var(--text-secondary); margin-bottom: var(--spacing-6);" data-translate="quiz.welcomeMessage">
+                            <p class="text-secondary mb-6" data-translate="quiz.welcomeMessage">
                                 Start by filling in the quiz information on the left, then add your first question.
                             </p>
                             <button class="btn btn--primary" onclick="addQuestion()">
-                                <i class="fas fa-plus-circle" style="margin-right: 8px;"></i>
+                                <i class="fas fa-plus-circle" class="icon-mr"></i>
                                 <span data-translate="quiz.addFirstQuestion">Add Your First Question</span>
                             </button>
                         </div>
@@ -177,42 +195,42 @@
                 <button class="modal__close" onclick="closeQuestionTypeModal()">×</button>
             </div>
             <div class="modal__body">
-                <div class="grid grid--2-cols" style="gap: var(--spacing-4);">
+                <div class="grid grid--2-cols" class="grid-gap-4">
                     <div class="question-type-option" onclick="createQuestion('multiple-choice')">
-                        <div style="text-align: center; padding: var(--spacing-4); border: 2px solid var(--border-color); border-radius: var(--radius-md); cursor: pointer; transition: all var(--transition-base);">
-                            <i class="fas fa-list" style="font-size: 2rem; color: var(--color-primary); margin-bottom: var(--spacing-2);"></i>
+                        <div class="question-type-card">
+                            <i class="fas fa-list" class="text-2xl text-primary mb-2"></i>
                             <h4 data-translate="quiz.multipleChoice">Multiple Choice</h4>
-                            <p style="font-size: var(--font-size-sm); color: var(--text-secondary);" data-translate="quiz.multipleChoiceDesc">
+                            <p class="text-sm text-secondary" data-translate="quiz.multipleChoiceDesc">
                                 Single correct answer from multiple options
                             </p>
                         </div>
                     </div>
                     
                     <div class="question-type-option" onclick="createQuestion('true-false')">
-                        <div style="text-align: center; padding: var(--spacing-4); border: 2px solid var(--border-color); border-radius: var(--radius-md); cursor: pointer; transition: all var(--transition-base);">
-                            <i class="fas fa-check-circle" style="font-size: 2rem; color: var(--color-success); margin-bottom: var(--spacing-2);"></i>
+                        <div class="question-type-card">
+                            <i class="fas fa-check-circle" class="text-2xl text-success mb-2"></i>
                             <h4 data-translate="quiz.trueFalse">True / False</h4>
-                            <p style="font-size: var(--font-size-sm); color: var(--text-secondary);" data-translate="quiz.trueFalseDesc">
+                            <p class="text-sm text-secondary" data-translate="quiz.trueFalseDesc">
                                 Simple true or false question
                             </p>
                         </div>
                     </div>
                     
                     <div class="question-type-option" onclick="createQuestion('text-input')">
-                        <div style="text-align: center; padding: var(--spacing-4); border: 2px solid var(--border-color); border-radius: var(--radius-md); cursor: pointer; transition: all var(--transition-base);">
-                            <i class="fas fa-keyboard" style="font-size: 2rem; color: var(--color-info); margin-bottom: var(--spacing-2);"></i>
+                        <div class="question-type-card">
+                            <i class="fas fa-keyboard" class="text-2xl text-info mb-2"></i>
                             <h4 data-translate="quiz.textInput">Text Input</h4>
-                            <p style="font-size: var(--font-size-sm); color: var(--text-secondary);" data-translate="quiz.textInputDesc">
+                            <p class="text-sm text-secondary" data-translate="quiz.textInputDesc">
                                 Open-ended text answer
                             </p>
                         </div>
                     </div>
                     
                     <div class="question-type-option" onclick="createQuestion('multiple-select')">
-                        <div style="text-align: center; padding: var(--spacing-4); border: 2px solid var(--border-color); border-radius: var(--radius-md); cursor: pointer; transition: all var(--transition-base);">
-                            <i class="fas fa-check-square" style="font-size: 2rem; color: var(--color-warning); margin-bottom: var(--spacing-2);"></i>
+                        <div class="question-type-card">
+                            <i class="fas fa-check-square" class="text-2xl text-warning mb-2"></i>
                             <h4 data-translate="quiz.multipleSelect">Multiple Select</h4>
-                            <p style="font-size: var(--font-size-sm); color: var(--text-secondary);" data-translate="quiz.multipleSelectDesc">
+                            <p class="text-sm text-secondary" data-translate="quiz.multipleSelectDesc">
                                 Multiple correct answers
                             </p>
                         </div>
@@ -223,16 +241,16 @@
     </div>
 
     <!-- Quiz Preview Modal -->
-    <div class="quiz-preview" id="quizPreview">
-        <div class="quiz-preview-content">
-            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: var(--spacing-6);">
-                <h2 data-translate="quiz.previewTitle">Quiz Preview</h2>
-                <button class="btn btn--ghost" onclick="closePreview()">
-                    <i class="fas fa-times"></i>
-                </button>
+    <div class="modal-backdrop" id="quizPreview">
+        <div class="modal modal--large">
+            <div class="modal__header">
+                <h2 class="modal__title" data-translate="quiz.previewTitle">Quiz Preview</h2>
+                <button class="modal__close" onclick="closePreview()">×</button>
             </div>
-            <div id="previewContent">
-                <!-- Dynamic preview content -->
+            <div class="modal__body">
+                <div id="previewContent">
+                    <!-- Dynamic preview content -->
+                </div>
             </div>
         </div>
     </div>
@@ -248,59 +266,73 @@
             </div>
             <div class="modal__body">
                 <form id="templateForm">
-                    <div class="form-group">
-                        <label class="form-label" data-translate="quiz.templateName">Template Name</label>
-                        <input type="text" id="templateName" class="form-input" required 
+                    <div class="input-group">
+                        <label class="input-group__label" data-translate="quiz.templateName">Template Name</label>
+                        <input type="text" id="templateName" class="input" required 
                                data-translate-placeholder="quiz.templateNamePlaceholder">
                     </div>
                     
-                    <div class="form-group">
-                        <label class="form-label" data-translate="quiz.templateDescription">Template Description</label>
-                        <textarea id="templateDescription" class="form-textarea" rows="3" 
+                    <div class="input-group">
+                        <label class="input-group__label" data-translate="quiz.templateDescription">Template Description</label>
+                        <textarea id="templateDescription" class="input input--textarea" rows="3" 
                                   data-translate-placeholder="quiz.templateDescPlaceholder"></textarea>
                     </div>
                     
-                    <div class="form-group">
-                        <label class="form-label" data-translate="quiz.templateCategory">Category</label>
-                        <select id="templateCategory" class="form-select" required>
-                            <option value="" data-translate="quiz.selectCategory">Select Category</option>
-                            <option value="math" data-translate="quiz.math">Mathematics</option>
-                            <option value="science" data-translate="quiz.science">Science</option>
-                            <option value="language" data-translate="quiz.language">Language Arts</option>
-                            <option value="business" data-translate="quiz.business">Business</option>
-                            <option value="programming" data-translate="quiz.programming">Programming</option>
-                            <option value="general" data-translate="quiz.general">General Knowledge</option>
-                        </select>
+                    <div class="input-group">
+                        <label class="input-group__label" data-translate="quiz.templateCategory">Category</label>
+                        <div class="dropdown dropdown--block" id="templateCategoryDropdown">
+                            <button class="dropdown__trigger">
+                                <span data-translate="quiz.selectCategory">Select Category</span>
+                                <span class="dropdown__arrow"></span>
+                            </button>
+                            <div class="dropdown__menu">
+                                <div class="dropdown__list">
+                                    <div class="dropdown__item" data-value="math" data-translate="quiz.math">Mathematics</div>
+                                    <div class="dropdown__item" data-value="science" data-translate="quiz.science">Science</div>
+                                    <div class="dropdown__item" data-value="language" data-translate="quiz.language">Language Arts</div>
+                                    <div class="dropdown__item" data-value="business" data-translate="quiz.business">Business</div>
+                                    <div class="dropdown__item" data-value="programming" data-translate="quiz.programming">Programming</div>
+                                    <div class="dropdown__item" data-value="general" data-translate="quiz.general">General Knowledge</div>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                     
-                    <div class="form-group">
-                        <label class="form-label" data-translate="quiz.templateDifficulty">Difficulty Level</label>
-                        <select id="templateDifficulty" class="form-select" required>
-                            <option value="" data-translate="quiz.selectDifficulty">Select Difficulty</option>
-                            <option value="easy" data-translate="quiz.easy">Easy</option>
-                            <option value="medium" data-translate="quiz.medium">Medium</option>
-                            <option value="hard" data-translate="quiz.hard">Hard</option>
-                        </select>
+                    <div class="input-group">
+                        <label class="input-group__label" data-translate="quiz.templateDifficulty">Difficulty Level</label>
+                        <div class="dropdown dropdown--block" id="templateDifficultyDropdown">
+                            <button class="dropdown__trigger">
+                                <span data-translate="quiz.selectDifficulty">Select Difficulty</span>
+                                <span class="dropdown__arrow"></span>
+                            </button>
+                            <div class="dropdown__menu">
+                                <div class="dropdown__list">
+                                    <div class="dropdown__item" data-value="easy" data-translate="quiz.easy">Easy</div>
+                                    <div class="dropdown__item" data-value="medium" data-translate="quiz.medium">Medium</div>
+                                    <div class="dropdown__item" data-value="hard" data-translate="quiz.hard">Hard</div>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                     
-                    <div class="form-group">
-                        <label class="form-label" data-translate="quiz.templateTags">Tags (comma-separated)</label>
-                        <input type="text" id="templateTags" class="form-input" 
+                    <div class="input-group">
+                        <label class="input-group__label" data-translate="quiz.templateTags">Tags (comma-separated)</label>
+                        <input type="text" id="templateTags" class="input" 
                                data-translate-placeholder="quiz.templateTagsPlaceholder">
-                        <div class="form-help" data-translate="quiz.templateTagsHelp">
+                        <div class="input-group__help" data-translate="quiz.templateTagsHelp">
                             Add relevant tags to help others find your template
                         </div>
                     </div>
                     
-                    <div class="form-group">
-                        <label class="form-label" data-translate="quiz.templateSharing">Sharing Settings</label>
-                        <div style="display: flex; flex-direction: column; gap: var(--spacing-2);">
+                    <div class="input-group">
+                        <label class="input-group__label" data-translate="quiz.templateSharing">Sharing Settings</label>
+                        <div class="flex flex-col flex-gap-2">
                             <label class="checkbox-label">
                                 <input type="radio" name="sharing" value="private" checked>
                                 <span class="radio-custom"></span>
                                 <div>
                                     <span data-translate="quiz.privateTemplate">Private</span>
-                                    <small style="display: block; color: var(--text-secondary);" data-translate="quiz.privateTemplateDesc">
+                                    <small class="block text-secondary" data-translate="quiz.privateTemplateDesc">
                                         Only you can see and use this template
                                     </small>
                                 </div>
@@ -311,7 +343,7 @@
                                 <span class="radio-custom"></span>
                                 <div>
                                     <span data-translate="quiz.publicTemplate">Public</span>
-                                    <small style="display: block; color: var(--text-secondary);" data-translate="quiz.publicTemplateDesc">
+                                    <small class="block text-secondary" data-translate="quiz.publicTemplateDesc">
                                         Available to all teachers in the system
                                     </small>
                                 </div>
@@ -322,7 +354,7 @@
                                 <span class="radio-custom"></span>
                                 <div>
                                     <span data-translate="quiz.schoolTemplate">School Only</span>
-                                    <small style="display: block; color: var(--text-secondary);" data-translate="quiz.schoolTemplateDesc">
+                                    <small class="block text-secondary" data-translate="quiz.schoolTemplateDesc">
                                         Available to teachers in your school
                                     </small>
                                 </div>
@@ -330,20 +362,20 @@
                         </div>
                     </div>
                     
-                    <div class="template-summary" style="background: var(--bg-secondary); padding: var(--spacing-4); border-radius: var(--radius-md); margin-top: var(--spacing-4);">
-                        <h4 style="margin-bottom: var(--spacing-3);" data-translate="quiz.templateSummary">Template Summary</h4>
-                        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); gap: var(--spacing-3);">
-                            <div style="text-align: center;">
-                                <div style="font-size: 1.5rem; font-weight: bold; color: var(--color-primary);" id="summaryQuestions">0</div>
-                                <div style="font-size: var(--font-size-sm); color: var(--text-secondary);" data-translate="quiz.questions">Questions</div>
+                    <div class="template-summary" class="bg-secondary p-4 rounded-md mt-4">
+                        <h4 class="mb-3" data-translate="quiz.templateSummary">Template Summary</h4>
+                        <div class="grid grid-auto-fit-xs grid-gap-3">
+                            <div class="text-center">
+                                <div class="text-xl font-bold text-primary" id="summaryQuestions">0</div>
+                                <div class="text-sm text-secondary" data-translate="quiz.questions">Questions</div>
                             </div>
-                            <div style="text-align: center;">
-                                <div style="font-size: 1.5rem; font-weight: bold; color: var(--color-success);" id="summaryPoints">0</div>
-                                <div style="font-size: var(--font-size-sm); color: var(--text-secondary);" data-translate="quiz.totalPoints">Total Points</div>
+                            <div class="text-center">
+                                <div class="text-xl font-bold text-success" id="summaryPoints">0</div>
+                                <div class="text-sm text-secondary" data-translate="quiz.totalPoints">Total Points</div>
                             </div>
-                            <div style="text-align: center;">
-                                <div style="font-size: 1.5rem; font-weight: bold; color: var(--color-info);" id="summaryTime">0</div>
-                                <div style="font-size: var(--font-size-sm); color: var(--text-secondary);" data-translate="quiz.estimatedTime">Est. Time</div>
+                            <div class="text-center">
+                                <div class="text-xl font-bold text-info" id="summaryTime">0</div>
+                                <div class="text-sm text-secondary" data-translate="quiz.estimatedTime">Est. Time</div>
                             </div>
                         </div>
                     </div>
@@ -351,11 +383,11 @@
             </div>
             <div class="modal__footer">
                 <button type="button" class="btn btn--secondary" onclick="closeTemplateModal()">
-                    <i class="fas fa-times" style="margin-right: 8px;"></i>
+                    <i class="fas fa-times" class="icon-mr"></i>
                     <span data-translate="common.cancel">Cancel</span>
                 </button>
                 <button type="button" class="btn btn--primary" onclick="confirmSaveTemplate()">
-                    <i class="fas fa-save" style="margin-right: 8px;"></i>
+                    <i class="fas fa-save" class="icon-mr"></i>
                     <span data-translate="quiz.saveTemplate">Save Template</span>
                 </button>
             </div>
@@ -408,7 +440,6 @@
 
             // Load translations
             await LMS.LanguageManager.init();
-            LMS.LanguageManager.updatePageTranslations();
             
             // Check if editing existing quiz
             const urlParams = new URLSearchParams(window.location.search);
@@ -500,18 +531,18 @@
 
         // Populate course dropdown
         function populateCourseDropdown() {
-            const select = document.getElementById('quizCourse');
-            select.innerHTML = `<option value="">${LMS.t('common.selectOption')}</option>`;
+            const courseOptions = allCourses.map(course => ({
+                value: course.id,
+                text: course.title
+            }));
             
-            allCourses.forEach(course => {
-                const option = document.createElement('option');
-                option.value = course.id;
-                option.textContent = course.title;
-                if (course.id === currentQuiz.courseId) {
-                    option.selected = true;
-                }
-                select.appendChild(option);
-            });
+            LMS.Dropdown.populate('quizCourseDropdown', courseOptions, currentQuiz.courseId);
+            
+            // If no course selected, show default text
+            if (!currentQuiz.courseId) {
+                const trigger = document.querySelector('#quizCourseDropdown .dropdown__trigger span:first-child');
+                trigger.textContent = LMS.t('common.selectOption');
+            }
         }
 
         // Setup event listeners
@@ -525,9 +556,7 @@
                 currentQuiz.description = e.target.value;
             });
             
-            document.getElementById('quizCourse').addEventListener('change', (e) => {
-                currentQuiz.courseId = e.target.value;
-            });
+            // Course dropdown is now handled by initDropdowns function
             
             // Quiz settings
             document.getElementById('quizTimeLimit').addEventListener('input', (e) => {
@@ -538,9 +567,7 @@
                 currentQuiz.passingScore = parseInt(e.target.value);
             });
             
-            document.getElementById('quizMaxAttempts').addEventListener('change', (e) => {
-                currentQuiz.maxAttempts = parseInt(e.target.value);
-            });
+            // Max attempts dropdown is now handled by initDropdowns function
             
             document.getElementById('quizShuffleQuestions').addEventListener('change', (e) => {
                 currentQuiz.shuffleQuestions = e.target.checked;
@@ -566,10 +593,10 @@
             // Update form fields
             document.getElementById('quizTitle').value = currentQuiz.title;
             document.getElementById('quizDescription').value = currentQuiz.description;
-            document.getElementById('quizCourse').value = currentQuiz.courseId;
+            // Course dropdown will be updated by populateCourseDropdown
             document.getElementById('quizTimeLimit').value = currentQuiz.timeLimit;
             document.getElementById('quizPassingScore').value = currentQuiz.passingScore;
-            document.getElementById('quizMaxAttempts').value = currentQuiz.maxAttempts;
+            updateDropdownValue('quizMaxAttemptsDropdown', currentQuiz.maxAttempts);
             document.getElementById('quizShuffleQuestions').checked = currentQuiz.shuffleQuestions;
             document.getElementById('quizShowResults').checked = currentQuiz.showResults;
             
@@ -585,7 +612,7 @@
             
             if (currentQuiz.questions.length === 0) {
                 container.innerHTML = `
-                    <div style="text-align: center; color: var(--text-secondary); padding: var(--spacing-4);">
+                    <div class="text-center text-secondary p-4">
                         <p data-translate="quiz.noQuestions">No questions yet</p>
                     </div>
                 `;
@@ -595,13 +622,13 @@
             container.innerHTML = currentQuiz.questions.map((question, index) => `
                 <div class="question-sidebar-item ${question.id === activeQuestionId ? 'active' : ''}" 
                      onclick="selectQuestion('${question.id}')">
-                    <div style="display: flex; align-items: center; gap: var(--spacing-2);">
+                    <div class="flex-items-center flex-gap-2">
                         <div class="question-counter">${index + 1}</div>
                         <div>
-                            <div style="font-weight: var(--font-weight-medium); font-size: var(--font-size-sm);">
+                            <div class="font-medium text-sm">
                                 ${question.question.length > 30 ? question.question.substring(0, 30) + '...' : question.question}
                             </div>
-                            <div style="font-size: var(--font-size-xs); color: var(--text-secondary);">
+                            <div class="text-xs text-secondary">
                                 ${getQuestionTypeName(question.type)}
                             </div>
                         </div>
@@ -619,14 +646,14 @@
             
             if (currentQuiz.questions.length === 0) {
                 container.innerHTML = `
-                    <div id="welcomeState" class="card" style="text-align: center; padding: var(--spacing-8);">
-                        <i class="fas fa-question-circle" style="font-size: 64px; color: var(--text-muted); margin-bottom: var(--spacing-4);"></i>
+                    <div id="welcomeState" class="card" class="text-center p-8">
+                        <i class="fas fa-question-circle" class="text-64 text-muted mb-4"></i>
                         <h3 data-translate="quiz.welcomeTitle">Welcome to Quiz Builder</h3>
-                        <p style="color: var(--text-secondary); margin-bottom: var(--spacing-6);" data-translate="quiz.welcomeMessage">
+                        <p class="text-secondary mb-6" data-translate="quiz.welcomeMessage">
                             Start by filling in the quiz information on the left, then add your first question.
                         </p>
                         <button class="btn btn--primary" onclick="addQuestion()">
-                            <i class="fas fa-plus-circle" style="margin-right: 8px;"></i>
+                            <i class="fas fa-plus-circle" class="icon-mr"></i>
                             <span data-translate="quiz.addFirstQuestion">Add Your First Question</span>
                         </button>
                     </div>
@@ -635,19 +662,19 @@
             }
             
             container.innerHTML = currentQuiz.questions.map((question, index) => `
-                <div class="question-item ${question.id === activeQuestionId ? 'active' : ''}" id="question-${question.id}">
-                    <div class="question-header" onclick="selectQuestion('${question.id}')">
-                        <div style="display: flex; align-items: center; gap: var(--spacing-3);">
+                <div class="question-container ${question.id === activeQuestionId ? 'active' : ''}" id="question-${question.id}">
+                    <div class="question-toggle" onclick="selectQuestion('${question.id}')">
+                        <div class="flex-items-center flex-gap-3">
                             <div class="question-counter">${index + 1}</div>
                             <div>
-                                <div style="font-weight: var(--font-weight-medium);">${question.question}</div>
-                                <div style="display: flex; align-items: center; gap: var(--spacing-2); margin-top: var(--spacing-1);">
+                                <div class="font-medium">${question.question}</div>
+                                <div class="flex-items-center flex-gap-2 mt-1">
                                     <span class="question-type-badge badge badge--info">${getQuestionTypeName(question.type)}</span>
-                                    <span style="font-size: var(--font-size-sm); color: var(--text-secondary);">${question.points || 1} ${question.points === 1 ? 'point' : 'points'}</span>
+                                    <span class="text-sm text-secondary">${question.points || 1} ${question.points === 1 ? 'point' : 'points'}</span>
                                 </div>
                             </div>
                         </div>
-                        <div style="display: flex; gap: var(--spacing-2);">
+                        <div class="flex flex-gap-2">
                             <button class="btn btn--ghost btn--small" onclick="editQuestion('${question.id}'); event.stopPropagation();" title="Edit">
                                 <i class="fas fa-edit"></i>
                             </button>
@@ -659,7 +686,7 @@
                             </button>
                         </div>
                     </div>
-                    <div class="question-body">
+                    <div class="question-content">
                         ${renderQuestionEditor(question)}
                     </div>
                 </div>
@@ -684,34 +711,34 @@
         // Render multiple choice editor
         function renderMultipleChoiceEditor(question) {
             return `
-                <div class="form-group">
-                    <label class="form-label" data-translate="quiz.questionText">Question Text</label>
-                    <textarea class="form-input" rows="3" onchange="updateQuestionText('${question.id}', this.value)">${question.question}</textarea>
+                <div class="input-group">
+                    <label class="input-group__label" data-translate="quiz.questionText">Question Text</label>
+                    <textarea class="input" rows="3" onchange="updateQuestionText('${question.id}', this.value)">${question.question}</textarea>
                 </div>
                 
-                <div class="form-group">
-                    <label class="form-label" data-translate="quiz.points">Points</label>
-                    <input type="number" class="form-input" value="${question.points || 1}" min="0" max="10" onchange="updateQuestionPoints('${question.id}', this.value)" style="width: 100px;">
+                <div class="input-group">
+                    <label class="input-group__label" data-translate="quiz.points">Points</label>
+                    <input type="number" class="input" value="${question.points || 1}" min="0" max="10" onchange="updateQuestionPoints('${question.id}', this.value)" class="w-25">
                 </div>
                 
-                <div class="form-group">
-                    <label class="form-label" data-translate="quiz.answerOptions">Answer Options</label>
+                <div class="input-group">
+                    <label class="input-group__label" data-translate="quiz.answerOptions">Answer Options</label>
                     <div id="options-${question.id}">
                         ${question.options.map(option => `
-                            <div class="option-item ${option.correct ? 'correct' : ''}">
+                            <div class="option-row ${option.correct ? 'correct' : ''}">
                                 ${question.type === 'multiple-choice' ? 
                                     `<input type="radio" name="correct-${question.id}" ${option.correct ? 'checked' : ''} onchange="setCorrectOption('${question.id}', '${option.id}')">` :
                                     `<input type="checkbox" ${option.correct ? 'checked' : ''} onchange="toggleCorrectOption('${question.id}', '${option.id}')">`
                                 }
-                                <input type="text" class="form-input" value="${option.text}" onchange="updateOptionText('${question.id}', '${option.id}', this.value)" style="flex: 1;">
+                                <input type="text" class="input" value="${option.text}" onchange="updateOptionText('${question.id}', '${option.id}', this.value)" class="flex-1">
                                 <button class="btn btn--ghost btn--small text-danger" onclick="removeOption('${question.id}', '${option.id}')" title="Remove">
                                     <i class="fas fa-times"></i>
                                 </button>
                             </div>
                         `).join('')}
                     </div>
-                    <button class="btn btn--secondary btn--small" onclick="addOption('${question.id}')" style="margin-top: var(--spacing-2);">
-                        <i class="fas fa-plus" style="margin-right: 8px;"></i>
+                    <button class="btn btn--secondary btn--small" onclick="addOption('${question.id}')" class="mt-2">
+                        <i class="fas fa-plus" class="icon-mr"></i>
                         <span data-translate="quiz.addOption">Add Option</span>
                     </button>
                 </div>
@@ -721,19 +748,19 @@
         // Render true/false editor
         function renderTrueFalseEditor(question) {
             return `
-                <div class="form-group">
-                    <label class="form-label" data-translate="quiz.questionText">Question Text</label>
-                    <textarea class="form-input" rows="3" onchange="updateQuestionText('${question.id}', this.value)">${question.question}</textarea>
+                <div class="input-group">
+                    <label class="input-group__label" data-translate="quiz.questionText">Question Text</label>
+                    <textarea class="input" rows="3" onchange="updateQuestionText('${question.id}', this.value)">${question.question}</textarea>
                 </div>
                 
-                <div class="form-group">
-                    <label class="form-label" data-translate="quiz.points">Points</label>
-                    <input type="number" class="form-input" value="${question.points || 1}" min="0" max="10" onchange="updateQuestionPoints('${question.id}', this.value)" style="width: 100px;">
+                <div class="input-group">
+                    <label class="input-group__label" data-translate="quiz.points">Points</label>
+                    <input type="number" class="input" value="${question.points || 1}" min="0" max="10" onchange="updateQuestionPoints('${question.id}', this.value)" class="w-25">
                 </div>
                 
-                <div class="form-group">
-                    <label class="form-label" data-translate="quiz.correctAnswer">Correct Answer</label>
-                    <div style="display: flex; gap: var(--spacing-4);">
+                <div class="input-group">
+                    <label class="input-group__label" data-translate="quiz.correctAnswer">Correct Answer</label>
+                    <div class="flex flex-gap-4">
                         <label class="radio-label">
                             <input type="radio" name="answer-${question.id}" value="true" ${question.answer === true ? 'checked' : ''} onchange="updateTrueFalseAnswer('${question.id}', true)">
                             <span class="radio-custom"></span>
@@ -752,21 +779,21 @@
         // Render text input editor
         function renderTextInputEditor(question) {
             return `
-                <div class="form-group">
-                    <label class="form-label" data-translate="quiz.questionText">Question Text</label>
-                    <textarea class="form-input" rows="3" onchange="updateQuestionText('${question.id}', this.value)">${question.question}</textarea>
+                <div class="input-group">
+                    <label class="input-group__label" data-translate="quiz.questionText">Question Text</label>
+                    <textarea class="input" rows="3" onchange="updateQuestionText('${question.id}', this.value)">${question.question}</textarea>
                 </div>
                 
-                <div class="form-group">
-                    <label class="form-label" data-translate="quiz.points">Points</label>
-                    <input type="number" class="form-input" value="${question.points || 1}" min="0" max="10" onchange="updateQuestionPoints('${question.id}', this.value)" style="width: 100px;">
+                <div class="input-group">
+                    <label class="input-group__label" data-translate="quiz.points">Points</label>
+                    <input type="number" class="input" value="${question.points || 1}" min="0" max="10" onchange="updateQuestionPoints('${question.id}', this.value)" class="w-25">
                 </div>
                 
-                <div class="form-group">
-                    <label class="form-label" data-translate="quiz.expectedAnswer">Expected Answer (for reference)</label>
-                    <textarea class="form-input" rows="2" placeholder="Enter the expected answer for grading reference..." 
+                <div class="input-group">
+                    <label class="input-group__label" data-translate="quiz.expectedAnswer">Expected Answer (for reference)</label>
+                    <textarea class="input" rows="2" placeholder="Enter the expected answer for grading reference..." 
                               onchange="updateTextAnswer('${question.id}', this.value)">${question.expectedAnswer || ''}</textarea>
-                    <span class="form-help" data-translate="quiz.textAnswerHelp">This answer will be used as a reference during manual grading.</span>
+                    <span class="input-group__help" data-translate="quiz.textAnswerHelp">This answer will be used as a reference during manual grading.</span>
                 </div>
             `;
         }
@@ -1010,7 +1037,7 @@
             
             if (!currentQuiz.courseId) {
                 LMS.showToast(LMS.t('validation.courseRequired'), 'error');
-                document.getElementById('quizCourse').focus();
+                document.getElementById('quizCourseDropdown').querySelector('.dropdown__trigger').focus();
                 return false;
             }
             
@@ -1053,8 +1080,8 @@
                 <div class="card">
                     <div class="card__header">
                         <h3>${currentQuiz.title}</h3>
-                        <p style="color: var(--text-secondary);">${currentQuiz.description}</p>
-                        <div style="display: flex; gap: var(--spacing-4); margin-top: var(--spacing-3); font-size: var(--font-size-sm);">
+                        <p class="text-secondary">${currentQuiz.description}</p>
+                        <div class="flex flex-gap-4 mt-3 text-sm">
                             <span><i class="fas fa-clock"></i> ${currentQuiz.timeLimit} minutes</span>
                             <span><i class="fas fa-question-circle"></i> ${currentQuiz.questions.length} questions</span>
                             <span><i class="fas fa-trophy"></i> ${currentQuiz.passingScore}% to pass</span>
@@ -1062,8 +1089,8 @@
                     </div>
                     <div class="card__body">
                         ${currentQuiz.questions.map((question, index) => `
-                            <div style="margin-bottom: var(--spacing-6); padding-bottom: var(--spacing-4); border-bottom: 1px solid var(--border-color);">
-                                <h4 style="display: flex; align-items: center; gap: var(--spacing-2);">
+                            <div class="section-divider">
+                                <h4 class="flex-items-center flex-gap-2">
                                     <span class="question-counter">${index + 1}</span>
                                     ${question.question}
                                 </h4>
@@ -1079,9 +1106,9 @@
             switch (question.type) {
                 case 'multiple-choice':
                     return `
-                        <div style="margin-top: var(--spacing-3);">
+                        <div class="mt-3">
                             ${question.options.map(option => `
-                                <label class="radio-label" style="display: block; margin-bottom: var(--spacing-2);">
+                                <label class="radio-label" class="block mb-2">
                                     <input type="radio" name="preview-${question.id}" disabled>
                                     <span class="radio-custom"></span>
                                     <span>${option.text}</span>
@@ -1091,9 +1118,9 @@
                     `;
                 case 'multiple-select':
                     return `
-                        <div style="margin-top: var(--spacing-3);">
+                        <div class="mt-3">
                             ${question.options.map(option => `
-                                <label class="checkbox-label" style="display: block; margin-bottom: var(--spacing-2);">
+                                <label class="checkbox-label" class="block mb-2">
                                     <input type="checkbox" disabled>
                                     <span class="checkbox-custom"></span>
                                     <span>${option.text}</span>
@@ -1103,7 +1130,7 @@
                     `;
                 case 'true-false':
                     return `
-                        <div style="margin-top: var(--spacing-3); display: flex; gap: var(--spacing-4);">
+                        <div class="mt-3 flex flex-gap-4">
                             <label class="radio-label">
                                 <input type="radio" name="preview-${question.id}" disabled>
                                 <span class="radio-custom"></span>
@@ -1118,8 +1145,8 @@
                     `;
                 case 'text-input':
                     return `
-                        <div style="margin-top: var(--spacing-3);">
-                            <textarea class="form-input" rows="3" placeholder="Type your answer here..." disabled></textarea>
+                        <div class="mt-3">
+                            <textarea class="input" rows="3" placeholder="Type your answer here..." disabled></textarea>
                         </div>
                     `;
                 default:
@@ -1179,8 +1206,8 @@
             
             // Validate required fields
             const templateName = document.getElementById('templateName').value.trim();
-            const templateCategory = document.getElementById('templateCategory').value;
-            const templateDifficulty = document.getElementById('templateDifficulty').value;
+            const templateCategory = getDropdownValue('templateCategoryDropdown');
+            const templateDifficulty = getDropdownValue('templateDifficultyDropdown');
 
             if (!templateName) {
                 LMS.showToast(LMS.t('validation.templateNameRequired'), 'error');
@@ -1190,13 +1217,13 @@
 
             if (!templateCategory) {
                 LMS.showToast(LMS.t('validation.categoryRequired'), 'error');
-                document.getElementById('templateCategory').focus();
+                document.getElementById('templateCategoryDropdown').querySelector('.dropdown__trigger').focus();
                 return;
             }
 
             if (!templateDifficulty) {
                 LMS.showToast(LMS.t('validation.difficultyRequired'), 'error');
-                document.getElementById('templateDifficulty').focus();
+                document.getElementById('templateDifficultyDropdown').querySelector('.dropdown__trigger').focus();
                 return;
             }
 
@@ -1212,10 +1239,10 @@
                 quiz: {
                     title: document.getElementById('quizTitle').value || templateName,
                     description: document.getElementById('quizDescription').value,
-                    courseId: document.getElementById('quizCourse').value,
+                    courseId: currentQuiz.courseId,
                     timeLimit: parseInt(document.getElementById('quizTimeLimit').value) || 30,
                     passingScore: parseInt(document.getElementById('quizPassingScore').value) || 70,
-                    maxAttempts: parseInt(document.getElementById('quizMaxAttempts').value) || 3,
+                    maxAttempts: currentQuiz.maxAttempts || 3,
                     shuffleQuestions: document.getElementById('quizShuffleQuestions').checked,
                     showResults: document.getElementById('quizShowResults').checked,
                     questions: questions
@@ -1282,8 +1309,43 @@
             }
         });
 
+        // Initialize dropdown components
+        function initDropdowns() {
+            // Initialize course dropdown
+            LMS.Dropdown.init('quizCourseDropdown', {
+                onSelect: (value, text) => {
+                    currentQuiz.courseId = value;
+                }
+            });
+            
+            // Initialize max attempts dropdown
+            LMS.Dropdown.init('quizMaxAttemptsDropdown', {
+                onSelect: (value, text) => {
+                    currentQuiz.maxAttempts = parseInt(value);
+                }
+            });
+            
+            // Initialize template category dropdown
+            LMS.Dropdown.init('templateCategoryDropdown');
+            
+            // Initialize template difficulty dropdown
+            LMS.Dropdown.init('templateDifficultyDropdown');
+        }
+        
+        // Wrapper functions for backward compatibility
+        function updateDropdownValue(dropdownId, value) {
+            LMS.Dropdown.setValue(dropdownId, value);
+        }
+        
+        function getDropdownValue(dropdownId) {
+            return LMS.Dropdown.getValue(dropdownId);
+        }
+
         // Initialize on load
-        document.addEventListener('DOMContentLoaded', init);
+        document.addEventListener('DOMContentLoaded', () => {
+            init();
+            initDropdowns();
+        });
     </script>
 </body>
 </html>

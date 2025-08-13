@@ -1,0 +1,327 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Alert Component - LMS</title>
+    <!-- Core CSS -->
+    <link rel="stylesheet" href="../../assets/css/global.css">
+    <link rel="stylesheet" href="../../assets/css/layout.css">
+    <link rel="stylesheet" href="../../assets/css/components.css">
+    <link rel="stylesheet" href="../../assets/css/themes.css">
+    <link rel="stylesheet" href="../../assets/css/utilities.css">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+</head>
+<body>
+    <div class="component-demo">
+        <h1>Alert Component</h1>
+        
+        <!-- Default Alerts -->
+        <section class="demo-section">
+            <h2>Default Alerts</h2>
+            
+            <div class="alert">
+                <div class="alert__icon">
+                    <i class="fas fa-info-circle"></i>
+                </div>
+                <div class="alert__content">
+                    <p>This is a default alert message. It can contain important information.</p>
+                </div>
+            </div>
+
+            <div class="alert alert--primary">
+                <div class="alert__icon">
+                    <i class="fas fa-info-circle"></i>
+                </div>
+                <div class="alert__content">
+                    <p>This is a primary alert with some important information for the user.</p>
+                </div>
+            </div>
+
+            <div class="alert alert--success">
+                <div class="alert__icon">
+                    <i class="fas fa-check-circle"></i>
+                </div>
+                <div class="alert__content">
+                    <p>Success! Your changes have been saved successfully.</p>
+                </div>
+            </div>
+
+            <div class="alert alert--warning">
+                <div class="alert__icon">
+                    <i class="fas fa-exclamation-triangle"></i>
+                </div>
+                <div class="alert__content">
+                    <p>Warning! Please review your input before proceeding.</p>
+                </div>
+            </div>
+
+            <div class="alert alert--danger">
+                <div class="alert__icon">
+                    <i class="fas fa-times-circle"></i>
+                </div>
+                <div class="alert__content">
+                    <p>Error! Something went wrong. Please try again later.</p>
+                </div>
+            </div>
+
+            <div class="alert alert--info">
+                <div class="alert__icon">
+                    <i class="fas fa-info-circle"></i>
+                </div>
+                <div class="alert__content">
+                    <p>Information: New features have been added to the system.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Alerts with Title -->
+        <section class="demo-section">
+            <h2>Alerts with Title</h2>
+            
+            <div class="alert alert--success">
+                <div class="alert__icon">
+                    <i class="fas fa-check-circle"></i>
+                </div>
+                <div class="alert__content">
+                    <h4 class="alert__title">Payment Successful</h4>
+                    <p>Your payment has been processed successfully. You will receive a confirmation email shortly.</p>
+                </div>
+            </div>
+
+            <div class="alert alert--danger">
+                <div class="alert__icon">
+                    <i class="fas fa-times-circle"></i>
+                </div>
+                <div class="alert__content">
+                    <h4 class="alert__title">Authentication Failed</h4>
+                    <p>Invalid username or password. Please check your credentials and try again.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Dismissible Alerts -->
+        <section class="demo-section">
+            <h2>Dismissible Alerts</h2>
+            
+            <div class="alert alert--primary alert--dismissible">
+                <div class="alert__icon">
+                    <i class="fas fa-info-circle"></i>
+                </div>
+                <div class="alert__content">
+                    <p>This alert can be dismissed by clicking the close button.</p>
+                </div>
+                <button class="alert__close" aria-label="Close alert">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+
+            <div class="alert alert--warning alert--dismissible">
+                <div class="alert__icon">
+                    <i class="fas fa-exclamation-triangle"></i>
+                </div>
+                <div class="alert__content">
+                    <h4 class="alert__title">Session Expiring Soon</h4>
+                    <p>Your session will expire in 5 minutes. Please save your work.</p>
+                </div>
+                <button class="alert__close" aria-label="Close alert">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+        </section>
+
+        <!-- Outline Alerts -->
+        <section class="demo-section">
+            <h2>Outline Alerts</h2>
+            
+            <div class="alert alert--primary alert--outline">
+                <div class="alert__icon">
+                    <i class="fas fa-info-circle"></i>
+                </div>
+                <div class="alert__content">
+                    <p>This is an outline style primary alert.</p>
+                </div>
+            </div>
+
+            <div class="alert alert--success alert--outline">
+                <div class="alert__icon">
+                    <i class="fas fa-check-circle"></i>
+                </div>
+                <div class="alert__content">
+                    <p>This is an outline style success alert.</p>
+                </div>
+            </div>
+
+            <div class="alert alert--danger alert--outline">
+                <div class="alert__icon">
+                    <i class="fas fa-times-circle"></i>
+                </div>
+                <div class="alert__content">
+                    <p>This is an outline style danger alert.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Alerts with Actions -->
+        <section class="demo-section">
+            <h2>Alerts with Actions</h2>
+            
+            <div class="alert alert--info">
+                <div class="alert__icon">
+                    <i class="fas fa-info-circle"></i>
+                </div>
+                <div class="alert__content">
+                    <h4 class="alert__title">Update Available</h4>
+                    <p>A new version of the application is available. Update now to get the latest features.</p>
+                    <div class="alert__actions">
+                        <button class="btn btn--primary btn--small">Update Now</button>
+                        <button class="btn btn--ghost btn--small">Later</button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="alert alert--warning">
+                <div class="alert__icon">
+                    <i class="fas fa-exclamation-triangle"></i>
+                </div>
+                <div class="alert__content">
+                    <h4 class="alert__title">Confirm Action</h4>
+                    <p>Are you sure you want to delete this item? This action cannot be undone.</p>
+                    <div class="alert__actions">
+                        <button class="btn btn--danger btn--small">Delete</button>
+                        <button class="btn btn--secondary btn--small">Cancel</button>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- List Alerts -->
+        <section class="demo-section">
+            <h2>List Alerts</h2>
+            
+            <div class="alert alert--danger">
+                <div class="alert__icon">
+                    <i class="fas fa-times-circle"></i>
+                </div>
+                <div class="alert__content">
+                    <h4 class="alert__title">Please fix the following errors:</h4>
+                    <ul class="alert__list">
+                        <li>Password must be at least 8 characters long</li>
+                        <li>Email address is required</li>
+                        <li>Username is already taken</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <!-- Code Example -->
+        <section class="demo-section">
+            <h2>Code Example</h2>
+            <pre><code>&lt;!-- Basic Alert --&gt;
+&lt;div class="alert alert--success"&gt;
+    &lt;div class="alert__icon"&gt;
+        &lt;i class="fas fa-check-circle"&gt;&lt;/i&gt;
+    &lt;/div&gt;
+    &lt;div class="alert__content"&gt;
+        &lt;p&gt;Success! Your changes have been saved.&lt;/p&gt;
+    &lt;/div&gt;
+&lt;/div&gt;
+
+&lt;!-- Alert with Title --&gt;
+&lt;div class="alert alert--warning"&gt;
+    &lt;div class="alert__icon"&gt;
+        &lt;i class="fas fa-exclamation-triangle"&gt;&lt;/i&gt;
+    &lt;/div&gt;
+    &lt;div class="alert__content"&gt;
+        &lt;h4 class="alert__title"&gt;Warning&lt;/h4&gt;
+        &lt;p&gt;Please review your input.&lt;/p&gt;
+    &lt;/div&gt;
+&lt;/div&gt;
+
+&lt;!-- Dismissible Alert --&gt;
+&lt;div class="alert alert--info alert--dismissible"&gt;
+    &lt;div class="alert__icon"&gt;
+        &lt;i class="fas fa-info-circle"&gt;&lt;/i&gt;
+    &lt;/div&gt;
+    &lt;div class="alert__content"&gt;
+        &lt;p&gt;This alert can be dismissed.&lt;/p&gt;
+    &lt;/div&gt;
+    &lt;button class="alert__close" aria-label="Close"&gt;
+        &lt;i class="fas fa-times"&gt;&lt;/i&gt;
+    &lt;/button&gt;
+&lt;/div&gt;
+
+&lt;!-- Alert with Actions --&gt;
+&lt;div class="alert alert--danger"&gt;
+    &lt;div class="alert__icon"&gt;
+        &lt;i class="fas fa-times-circle"&gt;&lt;/i&gt;
+    &lt;/div&gt;
+    &lt;div class="alert__content"&gt;
+        &lt;h4 class="alert__title"&gt;Confirm Delete&lt;/h4&gt;
+        &lt;p&gt;This action cannot be undone.&lt;/p&gt;
+        &lt;div class="alert__actions"&gt;
+            &lt;button class="btn btn--danger btn--small"&gt;Delete&lt;/button&gt;
+            &lt;button class="btn btn--secondary btn--small"&gt;Cancel&lt;/button&gt;
+        &lt;/div&gt;
+    &lt;/div&gt;
+&lt;/div&gt;</code></pre>
+        </section>
+    </div>
+
+    <style>
+        .component-demo {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 40px 20px;
+        }
+
+        .demo-section {
+            margin-bottom: 48px;
+        }
+
+        .demo-section h2 {
+            margin-bottom: 24px;
+            color: var(--text-primary);
+        }
+
+        .demo-section h3 {
+            margin-bottom: 16px;
+            color: var(--text-secondary);
+        }
+
+        .alert {
+            margin-bottom: 16px;
+        }
+
+        pre {
+            background-color: var(--bg-surface);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-base);
+            padding: 20px;
+            overflow-x: auto;
+        }
+
+        code {
+            color: var(--color-primary);
+            font-family: 'Monaco', 'Consolas', monospace;
+            font-size: 14px;
+        }
+    </style>
+
+    <script>
+        // Handle dismissible alerts
+        document.addEventListener('click', function(e) {
+            if (e.target.closest('.alert__close')) {
+                const alert = e.target.closest('.alert');
+                alert.style.transition = 'all 300ms ease-out';
+                alert.style.opacity = '0';
+                alert.style.transform = 'translateX(100px)';
+                setTimeout(() => {
+                    alert.style.display = 'none';
+                }, 300);
+            }
+        });
+    </script>
+</body>
+</html>

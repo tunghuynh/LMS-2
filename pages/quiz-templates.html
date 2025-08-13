@@ -6,8 +6,9 @@
     <title>Quiz Templates - LMS</title>
     <!-- Core CSS -->
     <link rel="stylesheet" href="../assets/css/global.css">
-    <link rel="stylesheet" href="../assets/css/components.css">
     <link rel="stylesheet" href="../assets/css/themes.css">
+    <link rel="stylesheet" href="../assets/css/layout.css">
+    <link rel="stylesheet" href="../assets/css/components.css">
     <link rel="stylesheet" href="../assets/css/utilities.css">
     <link rel="stylesheet" href="../assets/css/quiz-styles.css">
     <!-- Font Awesome -->
@@ -501,39 +502,63 @@
             <!-- Filter Section -->
             <div class="template-filters">
                 <div class="filters-grid">
-                    <div class="form-group">
-                        <label class="form-label" data-translate="quiz.filterByCategory">Category</label>
-                        <select id="categoryFilter" class="form-select" onchange="filterTemplates()">
-                            <option value="" data-translate="quiz.allCategories">All Categories</option>
-                            <option value="math" data-translate="quiz.math">Mathematics</option>
-                            <option value="science" data-translate="quiz.science">Science</option>
-                            <option value="language" data-translate="quiz.language">Language Arts</option>
-                            <option value="business" data-translate="quiz.business">Business</option>
-                            <option value="programming" data-translate="quiz.programming">Programming</option>
-                            <option value="general" data-translate="quiz.general">General Knowledge</option>
-                        </select>
+                    <div class="input-group">
+                        <label class="input-group__label" data-translate="quiz.filterByCategory">Category</label>
+                        <div class="dropdown dropdown--block" id="categoryFilterDropdown">
+                            <button class="dropdown__trigger">
+                                <span data-translate="quiz.allCategories">All Categories</span>
+                                <span class="dropdown__arrow"></span>
+                            </button>
+                            <div class="dropdown__menu">
+                                <div class="dropdown__list">
+                                    <div class="dropdown__item" data-value="" data-translate="quiz.allCategories">All Categories</div>
+                                    <div class="dropdown__item" data-value="math" data-translate="quiz.math">Mathematics</div>
+                                    <div class="dropdown__item" data-value="science" data-translate="quiz.science">Science</div>
+                                    <div class="dropdown__item" data-value="language" data-translate="quiz.language">Language Arts</div>
+                                    <div class="dropdown__item" data-value="business" data-translate="quiz.business">Business</div>
+                                    <div class="dropdown__item" data-value="programming" data-translate="quiz.programming">Programming</div>
+                                    <div class="dropdown__item" data-value="general" data-translate="quiz.general">General Knowledge</div>
+                                </div>
+                            </div>
+                        </div>
                     </div>
-                    <div class="form-group">
-                        <label class="form-label" data-translate="quiz.difficulty">Difficulty</label>
-                        <select id="difficultyFilter" class="form-select" onchange="filterTemplates()">
-                            <option value="" data-translate="quiz.allDifficulties">All Difficulties</option>
-                            <option value="easy" data-translate="quiz.easy">Easy</option>
-                            <option value="medium" data-translate="quiz.medium">Medium</option>
-                            <option value="hard" data-translate="quiz.hard">Hard</option>
-                        </select>
+                    <div class="input-group">
+                        <label class="input-group__label" data-translate="quiz.difficulty">Difficulty</label>
+                        <div class="dropdown dropdown--block" id="difficultyFilterDropdown">
+                            <button class="dropdown__trigger">
+                                <span data-translate="quiz.allDifficulties">All Difficulties</span>
+                                <span class="dropdown__arrow"></span>
+                            </button>
+                            <div class="dropdown__menu">
+                                <div class="dropdown__list">
+                                    <div class="dropdown__item" data-value="" data-translate="quiz.allDifficulties">All Difficulties</div>
+                                    <div class="dropdown__item" data-value="easy" data-translate="quiz.easy">Easy</div>
+                                    <div class="dropdown__item" data-value="medium" data-translate="quiz.medium">Medium</div>
+                                    <div class="dropdown__item" data-value="hard" data-translate="quiz.hard">Hard</div>
+                                </div>
+                            </div>
+                        </div>
                     </div>
-                    <div class="form-group">
-                        <label class="form-label" data-translate="quiz.searchTemplates">Search</label>
-                        <input type="text" id="searchInput" class="form-input" placeholder="Search templates..." onkeyup="filterTemplates()">
+                    <div class="input-group">
+                        <label class="input-group__label" data-translate="quiz.searchTemplates">Search</label>
+                        <input type="text" id="searchInput" class="input" placeholder="Search templates..." onkeyup="filterTemplates()">
                     </div>
-                    <div class="form-group">
-                        <label class="form-label" data-translate="quiz.sortBy">Sort By</label>
-                        <select id="sortFilter" class="form-select" onchange="filterTemplates()">
-                            <option value="popular" data-translate="quiz.popularity">Popularity</option>
-                            <option value="newest" data-translate="quiz.newest">Newest</option>
-                            <option value="title" data-translate="quiz.title">Title</option>
-                            <option value="difficulty" data-translate="quiz.difficulty">Difficulty</option>
-                        </select>
+                    <div class="input-group">
+                        <label class="input-group__label" data-translate="quiz.sortBy">Sort By</label>
+                        <div class="dropdown dropdown--block" id="sortFilterDropdown">
+                            <button class="dropdown__trigger">
+                                <span data-translate="quiz.popularity">Popularity</span>
+                                <span class="dropdown__arrow"></span>
+                            </button>
+                            <div class="dropdown__menu">
+                                <div class="dropdown__list">
+                                    <div class="dropdown__item dropdown__item--selected" data-value="popular" data-translate="quiz.popularity">Popularity</div>
+                                    <div class="dropdown__item" data-value="newest" data-translate="quiz.newest">Newest</div>
+                                    <div class="dropdown__item" data-value="title" data-translate="quiz.title">Title</div>
+                                    <div class="dropdown__item" data-value="difficulty" data-translate="quiz.difficulty">Difficulty</div>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -734,10 +759,10 @@
 
         // Filter templates
         function filterTemplates() {
-            const category = document.getElementById('categoryFilter').value;
-            const difficulty = document.getElementById('difficultyFilter').value;
+            const category = LMS.Dropdown.getValue('categoryFilterDropdown');
+            const difficulty = LMS.Dropdown.getValue('difficultyFilterDropdown');
             const search = document.getElementById('searchInput').value.toLowerCase();
-            const sort = document.getElementById('sortFilter').value;
+            const sort = LMS.Dropdown.getValue('sortFilterDropdown');
 
             filteredTemplates = allTemplates.filter(template => {
                 const matchesCategory = !category || template.category === category;
@@ -978,8 +1003,26 @@
             }
         });
 
+        // Initialize dropdowns
+        function initDropdowns() {
+            LMS.Dropdown.init('categoryFilterDropdown', {
+                onSelect: () => filterTemplates()
+            });
+            
+            LMS.Dropdown.init('difficultyFilterDropdown', {
+                onSelect: () => filterTemplates()
+            });
+            
+            LMS.Dropdown.init('sortFilterDropdown', {
+                onSelect: () => filterTemplates()
+            });
+        }
+
         // Initialize on load
-        document.addEventListener('DOMContentLoaded', init);
+        document.addEventListener('DOMContentLoaded', () => {
+            init();
+            initDropdowns();
+        });
     </script>
 </body>
 </html>

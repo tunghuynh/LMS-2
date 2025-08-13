@@ -6,8 +6,9 @@
     <title>Quiz History - LMS</title>
     <!-- Core CSS -->
     <link rel="stylesheet" href="../assets/css/global.css">
-    <link rel="stylesheet" href="../assets/css/components.css">
     <link rel="stylesheet" href="../assets/css/themes.css">
+    <link rel="stylesheet" href="../assets/css/layout.css">
+    <link rel="stylesheet" href="../assets/css/components.css">
     <link rel="stylesheet" href="../assets/css/utilities.css">
     <link rel="stylesheet" href="../assets/css/quiz-styles.css">
     <!-- Font Awesome -->
@@ -478,34 +479,66 @@
             <!-- Filter Section -->
             <div class="filter-section">
                 <div class="filter-grid">
-                    <div class="form-group">
-                        <label class="form-label" data-translate="course.selectCourse">Course</label>
-                        <select id="courseFilter" class="form-select" onchange="filterHistory()">
-                            <option value="" data-translate="common.allCourses">All Courses</option>
-                        </select>
+                    <div class="input-group">
+                        <label class="input-group__label" data-translate="course.selectCourse">Course</label>
+                        <div class="dropdown dropdown--block" id="courseFilterDropdown">
+                            <button class="dropdown__trigger">
+                                <span data-translate="common.allCourses">All Courses</span>
+                                <span class="dropdown__arrow"></span>
+                            </button>
+                            <div class="dropdown__menu">
+                                <div class="dropdown__list" id="courseFilterList">
+                                    <!-- Course options will be populated dynamically -->
+                                </div>
+                            </div>
+                        </div>
                     </div>
-                    <div class="form-group">
-                        <label class="form-label" data-translate="quiz.selectQuiz">Quiz</label>
-                        <select id="quizFilter" class="form-select" onchange="filterHistory()">
-                            <option value="" data-translate="quiz.allQuizzes">All Quizzes</option>
-                        </select>
+                    <div class="input-group">
+                        <label class="input-group__label" data-translate="quiz.selectQuiz">Quiz</label>
+                        <div class="dropdown dropdown--block" id="quizFilterDropdown">
+                            <button class="dropdown__trigger">
+                                <span data-translate="quiz.allQuizzes">All Quizzes</span>
+                                <span class="dropdown__arrow"></span>
+                            </button>
+                            <div class="dropdown__menu">
+                                <div class="dropdown__list" id="quizFilterList">
+                                    <!-- Quiz options will be populated dynamically -->
+                                </div>
+                            </div>
+                        </div>
                     </div>
-                    <div class="form-group">
-                        <label class="form-label" data-translate="quiz.status">Status</label>
-                        <select id="statusFilter" class="form-select" onchange="filterHistory()">
-                            <option value="" data-translate="common.allStatuses">All Statuses</option>
-                            <option value="passed" data-translate="quiz.passed">Passed</option>
-                            <option value="failed" data-translate="quiz.failed">Failed</option>
-                        </select>
+                    <div class="input-group">
+                        <label class="input-group__label" data-translate="quiz.status">Status</label>
+                        <div class="dropdown dropdown--block" id="statusFilterDropdown">
+                            <button class="dropdown__trigger">
+                                <span data-translate="common.allStatuses">All Statuses</span>
+                                <span class="dropdown__arrow"></span>
+                            </button>
+                            <div class="dropdown__menu">
+                                <div class="dropdown__list">
+                                    <div class="dropdown__item" data-value="" data-translate="common.allStatuses">All Statuses</div>
+                                    <div class="dropdown__item" data-value="passed" data-translate="quiz.passed">Passed</div>
+                                    <div class="dropdown__item" data-value="failed" data-translate="quiz.failed">Failed</div>
+                                </div>
+                            </div>
+                        </div>
                     </div>
-                    <div class="form-group">
-                        <label class="form-label" data-translate="quiz.timePeriod">Time Period</label>
-                        <select id="timePeriodFilter" class="form-select" onchange="filterHistory()">
-                            <option value="30" selected data-translate="quiz.last30Days">Last 30 Days</option>
-                            <option value="90" data-translate="quiz.last90Days">Last 90 Days</option>
-                            <option value="180" data-translate="quiz.last6Months">Last 6 Months</option>
-                            <option value="all" data-translate="quiz.allTime">All Time</option>
-                        </select>
+                    <div class="input-group">
+                        <label class="input-group__label" data-translate="quiz.timePeriod">Time Period</label>
+                        <div class="dropdown dropdown--block" id="timePeriodFilterDropdown">
+                            <button class="dropdown__trigger">
+                                <span data-translate="quiz.last30Days">Last 30 Days</span>
+                                <span class="dropdown__arrow"></span>
+                            </button>
+                            <div class="dropdown__menu">
+                                <div class="dropdown__list">
+                                    <div class="dropdown__item dropdown__item--selected" data-value="30" data-translate="quiz.last30Days">Last 30 Days</div>
+                                    <div class="dropdown__item" data-value="90" data-translate="quiz.last90Days">Last 90 Days</div>
+                                    <div class="dropdown__item" data-value="180" data-translate="quiz.last6Months">Last 6 Months</div>
+                                    <div class="dropdown__item" data-value="all" data-translate="quiz.allTime">All Time</div>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -698,40 +731,51 @@
         // Populate filters
         function populateFilters() {
             // Course filter
-            const courseFilter = document.getElementById('courseFilter');
             const uniqueCourses = [...new Set(allQuizHistory.map(h => h.courseId))]
                 .map(id => allCourses.find(c => c.id === id))
                 .filter(Boolean);
             
-            courseFilter.innerHTML = `<option value="">${LMS.t('common.allCourses')}</option>`;
+            const courseOptions = [{value: '', text: LMS.t('common.allCourses')}];
             uniqueCourses.forEach(course => {
-                const option = document.createElement('option');
-                option.value = course.id;
-                option.textContent = course.title;
-                courseFilter.appendChild(option);
+                courseOptions.push({value: course.id, text: course.title});
             });
+            LMS.Dropdown.populate('courseFilterDropdown', courseOptions);
 
             // Quiz filter
-            const quizFilter = document.getElementById('quizFilter');
             const uniqueQuizzes = [...new Set(allQuizHistory.map(h => h.quizId))]
                 .map(id => allQuizzes.find(q => q.id === id))
                 .filter(Boolean);
             
-            quizFilter.innerHTML = `<option value="">${LMS.t('quiz.allQuizzes')}</option>`;
+            const quizOptions = [{value: '', text: LMS.t('quiz.allQuizzes')}];
             uniqueQuizzes.forEach(quiz => {
-                const option = document.createElement('option');
-                option.value = quiz.id;
-                option.textContent = quiz.title;
-                quizFilter.appendChild(option);
+                quizOptions.push({value: quiz.id, text: quiz.title});
+            });
+            LMS.Dropdown.populate('quizFilterDropdown', quizOptions);
+            
+            // Initialize dropdowns with onChange handlers
+            LMS.Dropdown.init('courseFilterDropdown', {
+                onSelect: () => filterHistory()
+            });
+            
+            LMS.Dropdown.init('quizFilterDropdown', {
+                onSelect: () => filterHistory()
+            });
+            
+            LMS.Dropdown.init('statusFilterDropdown', {
+                onSelect: () => filterHistory()
+            });
+            
+            LMS.Dropdown.init('timePeriodFilterDropdown', {
+                onSelect: () => filterHistory()
             });
         }
 
         // Filter history
         function filterHistory() {
-            const courseId = document.getElementById('courseFilter').value;
-            const quizId = document.getElementById('quizFilter').value;
-            const status = document.getElementById('statusFilter').value;
-            const timePeriod = document.getElementById('timePeriodFilter').value;
+            const courseId = LMS.Dropdown.getValue('courseFilterDropdown');
+            const quizId = LMS.Dropdown.getValue('quizFilterDropdown');
+            const status = LMS.Dropdown.getValue('statusFilterDropdown');
+            const timePeriod = LMS.Dropdown.getValue('timePeriodFilterDropdown');
 
             filteredHistory = allQuizHistory.filter(attempt => {
                 // Course filter

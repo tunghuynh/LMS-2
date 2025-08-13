@@ -6,8 +6,9 @@
     <title>Quiz Attempt - LMS</title>
     <!-- Core CSS -->
     <link rel="stylesheet" href="../assets/css/global.css">
-    <link rel="stylesheet" href="../assets/css/components.css">
     <link rel="stylesheet" href="../assets/css/themes.css">
+    <link rel="stylesheet" href="../assets/css/layout.css">
+    <link rel="stylesheet" href="../assets/css/components.css">
     <link rel="stylesheet" href="../assets/css/utilities.css">
     <link rel="stylesheet" href="../assets/css/quiz-styles.css">
     <!-- Font Awesome -->
@@ -17,216 +18,23 @@
     
 
 
-
-        
-        .question-content {
-            background: var(--bg-primary);
-            border-radius: var(--radius-lg);
-            padding: var(--spacing-6);
-            margin-bottom: var(--spacing-4);
-        }
-        
-        .question-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: var(--spacing-4);
-            padding-bottom: var(--spacing-3);
-            border-bottom: 1px solid var(--border-color);
-        }
-        
-        .question-number {
-            display: flex;
-            align-items: center;
-            gap: var(--spacing-2);
-            font-size: 1.1rem;
-            font-weight: var(--font-weight-bold);
-        }
-        
-        .question-points {
-            background: var(--color-info);
-            color: white;
-            padding: 0.25rem 0.75rem;
-            border-radius: var(--radius-full);
-            font-size: var(--font-size-sm);
-            font-weight: var(--font-weight-medium);
-        }
-        
-        .question-text {
-            font-size: 1.1rem;
-            line-height: 1.6;
-            margin-bottom: var(--spacing-6);
-        }
-        
-        .answer-options {
-            margin-bottom: var(--spacing-6);
-        }
-        
-        .answer-option {
-            display: flex;
-            align-items: flex-start;
-            gap: var(--spacing-3);
-            padding: var(--spacing-4);
-            margin-bottom: var(--spacing-3);
-            border: 2px solid var(--border-color);
-            border-radius: var(--radius-md);
-            cursor: pointer;
-            transition: all var(--transition-base);
-        }
-        
-        .answer-option:hover {
-            border-color: var(--color-primary);
-            background: var(--color-primary-light, rgba(44, 110, 170, 0.05));
-        }
-        
-        .answer-option.selected {
-            border-color: var(--color-primary);
-            background: var(--color-primary-light, rgba(44, 110, 170, 0.1));
-        }
-        
-        .answer-option input[type="radio"],
-        .answer-option input[type="checkbox"] {
-            margin: 0;
-        }
-        
-        .answer-option label {
-            flex: 1;
-            cursor: pointer;
-            line-height: 1.5;
-        }
-        
-        .text-answer {
-            width: 100%;
-            min-height: 120px;
-            padding: var(--spacing-4);
-            border: 2px solid var(--border-color);
-            border-radius: var(--radius-md);
-            font-family: inherit;
-            font-size: inherit;
-            resize: vertical;
-            transition: border-color var(--transition-base);
-        }
-        
-        .text-answer:focus {
-            border-color: var(--color-primary);
-            outline: none;
-        }
-        
-        .question-actions {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding-top: var(--spacing-4);
-            border-top: 1px solid var(--border-color);
-        }
-        
-        .question-nav-buttons {
-            display: flex;
-            gap: var(--spacing-3);
-        }
-        
-        .progress-info {
-            margin-bottom: var(--spacing-4);
-            padding: var(--spacing-3);
-            background: var(--bg-tertiary);
-            border-radius: var(--radius-md);
-        }
-        
-        .submit-warning {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0, 0, 0, 0.8);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            z-index: 1000;
-            opacity: 0;
-            visibility: hidden;
-            transition: all var(--transition-base);
-        }
-        
-        .submit-warning.active {
-            opacity: 1;
-            visibility: visible;
-        }
-        
-        .submit-dialog {
-            background: var(--bg-primary);
-            border-radius: var(--radius-lg);
-            max-width: 500px;
-            width: 90%;
-            padding: var(--spacing-6);
-        }
-        
-        .auto-save-indicator {
-            position: fixed;
-            top: var(--spacing-4);
-            right: var(--spacing-4);
-            background: var(--color-success);
-            color: white;
-            padding: var(--spacing-2) var(--spacing-4);
-            border-radius: var(--radius-md);
-            font-size: var(--font-size-sm);
-            z-index: 100;
-            opacity: 0;
-            transform: translateY(-20px);
-            transition: all var(--transition-base);
-        }
-        
-        .auto-save-indicator.show {
-            opacity: 1;
-            transform: translateY(0);
-        }
-        
-        /* Responsive */
-        @media (max-width: 968px) {
-            .quiz-attempt {
-                grid-template-columns: 1fr;
-                gap: var(--spacing-4);
-            }
-            
-            .quiz-sidebar {
-                order: 2;
-                position: static;
-                max-height: 300px;
-            }
-            
-            .question-nav {
-                grid-template-columns: repeat(10, 1fr);
-            }
-        }
-        
-        @media (max-width: 768px) {
-            .question-nav {
-                grid-template-columns: repeat(8, 1fr);
-            }
-            
-            .question-actions {
-                flex-direction: column;
-                gap: var(--spacing-3);
-            }
-        }
-    </style>
 </head>
 <body>
     <div class="page-container">
         <!-- Page Header -->
         <div class="page-header">
-            <div style="display: flex; justify-content: space-between; align-items: center;">
+            <div class="flex-between">
                 <div>
                     <h1 class="page-title" id="quizTitle">Quiz Title</h1>
                     <p class="page-subtitle" id="quizDescription">Quiz description</p>
                 </div>
-                <div style="display: flex; gap: var(--spacing-3);">
+                <div class="flex flex-gap-3">
                     <button class="btn btn--warning" onclick="submitQuiz()">
-                        <i class="fas fa-paper-plane" style="margin-right: 8px;"></i>
+                        <i class="fas fa-paper-plane" class="icon-mr"></i>
                         <span data-translate="quiz.submitQuiz">Submit Quiz</span>
                     </button>
                     <button class="btn btn--ghost" onclick="exitQuiz()">
-                        <i class="fas fa-times" style="margin-right: 8px;"></i>
+                        <i class="fas fa-times" class="icon-mr"></i>
                         <span data-translate="quiz.exitQuiz">Exit</span>
                     </button>
                 </div>
@@ -234,24 +42,27 @@
         </div>
 
         <div class="page-content">
-            <div class="quiz-attempt">
+            <div class="two-column-layout">
                 <!-- Sidebar -->
-                <div class="quiz-sidebar">
+                <div class="sidebar-column">
                     <!-- Timer -->
-                    <div class="timer-card" id="timerCard">
-                        <div class="timer-display" id="timerDisplay">--:--</div>
-                        <div style="font-size: var(--font-size-sm);" data-translate="quiz.timeRemaining">Time Remaining</div>
+                    <div class="card mb-4" id="timerCard">
+                        <div class="card__body text-center">
+                            <div class="text-2xl font-bold mb-2" id="timerDisplay">--:--</div>
+                            <div class="text-sm" data-translate="quiz.timeRemaining">Time Remaining</div>
+                        </div>
                     </div>
 
                     <!-- Progress Info -->
-                    <div class="progress-info">
-                        <div style="font-weight: var(--font-weight-bold); margin-bottom: var(--spacing-2);" data-translate="quiz.progress">Progress</div>
-                        <div style="font-size: var(--font-size-sm);">
-                            <div style="margin-bottom: var(--spacing-1);">
+                    <div class="card mb-4">
+                        <div class="card__body">
+                            <div class="font-bold mb-2" data-translate="quiz.progress">Progress</div>
+                        <div class="text-sm">
+                            <div class="mb-1">
                                 <span data-translate="quiz.answered">Answered:</span> 
                                 <span id="answeredCount">0</span>/<span id="totalQuestions">0</span>
                             </div>
-                            <div style="margin-bottom: var(--spacing-1);">
+                            <div class="mb-1">
                                 <span data-translate="quiz.flagged">Flagged:</span> 
                                 <span id="flaggedCount">0</span>
                             </div>
@@ -260,34 +71,35 @@
                                 <span id="remainingCount">0</span>
                             </div>
                         </div>
+                        </div>
                     </div>
 
                     <!-- Question Navigation -->
                     <div>
-                        <h4 style="margin-bottom: var(--spacing-3);" data-translate="quiz.questionNavigation">Questions</h4>
+                        <h4 class="mb-3" data-translate="quiz.questionNavigation">Questions</h4>
                         <div class="question-nav" id="questionNav">
                             <!-- Dynamic question navigation items -->
                         </div>
                     </div>
 
                     <!-- Legend -->
-                    <div style="margin-top: var(--spacing-4); font-size: var(--font-size-sm);">
-                        <h5 style="margin-bottom: var(--spacing-2);" data-translate="quiz.legend">Legend</h5>
-                        <div style="display: flex; flex-direction: column; gap: var(--spacing-1);">
-                            <div style="display: flex; align-items: center; gap: var(--spacing-2);">
-                                <div class="question-nav-item" style="width: 20px; height: 20px; font-size: 10px;">1</div>
+                    <div class="mt-4 text-sm">
+                        <h5 class="mb-2" data-translate="quiz.legend">Legend</h5>
+                        <div class="flex flex-col flex-gap-1">
+                            <div class="flex-items-center flex-gap-2">
+                                <div class="question-nav-item" class="w-5 h-5 text-10">1</div>
                                 <span data-translate="quiz.notAnswered">Not Answered</span>
                             </div>
-                            <div style="display: flex; align-items: center; gap: var(--spacing-2);">
-                                <div class="question-nav-item answered" style="width: 20px; height: 20px; font-size: 10px;">2</div>
+                            <div class="flex-items-center flex-gap-2">
+                                <div class="question-nav-item answered" class="w-5 h-5 text-10">2</div>
                                 <span data-translate="quiz.answered">Answered</span>
                             </div>
-                            <div style="display: flex; align-items: center; gap: var(--spacing-2);">
-                                <div class="question-nav-item current" style="width: 20px; height: 20px; font-size: 10px;">3</div>
+                            <div class="flex-items-center flex-gap-2">
+                                <div class="question-nav-item current" class="w-5 h-5 text-10">3</div>
                                 <span data-translate="quiz.current">Current</span>
                             </div>
-                            <div style="display: flex; align-items: center; gap: var(--spacing-2);">
-                                <div class="question-nav-item flagged" style="width: 20px; height: 20px; font-size: 10px;">4</div>
+                            <div class="flex-items-center flex-gap-2">
+                                <div class="question-nav-item flagged" class="w-5 h-5 text-10">4</div>
                                 <span data-translate="quiz.flaggedForReview">Flagged</span>
                             </div>
                         </div>
@@ -295,9 +107,9 @@
                 </div>
 
                 <!-- Main Content -->
-                <div class="quiz-main">
+                <div class="main-column">
                     <!-- Question Content -->
-                    <div class="question-content" id="questionContent">
+                    <div class="card" id="questionContent">
                         <!-- Dynamic question content -->
                     </div>
 
@@ -305,22 +117,22 @@
                     <div class="question-actions">
                         <div class="question-nav-buttons">
                             <button class="btn btn--secondary" onclick="previousQuestion()" id="prevBtn" disabled>
-                                <i class="fas fa-chevron-left" style="margin-right: 8px;"></i>
+                                <i class="fas fa-chevron-left" class="icon-mr"></i>
                                 <span data-translate="quiz.previous">Previous</span>
                             </button>
                             <button class="btn btn--primary" onclick="nextQuestion()" id="nextBtn">
                                 <span data-translate="quiz.next">Next</span>
-                                <i class="fas fa-chevron-right" style="margin-left: 8px;"></i>
+                                <i class="fas fa-chevron-right" class="icon-ml"></i>
                             </button>
                         </div>
 
-                        <div style="display: flex; gap: var(--spacing-3);">
+                        <div class="flex flex-gap-3">
                             <button class="btn btn--ghost" onclick="toggleFlag()" id="flagBtn">
-                                <i class="fas fa-flag" style="margin-right: 8px;"></i>
+                                <i class="fas fa-flag" class="icon-mr"></i>
                                 <span data-translate="quiz.flagForReview">Flag for Review</span>
                             </button>
                             <button class="btn btn--secondary" onclick="clearAnswer()">
-                                <i class="fas fa-eraser" style="margin-right: 8px;"></i>
+                                <i class="fas fa-eraser" class="icon-mr"></i>
                                 <span data-translate="quiz.clearAnswer">Clear Answer</span>
                             </button>
                         </div>
@@ -333,17 +145,17 @@
     <!-- Submit Warning Modal -->
     <div class="submit-warning" id="submitWarning">
         <div class="submit-dialog">
-            <h3 style="margin-bottom: var(--spacing-4);" data-translate="quiz.submitConfirmTitle">Submit Quiz?</h3>
-            <div id="submitSummary" style="margin-bottom: var(--spacing-6);">
+            <h3 class="mb-4" data-translate="quiz.submitConfirmTitle">Submit Quiz?</h3>
+            <div id="submitSummary" class="mb-6">
                 <!-- Dynamic submit summary -->
             </div>
-            <div style="display: flex; gap: var(--spacing-3); justify-content: flex-end;">
+            <div class="flex-end flex-gap-3">
                 <button class="btn btn--secondary" onclick="closeSubmitWarning()">
-                    <i class="fas fa-times" style="margin-right: 8px;"></i>
+                    <i class="fas fa-times" class="icon-mr"></i>
                     <span data-translate="common.cancel">Cancel</span>
                 </button>
                 <button class="btn btn--warning" onclick="confirmSubmit()">
-                    <i class="fas fa-paper-plane" style="margin-right: 8px;"></i>
+                    <i class="fas fa-paper-plane" class="icon-mr"></i>
                     <span data-translate="quiz.submitFinal">Submit Final Answer</span>
                 </button>
             </div>
@@ -352,7 +164,7 @@
 
     <!-- Auto-save Indicator -->
     <div class="auto-save-indicator" id="autoSaveIndicator">
-        <i class="fas fa-check" style="margin-right: 8px;"></i>
+        <i class="fas fa-check" class="icon-mr"></i>
         <span data-translate="quiz.autoSaved">Auto-saved</span>
     </div>
 
@@ -699,12 +511,12 @@
             if (currentQuestionIndex === quizData.questions.length - 1) {
                 nextBtn.innerHTML = `
                     <span data-translate="quiz.finish">Finish</span>
-                    <i class="fas fa-flag-checkered" style="margin-left: 8px;"></i>
+                    <i class="fas fa-flag-checkered" class="icon-ml"></i>
                 `;
             } else {
                 nextBtn.innerHTML = `
                     <span data-translate="quiz.next">Next</span>
-                    <i class="fas fa-chevron-right" style="margin-left: 8px;"></i>
+                    <i class="fas fa-chevron-right" class="icon-ml"></i>
                 `;
             }
         }
@@ -732,13 +544,13 @@
             if (isFlagged) {
                 flagBtn.classList.add('btn--warning');
                 flagBtn.innerHTML = `
-                    <i class="fas fa-flag" style="margin-right: 8px;"></i>
+                    <i class="fas fa-flag" class="icon-mr"></i>
                     <span data-translate="quiz.unflag">Remove Flag</span>
                 `;
             } else {
                 flagBtn.classList.remove('btn--warning');
                 flagBtn.innerHTML = `
-                    <i class="fas fa-flag" style="margin-right: 8px;"></i>
+                    <i class="fas fa-flag" class="icon-mr"></i>
                     <span data-translate="quiz.flagForReview">Flag for Review</span>
                 `;
             }
@@ -827,10 +639,10 @@
             const total = quizData.questions.length;
             
             document.getElementById('submitSummary').innerHTML = `
-                <p style="margin-bottom: var(--spacing-3);" data-translate="quiz.submitWarning">You are about to submit your quiz. Please review your answers before submitting.</p>
-                <div style="background: var(--bg-secondary); padding: var(--spacing-4); border-radius: var(--radius-md);">
-                    <div style="margin-bottom: var(--spacing-2);"><strong>${LMS.t('quiz.answered')}:</strong> ${answered}/${total} questions</div>
-                    <div style="margin-bottom: var(--spacing-2);"><strong>${LMS.t('quiz.flagged')}:</strong> ${flaggedQuestions.size} questions</div>
+                <p class="mb-3" data-translate="quiz.submitWarning">You are about to submit your quiz. Please review your answers before submitting.</p>
+                <div class="bg-secondary p-4 rounded-md">
+                    <div class="mb-2"><strong>${LMS.t('quiz.answered')}:</strong> ${answered}/${total} questions</div>
+                    <div class="mb-2"><strong>${LMS.t('quiz.flagged')}:</strong> ${flaggedQuestions.size} questions</div>
                     <div><strong>${LMS.t('quiz.timeUsed')}:</strong> ${formatTimeUsed()}</div>
                 </div>
                 ${answered < total ? `<p style="color: var(--color-warning); margin-top: var(--spacing-3);"><i class="fas fa-exclamation-triangle"></i> ${LMS.t('quiz.unansweredWarning')}</p>` : ''}

@@ -132,12 +132,16 @@
             <a href="#modals">Modals</a>
             <a href="#cards">Cards</a>
             <a href="#dropdowns">Dropdowns</a>
+            <a href="#badges">Badges</a>
+            <a href="#alerts">Alerts</a>
             <a href="base/button.html" target="_blank">Full Button Demo →</a>
             <a href="base/input.html" target="_blank">Full Input Demo →</a>
             <a href="base/table.html" target="_blank">Full Table Demo →</a>
             <a href="base/modal.html" target="_blank">Full Modal Demo →</a>
             <a href="base/card.html" target="_blank">Full Card Demo →</a>
             <a href="base/dropdown.html" target="_blank">Full Dropdown Demo →</a>
+            <a href="base/badge.html" target="_blank">Full Badge Demo →</a>
+            <a href="base/alert.html" target="_blank">Full Alert Demo →</a>
         </nav>
 
         <!-- Buttons Section -->
@@ -444,6 +448,124 @@
             </div>
         </section>
 
+        <!-- Badges Section -->
+        <section class="component-section" id="badges">
+            <h2 class="component-title">
+                Badges
+                <span class="component-subtitle">Labels and status indicators</span>
+            </h2>
+            
+            <div class="component-demo">
+                <h3>Badge Variants</h3>
+                <div class="demo-group">
+                    <span class="badge">Default</span>
+                    <span class="badge badge--primary">Primary</span>
+                    <span class="badge badge--secondary">Secondary</span>
+                    <span class="badge badge--success">Success</span>
+                    <span class="badge badge--danger">Danger</span>
+                    <span class="badge badge--warning">Warning</span>
+                    <span class="badge badge--info">Info</span>
+                </div>
+                
+                <h3>Badge Sizes</h3>
+                <div class="demo-group">
+                    <span class="badge badge--small">Small</span>
+                    <span class="badge">Default</span>
+                    <span class="badge badge--large">Large</span>
+                </div>
+                
+                <h3>Badge with Icons</h3>
+                <div class="demo-group">
+                    <span class="badge badge--success">
+                        <i class="fas fa-check badge__icon"></i>
+                        Completed
+                    </span>
+                    <span class="badge badge--danger">
+                        <i class="fas fa-times badge__icon"></i>
+                        Failed
+                    </span>
+                    <span class="badge badge--warning">
+                        <i class="fas fa-clock badge__icon"></i>
+                        Pending
+                    </span>
+                </div>
+                
+                <h3>Pill Badges</h3>
+                <div class="demo-group">
+                    <span class="badge badge--primary badge--pill">JavaScript</span>
+                    <span class="badge badge--secondary badge--pill">React</span>
+                    <span class="badge badge--info badge--pill">Vue.js</span>
+                </div>
+            </div>
+        </section>
+
+        <!-- Alerts Section -->
+        <section class="component-section" id="alerts">
+            <h2 class="component-title">
+                Alerts
+                <span class="component-subtitle">Contextual feedback messages</span>
+            </h2>
+            
+            <div class="component-demo">
+                <h3>Alert Variants</h3>
+                
+                <div class="alert alert--success">
+                    <div class="alert__icon">
+                        <i class="fas fa-check-circle"></i>
+                    </div>
+                    <div class="alert__content">
+                        <p>Success! Your changes have been saved successfully.</p>
+                    </div>
+                </div>
+                
+                <div class="alert alert--warning">
+                    <div class="alert__icon">
+                        <i class="fas fa-exclamation-triangle"></i>
+                    </div>
+                    <div class="alert__content">
+                        <p>Warning! Please review your input before proceeding.</p>
+                    </div>
+                </div>
+                
+                <div class="alert alert--danger">
+                    <div class="alert__icon">
+                        <i class="fas fa-times-circle"></i>
+                    </div>
+                    <div class="alert__content">
+                        <p>Error! Something went wrong. Please try again.</p>
+                    </div>
+                </div>
+                
+                <div class="alert alert--info">
+                    <div class="alert__icon">
+                        <i class="fas fa-info-circle"></i>
+                    </div>
+                    <div class="alert__content">
+                        <p>Information: New features have been added to the system.</p>
+                    </div>
+                </div>
+                
+                <h3>Alert with Title and Actions</h3>
+                
+                <div class="alert alert--warning alert--dismissible">
+                    <div class="alert__icon">
+                        <i class="fas fa-exclamation-triangle"></i>
+                    </div>
+                    <div class="alert__content">
+                        <h4 class="alert__title">Session Expiring Soon</h4>
+                        <p>Your session will expire in 5 minutes. Please save your work.</p>
+                        <div class="alert__actions">
+                            <button class="btn btn--primary btn--small">Extend Session</button>
+                            <button class="btn btn--ghost btn--small">Save & Logout</button>
+                        </div>
+                    </div>
+                    <button class="alert__close" aria-label="Close alert">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </div>
+            </div>
+        </section>
+
         <!-- System Status -->
         <section class="component-section" style="background-color: var(--bg-selected); border-color: var(--color-primary);">
             <h2 class="component-title">System Status</h2>
@@ -559,6 +681,19 @@
                     target.scrollIntoView({ behavior: 'smooth', block: 'start' });
                 }
             });
+        });
+        
+        // Handle alert close buttons
+        document.addEventListener('click', function(e) {
+            if (e.target.closest('.alert__close')) {
+                const alert = e.target.closest('.alert');
+                alert.style.transition = 'all 300ms ease-out';
+                alert.style.opacity = '0';
+                alert.style.transform = 'translateX(100px)';
+                setTimeout(() => {
+                    alert.style.display = 'none';
+                }, 300);
+            }
         });
     </script>
 </body>
