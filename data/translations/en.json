@@ -55,7 +55,11 @@
     "view": "View",
     "close": "Close"
   },
-  
+  "roles": {
+    "admin": "Administrator",
+    "teacher": "Teacher",
+    "student": "Student"
+  },
   "status": {
     "active": "Active",
     "inactive": "Inactive",

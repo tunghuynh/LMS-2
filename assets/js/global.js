@@ -125,13 +125,13 @@ LMS.LanguageManager = {
       const currentPath = window.location.pathname;
       
       // Determine relative path based on current location
-      if (currentPath.includes('/pages/') || currentPath.includes('/components/')) {
-        // We're in a subdirectory, go up one level
-        translationPath = `../data/translations/${language}.json`;
-      } else {
+      // if (currentPath.includes('/pages/') || currentPath.includes('/components/')) {
+      //   // We're in a subdirectory, go up one level
+      //   translationPath = `../data/translations/${language}.json`;
+      // } else {
         // We're in root directory
         translationPath = `/data/translations/${language}.json`;
-      }
+      // }
       
       console.log('Loading translation from:', translationPath);
       
