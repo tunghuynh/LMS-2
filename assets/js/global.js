@@ -679,6 +679,9 @@ LMS.Dropdown = {
 
 // Initialize on DOM ready
 document.addEventListener('DOMContentLoaded', async () => {
+  // Initialize auth first (important for AccessControl)
+  await LMS.Auth.init();
+  
   // Initialize theme (sync)
   LMS.ThemeManager.init();
   
@@ -716,7 +719,7 @@ document.addEventListener('click', () => {
 LMS.AccessControl = {
   // Check if user has required role(s)
   checkRole(requiredRoles) {
-    const currentUser = JSON.parse(localStorage.getItem('currentUser'));
+    const currentUser = LMS.Auth.getUser();
     
     if (!currentUser) {
       this.redirectToAccessDenied('authentication');
@@ -736,7 +739,7 @@ LMS.AccessControl = {
   
   // Check if user has specific permission
   checkPermission(permission) {
-    const currentUser = JSON.parse(localStorage.getItem('currentUser'));
+    const currentUser = LMS.Auth.getUser();
     
     if (!currentUser) {
       this.redirectToAccessDenied('authentication');

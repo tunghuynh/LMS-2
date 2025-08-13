@@ -315,7 +315,7 @@
                 return;
             }
             
-            const currentUser = JSON.parse(localStorage.getItem('currentUser'));
+            const currentUser = LMS.Auth.getUser();
 
             // Initialize language
             await LMS.LanguageManager.init();
@@ -331,7 +331,7 @@
         // Load dashboard data
         async function loadDashboardData() {
             // In real app, this would be API calls
-            dashboardData.user = JSON.parse(localStorage.getItem('currentUser'));
+            dashboardData.user = LMS.Auth.getUser();
             
             // Mock data
             const stats = {

@@ -175,7 +175,7 @@
             LMS.LanguageManager.updateUI();
             
             // Get user info
-            const currentUser = JSON.parse(localStorage.getItem('currentUser'));
+            const currentUser = LMS.Auth.getUser();
             if (currentUser) {
                 document.getElementById('userRole').textContent = currentUser.role || 'Guest';
             }
@@ -209,7 +209,7 @@
         
         // Navigation functions
         function goHome() {
-            const currentUser = JSON.parse(localStorage.getItem('currentUser'));
+            const currentUser = LMS.Auth.getUser();
             if (currentUser) {
                 // Go to role-specific dashboard
                 switch (currentUser.role) {

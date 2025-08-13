@@ -61,7 +61,7 @@
                 <div class="breadcrumb" id="breadcrumb">
                     <!-- Breadcrumb will be populated dynamically -->
                 </div>
-                <iframe class="content-iframe" id="contentFrame" name="contentFrame" src="pages/dashboard.html"></iframe>
+                <iframe class="content-iframe" id="contentFrame" name="contentFrame" src=""></iframe>
             </main>
         </div>
 
@@ -76,5 +76,37 @@
     <script src="assets/js/global.js"></script>
     <script src="assets/js/auth.js"></script>
     <script src="assets/js/navigation.js"></script>
+    <script>
+        // Initialize main layout
+        document.addEventListener('DOMContentLoaded', async () => {
+            // Initialize auth first
+            await LMS.Auth.init();
+            
+            // Get current user
+            const currentUser = LMS.Auth.getUser();
+            
+            if (!currentUser) {
+                // Redirect to login if not authenticated
+                window.location.href = 'index.html';
+                return;
+            }
+            
+            // Load appropriate dashboard based on role
+            const iframe = document.getElementById('contentFrame');
+            switch (currentUser.role) {
+                case 'student':
+                    iframe.src = 'pages/dashboard-student.html';
+                    break;
+                case 'teacher':
+                    iframe.src = 'pages/dashboard-teacher.html';
+                    break;
+                case 'admin':
+                    iframe.src = 'pages/dashboard-admin.html';
+                    break;
+                default:
+                    iframe.src = 'pages/dashboard-student.html';
+            }
+        });
+    </script>
 </body>
 </html>

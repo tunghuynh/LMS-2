@@ -390,7 +390,7 @@
                 return;
             }
             
-            const currentUser = JSON.parse(localStorage.getItem('currentUser'));
+            const currentUser = LMS.Auth.getUser();
 
             // Initialize language
             await LMS.LanguageManager.init();
