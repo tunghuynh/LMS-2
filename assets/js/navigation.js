@@ -82,16 +82,16 @@ LMS.Navigation = {
         section: 'nav.sections.courseManagement',
         items: [
           {
-            id: 'my-courses',
+            id: 'courses',
             icon: 'fa-book',
-            label: 'nav.myCourses',
-            href: 'pages/teacher-courses.html'
+            label: 'nav.courses',
+            href: 'pages/courses.html'
           },
           {
-            id: 'create-course',
-            icon: 'fa-plus-circle',
-            label: 'nav.createCourse',
-            href: 'pages/course-create.html'
+            id: 'lesson-builder',
+            icon: 'fa-chalkboard',
+            label: 'nav.lessonBuilder',
+            href: 'pages/lesson-builder.html'
           },
           {
             id: 'categories',
@@ -165,6 +165,12 @@ LMS.Navigation = {
             href: 'pages/users.html'
           },
           {
+            id: 'permissions',
+            icon: 'fa-user-shield',
+            label: 'nav.permissions',
+            href: 'pages/permissions.html'
+          },
+          {
             id: 'classes',
             icon: 'fa-school',
             label: 'nav.classes',
@@ -182,10 +188,16 @@ LMS.Navigation = {
         section: 'nav.sections.courseManagement',
         items: [
           {
-            id: 'all-courses',
+            id: 'courses',
             icon: 'fa-book',
-            label: 'nav.allCourses',
-            href: 'pages/admin-courses.html'
+            label: 'nav.courses',
+            href: 'pages/courses.html'
+          },
+          {
+            id: 'lesson-builder',
+            icon: 'fa-chalkboard',
+            label: 'nav.lessonBuilder',
+            href: 'pages/lesson-builder.html'
           },
           {
             id: 'categories',

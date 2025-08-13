@@ -133,9 +133,11 @@
     "quizBuilder": "Quiz Builder",
     "quizResults": "Quiz Results",
     "users": "Users",
+    "permissions": "Permissions",
     "classes": "Classes",
     "activityLogs": "Activity Logs",
     "allCourses": "All Courses",
+    "lessonBuilder": "Lesson Builder",
     "settings": "Settings",
     "reports": "Reports",
     "sections": {
@@ -307,7 +309,99 @@
     "resetDefault": "Reset to Default",
     "export": "Export",
     "saved": "Permissions saved successfully!",
-    "resetConfirm": "Are you sure you want to reset all permissions to default?"
+    "resetConfirm": "Are you sure you want to reset all permissions to default?",
+    "features": {
+      "dashboard": {
+        "name": "Dashboard",
+        "description": "View system overview and statistics"
+      },
+      "dashboard.stats": {
+        "name": "View Statistics"
+      },
+      "dashboard.export": {
+        "name": "Export Reports"
+      },
+      "users": {
+        "name": "User Management",
+        "description": "Manage system users"
+      },
+      "users.view": {
+        "name": "View Users"
+      },
+      "users.create": {
+        "name": "Create User"
+      },
+      "users.edit": {
+        "name": "Edit User"
+      },
+      "users.delete": {
+        "name": "Delete User"
+      },
+      "courses": {
+        "name": "Course Management",
+        "description": "Manage courses and lessons"
+      },
+      "courses.view": {
+        "name": "View Courses"
+      },
+      "courses.create": {
+        "name": "Create Course"
+      },
+      "courses.edit": {
+        "name": "Edit Course"
+      },
+      "courses.delete": {
+        "name": "Delete Course"
+      },
+      "courses.enroll": {
+        "name": "Enroll in Course"
+      },
+      "quizzes": {
+        "name": "Quiz Management",
+        "description": "Create and manage quizzes"
+      },
+      "quizzes.view": {
+        "name": "View Quizzes"
+      },
+      "quizzes.create": {
+        "name": "Create Quiz"
+      },
+      "quizzes.edit": {
+        "name": "Edit Quiz"
+      },
+      "quizzes.delete": {
+        "name": "Delete Quiz"
+      },
+      "quizzes.take": {
+        "name": "Take Quiz"
+      },
+      "quizzes.results": {
+        "name": "View Results"
+      },
+      "classes": {
+        "name": "Class Management",
+        "description": "Manage classes and enrollments"
+      },
+      "classes.view": {
+        "name": "View Classes"
+      },
+      "classes.create": {
+        "name": "Create Class"
+      },
+      "classes.manage": {
+        "name": "Manage Students"
+      },
+      "reports": {
+        "name": "Reports & Analytics",
+        "description": "View system reports and analytics"
+      },
+      "reports.view": {
+        "name": "View Reports"
+      },
+      "reports.export": {
+        "name": "Export Reports"
+      }
+    }
   },
   
   "validation": {

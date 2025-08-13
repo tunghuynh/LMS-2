@@ -68,6 +68,12 @@
         .permissions-table th.role-header {
             text-align: center;
             width: 160px;
+            vertical-align: middle;
+        }
+        
+        .permissions-table th.role-header .checkbox {
+            display: inline-block;
+            margin: 0;
         }
         
         .permissions-table td {
@@ -146,9 +152,14 @@
         }
         
         /* Center align checkboxes in table cells */
-        .permissions-table .checkbox {
-            margin: 0 auto;
-            width: fit-content;
+        .permissions-table td.role-cell {
+            text-align: center;
+            vertical-align: middle;
+        }
+        
+        .permissions-table td.role-cell .checkbox {
+            display: inline-block;
+            margin: 0;
         }
         
         @media (max-width: 768px) {
@@ -169,7 +180,7 @@
     </style>
 </head>
 <body>
-    <div class="page-wrapper">
+    <div class="page-container">
         <!-- Header -->
         <div class="page-header">
             <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: var(--spacing-4);">
@@ -371,10 +382,9 @@
                             ${feature.subfeatures ? `<button class="expand-toggle" onclick="toggleSubfeatures('${feature.id}')">
                                 <i class="fas fa-chevron-right"></i>
                             </button>` : '<span style="width: 28px;"></span>'}
-                            <i class="${feature.icon} feature-icon"></i>
                             <div>
-                                <strong>${feature.name}</strong>
-                                <div class="feature-description">${feature.description}</div>
+                                <strong data-translate="permissions.features.${feature.id}.name">${feature.name}</strong>
+                                <div class="feature-description" data-translate="permissions.features.${feature.id}.description">${feature.description}</div>
                             </div>
                         </div>
                     </td>
@@ -420,8 +430,8 @@
                         subfeatureRow.innerHTML = `
                             <td>
                                 <div class="feature-name">
-                                    <i class="fas fa-angle-right feature-icon"></i>
-                                    ${subfeature.name}
+                                    <i class="fas fa-angle-right" style="margin-right: var(--spacing-2); color: var(--text-secondary);"></i>
+                                    <span data-translate="permissions.features.${subfeature.id}.name">${subfeature.name}</span>
                                 </div>
                             </td>
                             <td class="role-cell">

@@ -133,9 +133,11 @@
     "quizBuilder": "Tạo bài kiểm tra",
     "quizResults": "Kết quả kiểm tra",
     "users": "Người dùng",
+    "permissions": "Phân quyền",
     "classes": "Lớp học",
     "activityLogs": "Nhật ký hoạt động",
     "allCourses": "Tất cả khóa học",
+    "lessonBuilder": "Tạo bài học",
     "settings": "Cài đặt",
     "reports": "Báo cáo",
     "sections": {
@@ -307,7 +309,99 @@
     "resetDefault": "Đặt lại mặc định",
     "export": "Xuất file",
     "saved": "Lưu phân quyền thành công!",
-    "resetConfirm": "Bạn có chắc chắn muốn đặt lại tất cả phân quyền về mặc định?"
+    "resetConfirm": "Bạn có chắc chắn muốn đặt lại tất cả phân quyền về mặc định?",
+    "features": {
+      "dashboard": {
+        "name": "Bảng điều khiển",
+        "description": "Xem tổng quan và thống kê hệ thống"
+      },
+      "dashboard.stats": {
+        "name": "Xem thống kê"
+      },
+      "dashboard.export": {
+        "name": "Xuất báo cáo"
+      },
+      "users": {
+        "name": "Quản lý Người dùng",
+        "description": "Quản lý người dùng hệ thống"
+      },
+      "users.view": {
+        "name": "Xem người dùng"
+      },
+      "users.create": {
+        "name": "Tạo người dùng"
+      },
+      "users.edit": {
+        "name": "Sửa người dùng"
+      },
+      "users.delete": {
+        "name": "Xóa người dùng"
+      },
+      "courses": {
+        "name": "Quản lý Khóa học",
+        "description": "Quản lý khóa học và bài học"
+      },
+      "courses.view": {
+        "name": "Xem khóa học"
+      },
+      "courses.create": {
+        "name": "Tạo khóa học"
+      },
+      "courses.edit": {
+        "name": "Sửa khóa học"
+      },
+      "courses.delete": {
+        "name": "Xóa khóa học"
+      },
+      "courses.enroll": {
+        "name": "Ghi danh khóa học"
+      },
+      "quizzes": {
+        "name": "Quản lý Bài kiểm tra",
+        "description": "Tạo và quản lý bài kiểm tra"
+      },
+      "quizzes.view": {
+        "name": "Xem bài kiểm tra"
+      },
+      "quizzes.create": {
+        "name": "Tạo bài kiểm tra"
+      },
+      "quizzes.edit": {
+        "name": "Sửa bài kiểm tra"
+      },
+      "quizzes.delete": {
+        "name": "Xóa bài kiểm tra"
+      },
+      "quizzes.take": {
+        "name": "Làm bài kiểm tra"
+      },
+      "quizzes.results": {
+        "name": "Xem kết quả"
+      },
+      "classes": {
+        "name": "Quản lý Lớp học",
+        "description": "Quản lý lớp học và ghi danh"
+      },
+      "classes.view": {
+        "name": "Xem lớp học"
+      },
+      "classes.create": {
+        "name": "Tạo lớp học"
+      },
+      "classes.manage": {
+        "name": "Quản lý học sinh"
+      },
+      "reports": {
+        "name": "Báo cáo & Phân tích",
+        "description": "Xem báo cáo và phân tích hệ thống"
+      },
+      "reports.view": {
+        "name": "Xem báo cáo"
+      },
+      "reports.export": {
+        "name": "Xuất báo cáo"
+      }
+    }
   },
   
   "validation": {
