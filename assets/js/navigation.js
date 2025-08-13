@@ -62,6 +62,18 @@ LMS.Navigation = {
         section: 'nav.sections.account',
         items: [
           {
+            id: 'certificates',
+            icon: 'fa-certificate',
+            label: 'nav.certificates',
+            href: 'pages/certificates.html'
+          },
+          {
+            id: 'messaging',
+            icon: 'fa-comments',
+            label: 'nav.messaging',
+            href: 'pages/messaging.html'
+          },
+          {
             id: 'profile',
             icon: 'fa-user',
             label: 'nav.profile',
@@ -132,12 +144,24 @@ LMS.Navigation = {
             icon: 'fa-chart-line',
             label: 'nav.quizResults',
             href: 'pages/teacher-quiz-results.html'
+          },
+          {
+            id: 'quiz-templates',
+            icon: 'fa-clipboard-check',
+            label: 'nav.quizTemplates',
+            href: 'pages/quiz-templates.html'
           }
         ]
       },
       {
         section: 'nav.sections.account',
         items: [
+          {
+            id: 'messaging',
+            icon: 'fa-comments',
+            label: 'nav.messaging',
+            href: 'pages/messaging.html'
+          },
           {
             id: 'profile',
             icon: 'fa-user',
@@ -225,8 +249,25 @@ LMS.Navigation = {
         ]
       },
       {
+        section: 'nav.sections.assessment',
+        items: [
+          {
+            id: 'quiz-templates',
+            icon: 'fa-clipboard-check',
+            label: 'nav.quizTemplates',
+            href: 'pages/quiz-templates.html'
+          }
+        ]
+      },
+      {
         section: 'nav.sections.account',
         items: [
+          {
+            id: 'messaging',
+            icon: 'fa-comments',
+            label: 'nav.messaging',
+            href: 'pages/messaging.html'
+          },
           {
             id: 'profile',
             icon: 'fa-user',
