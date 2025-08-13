@@ -156,6 +156,7 @@
         .permissions-table td.role-cell {
             text-align: center;
             vertical-align: middle;
+            width: 160px;
         }
         
         .permissions-table td.role-cell .checkbox,
@@ -163,12 +164,24 @@
             display: inline-flex;
             margin: 0 auto;
             justify-content: center;
+            align-items: center;
         }
         
         /* Fix checkbox position */
         .permissions-table .checkbox {
             position: relative;
             cursor: pointer;
+        }
+        
+        /* Ensure consistent width for role columns */
+        .permissions-table th:nth-child(2),
+        .permissions-table th:nth-child(3),
+        .permissions-table th:nth-child(4),
+        .permissions-table td:nth-child(2),
+        .permissions-table td:nth-child(3),
+        .permissions-table td:nth-child(4) {
+            width: 160px;
+            text-align: center;
         }
         
         @media (max-width: 768px) {
@@ -286,101 +299,35 @@
     <script src="../assets/js/auth.js"></script>
     <script src="../assets/js/api.js"></script>
     <script>
-        // Permission features structure
-        const features = [
-            {
-                id: 'dashboard',
-                name: 'Dashboard',
-                icon: 'fas fa-tachometer-alt',
-                description: 'View system overview and statistics',
-                permissions: { admin: true, teacher: true, student: true },
-                subfeatures: [
-                    { id: 'dashboard.stats', name: 'View Statistics', permissions: { admin: true, teacher: true, student: true } },
-                    { id: 'dashboard.export', name: 'Export Reports', permissions: { admin: true, teacher: true, student: false } }
-                ]
-            },
-            {
-                id: 'users',
-                name: 'User Management',
-                icon: 'fas fa-users',
-                description: 'Manage system users',
-                permissions: { admin: true, teacher: false, student: false },
-                subfeatures: [
-                    { id: 'users.view', name: 'View Users', permissions: { admin: true, teacher: false, student: false } },
-                    { id: 'users.create', name: 'Create User', permissions: { admin: true, teacher: false, student: false } },
-                    { id: 'users.edit', name: 'Edit User', permissions: { admin: true, teacher: false, student: false } },
-                    { id: 'users.delete', name: 'Delete User', permissions: { admin: true, teacher: false, student: false } }
-                ]
-            },
-            {
-                id: 'courses',
-                name: 'Course Management',
-                icon: 'fas fa-book',
-                description: 'Manage courses and lessons',
-                permissions: { admin: true, teacher: true, student: false },
-                subfeatures: [
-                    { id: 'courses.view', name: 'View Courses', permissions: { admin: true, teacher: true, student: true } },
-                    { id: 'courses.create', name: 'Create Course', permissions: { admin: true, teacher: true, student: false } },
-                    { id: 'courses.edit', name: 'Edit Course', permissions: { admin: true, teacher: true, student: false } },
-                    { id: 'courses.delete', name: 'Delete Course', permissions: { admin: true, teacher: true, student: false } },
-                    { id: 'courses.enroll', name: 'Enroll in Course', permissions: { admin: true, teacher: false, student: true } }
-                ]
-            },
-            {
-                id: 'quizzes',
-                name: 'Quiz Management',
-                icon: 'fas fa-question-circle',
-                description: 'Create and manage quizzes',
-                permissions: { admin: true, teacher: true, student: false },
-                subfeatures: [
-                    { id: 'quizzes.view', name: 'View Quizzes', permissions: { admin: true, teacher: true, student: true } },
-                    { id: 'quizzes.create', name: 'Create Quiz', permissions: { admin: true, teacher: true, student: false } },
-                    { id: 'quizzes.edit', name: 'Edit Quiz', permissions: { admin: true, teacher: true, student: false } },
-                    { id: 'quizzes.delete', name: 'Delete Quiz', permissions: { admin: true, teacher: true, student: false } },
-                    { id: 'quizzes.take', name: 'Take Quiz', permissions: { admin: true, teacher: true, student: true } },
-                    { id: 'quizzes.results', name: 'View Results', permissions: { admin: true, teacher: true, student: true } }
-                ]
-            },
-            {
-                id: 'classes',
-                name: 'Class Management',
-                icon: 'fas fa-chalkboard-teacher',
-                description: 'Manage classes and enrollments',
-                permissions: { admin: true, teacher: true, student: false },
-                subfeatures: [
-                    { id: 'classes.view', name: 'View Classes', permissions: { admin: true, teacher: true, student: true } },
-                    { id: 'classes.create', name: 'Create Class', permissions: { admin: true, teacher: false, student: false } },
-                    { id: 'classes.manage', name: 'Manage Students', permissions: { admin: true, teacher: true, student: false } }
-                ]
-            },
-            {
-                id: 'reports',
-                name: 'Reports & Analytics',
-                icon: 'fas fa-chart-bar',
-                description: 'View system reports and analytics',
-                permissions: { admin: true, teacher: true, student: false },
-                subfeatures: [
-                    { id: 'reports.view', name: 'View Reports', permissions: { admin: true, teacher: true, student: false } },
-                    { id: 'reports.export', name: 'Export Reports', permissions: { admin: true, teacher: true, student: false } }
-                ]
-            }
-        ];
+        // Features data
+        let features = [];
 
         // Initialize page
-        function init() {
-            // Initialize language first
-            LMS.LanguageManager.init();
-            
-            // Render table
-            renderPermissionsTable();
-            updateSelectAllCheckboxes();
-            updateStatistics();
-            
-            // Load saved permissions from localStorage
-            loadSavedPermissions();
-            
-            // Update language translations
-            LMS.LanguageManager.updateUI();
+        async function init() {
+            try {
+                // Load permissions data
+                const response = await fetch('../data/permissions.json');
+                const data = await response.json();
+                features = data.features;
+                
+                // Initialize language first
+                LMS.LanguageManager.init();
+                
+                // Render table
+                renderPermissionsTable();
+                updateSelectAllCheckboxes();
+                updateStatistics();
+                
+                // Load saved permissions from localStorage
+                await loadSavedPermissions();
+                
+                // Update language translations
+                setTimeout(() => {
+                    LMS.LanguageManager.updateUI();
+                }, 100);
+            } catch (error) {
+                console.error('Error initializing permissions:', error);
+            }
         }
 
         // Render permissions table
@@ -399,8 +346,8 @@
                                 <i class="fas fa-chevron-right"></i>
                             </button>` : '<span style="width: 28px;"></span>'}
                             <div>
-                                <strong data-translate="permissions.features.${feature.id}.name">${feature.name}</strong>
-                                <div class="feature-description" data-translate="permissions.features.${feature.id}.description">${feature.description}</div>
+                                <strong>${LMS.t(`permissions.features.${feature.id}.name`) || feature.name}</strong>
+                                <div class="feature-description">${LMS.t(`permissions.features.${feature.id}.description`) || feature.description}</div>
                             </div>
                         </div>
                     </td>
@@ -447,7 +394,7 @@
                             <td>
                                 <div class="feature-name">
                                     <i class="fas fa-angle-right" style="margin-right: var(--spacing-2); color: var(--text-secondary);"></i>
-                                    <span data-translate="permissions.features.${subfeature.id}.name">${subfeature.name}</span>
+                                    <span>${LMS.t(`permissions.features.${subfeature.id}.name`) || subfeature.name}</span>
                                 </div>
                             </td>
                             <td class="role-cell">
@@ -612,9 +559,9 @@
         }
 
         // Load saved permissions
-        function loadSavedPermissions() {
+        async function loadSavedPermissions() {
             const saved = localStorage.getItem('lms_permissions');
-            if (saved) {
+            if (saved && features.length > 0) {
                 const permissions = JSON.parse(saved);
                 
                 features.forEach(feature => {
@@ -633,11 +580,6 @@
                 renderPermissionsTable();
                 updateSelectAllCheckboxes();
                 updateStatistics();
-                
-                // Update translations after re-rendering
-                if (LMS.LanguageManager) {
-                    LMS.LanguageManager.updateUI();
-                }
             }
         }
 
