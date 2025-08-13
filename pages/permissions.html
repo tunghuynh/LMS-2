@@ -165,38 +165,10 @@
             justify-content: center;
         }
         
-        /* Fix checkbox display issue */
-        .permissions-table .checkbox input[type="checkbox"] {
-            position: absolute;
-            opacity: 0;
-        }
-        
-        .permissions-table .checkbox__mark {
-            display: inline-block;
-            width: 18px;
-            height: 18px;
-            border: 2px solid var(--border-color);
-            border-radius: var(--radius-sm);
-            background-color: var(--bg-base);
+        /* Fix checkbox position */
+        .permissions-table .checkbox {
             position: relative;
-            transition: all var(--transition-fast);
-        }
-        
-        .permissions-table .checkbox input:checked + .checkbox__mark {
-            background-color: var(--color-primary);
-            border-color: var(--color-primary);
-        }
-        
-        .permissions-table .checkbox input:checked + .checkbox__mark::after {
-            content: '';
-            position: absolute;
-            left: 5px;
-            top: 2px;
-            width: 5px;
-            height: 10px;
-            border: solid white;
-            border-width: 0 2px 2px 0;
-            transform: rotate(45deg);
+            cursor: pointer;
         }
         
         @media (max-width: 768px) {
@@ -313,7 +285,6 @@
     <script src="../assets/js/global.js"></script>
     <script src="../assets/js/auth.js"></script>
     <script src="../assets/js/api.js"></script>
-    <script src="../assets/js/language.js"></script>
     <script>
         // Permission features structure
         const features = [
@@ -741,7 +712,10 @@
         }
 
         // Initialize on page load
-        document.addEventListener('DOMContentLoaded', init);
+        document.addEventListener('DOMContentLoaded', () => {
+            // Wait for all scripts to load
+            setTimeout(init, 100);
+        });
     </script>
 </body>
 </html>
