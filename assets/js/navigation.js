@@ -31,7 +31,7 @@ LMS.Navigation = {
             id: 'my-courses',
             icon: 'fa-book-open',
             label: 'nav.myCourses',
-            href: 'pages/my-courses.html'
+            href: 'pages/courses.html'
           },
           {
             id: 'progress',

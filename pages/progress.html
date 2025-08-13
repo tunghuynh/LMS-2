@@ -704,7 +704,7 @@
 
             // Load translations
             await LMS.LanguageManager.init();
-            LMS.LanguageManager.updatePageTranslations();
+            LMS.LanguageManager.updateUI();
             
             // Load data
             await loadData();
@@ -1051,6 +1051,11 @@ Congratulations on completing this course!`;
         // Generate user achievements
         function generateUserAchievements() {
             const achievements = [];
+            
+            // Check if userProgress is loaded
+            if (!userProgress || !userProgress.enrollments) {
+                return achievements;
+            }
             
             // First Course Enrollment
             if (userProgress.enrollments.length >= 1) {

@@ -10,7 +10,6 @@
     <link rel="stylesheet" href="../assets/css/layout.css">
     <link rel="stylesheet" href="../assets/css/components.css">
     <link rel="stylesheet" href="../assets/css/utilities.css">
-    <link rel="stylesheet" href="../assets/css/quiz-styles.css">
     <!-- Font Awesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <!-- Configuration -->
@@ -486,7 +485,7 @@
 
             // Load translations
             await LMS.LanguageManager.init();
-            LMS.LanguageManager.updatePageTranslations();
+            LMS.LanguageManager.updateUI();
             
             // Get quiz ID from URL
             const urlParams = new URLSearchParams(window.location.search);
@@ -1005,6 +1004,11 @@ Date: ${new Date().toLocaleDateString()}
         }
 
         function retakeQuiz() {
+            if (!quizData || !currentUser) {
+                LMS.showToast('Error: Quiz data not loaded', 'error');
+                return;
+            }
+            
             if (confirm(LMS.t('quiz.retakeConfirm'))) {
                 // Clear current attempt data
                 localStorage.removeItem(`quiz_attempt_${quizData.id}_${currentUser.id}`);
