@@ -115,9 +115,9 @@
         }
         
         .filters-section {
-            display: flex;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
             gap: var(--spacing-4);
-            flex-wrap: wrap;
             align-items: center;
         }
         
@@ -843,79 +843,10 @@
             alert(courseId ? 'Course updated successfully!' : 'Course created successfully!');
         }
 
-        // Setup dropdowns
-        document.querySelectorAll('.dropdown').forEach(dropdown => {
-            const trigger = dropdown.querySelector('.dropdown__trigger');
-            trigger.addEventListener('click', function(e) {
-                e.stopPropagation();
-                dropdown.classList.toggle('active');
-            });
-        });
-
-        // Category filter dropdown
-        document.getElementById('categoryList').addEventListener('click', function(e) {
-            const item = e.target.closest('.dropdown__item');
-            if (item) {
-                currentCategoryFilter = item.dataset.value;
-                document.getElementById('categoryFilterText').textContent = item.textContent;
-                
-                this.querySelectorAll('.dropdown__item').forEach(i => {
-                    i.classList.remove('dropdown__item--selected');
-                });
-                item.classList.add('dropdown__item--selected');
-                
-                item.closest('.dropdown').classList.remove('active');
-                applyFilters();
-            }
-        });
-
-        // Status filter dropdown
-        document.querySelectorAll('.dropdown').forEach(dropdown => {
-            dropdown.addEventListener('click', function(e) {
-                const item = e.target.closest('.dropdown__item');
-                if (!item) return;
-                
-                const list = item.parentElement;
-                const trigger = dropdown.querySelector('.dropdown__trigger span:first-child');
-                
-                if (list.parentElement.previousElementSibling === trigger.parentElement) {
-                    if (trigger.id === 'statusFilterText') {
-                        currentStatusFilter = item.dataset.value;
-                        trigger.textContent = item.textContent;
-                    } else if (trigger.id === 'sortText') {
-                        currentSort = item.dataset.value;
-                        trigger.textContent = item.textContent;
-                    }
-                    
-                    list.querySelectorAll('.dropdown__item').forEach(i => {
-                        i.classList.remove('dropdown__item--selected');
-                    });
-                    item.classList.add('dropdown__item--selected');
-                    
-                    dropdown.classList.remove('active');
-                    applyFilters();
-                }
-            });
-        });
-
-        // Category select dropdown
-        document.getElementById('categorySelectList').addEventListener('click', function(e) {
-            const item = e.target.closest('.dropdown__item');
-            if (item) {
-                document.getElementById('categoryId').value = item.dataset.value;
-                document.getElementById('selectedCategory').textContent = item.dataset.name;
-                document.getElementById('categoryDropdown').classList.remove('active');
-            }
-        });
-
-        // Close dropdowns on outside click
-        document.addEventListener('click', function(e) {
-            if (!e.target.closest('.dropdown')) {
-                document.querySelectorAll('.dropdown.active').forEach(dropdown => {
-                    dropdown.classList.remove('active');
-                });
-            }
-        });
+        // Initialize all dropdowns
+        setTimeout(() => {
+            LMS.Dropdown.initAll();
+        }, 100);
 
         // Enrollment functions
         function getEnrollmentStatus(courseId) {

@@ -142,7 +142,9 @@
                                 <div style="display: grid; grid-template-columns: 2fr 1fr; gap: var(--spacing-6);">
                                     <div>
                                         <h4 data-translate="analytics.enrollmentTrends">Enrollment Trends</h4>
-                                        <canvas id="enrollmentTrendsChart" height="200"></canvas>
+                                        <div style="position: relative; height: 300px;">
+                                            <canvas id="enrollmentTrendsChart"></canvas>
+                                        </div>
                                     </div>
                                     <div>
                                         <h4 data-translate="analytics.trendsSummary">Trends Summary</h4>
@@ -169,11 +171,15 @@
                                 <div style="display: grid; grid-template-columns: 1fr 1fr; gap: var(--spacing-6);">
                                     <div>
                                         <h4 data-translate="analytics.completionRates">Completion Rates by Course</h4>
-                                        <canvas id="completionRatesChart" height="300"></canvas>
+                                        <div style="position: relative; height: 300px;">
+                                            <canvas id="completionRatesChart"></canvas>
+                                        </div>
                                     </div>
                                     <div>
                                         <h4 data-translate="analytics.overallCompletion">Overall Completion Statistics</h4>
-                                        <canvas id="overallCompletionChart" width="300" height="300"></canvas>
+                                        <div style="position: relative; height: 300px; max-width: 300px; margin: 0 auto;">
+                                            <canvas id="overallCompletionChart"></canvas>
+                                        </div>
                                         <div class="analytics-stats" style="margin-top: var(--spacing-4);">
                                             <div class="analytics-stat">
                                                 <div class="analytics-stat__value text-success" id="completedRate">0%</div>
@@ -197,7 +203,9 @@
                                 <div style="display: grid; grid-template-columns: 2fr 1fr; gap: var(--spacing-6);">
                                     <div>
                                         <h4 data-translate="analytics.dropoffAnalysis">Drop-off Analysis</h4>
-                                        <canvas id="dropoffChart" height="200"></canvas>
+                                        <div style="position: relative; height: 300px;">
+                                            <canvas id="dropoffChart"></canvas>
+                                        </div>
                                     </div>
                                     <div>
                                         <h4 data-translate="analytics.dropoffInsights">Key Insights</h4>

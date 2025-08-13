@@ -691,6 +691,13 @@ document.addEventListener('DOMContentLoaded', async () => {
   // Initialize all dropdowns on page
   LMS.Dropdown.initAll();
   
+  // Global image error handler
+  document.addEventListener('error', (e) => {
+    if (e.target.tagName === 'IMG') {
+      e.target.src = '../assets/images/default-avatar.svg';
+    }
+  }, true);
+  
   // Dispatch ready event
   window.dispatchEvent(new CustomEvent('lmsReady'));
 });

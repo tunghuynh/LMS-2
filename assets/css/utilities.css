@@ -87,6 +87,32 @@
   grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
 }
 
+.grid--2-cols {
+  grid-template-columns: repeat(2, 1fr);
+}
+
+.grid--3-cols {
+  grid-template-columns: repeat(3, 1fr);
+}
+
+.grid--4-cols {
+  grid-template-columns: repeat(4, 1fr);
+}
+
+@media (max-width: 1024px) {
+  .grid--4-cols {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 768px) {
+  .grid--4-cols,
+  .grid--3-cols,
+  .grid--2-cols {
+    grid-template-columns: 1fr;
+  }
+}
+
 .grid-2fr-1fr {
   grid-template-columns: 2fr 1fr;
 }
