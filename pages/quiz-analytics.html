@@ -228,9 +228,7 @@
             currentUser = LMS.Auth.getUser();
             
             // Check authentication - teachers and admins only
-            if (!LMS.Auth.isAuthenticated() || !currentUser || 
-                (currentUser.role !== 'teacher' && currentUser.role !== 'admin')) {
-                window.location.href = '../index.html';
+            if (!LMS.AccessControl.checkRole(['teacher', 'admin'])) {
                 return;
             }
 

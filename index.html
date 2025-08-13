@@ -778,7 +778,7 @@
         async function init() {
             // Load translations
             await LMS.LanguageManager.init();
-            LMS.LanguageManager.updatePageTranslations();
+            LMS.LanguageManager.updateUI();
             
             // Initialize theme
             LMS.ThemeManager.init();
@@ -794,7 +794,7 @@
                 const currentLang = LMS.LanguageManager.getCurrentLanguage();
                 const newLang = currentLang === 'en' ? 'vi' : 'en';
                 LMS.LanguageManager.setLanguage(newLang);
-                LMS.LanguageManager.updatePageTranslations();
+                LMS.LanguageManager.updateUI();
             });
             
             updateThemeIcon();

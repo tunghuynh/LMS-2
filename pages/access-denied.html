@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Access Denied - LMS</title>
+    <!-- Core CSS -->
+    <link rel="stylesheet" href="../assets/css/global.css">
+    <link rel="stylesheet" href="../assets/css/themes.css">
+    <link rel="stylesheet" href="../assets/css/layout.css">
+    <link rel="stylesheet" href="../assets/css/components.css">
+    <link rel="stylesheet" href="../assets/css/utilities.css">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <style>
+        body {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            background: var(--bg-base);
+        }
+        
+        .error-container {
+            text-align: center;
+            padding: var(--spacing-8);
+            max-width: 600px;
+            width: 100%;
+        }
+        
+        .error-icon {
+            width: 120px;
+            height: 120px;
+            margin: 0 auto var(--spacing-6);
+            background: var(--color-danger-lighter);
+            border-radius: var(--radius-full);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 3rem;
+            color: var(--color-danger);
+        }
+        
+        .error-code {
+            font-size: 4rem;
+            font-weight: var(--font-weight-bold);
+            color: var(--color-danger);
+            margin-bottom: var(--spacing-3);
+        }
+        
+        .error-title {
+            font-size: var(--font-size-2xl);
+            font-weight: var(--font-weight-bold);
+            margin-bottom: var(--spacing-3);
+            color: var(--text-primary);
+        }
+        
+        .error-message {
+            font-size: var(--font-size-lg);
+            color: var(--text-secondary);
+            margin-bottom: var(--spacing-6);
+            line-height: 1.6;
+        }
+        
+        .error-details {
+            background: var(--bg-surface);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-base);
+            padding: var(--spacing-4);
+            margin-bottom: var(--spacing-6);
+            text-align: left;
+        }
+        
+        .error-details__item {
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-3);
+            padding: var(--spacing-2) 0;
+            color: var(--text-secondary);
+            font-size: var(--font-size-sm);
+        }
+        
+        .error-details__item i {
+            color: var(--color-danger);
+            width: 20px;
+        }
+        
+        .error-actions {
+            display: flex;
+            gap: var(--spacing-3);
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+        
+        @media (max-width: 768px) {
+            .error-container {
+                padding: var(--spacing-4);
+            }
+            
+            .error-code {
+                font-size: 3rem;
+            }
+            
+            .error-actions {
+                flex-direction: column;
+            }
+            
+            .error-actions .btn {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="error-container">
+        <div class="error-icon">
+            <i class="fas fa-lock"></i>
+        </div>
+        
+        <div class="error-code">403</div>
+        
+        <h1 class="error-title" data-translate="error.accessDeniedTitle">Access Denied</h1>
+        
+        <p class="error-message" data-translate="error.accessDeniedMessage">
+            Sorry, you don't have permission to access this page. This area is restricted to authorized users only.
+        </p>
+        
+        <div class="error-details">
+            <div class="error-details__item">
+                <i class="fas fa-info-circle"></i>
+                <span id="errorReason" data-translate="error.accessDeniedReason">
+                    You need appropriate permissions to view this content.
+                </span>
+            </div>
+            <div class="error-details__item">
+                <i class="fas fa-user"></i>
+                <span>
+                    <span data-translate="error.currentRole">Current Role</span>: 
+                    <strong id="userRole">Guest</strong>
+                </span>
+            </div>
+            <div class="error-details__item">
+                <i class="fas fa-link"></i>
+                <span>
+                    <span data-translate="error.requestedPage">Requested Page</span>: 
+                    <code id="requestedPage">Unknown</code>
+                </span>
+            </div>
+        </div>
+        
+        <div class="error-actions">
+            <button class="btn btn--primary" onclick="goHome()">
+                <i class="fas fa-home"></i>
+                <span data-translate="error.goHome">Go to Home</span>
+            </button>
+            <button class="btn btn--secondary" onclick="goBack()">
+                <i class="fas fa-arrow-left"></i>
+                <span data-translate="error.goBack">Go Back</span>
+            </button>
+            <button class="btn btn--ghost" onclick="contactSupport()">
+                <i class="fas fa-headset"></i>
+                <span data-translate="error.contactSupport">Contact Support</span>
+            </button>
+        </div>
+    </div>
+
+    <!-- Core JavaScript -->
+    <script src="../config.js"></script>
+    <script src="../assets/js/global.js"></script>
+    <script>
+        // Initialize page
+        async function init() {
+            // Initialize language
+            await LMS.LanguageManager.init();
+            LMS.LanguageManager.updateUI();
+            
+            // Get user info
+            const currentUser = JSON.parse(localStorage.getItem('currentUser'));
+            if (currentUser) {
+                document.getElementById('userRole').textContent = currentUser.role || 'Guest';
+            }
+            
+            // Get requested page from URL params or referrer
+            const urlParams = new URLSearchParams(window.location.search);
+            const requestedPage = urlParams.get('page') || document.referrer || 'Unknown';
+            document.getElementById('requestedPage').textContent = requestedPage.split('/').pop() || 'Unknown';
+            
+            // Get specific error reason if provided
+            const reason = urlParams.get('reason');
+            if (reason) {
+                const reasonElement = document.getElementById('errorReason');
+                switch (reason) {
+                    case 'role':
+                        reasonElement.setAttribute('data-translate', 'error.wrongRole');
+                        reasonElement.textContent = 'This page is restricted to specific user roles.';
+                        break;
+                    case 'authentication':
+                        reasonElement.setAttribute('data-translate', 'error.notAuthenticated');
+                        reasonElement.textContent = 'You must be logged in to access this page.';
+                        break;
+                    case 'permission':
+                        reasonElement.setAttribute('data-translate', 'error.noPermission');
+                        reasonElement.textContent = 'You don\'t have the required permissions for this action.';
+                        break;
+                }
+                LMS.LanguageManager.updateUI();
+            }
+        }
+        
+        // Navigation functions
+        function goHome() {
+            const currentUser = JSON.parse(localStorage.getItem('currentUser'));
+            if (currentUser) {
+                // Go to role-specific dashboard
+                switch (currentUser.role) {
+                    case 'student':
+                        window.location.href = 'dashboard-student.html';
+                        break;
+                    case 'teacher':
+                        window.location.href = 'dashboard-teacher.html';
+                        break;
+                    case 'admin':
+                        window.location.href = 'dashboard-admin.html';
+                        break;
+                    default:
+                        window.location.href = '../index.html';
+                }
+            } else {
+                window.location.href = '../index.html';
+            }
+        }
+        
+        function goBack() {
+            if (document.referrer && !document.referrer.includes('access-denied.html')) {
+                window.history.back();
+            } else {
+                goHome();
+            }
+        }
+        
+        function contactSupport() {
+            // In a real app, this would open a support ticket or chat
+            LMS.showToast('Support feature coming soon!', 'info');
+        }
+        
+        // Initialize on load
+        document.addEventListener('DOMContentLoaded', init);
+    </script>
+</body>
+</html>

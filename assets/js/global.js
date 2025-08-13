@@ -709,5 +709,51 @@ document.addEventListener('click', () => {
   });
 });
 
+/* ==========================================================================
+   Access Control Utilities
+   ========================================================================== */
+
+LMS.AccessControl = {
+  // Check if user has required role(s)
+  checkRole(requiredRoles) {
+    const currentUser = JSON.parse(localStorage.getItem('currentUser'));
+    
+    if (!currentUser) {
+      this.redirectToAccessDenied('authentication');
+      return false;
+    }
+    
+    // Support single role string or array of roles
+    const roles = Array.isArray(requiredRoles) ? requiredRoles : [requiredRoles];
+    
+    if (roles.length > 0 && !roles.includes(currentUser.role)) {
+      this.redirectToAccessDenied('role');
+      return false;
+    }
+    
+    return true;
+  },
+  
+  // Check if user has specific permission
+  checkPermission(permission) {
+    const currentUser = JSON.parse(localStorage.getItem('currentUser'));
+    
+    if (!currentUser) {
+      this.redirectToAccessDenied('authentication');
+      return false;
+    }
+    
+    // In real app, would check against permissions system
+    // For now, just return true if logged in
+    return true;
+  },
+  
+  // Redirect to access denied page
+  redirectToAccessDenied(reason = 'permission') {
+    const currentPage = window.location.pathname.split('/').pop();
+    window.location.href = `access-denied.html?reason=${reason}&page=${currentPage}`;
+  }
+};
+
 // Export for use in other modules
 window.LMS = LMS;

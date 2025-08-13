@@ -1055,7 +1055,18 @@
     "accessDenied": "Access denied",
     "loadData": "Failed to load data",
     "backToCourse": "Back to Course",
-    "templateSaveFailed": "Failed to save template. Please try again."
+    "templateSaveFailed": "Failed to save template. Please try again.",
+    "accessDeniedTitle": "Access Denied",
+    "accessDeniedMessage": "Sorry, you don't have permission to access this page. This area is restricted to authorized users only.",
+    "accessDeniedReason": "You need appropriate permissions to view this content.",
+    "wrongRole": "This page is restricted to specific user roles.",
+    "notAuthenticated": "You must be logged in to access this page.",
+    "noPermission": "You don't have the required permissions for this action.",
+    "currentRole": "Current Role",
+    "requestedPage": "Requested Page",
+    "goHome": "Go to Home",
+    "goBack": "Go Back",
+    "contactSupport": "Contact Support"
   },
   
   "pagination": {

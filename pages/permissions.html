@@ -305,6 +305,11 @@
         // Initialize page
         async function init() {
             try {
+                // Check authentication - admin only
+                if (!LMS.AccessControl.checkRole('admin')) {
+                    return;
+                }
+                
                 // Load permissions data
                 const response = await fetch('../data/permissions.json');
                 const data = await response.json();

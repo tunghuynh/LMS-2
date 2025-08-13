@@ -1053,7 +1053,18 @@
     "accessDenied": "Truy cập bị từ chối",
     "loadData": "Không thể tải dữ liệu",
     "backToCourse": "Quay lại khóa học",
-    "templateSaveFailed": "Không thể lưu mẫu. Vui lòng thử lại."
+    "templateSaveFailed": "Không thể lưu mẫu. Vui lòng thử lại.",
+    "accessDeniedTitle": "Truy cập bị từ chối",
+    "accessDeniedMessage": "Xin lỗi, bạn không có quyền truy cập trang này. Khu vực này chỉ dành cho người dùng được ủy quyền.",
+    "accessDeniedReason": "Bạn cần có quyền phù hợp để xem nội dung này.",
+    "wrongRole": "Trang này chỉ dành cho các vai trò người dùng cụ thể.",
+    "notAuthenticated": "Bạn phải đăng nhập để truy cập trang này.",
+    "noPermission": "Bạn không có quyền cần thiết cho hành động này.",
+    "currentRole": "Vai trò hiện tại",
+    "requestedPage": "Trang yêu cầu",
+    "goHome": "Về trang chủ",
+    "goBack": "Quay lại",
+    "contactSupport": "Liên hệ hỗ trợ"
   },
   
   "pagination": {
