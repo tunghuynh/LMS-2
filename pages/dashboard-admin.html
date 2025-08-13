@@ -1,0 +1,733 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard - LMS</title>
+    <!-- Core CSS -->
+    <link rel="stylesheet" href="../assets/css/global.css">
+    <link rel="stylesheet" href="../assets/css/themes.css">
+    <link rel="stylesheet" href="../assets/css/layout.css">
+    <link rel="stylesheet" href="../assets/css/components.css">
+    <link rel="stylesheet" href="../assets/css/utilities.css">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        .stat-card {
+            background: var(--bg-surface);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-lg);
+            padding: var(--spacing-5);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .stat-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 80px;
+            height: 80px;
+            background: var(--color-primary);
+            opacity: 0.1;
+            border-radius: 50%;
+            transform: translate(20px, -20px);
+        }
+        
+        .stat-card__header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: var(--spacing-3);
+        }
+        
+        .stat-card__icon {
+            width: 48px;
+            height: 48px;
+            background: var(--color-primary-lighter);
+            border-radius: var(--radius-base);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--color-primary);
+        }
+        
+        .stat-card__value {
+            font-size: 2.5rem;
+            font-weight: var(--font-weight-bold);
+            margin: var(--spacing-2) 0;
+        }
+        
+        .stat-card__label {
+            color: var(--text-secondary);
+            font-size: var(--font-size-sm);
+        }
+        
+        .stat-card__trend {
+            position: absolute;
+            bottom: var(--spacing-3);
+            right: var(--spacing-3);
+            font-size: var(--font-size-sm);
+        }
+        
+        .stat-card__trend--up {
+            color: var(--color-success);
+        }
+        
+        .stat-card__trend--down {
+            color: var(--color-danger);
+        }
+        
+        .system-health-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: var(--spacing-3);
+            border-bottom: 1px solid var(--border-color);
+        }
+        
+        .system-health-item:last-child {
+            border-bottom: none;
+        }
+        
+        .health-indicator {
+            width: 12px;
+            height: 12px;
+            border-radius: var(--radius-full);
+            margin-right: var(--spacing-2);
+            display: inline-block;
+        }
+        
+        .health-indicator--good {
+            background: var(--color-success);
+        }
+        
+        .health-indicator--warning {
+            background: var(--color-warning);
+        }
+        
+        .health-indicator--critical {
+            background: var(--color-danger);
+        }
+        
+        .activity-log-item {
+            display: flex;
+            align-items: flex-start;
+            gap: var(--spacing-3);
+            padding: var(--spacing-3);
+            border-bottom: 1px solid var(--border-color);
+        }
+        
+        .activity-log-item:last-child {
+            border-bottom: none;
+        }
+        
+        .activity-icon {
+            width: 36px;
+            height: 36px;
+            border-radius: var(--radius-full);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+            font-size: var(--font-size-sm);
+        }
+        
+        .alert-item {
+            padding: var(--spacing-3);
+            background: var(--bg-base);
+            border-radius: var(--radius-base);
+            margin-bottom: var(--spacing-3);
+            border-left: 4px solid var(--color-warning);
+        }
+        
+        .course-rank-item {
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-3);
+            padding: var(--spacing-3);
+            background: var(--bg-base);
+            border-radius: var(--radius-base);
+            margin-bottom: var(--spacing-2);
+        }
+        
+        .rank-number {
+            width: 32px;
+            height: 32px;
+            background: var(--color-primary);
+            color: white;
+            border-radius: var(--radius-full);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: var(--font-weight-bold);
+            font-size: var(--font-size-sm);
+        }
+    </style>
+</head>
+<body>
+    <div class="page-container">
+        <!-- Welcome Header -->
+        <div class="page-header">
+            <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: var(--spacing-4);">
+                <div>
+                    <h1 class="page-title">
+                        <span data-translate="dashboard.systemOverview">System Overview</span>
+                    </h1>
+                    <p class="page-subtitle">
+                        <span data-translate="dashboard.welcome">Welcome back</span>, 
+                        <span id="userName">Administrator</span>
+                    </p>
+                </div>
+                <div style="display: flex; gap: var(--spacing-3);">
+                    <button class="btn btn--secondary" onclick="downloadReport()">
+                        <i class="fas fa-download"></i>
+                        <span data-translate="dashboard.downloadReport">Download Report</span>
+                    </button>
+                    <button class="btn btn--primary" onclick="viewSystemSettings()">
+                        <i class="fas fa-cog"></i>
+                        <span data-translate="dashboard.systemSettings">System Settings</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <div class="page-content">
+            <!-- Key Metrics -->
+            <div class="grid grid--4-cols" style="gap: var(--spacing-4); margin-bottom: var(--spacing-6);">
+                <div class="stat-card">
+                    <div class="stat-card__header">
+                        <div>
+                            <div class="stat-card__value" id="totalUsers">0</div>
+                            <div class="stat-card__label" data-translate="dashboard.totalUsers">Total Users</div>
+                        </div>
+                        <div class="stat-card__icon">
+                            <i class="fas fa-users"></i>
+                        </div>
+                    </div>
+                    <div class="stat-card__trend stat-card__trend--up">
+                        <i class="fas fa-arrow-up"></i> 15% this month
+                    </div>
+                </div>
+                
+                <div class="stat-card">
+                    <div class="stat-card__header">
+                        <div>
+                            <div class="stat-card__value" id="activeCourses">0</div>
+                            <div class="stat-card__label" data-translate="dashboard.totalCourses">Total Courses</div>
+                        </div>
+                        <div class="stat-card__icon">
+                            <i class="fas fa-book"></i>
+                        </div>
+                    </div>
+                    <div class="stat-card__trend stat-card__trend--up">
+                        <i class="fas fa-arrow-up"></i> 8 new this week
+                    </div>
+                </div>
+                
+                <div class="stat-card">
+                    <div class="stat-card__header">
+                        <div>
+                            <div class="stat-card__value" id="revenue">$0</div>
+                            <div class="stat-card__label" data-translate="dashboard.monthlyRevenue">Monthly Revenue</div>
+                        </div>
+                        <div class="stat-card__icon">
+                            <i class="fas fa-dollar-sign"></i>
+                        </div>
+                    </div>
+                    <div class="stat-card__trend stat-card__trend--up">
+                        <i class="fas fa-arrow-up"></i> 23% growth
+                    </div>
+                </div>
+                
+                <div class="stat-card">
+                    <div class="stat-card__header">
+                        <div>
+                            <div class="stat-card__value" id="systemUptime">0%</div>
+                            <div class="stat-card__label" data-translate="dashboard.systemUptime">System Uptime</div>
+                        </div>
+                        <div class="stat-card__icon">
+                            <i class="fas fa-server"></i>
+                        </div>
+                    </div>
+                    <div class="stat-card__trend">
+                        <span class="text-success">All systems operational</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Main Dashboard Grid -->
+            <div class="grid" style="grid-template-columns: 2fr 1fr; gap: var(--spacing-6);">
+                <!-- Left Column -->
+                <div>
+                    <!-- User Growth Chart -->
+                    <div class="card" style="margin-bottom: var(--spacing-6);">
+                        <div class="card__header">
+                            <div style="display: flex; justify-content: space-between; align-items: center;">
+                                <h3 data-translate="dashboard.userGrowth">User Growth</h3>
+                                <div style="display: flex; gap: var(--spacing-2);">
+                                    <button class="btn btn--ghost btn--small" onclick="changeTimeRange('week')">Week</button>
+                                    <button class="btn btn--ghost btn--small btn--active" onclick="changeTimeRange('month')">Month</button>
+                                    <button class="btn btn--ghost btn--small" onclick="changeTimeRange('year')">Year</button>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="card__body">
+                            <div style="position: relative; height: 300px;">
+                                <canvas id="userGrowthChart"></canvas>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- User Distribution -->
+                    <div class="grid grid--2-cols" style="gap: var(--spacing-4); margin-bottom: var(--spacing-6);">
+                        <div class="card">
+                            <div class="card__header">
+                                <h3 data-translate="dashboard.usersByRole">Users by Role</h3>
+                            </div>
+                            <div class="card__body">
+                                <div style="position: relative; height: 250px;">
+                                    <canvas id="userRoleChart"></canvas>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="card">
+                            <div class="card__header">
+                                <h3 data-translate="dashboard.courseCategories">Course Categories</h3>
+                            </div>
+                            <div class="card__body">
+                                <div style="position: relative; height: 250px;">
+                                    <canvas id="courseCategoryChart"></canvas>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Recent Activity Log -->
+                    <div class="card">
+                        <div class="card__header">
+                            <div style="display: flex; justify-content: space-between; align-items: center;">
+                                <h3 data-translate="dashboard.recentActivity">Recent Activity</h3>
+                                <a href="logs.html" class="link">
+                                    <span data-translate="common.viewAll">View All</span>
+                                    <i class="fas fa-arrow-right"></i>
+                                </a>
+                            </div>
+                        </div>
+                        <div class="card__body">
+                            <div id="activityLogContainer">
+                                <!-- Dynamic content -->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Right Column -->
+                <div>
+                    <!-- System Health -->
+                    <div class="card" style="margin-bottom: var(--spacing-6);">
+                        <div class="card__header">
+                            <h3 data-translate="dashboard.systemHealth">System Health</h3>
+                        </div>
+                        <div class="card__body">
+                            <div id="systemHealthContainer">
+                                <!-- Dynamic content -->
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- System Alerts -->
+                    <div class="card" style="margin-bottom: var(--spacing-6);">
+                        <div class="card__header">
+                            <div style="display: flex; justify-content: space-between; align-items: center;">
+                                <h3 data-translate="dashboard.systemAlerts">System Alerts</h3>
+                                <span class="badge badge--warning" id="alertCount">3</span>
+                            </div>
+                        </div>
+                        <div class="card__body">
+                            <div id="alertsContainer">
+                                <!-- Dynamic content -->
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Popular Courses -->
+                    <div class="card">
+                        <div class="card__header">
+                            <h3 data-translate="dashboard.popularCourses">Popular Courses</h3>
+                        </div>
+                        <div class="card__body">
+                            <div id="popularCoursesContainer">
+                                <!-- Dynamic content -->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Core JavaScript -->
+    <script src="../config.js"></script>
+    <script src="../assets/js/global.js"></script>
+    <script src="../assets/js/auth.js"></script>
+    <script src="../assets/js/api.js"></script>
+    <script>
+        // Dashboard data
+        let dashboardData = {
+            timeRange: 'month',
+            charts: {}
+        };
+
+        // Initialize dashboard
+        async function init() {
+            // Check authentication
+            const currentUser = JSON.parse(localStorage.getItem('currentUser'));
+            if (!currentUser || currentUser.role !== 'admin') {
+                window.location.href = '../index.html';
+                return;
+            }
+
+            // Initialize language
+            await LMS.LanguageManager.init();
+            LMS.LanguageManager.updateUI();
+
+            // Set user name
+            document.getElementById('userName').textContent = currentUser.fullName || currentUser.username;
+
+            // Load dashboard data
+            loadDashboardData();
+        }
+
+        // Load dashboard data
+        async function loadDashboardData() {
+            // Mock data
+            const stats = {
+                totalUsers: 3847,
+                activeCourses: 156,
+                revenue: 45780,
+                systemUptime: 99.9
+            };
+
+            // Update stats
+            document.getElementById('totalUsers').textContent = stats.totalUsers.toLocaleString();
+            document.getElementById('activeCourses').textContent = stats.activeCourses;
+            document.getElementById('revenue').textContent = '$' + stats.revenue.toLocaleString();
+            document.getElementById('systemUptime').textContent = stats.systemUptime + '%';
+
+            // Load charts and data
+            loadUserGrowthChart();
+            loadUserRoleChart();
+            loadCourseCategoryChart();
+            loadSystemHealth();
+            loadSystemAlerts();
+            loadActivityLog();
+            loadPopularCourses();
+        }
+
+        // Load user growth chart
+        function loadUserGrowthChart() {
+            const ctx = document.getElementById('userGrowthChart').getContext('2d');
+            
+            // Destroy existing chart if exists
+            if (dashboardData.charts.userGrowth) {
+                dashboardData.charts.userGrowth.destroy();
+            }
+
+            dashboardData.charts.userGrowth = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
+                    datasets: [{
+                        label: 'Total Users',
+                        data: [2100, 2350, 2600, 2800, 2950, 3100, 3250, 3400, 3550, 3650, 3750, 3847],
+                        borderColor: getComputedStyle(document.documentElement).getPropertyValue('--color-primary'),
+                        backgroundColor: getComputedStyle(document.documentElement).getPropertyValue('--color-primary') + '20',
+                        tension: 0.4,
+                        fill: true
+                    }, {
+                        label: 'Active Users',
+                        data: [1800, 1950, 2100, 2250, 2400, 2550, 2700, 2850, 2950, 3050, 3150, 3250],
+                        borderColor: getComputedStyle(document.documentElement).getPropertyValue('--color-success'),
+                        backgroundColor: getComputedStyle(document.documentElement).getPropertyValue('--color-success') + '20',
+                        tension: 0.4,
+                        fill: true
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            position: 'top',
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true
+                        }
+                    }
+                }
+            });
+        }
+
+        // Load user role chart
+        function loadUserRoleChart() {
+            const ctx = document.getElementById('userRoleChart').getContext('2d');
+            
+            new Chart(ctx, {
+                type: 'doughnut',
+                data: {
+                    labels: ['Students', 'Teachers', 'Admins'],
+                    datasets: [{
+                        data: [3200, 580, 67],
+                        backgroundColor: [
+                            getComputedStyle(document.documentElement).getPropertyValue('--color-primary'),
+                            getComputedStyle(document.documentElement).getPropertyValue('--color-success'),
+                            getComputedStyle(document.documentElement).getPropertyValue('--color-warning')
+                        ]
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            position: 'bottom',
+                        }
+                    }
+                }
+            });
+        }
+
+        // Load course category chart
+        function loadCourseCategoryChart() {
+            const ctx = document.getElementById('courseCategoryChart').getContext('2d');
+            
+            new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: ['Programming', 'Design', 'Business', 'Marketing', 'Data Science'],
+                    datasets: [{
+                        label: 'Courses',
+                        data: [45, 32, 28, 25, 26],
+                        backgroundColor: getComputedStyle(document.documentElement).getPropertyValue('--color-primary') + '80'
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            display: false
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true
+                        }
+                    }
+                }
+            });
+        }
+
+        // Load system health
+        function loadSystemHealth() {
+            const healthData = [
+                { name: 'Web Server', status: 'good', value: 'Operational', uptime: '99.9%' },
+                { name: 'Database', status: 'good', value: 'Healthy', uptime: '99.8%' },
+                { name: 'Storage', status: 'warning', value: '78% Used', uptime: '100%' },
+                { name: 'API Gateway', status: 'good', value: 'Active', uptime: '99.9%' },
+                { name: 'Cache Server', status: 'good', value: 'Connected', uptime: '100%' }
+            ];
+
+            const container = document.getElementById('systemHealthContainer');
+            container.innerHTML = healthData.map(item => `
+                <div class="system-health-item">
+                    <div style="display: flex; align-items: center;">
+                        <span class="health-indicator health-indicator--${item.status}"></span>
+                        <span style="font-weight: var(--font-weight-medium);">${item.name}</span>
+                    </div>
+                    <div style="text-align: right;">
+                        <div style="font-size: var(--font-size-sm);">${item.value}</div>
+                        <div class="text-secondary" style="font-size: var(--font-size-xs);">Uptime: ${item.uptime}</div>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        // Load system alerts
+        function loadSystemAlerts() {
+            const alerts = [
+                {
+                    type: 'warning',
+                    title: 'Storage Space Low',
+                    message: 'Server storage is at 78% capacity',
+                    time: '2 hours ago'
+                },
+                {
+                    type: 'info',
+                    title: 'System Update Available',
+                    message: 'Version 2.5.0 is ready to install',
+                    time: '1 day ago'
+                },
+                {
+                    type: 'warning',
+                    title: 'High Traffic Detected',
+                    message: 'Unusual spike in API requests',
+                    time: '2 days ago'
+                }
+            ];
+
+            const container = document.getElementById('alertsContainer');
+            container.innerHTML = alerts.map(alert => `
+                <div class="alert-item">
+                    <div style="font-weight: var(--font-weight-medium); margin-bottom: var(--spacing-1);">
+                        ${alert.title}
+                    </div>
+                    <div style="font-size: var(--font-size-sm); margin-bottom: var(--spacing-2);">
+                        ${alert.message}
+                    </div>
+                    <div class="text-secondary" style="font-size: var(--font-size-xs);">
+                        ${alert.time}
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        // Load activity log
+        function loadActivityLog() {
+            const activities = [
+                {
+                    user: 'John Teacher',
+                    action: 'Created new course',
+                    details: 'Advanced JavaScript Concepts',
+                    time: '10 minutes ago',
+                    type: 'create',
+                    icon: 'fa-plus',
+                    color: 'var(--color-success)'
+                },
+                {
+                    user: 'Admin User',
+                    action: 'Updated system settings',
+                    details: 'Changed email configuration',
+                    time: '1 hour ago',
+                    type: 'update',
+                    icon: 'fa-cog',
+                    color: 'var(--color-warning)'
+                },
+                {
+                    user: 'Sarah Student',
+                    action: 'Completed course',
+                    details: 'React Fundamentals',
+                    time: '2 hours ago',
+                    type: 'complete',
+                    icon: 'fa-check',
+                    color: 'var(--color-primary)'
+                },
+                {
+                    user: 'Mike Teacher',
+                    action: 'Published quiz',
+                    details: 'Python Basics Quiz #3',
+                    time: '3 hours ago',
+                    type: 'publish',
+                    icon: 'fa-paper-plane',
+                    color: 'var(--color-info)'
+                },
+                {
+                    user: 'System',
+                    action: 'Automated backup',
+                    details: 'Daily backup completed',
+                    time: '6 hours ago',
+                    type: 'system',
+                    icon: 'fa-database',
+                    color: 'var(--color-secondary)'
+                }
+            ];
+
+            const container = document.getElementById('activityLogContainer');
+            container.innerHTML = activities.map(activity => `
+                <div class="activity-log-item">
+                    <div class="activity-icon" style="background: ${activity.color}20; color: ${activity.color};">
+                        <i class="fas ${activity.icon}"></i>
+                    </div>
+                    <div style="flex: 1;">
+                        <div>
+                            <strong>${activity.user}</strong> ${activity.action}
+                        </div>
+                        <div class="text-secondary" style="font-size: var(--font-size-sm);">
+                            ${activity.details}
+                        </div>
+                        <div class="text-secondary" style="font-size: var(--font-size-xs); margin-top: var(--spacing-1);">
+                            ${activity.time}
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        // Load popular courses
+        function loadPopularCourses() {
+            const courses = [
+                { rank: 1, title: 'JavaScript Mastery', students: 847, rating: 4.8 },
+                { rank: 2, title: 'React Development', students: 723, rating: 4.7 },
+                { rank: 3, title: 'Python for Beginners', students: 698, rating: 4.9 },
+                { rank: 4, title: 'UI/UX Design', students: 542, rating: 4.6 },
+                { rank: 5, title: 'Data Science 101', students: 489, rating: 4.5 }
+            ];
+
+            const container = document.getElementById('popularCoursesContainer');
+            container.innerHTML = courses.map(course => `
+                <div class="course-rank-item">
+                    <div class="rank-number">${course.rank}</div>
+                    <div style="flex: 1;">
+                        <div style="font-weight: var(--font-weight-medium);">${course.title}</div>
+                        <div style="display: flex; gap: var(--spacing-3); margin-top: var(--spacing-1);">
+                            <span class="text-secondary" style="font-size: var(--font-size-sm);">
+                                <i class="fas fa-users"></i> ${course.students}
+                            </span>
+                            <span class="text-secondary" style="font-size: var(--font-size-sm);">
+                                <i class="fas fa-star text-warning"></i> ${course.rating}
+                            </span>
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        // Change time range for charts
+        function changeTimeRange(range) {
+            dashboardData.timeRange = range;
+            
+            // Update button states
+            document.querySelectorAll('.btn--ghost').forEach(btn => {
+                btn.classList.remove('btn--active');
+            });
+            event.target.classList.add('btn--active');
+            
+            // Reload chart with new data
+            loadUserGrowthChart();
+            LMS.showToast(`Showing ${range} data`, 'info');
+        }
+
+        // Navigation functions
+        function downloadReport() {
+            LMS.showToast('Generating report...', 'info');
+            // In real app, would generate and download report
+        }
+
+        function viewSystemSettings() {
+            window.location.href = 'settings.html';
+        }
+
+        // Initialize on page load
+        document.addEventListener('DOMContentLoaded', () => {
+            init();
+        });
+    </script>
+</body>
+</html>

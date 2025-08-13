@@ -16,7 +16,7 @@ LMS.Navigation = {
         id: 'dashboard',
         icon: 'fa-chart-line',
         label: 'nav.dashboard',
-        href: 'pages/dashboard.html'
+        href: 'pages/dashboard-student.html'
       },
       {
         section: 'nav.sections.learning',
@@ -76,7 +76,7 @@ LMS.Navigation = {
         id: 'dashboard',
         icon: 'fa-chart-line',
         label: 'nav.dashboard',
-        href: 'pages/dashboard.html'
+        href: 'pages/dashboard-teacher.html'
       },
       {
         section: 'nav.sections.courseManagement',
@@ -153,7 +153,7 @@ LMS.Navigation = {
         id: 'dashboard',
         icon: 'fa-chart-line',
         label: 'nav.dashboard',
-        href: 'pages/dashboard.html'
+        href: 'pages/dashboard-admin.html'
       },
       {
         section: 'nav.sections.userManagement',

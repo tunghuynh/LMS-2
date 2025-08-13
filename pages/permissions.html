@@ -137,7 +137,7 @@
         }
         
         .subfeatures.show {
-            display: table-row-group;
+            display: contents;
         }
         
         .select-all-row {
@@ -384,7 +384,7 @@
                 // Subfeatures
                 if (feature.subfeatures) {
                     const subfeaturesContainer = document.createElement('tbody');
-                    subfeaturesContainer.className = 'subfeatures show'; // Default expanded
+                    subfeaturesContainer.className = 'subfeatures'; // Default expanded
                     subfeaturesContainer.id = `${feature.id}_subfeatures`;
 
                     feature.subfeatures.forEach(subfeature => {

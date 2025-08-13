@@ -1,0 +1,639 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Student Dashboard - LMS</title>
+    <!-- Core CSS -->
+    <link rel="stylesheet" href="../assets/css/global.css">
+    <link rel="stylesheet" href="../assets/css/themes.css">
+    <link rel="stylesheet" href="../assets/css/layout.css">
+    <link rel="stylesheet" href="../assets/css/components.css">
+    <link rel="stylesheet" href="../assets/css/utilities.css">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        .stat-card {
+            background: var(--bg-surface);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-lg);
+            padding: var(--spacing-5);
+            text-align: center;
+        }
+        
+        .stat-card__value {
+            font-size: 2.5rem;
+            font-weight: var(--font-weight-bold);
+            margin: var(--spacing-2) 0;
+        }
+        
+        .stat-card__label {
+            color: var(--text-secondary);
+            font-size: var(--font-size-sm);
+        }
+        
+        .stat-card__icon {
+            width: 48px;
+            height: 48px;
+            background: var(--color-primary-lighter);
+            border-radius: var(--radius-full);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto var(--spacing-3);
+            color: var(--color-primary);
+        }
+        
+        .progress-ring {
+            width: 120px;
+            height: 120px;
+            margin: 0 auto;
+        }
+        
+        .progress-ring__circle {
+            transition: stroke-dashoffset 0.35s;
+            transform: rotate(-90deg);
+            transform-origin: 50% 50%;
+        }
+        
+        .activity-item {
+            display: flex;
+            align-items: flex-start;
+            gap: var(--spacing-3);
+            padding: var(--spacing-3);
+            border-bottom: 1px solid var(--border-color);
+        }
+        
+        .activity-item:last-child {
+            border-bottom: none;
+        }
+        
+        .activity-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: var(--radius-full);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+        
+        .course-progress-item {
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-3);
+            padding: var(--spacing-3);
+            background: var(--bg-base);
+            border-radius: var(--radius-base);
+            margin-bottom: var(--spacing-3);
+        }
+        
+        .course-icon {
+            width: 60px;
+            height: 60px;
+            background: var(--color-primary-lighter);
+            border-radius: var(--radius-base);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+        }
+        
+        .deadline-item {
+            padding: var(--spacing-3);
+            background: var(--bg-base);
+            border-radius: var(--radius-base);
+            margin-bottom: var(--spacing-2);
+            border-left: 4px solid var(--color-warning);
+        }
+        
+        .achievement-badge {
+            text-align: center;
+            padding: var(--spacing-3);
+            border-radius: var(--radius-base);
+            background: var(--bg-base);
+            transition: transform var(--transition-base);
+        }
+        
+        .achievement-badge:hover {
+            transform: translateY(-2px);
+        }
+        
+        .achievement-badge__icon {
+            width: 60px;
+            height: 60px;
+            margin: 0 auto var(--spacing-2);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: var(--radius-full);
+            font-size: 1.5rem;
+        }
+    </style>
+</head>
+<body>
+    <div class="page-container">
+        <!-- Welcome Header -->
+        <div class="page-header">
+            <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: var(--spacing-4);">
+                <div>
+                    <h1 class="page-title">
+                        <span data-translate="dashboard.welcome">Welcome back</span>, 
+                        <span id="userName">Student</span>!
+                    </h1>
+                    <p class="page-subtitle" data-translate="dashboard.studentSubtitle">
+                        Track your learning progress and continue your educational journey
+                    </p>
+                </div>
+                <div style="display: flex; gap: var(--spacing-3);">
+                    <button class="btn btn--primary" onclick="browseCourses()">
+                        <i class="fas fa-search"></i>
+                        <span data-translate="dashboard.browseCourses">Browse Courses</span>
+                    </button>
+                    <button class="btn btn--secondary" onclick="viewSchedule()">
+                        <i class="fas fa-calendar"></i>
+                        <span data-translate="dashboard.mySchedule">My Schedule</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <div class="page-content">
+            <!-- Stats Overview -->
+            <div class="grid grid--4-cols" style="gap: var(--spacing-4); margin-bottom: var(--spacing-6);">
+                <div class="stat-card">
+                    <div class="stat-card__icon">
+                        <i class="fas fa-book"></i>
+                    </div>
+                    <div class="stat-card__value" id="enrolledCourses">0</div>
+                    <div class="stat-card__label" data-translate="dashboard.enrolledCourses">Enrolled Courses</div>
+                </div>
+                
+                <div class="stat-card">
+                    <div class="stat-card__icon">
+                        <i class="fas fa-check-circle"></i>
+                    </div>
+                    <div class="stat-card__value" id="completedCourses">0</div>
+                    <div class="stat-card__label" data-translate="dashboard.completedCourses">Completed Courses</div>
+                </div>
+                
+                <div class="stat-card">
+                    <div class="stat-card__icon">
+                        <i class="fas fa-fire"></i>
+                    </div>
+                    <div class="stat-card__value" id="learningStreak">0</div>
+                    <div class="stat-card__label" data-translate="dashboard.dayStreak">Day Streak</div>
+                </div>
+                
+                <div class="stat-card">
+                    <div class="stat-card__icon">
+                        <i class="fas fa-clock"></i>
+                    </div>
+                    <div class="stat-card__value" id="studyHours">0h</div>
+                    <div class="stat-card__label" data-translate="dashboard.studyHours">Study Hours</div>
+                </div>
+            </div>
+
+            <!-- Main Content Grid -->
+            <div class="grid" style="grid-template-columns: 2fr 1fr; gap: var(--spacing-6);">
+                <!-- Left Column -->
+                <div>
+                    <!-- Current Courses Progress -->
+                    <div class="card" style="margin-bottom: var(--spacing-6);">
+                        <div class="card__header">
+                            <div style="display: flex; justify-content: space-between; align-items: center;">
+                                <h3 data-translate="dashboard.currentCourses">Current Courses</h3>
+                                <a href="courses.html" class="link">
+                                    <span data-translate="common.viewAll">View All</span>
+                                    <i class="fas fa-arrow-right"></i>
+                                </a>
+                            </div>
+                        </div>
+                        <div class="card__body">
+                            <div id="currentCoursesContainer">
+                                <!-- Dynamic content -->
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Study Time Chart -->
+                    <div class="card" style="margin-bottom: var(--spacing-6);">
+                        <div class="card__header">
+                            <h3 data-translate="dashboard.studyTimeAnalytics">Study Time Analytics</h3>
+                            <p class="text-secondary" data-translate="dashboard.last7Days">Last 7 days</p>
+                        </div>
+                        <div class="card__body">
+                            <div style="position: relative; height: 300px;">
+                                <canvas id="studyTimeChart"></canvas>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Recent Activities -->
+                    <div class="card">
+                        <div class="card__header">
+                            <h3 data-translate="dashboard.recentActivities">Recent Activities</h3>
+                        </div>
+                        <div class="card__body">
+                            <div id="recentActivitiesContainer">
+                                <!-- Dynamic content -->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Right Column -->
+                <div>
+                    <!-- Learning Progress -->
+                    <div class="card" style="margin-bottom: var(--spacing-6);">
+                        <div class="card__header">
+                            <h3 data-translate="dashboard.overallProgress">Overall Progress</h3>
+                        </div>
+                        <div class="card__body" style="text-align: center;">
+                            <svg class="progress-ring" viewBox="0 0 120 120">
+                                <circle class="progress-ring__circle" stroke="var(--bg-hover)" stroke-width="8" fill="transparent" r="52" cx="60" cy="60"></circle>
+                                <circle id="progressCircle" class="progress-ring__circle" stroke="var(--color-primary)" stroke-width="8" fill="transparent" r="52" cx="60" cy="60" stroke-dasharray="326.73" stroke-dashoffset="326.73"></circle>
+                            </svg>
+                            <div style="margin-top: var(--spacing-3);">
+                                <div style="font-size: 2rem; font-weight: var(--font-weight-bold);" id="progressPercent">0%</div>
+                                <div class="text-secondary" data-translate="dashboard.totalProgress">Total Progress</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Upcoming Deadlines -->
+                    <div class="card" style="margin-bottom: var(--spacing-6);">
+                        <div class="card__header">
+                            <h3 data-translate="dashboard.upcomingDeadlines">Upcoming Deadlines</h3>
+                        </div>
+                        <div class="card__body">
+                            <div id="deadlinesContainer">
+                                <!-- Dynamic content -->
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Achievements -->
+                    <div class="card">
+                        <div class="card__header">
+                            <div style="display: flex; justify-content: space-between; align-items: center;">
+                                <h3 data-translate="dashboard.achievements">Achievements</h3>
+                                <span class="badge badge--primary" id="achievementCount">0</span>
+                            </div>
+                        </div>
+                        <div class="card__body">
+                            <div class="grid grid--2-cols" style="gap: var(--spacing-3);" id="achievementsContainer">
+                                <!-- Dynamic content -->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Core JavaScript -->
+    <script src="../config.js"></script>
+    <script src="../assets/js/global.js"></script>
+    <script src="../assets/js/auth.js"></script>
+    <script src="../assets/js/api.js"></script>
+    <script>
+        // Dashboard data
+        let dashboardData = {
+            user: null,
+            courses: [],
+            activities: [],
+            studyTime: []
+        };
+
+        // Initialize dashboard
+        async function init() {
+            // Check authentication
+            const currentUser = JSON.parse(localStorage.getItem('currentUser'));
+            if (!currentUser || currentUser.role !== 'student') {
+                window.location.href = '../index.html';
+                return;
+            }
+
+            // Initialize language
+            await LMS.LanguageManager.init();
+            LMS.LanguageManager.updateUI();
+
+            // Set user name
+            document.getElementById('userName').textContent = currentUser.fullName || currentUser.username;
+
+            // Load dashboard data
+            loadDashboardData();
+        }
+
+        // Load dashboard data
+        async function loadDashboardData() {
+            // In real app, this would be API calls
+            dashboardData.user = JSON.parse(localStorage.getItem('currentUser'));
+            
+            // Mock data
+            const stats = {
+                enrolledCourses: 5,
+                completedCourses: 2,
+                learningStreak: 7,
+                studyHours: 48
+            };
+
+            // Update stats
+            document.getElementById('enrolledCourses').textContent = stats.enrolledCourses;
+            document.getElementById('completedCourses').textContent = stats.completedCourses;
+            document.getElementById('learningStreak').textContent = stats.learningStreak;
+            document.getElementById('studyHours').textContent = stats.studyHours + 'h';
+
+            // Update progress
+            const progress = Math.round((stats.completedCourses / stats.enrolledCourses) * 100);
+            updateProgressRing(progress);
+
+            // Load other data
+            loadCurrentCourses();
+            loadStudyTimeChart();
+            loadRecentActivities();
+            loadUpcomingDeadlines();
+            loadAchievements();
+        }
+
+        // Update progress ring
+        function updateProgressRing(percent) {
+            const circle = document.getElementById('progressCircle');
+            const radius = 52;
+            const circumference = radius * 2 * Math.PI;
+            const offset = circumference - (percent / 100) * circumference;
+            
+            circle.style.strokeDashoffset = offset;
+            document.getElementById('progressPercent').textContent = percent + '%';
+        }
+
+        // Load current courses
+        function loadCurrentCourses() {
+            const courses = [
+                {
+                    id: 1,
+                    title: 'Introduction to JavaScript',
+                    icon: '📘',
+                    progress: 75,
+                    nextLesson: 'Functions and Scope',
+                    instructor: 'John Doe'
+                },
+                {
+                    id: 2,
+                    title: 'Advanced React Development',
+                    icon: '⚛️',
+                    progress: 40,
+                    nextLesson: 'State Management',
+                    instructor: 'Jane Smith'
+                },
+                {
+                    id: 3,
+                    title: 'Python for Data Science',
+                    icon: '🐍',
+                    progress: 90,
+                    nextLesson: 'Final Project',
+                    instructor: 'Dr. Brown'
+                }
+            ];
+
+            const container = document.getElementById('currentCoursesContainer');
+            container.innerHTML = courses.map(course => `
+                <div class="course-progress-item">
+                    <div class="course-icon">${course.icon}</div>
+                    <div style="flex: 1;">
+                        <h4>${course.title}</h4>
+                        <p class="text-secondary" style="font-size: var(--font-size-sm); margin: var(--spacing-1) 0;">
+                            ${LMS.t('dashboard.instructor')}: ${course.instructor}
+                        </p>
+                        <div style="margin: var(--spacing-2) 0;">
+                            <div style="display: flex; justify-content: space-between; margin-bottom: var(--spacing-1);">
+                                <span class="text-secondary" style="font-size: var(--font-size-sm);">
+                                    ${LMS.t('dashboard.nextLesson')}: ${course.nextLesson}
+                                </span>
+                                <span style="font-size: var(--font-size-sm); font-weight: var(--font-weight-medium);">${course.progress}%</span>
+                            </div>
+                            <div class="progress">
+                                <div class="progress__bar" style="width: ${course.progress}%"></div>
+                            </div>
+                        </div>
+                    </div>
+                    <button class="btn btn--primary btn--small" onclick="continueCourse(${course.id})">
+                        ${LMS.t('dashboard.continue')}
+                    </button>
+                </div>
+            `).join('');
+        }
+
+        // Load study time chart
+        function loadStudyTimeChart() {
+            const ctx = document.getElementById('studyTimeChart').getContext('2d');
+            
+            // Generate last 7 days
+            const labels = [];
+            const data = [];
+            for (let i = 6; i >= 0; i--) {
+                const date = new Date();
+                date.setDate(date.getDate() - i);
+                labels.push(date.toLocaleDateString('en', { weekday: 'short' }));
+                data.push(Math.floor(Math.random() * 6) + 1); // Random hours between 1-6
+            }
+
+            new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: labels,
+                    datasets: [{
+                        label: 'Study Hours',
+                        data: data,
+                        backgroundColor: getComputedStyle(document.documentElement).getPropertyValue('--color-primary') + '80',
+                        borderColor: getComputedStyle(document.documentElement).getPropertyValue('--color-primary'),
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            display: false
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            ticks: {
+                                callback: function(value) {
+                                    return value + 'h';
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+        }
+
+        // Load recent activities
+        function loadRecentActivities() {
+            const activities = [
+                {
+                    type: 'lesson',
+                    icon: 'fa-book',
+                    color: 'var(--color-primary)',
+                    title: 'Completed lesson "Arrays in JavaScript"',
+                    course: 'Introduction to JavaScript',
+                    time: '2 hours ago'
+                },
+                {
+                    type: 'quiz',
+                    icon: 'fa-check-circle',
+                    color: 'var(--color-success)',
+                    title: 'Scored 85% on "React Hooks Quiz"',
+                    course: 'Advanced React Development',
+                    time: '5 hours ago'
+                },
+                {
+                    type: 'achievement',
+                    icon: 'fa-trophy',
+                    color: 'var(--color-warning)',
+                    title: 'Earned "Week Warrior" badge',
+                    course: '',
+                    time: 'Yesterday'
+                },
+                {
+                    type: 'enrollment',
+                    icon: 'fa-user-plus',
+                    color: 'var(--color-info)',
+                    title: 'Enrolled in "Python for Data Science"',
+                    course: '',
+                    time: '2 days ago'
+                }
+            ];
+
+            const container = document.getElementById('recentActivitiesContainer');
+            container.innerHTML = activities.map(activity => `
+                <div class="activity-item">
+                    <div class="activity-icon" style="background: ${activity.color}20; color: ${activity.color};">
+                        <i class="fas ${activity.icon}"></i>
+                    </div>
+                    <div>
+                        <div style="font-weight: var(--font-weight-medium);">${activity.title}</div>
+                        ${activity.course ? `<div class="text-secondary" style="font-size: var(--font-size-sm);">${activity.course}</div>` : ''}
+                        <div class="text-secondary" style="font-size: var(--font-size-sm); margin-top: var(--spacing-1);">${activity.time}</div>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        // Load upcoming deadlines
+        function loadUpcomingDeadlines() {
+            const deadlines = [
+                {
+                    type: 'quiz',
+                    title: 'React State Management Quiz',
+                    course: 'Advanced React',
+                    dueDate: 'Tomorrow',
+                    urgent: true
+                },
+                {
+                    type: 'assignment',
+                    title: 'Build a Todo App',
+                    course: 'JavaScript',
+                    dueDate: 'In 3 days',
+                    urgent: false
+                },
+                {
+                    type: 'project',
+                    title: 'Final Project Submission',
+                    course: 'Python',
+                    dueDate: 'Next week',
+                    urgent: false
+                }
+            ];
+
+            const container = document.getElementById('deadlinesContainer');
+            container.innerHTML = deadlines.map(deadline => `
+                <div class="deadline-item" style="border-left-color: ${deadline.urgent ? 'var(--color-danger)' : 'var(--color-warning)'};">
+                    <div style="display: flex; justify-content: space-between; align-items: flex-start;">
+                        <div>
+                            <div style="font-weight: var(--font-weight-medium);">${deadline.title}</div>
+                            <div class="text-secondary" style="font-size: var(--font-size-sm);">${deadline.course}</div>
+                        </div>
+                        <span class="badge ${deadline.urgent ? 'badge--danger' : 'badge--warning'}" style="font-size: var(--font-size-xs);">
+                            ${deadline.dueDate}
+                        </span>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        // Load achievements
+        function loadAchievements() {
+            const achievements = [
+                {
+                    id: 1,
+                    title: 'First Steps',
+                    icon: 'fa-shoe-prints',
+                    color: 'var(--color-success)',
+                    earned: true
+                },
+                {
+                    id: 2,
+                    title: 'Week Warrior',
+                    icon: 'fa-fire',
+                    color: 'var(--color-warning)',
+                    earned: true
+                },
+                {
+                    id: 3,
+                    title: 'Quiz Master',
+                    icon: 'fa-brain',
+                    color: 'var(--color-primary)',
+                    earned: false
+                },
+                {
+                    id: 4,
+                    title: 'Perfect Score',
+                    icon: 'fa-star',
+                    color: 'var(--color-danger)',
+                    earned: false
+                }
+            ];
+
+            const earnedCount = achievements.filter(a => a.earned).length;
+            document.getElementById('achievementCount').textContent = `${earnedCount}/${achievements.length}`;
+
+            const container = document.getElementById('achievementsContainer');
+            container.innerHTML = achievements.map(achievement => `
+                <div class="achievement-badge" style="opacity: ${achievement.earned ? '1' : '0.5'};">
+                    <div class="achievement-badge__icon" style="background: ${achievement.color}20; color: ${achievement.color};">
+                        <i class="fas ${achievement.icon}"></i>
+                    </div>
+                    <div style="font-size: var(--font-size-sm); font-weight: var(--font-weight-medium);">${achievement.title}</div>
+                </div>
+            `).join('');
+        }
+
+        // Navigation functions
+        function browseCourses() {
+            window.location.href = 'courses.html';
+        }
+
+        function viewSchedule() {
+            // Would navigate to schedule page
+            LMS.showToast('Schedule feature coming soon!', 'info');
+        }
+
+        function continueCourse(courseId) {
+            window.location.href = `course-detail.html?id=${courseId}`;
+        }
+
+        // Initialize on page load
+        document.addEventListener('DOMContentLoaded', () => {
+            init();
+        });
+    </script>
+</body>
+</html>
