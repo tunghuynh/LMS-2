@@ -1,0 +1,368 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Upload Component - LMS</title>
+    <!-- Core CSS -->
+    <link rel="stylesheet" href="../../assets/css/global.css">
+    <link rel="stylesheet" href="../../assets/css/themes.css">
+    <link rel="stylesheet" href="../../assets/css/layout.css">
+    <link rel="stylesheet" href="../../assets/css/components.css">
+    <link rel="stylesheet" href="../../assets/css/utilities.css">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+</head>
+<body>
+    <div class="component-demo">
+        <h1>Upload Component</h1>
+        
+        <!-- Basic Upload Button -->
+        <section class="demo-section">
+            <h2>Basic Upload Button</h2>
+            <div class="input-group">
+                <label class="input-group__label">Upload File</label>
+                <div class="upload upload--button">
+                    <input type="file" id="basicUpload" class="upload__input">
+                    <label for="basicUpload" class="upload__label button button--primary">
+                        <i class="fas fa-upload"></i>
+                        Choose File
+                    </label>
+                    <span class="upload__filename">No file chosen</span>
+                </div>
+                <span class="input-group__help">Max file size: 10MB</span>
+            </div>
+        </section>
+
+        <!-- Drag and Drop Area -->
+        <section class="demo-section">
+            <h2>Drag and Drop Upload</h2>
+            <div class="input-group">
+                <label class="input-group__label">Upload Documents</label>
+                <div class="upload upload--dropzone">
+                    <input type="file" id="dropzoneUpload" class="upload__input" multiple>
+                    <label for="dropzoneUpload" class="upload__dropzone">
+                        <i class="fas fa-cloud-upload-alt upload__icon"></i>
+                        <span class="upload__text">
+                            Drag and drop files here or 
+                            <span class="upload__link">browse</span>
+                        </span>
+                        <span class="upload__hint">Supports: PDF, DOC, DOCX (max 10MB)</span>
+                    </label>
+                    <div class="upload__list"></div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Image Upload with Preview -->
+        <section class="demo-section">
+            <h2>Image Upload with Preview</h2>
+            <div class="input-group">
+                <label class="input-group__label">Profile Picture</label>
+                <div class="upload upload--image">
+                    <input type="file" id="imageUpload" class="upload__input" accept="image/*">
+                    <label for="imageUpload" class="upload__image-area">
+                        <img class="upload__preview" src="" alt="Preview" style="display: none;">
+                        <div class="upload__placeholder">
+                            <i class="fas fa-camera upload__icon"></i>
+                            <span class="upload__text">Click to upload</span>
+                        </div>
+                    </label>
+                    <div class="upload__actions">
+                        <button class="button button--small button--ghost upload__change" style="display: none;">
+                            <i class="fas fa-sync"></i>
+                            Change
+                        </button>
+                        <button class="button button--small button--ghost button--danger upload__remove" style="display: none;">
+                            <i class="fas fa-trash"></i>
+                            Remove
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Multiple Files Upload -->
+        <section class="demo-section">
+            <h2>Multiple Files Upload</h2>
+            <div class="input-group">
+                <label class="input-group__label required">Upload Attachments</label>
+                <div class="upload upload--multiple">
+                    <div class="upload__header">
+                        <input type="file" id="multipleUpload" class="upload__input" multiple>
+                        <label for="multipleUpload" class="button button--secondary">
+                            <i class="fas fa-plus"></i>
+                            Add Files
+                        </label>
+                        <span class="upload__info">3 files uploaded</span>
+                    </div>
+                    <div class="upload__list">
+                        <div class="upload__item">
+                            <i class="fas fa-file-pdf upload__file-icon"></i>
+                            <div class="upload__file-info">
+                                <span class="upload__file-name">document.pdf</span>
+                                <span class="upload__file-size">2.5 MB</span>
+                            </div>
+                            <div class="upload__progress">
+                                <div class="upload__progress-bar" style="width: 100%"></div>
+                            </div>
+                            <button class="upload__remove-item" aria-label="Remove file">
+                                <i class="fas fa-times"></i>
+                            </button>
+                        </div>
+                        <div class="upload__item">
+                            <i class="fas fa-file-word upload__file-icon"></i>
+                            <div class="upload__file-info">
+                                <span class="upload__file-name">report.docx</span>
+                                <span class="upload__file-size">1.2 MB</span>
+                            </div>
+                            <div class="upload__progress">
+                                <div class="upload__progress-bar" style="width: 100%"></div>
+                            </div>
+                            <button class="upload__remove-item" aria-label="Remove file">
+                                <i class="fas fa-times"></i>
+                            </button>
+                        </div>
+                        <div class="upload__item upload__item--uploading">
+                            <i class="fas fa-file-image upload__file-icon"></i>
+                            <div class="upload__file-info">
+                                <span class="upload__file-name">screenshot.png</span>
+                                <span class="upload__file-size">856 KB</span>
+                            </div>
+                            <div class="upload__progress">
+                                <div class="upload__progress-bar" style="width: 65%"></div>
+                            </div>
+                            <button class="upload__remove-item" aria-label="Cancel upload">
+                                <i class="fas fa-times"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Validation States -->
+        <section class="demo-section">
+            <h2>Validation States</h2>
+            
+            <!-- Error State -->
+            <div class="input-group">
+                <label class="input-group__label">Error State</label>
+                <div class="upload upload--dropzone upload--error">
+                    <input type="file" id="errorUpload" class="upload__input">
+                    <label for="errorUpload" class="upload__dropzone">
+                        <i class="fas fa-exclamation-circle upload__icon"></i>
+                        <span class="upload__text">File too large</span>
+                        <span class="upload__hint">Please choose a file smaller than 10MB</span>
+                    </label>
+                </div>
+                <span class="input-group__error">File size exceeds maximum limit</span>
+            </div>
+
+            <!-- Success State -->
+            <div class="input-group">
+                <label class="input-group__label">Success State</label>
+                <div class="upload upload--button upload--success">
+                    <input type="file" id="successUpload" class="upload__input" disabled>
+                    <label for="successUpload" class="upload__label button button--success">
+                        <i class="fas fa-check"></i>
+                        Uploaded
+                    </label>
+                    <span class="upload__filename">document.pdf (2.5 MB)</span>
+                </div>
+                <span class="input-group__success">File uploaded successfully</span>
+            </div>
+
+            <!-- Disabled State -->
+            <div class="input-group">
+                <label class="input-group__label">Disabled State</label>
+                <div class="upload upload--button upload--disabled">
+                    <input type="file" id="disabledUpload" class="upload__input" disabled>
+                    <label for="disabledUpload" class="upload__label button" disabled>
+                        <i class="fas fa-upload"></i>
+                        Choose File
+                    </label>
+                    <span class="upload__filename">Upload disabled</span>
+                </div>
+            </div>
+        </section>
+
+        <!-- Code Example -->
+        <section class="demo-section">
+            <h2>Code Example</h2>
+            <pre><code>&lt;!-- Basic Upload Button --&gt;
+&lt;div class="upload upload--button"&gt;
+    &lt;input type="file" id="upload1" class="upload__input"&gt;
+    &lt;label for="upload1" class="upload__label button button--primary"&gt;
+        &lt;i class="fas fa-upload"&gt;&lt;/i&gt;
+        Choose File
+    &lt;/label&gt;
+    &lt;span class="upload__filename"&gt;No file chosen&lt;/span&gt;
+&lt;/div&gt;
+
+&lt;!-- Drag and Drop --&gt;
+&lt;div class="upload upload--dropzone"&gt;
+    &lt;input type="file" id="upload2" class="upload__input" multiple&gt;
+    &lt;label for="upload2" class="upload__dropzone"&gt;
+        &lt;i class="fas fa-cloud-upload-alt upload__icon"&gt;&lt;/i&gt;
+        &lt;span class="upload__text"&gt;
+            Drag and drop files here or 
+            &lt;span class="upload__link"&gt;browse&lt;/span&gt;
+        &lt;/span&gt;
+        &lt;span class="upload__hint"&gt;Supports: PDF, DOC (max 10MB)&lt;/span&gt;
+    &lt;/label&gt;
+    &lt;div class="upload__list"&gt;&lt;/div&gt;
+&lt;/div&gt;
+
+&lt;!-- Image Upload --&gt;
+&lt;div class="upload upload--image"&gt;
+    &lt;input type="file" id="upload3" class="upload__input" accept="image/*"&gt;
+    &lt;label for="upload3" class="upload__image-area"&gt;
+        &lt;img class="upload__preview" src="" alt="Preview"&gt;
+        &lt;div class="upload__placeholder"&gt;
+            &lt;i class="fas fa-camera upload__icon"&gt;&lt;/i&gt;
+            &lt;span class="upload__text"&gt;Click to upload&lt;/span&gt;
+        &lt;/div&gt;
+    &lt;/label&gt;
+&lt;/div&gt;</code></pre>
+        </section>
+    </div>
+
+    <style>
+        .component-demo {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 40px 20px;
+        }
+
+        .demo-section {
+            margin-bottom: 48px;
+        }
+
+        .demo-section h2 {
+            margin-bottom: 24px;
+            color: var(--text-primary);
+        }
+
+        .input-group {
+            max-width: 600px;
+            margin-bottom: 24px;
+        }
+
+        pre {
+            background-color: var(--bg-surface);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-base);
+            padding: 20px;
+            overflow-x: auto;
+        }
+
+        code {
+            color: var(--color-primary);
+            font-family: 'Monaco', 'Consolas', monospace;
+            font-size: 14px;
+        }
+    </style>
+
+    <script>
+        // Basic upload filename display
+        document.querySelectorAll('.upload--button .upload__input').forEach(input => {
+            input.addEventListener('change', function() {
+                const filename = this.files[0] ? this.files[0].name : 'No file chosen';
+                const filenameEl = this.parentElement.querySelector('.upload__filename');
+                if (filenameEl) {
+                    filenameEl.textContent = filename;
+                }
+            });
+        });
+
+        // Image upload preview
+        const imageInput = document.getElementById('imageUpload');
+        if (imageInput) {
+            const uploadContainer = imageInput.closest('.upload--image');
+            const preview = uploadContainer.querySelector('.upload__preview');
+            const placeholder = uploadContainer.querySelector('.upload__placeholder');
+            const changeBtn = uploadContainer.querySelector('.upload__change');
+            const removeBtn = uploadContainer.querySelector('.upload__remove');
+            
+            imageInput.addEventListener('change', function() {
+                if (this.files && this.files[0]) {
+                    const reader = new FileReader();
+                    reader.onload = function(e) {
+                        preview.src = e.target.result;
+                        preview.style.display = 'block';
+                        placeholder.style.display = 'none';
+                        changeBtn.style.display = 'inline-flex';
+                        removeBtn.style.display = 'inline-flex';
+                    };
+                    reader.readAsDataURL(this.files[0]);
+                }
+            });
+            
+            changeBtn.addEventListener('click', () => imageInput.click());
+            
+            removeBtn.addEventListener('click', () => {
+                imageInput.value = '';
+                preview.src = '';
+                preview.style.display = 'none';
+                placeholder.style.display = 'flex';
+                changeBtn.style.display = 'none';
+                removeBtn.style.display = 'none';
+            });
+        }
+
+        // Drag and drop functionality
+        document.querySelectorAll('.upload__dropzone').forEach(dropzone => {
+            const input = dropzone.closest('.upload').querySelector('.upload__input');
+            
+            ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
+                dropzone.addEventListener(eventName, preventDefaults, false);
+            });
+            
+            function preventDefaults(e) {
+                e.preventDefault();
+                e.stopPropagation();
+            }
+            
+            ['dragenter', 'dragover'].forEach(eventName => {
+                dropzone.addEventListener(eventName, highlight, false);
+            });
+            
+            ['dragleave', 'drop'].forEach(eventName => {
+                dropzone.addEventListener(eventName, unhighlight, false);
+            });
+            
+            function highlight(e) {
+                dropzone.classList.add('upload__dropzone--hover');
+            }
+            
+            function unhighlight(e) {
+                dropzone.classList.remove('upload__dropzone--hover');
+            }
+            
+            dropzone.addEventListener('drop', handleDrop, false);
+            
+            function handleDrop(e) {
+                const dt = e.dataTransfer;
+                const files = dt.files;
+                input.files = files;
+                
+                // Trigger change event
+                const event = new Event('change', { bubbles: true });
+                input.dispatchEvent(event);
+            }
+        });
+
+        // Remove file items
+        document.addEventListener('click', function(e) {
+            if (e.target.closest('.upload__remove-item')) {
+                const item = e.target.closest('.upload__item');
+                item.style.transition = 'all 200ms ease-out';
+                item.style.opacity = '0';
+                item.style.transform = 'translateX(20px)';
+                setTimeout(() => item.remove(), 200);
+            }
+        });
+    </script>
+</body>
+</html>

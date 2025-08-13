@@ -1,0 +1,376 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Checkbox Component - LMS</title>
+    <!-- Core CSS -->
+    <link rel="stylesheet" href="../../assets/css/global.css">
+    <link rel="stylesheet" href="../../assets/css/themes.css">
+    <link rel="stylesheet" href="../../assets/css/layout.css">
+    <link rel="stylesheet" href="../../assets/css/components.css">
+    <link rel="stylesheet" href="../../assets/css/utilities.css">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+</head>
+<body>
+    <div class="component-demo">
+        <h1>Checkbox Component</h1>
+        
+        <!-- Basic Checkbox -->
+        <section class="demo-section">
+            <h2>Basic Checkbox</h2>
+            <div class="input-group">
+                <label class="checkbox">
+                    <input type="checkbox" checked>
+                    <span class="checkbox__mark"></span>
+                    <span class="checkbox__label">I agree to the terms and conditions</span>
+                </label>
+            </div>
+        </section>
+
+        <!-- Checkbox Group -->
+        <section class="demo-section">
+            <h2>Checkbox Group</h2>
+            <div class="input-group">
+                <label class="input-group__label">Select your interests</label>
+                <div class="checkbox-group">
+                    <label class="checkbox">
+                        <input type="checkbox" name="interests" value="coding" checked>
+                        <span class="checkbox__mark"></span>
+                        <span class="checkbox__label">Coding</span>
+                    </label>
+                    <label class="checkbox">
+                        <input type="checkbox" name="interests" value="design">
+                        <span class="checkbox__mark"></span>
+                        <span class="checkbox__label">Design</span>
+                    </label>
+                    <label class="checkbox">
+                        <input type="checkbox" name="interests" value="data">
+                        <span class="checkbox__mark"></span>
+                        <span class="checkbox__label">Data Science</span>
+                    </label>
+                    <label class="checkbox">
+                        <input type="checkbox" name="interests" value="ai">
+                        <span class="checkbox__mark"></span>
+                        <span class="checkbox__label">AI & Machine Learning</span>
+                    </label>
+                </div>
+                <span class="input-group__help">Choose all that apply</span>
+            </div>
+        </section>
+
+        <!-- Horizontal Layout -->
+        <section class="demo-section">
+            <h2>Horizontal Layout</h2>
+            <div class="input-group">
+                <label class="input-group__label">Notification preferences</label>
+                <div class="checkbox-group checkbox-group--horizontal">
+                    <label class="checkbox">
+                        <input type="checkbox" name="notif" value="email" checked>
+                        <span class="checkbox__mark"></span>
+                        <span class="checkbox__label">Email</span>
+                    </label>
+                    <label class="checkbox">
+                        <input type="checkbox" name="notif" value="sms">
+                        <span class="checkbox__mark"></span>
+                        <span class="checkbox__label">SMS</span>
+                    </label>
+                    <label class="checkbox">
+                        <input type="checkbox" name="notif" value="push" checked>
+                        <span class="checkbox__mark"></span>
+                        <span class="checkbox__label">Push</span>
+                    </label>
+                </div>
+            </div>
+        </section>
+
+        <!-- With Descriptions -->
+        <section class="demo-section">
+            <h2>With Descriptions</h2>
+            <div class="input-group">
+                <label class="input-group__label required">Select features</label>
+                <div class="checkbox-group">
+                    <label class="checkbox checkbox--with-description">
+                        <input type="checkbox" name="features" value="analytics" checked>
+                        <span class="checkbox__mark"></span>
+                        <div class="checkbox__content">
+                            <span class="checkbox__label">Advanced Analytics</span>
+                            <span class="checkbox__description">Track detailed progress and performance metrics</span>
+                        </div>
+                    </label>
+                    <label class="checkbox checkbox--with-description">
+                        <input type="checkbox" name="features" value="export">
+                        <span class="checkbox__mark"></span>
+                        <div class="checkbox__content">
+                            <span class="checkbox__label">Export Reports</span>
+                            <span class="checkbox__description">Download reports in PDF and Excel formats</span>
+                        </div>
+                    </label>
+                    <label class="checkbox checkbox--with-description">
+                        <input type="checkbox" name="features" value="api">
+                        <span class="checkbox__mark"></span>
+                        <div class="checkbox__content">
+                            <span class="checkbox__label">API Access</span>
+                            <span class="checkbox__description">Integrate with third-party applications</span>
+                        </div>
+                    </label>
+                </div>
+            </div>
+        </section>
+
+        <!-- Indeterminate State -->
+        <section class="demo-section">
+            <h2>Indeterminate State</h2>
+            <div class="checkbox-tree">
+                <label class="checkbox">
+                    <input type="checkbox" id="selectAll">
+                    <span class="checkbox__mark"></span>
+                    <span class="checkbox__label">Select All Permissions</span>
+                </label>
+                <div class="checkbox-group checkbox-group--nested">
+                    <label class="checkbox">
+                        <input type="checkbox" name="permissions" value="read" class="child-checkbox">
+                        <span class="checkbox__mark"></span>
+                        <span class="checkbox__label">Read</span>
+                    </label>
+                    <label class="checkbox">
+                        <input type="checkbox" name="permissions" value="write" class="child-checkbox" checked>
+                        <span class="checkbox__mark"></span>
+                        <span class="checkbox__label">Write</span>
+                    </label>
+                    <label class="checkbox">
+                        <input type="checkbox" name="permissions" value="delete" class="child-checkbox">
+                        <span class="checkbox__mark"></span>
+                        <span class="checkbox__label">Delete</span>
+                    </label>
+                </div>
+            </div>
+        </section>
+
+        <!-- Card Style -->
+        <section class="demo-section">
+            <h2>Card Style</h2>
+            <div class="input-group">
+                <label class="input-group__label">Choose plan features</label>
+                <div class="checkbox-group checkbox-group--cards">
+                    <label class="checkbox checkbox--card">
+                        <input type="checkbox" name="plan" value="storage" checked>
+                        <div class="checkbox__card">
+                            <span class="checkbox__mark"></span>
+                            <i class="fas fa-cloud-upload-alt checkbox__icon"></i>
+                            <span class="checkbox__label">Cloud Storage</span>
+                            <span class="checkbox__description">100GB included</span>
+                        </div>
+                    </label>
+                    <label class="checkbox checkbox--card">
+                        <input type="checkbox" name="plan" value="support">
+                        <div class="checkbox__card">
+                            <span class="checkbox__mark"></span>
+                            <i class="fas fa-headset checkbox__icon"></i>
+                            <span class="checkbox__label">24/7 Support</span>
+                            <span class="checkbox__description">Priority assistance</span>
+                        </div>
+                    </label>
+                    <label class="checkbox checkbox--card">
+                        <input type="checkbox" name="plan" value="teams" checked>
+                        <div class="checkbox__card">
+                            <span class="checkbox__mark"></span>
+                            <i class="fas fa-users checkbox__icon"></i>
+                            <span class="checkbox__label">Team Features</span>
+                            <span class="checkbox__description">Up to 10 members</span>
+                        </div>
+                    </label>
+                </div>
+            </div>
+        </section>
+
+        <!-- Disabled State -->
+        <section class="demo-section">
+            <h2>Disabled State</h2>
+            <div class="input-group">
+                <label class="input-group__label">Options with disabled items</label>
+                <div class="checkbox-group">
+                    <label class="checkbox">
+                        <input type="checkbox" name="disabled-demo" value="enabled1">
+                        <span class="checkbox__mark"></span>
+                        <span class="checkbox__label">Available option</span>
+                    </label>
+                    <label class="checkbox checkbox--disabled">
+                        <input type="checkbox" name="disabled-demo" value="disabled" disabled>
+                        <span class="checkbox__mark"></span>
+                        <span class="checkbox__label">Disabled option</span>
+                    </label>
+                    <label class="checkbox checkbox--disabled">
+                        <input type="checkbox" name="disabled-demo" value="disabled-checked" disabled checked>
+                        <span class="checkbox__mark"></span>
+                        <span class="checkbox__label">Disabled but checked</span>
+                    </label>
+                </div>
+            </div>
+        </section>
+
+        <!-- Validation States -->
+        <section class="demo-section">
+            <h2>Validation States</h2>
+            
+            <div class="input-group">
+                <label class="input-group__label">Error state</label>
+                <div class="checkbox-group checkbox-group--error">
+                    <label class="checkbox">
+                        <input type="checkbox" name="error-demo">
+                        <span class="checkbox__mark"></span>
+                        <span class="checkbox__label">Option 1</span>
+                    </label>
+                    <label class="checkbox">
+                        <input type="checkbox" name="error-demo">
+                        <span class="checkbox__mark"></span>
+                        <span class="checkbox__label">Option 2</span>
+                    </label>
+                </div>
+                <span class="input-group__error">Please select at least one option</span>
+            </div>
+
+            <div class="input-group">
+                <label class="input-group__label">Success state</label>
+                <div class="checkbox-group checkbox-group--success">
+                    <label class="checkbox">
+                        <input type="checkbox" name="success-demo" checked>
+                        <span class="checkbox__mark"></span>
+                        <span class="checkbox__label">Selected option</span>
+                    </label>
+                    <label class="checkbox">
+                        <input type="checkbox" name="success-demo">
+                        <span class="checkbox__mark"></span>
+                        <span class="checkbox__label">Other option</span>
+                    </label>
+                </div>
+                <span class="input-group__success">Valid selection</span>
+            </div>
+        </section>
+
+        <!-- Code Example -->
+        <section class="demo-section">
+            <h2>Code Example</h2>
+            <pre><code>&lt;!-- Basic Checkbox --&gt;
+&lt;label class="checkbox"&gt;
+    &lt;input type="checkbox"&gt;
+    &lt;span class="checkbox__mark"&gt;&lt;/span&gt;
+    &lt;span class="checkbox__label"&gt;Label text&lt;/span&gt;
+&lt;/label&gt;
+
+&lt;!-- Checkbox Group --&gt;
+&lt;div class="checkbox-group"&gt;
+    &lt;label class="checkbox"&gt;
+        &lt;input type="checkbox" name="group1" value="option1"&gt;
+        &lt;span class="checkbox__mark"&gt;&lt;/span&gt;
+        &lt;span class="checkbox__label"&gt;Option 1&lt;/span&gt;
+    &lt;/label&gt;
+    &lt;!-- More checkboxes --&gt;
+&lt;/div&gt;
+
+&lt;!-- With Description --&gt;
+&lt;label class="checkbox checkbox--with-description"&gt;
+    &lt;input type="checkbox"&gt;
+    &lt;span class="checkbox__mark"&gt;&lt;/span&gt;
+    &lt;div class="checkbox__content"&gt;
+        &lt;span class="checkbox__label"&gt;Option Label&lt;/span&gt;
+        &lt;span class="checkbox__description"&gt;Description&lt;/span&gt;
+    &lt;/div&gt;
+&lt;/label&gt;
+
+&lt;!-- Card Style --&gt;
+&lt;label class="checkbox checkbox--card"&gt;
+    &lt;input type="checkbox"&gt;
+    &lt;div class="checkbox__card"&gt;
+        &lt;span class="checkbox__mark"&gt;&lt;/span&gt;
+        &lt;i class="fas fa-icon checkbox__icon"&gt;&lt;/i&gt;
+        &lt;span class="checkbox__label"&gt;Option&lt;/span&gt;
+        &lt;span class="checkbox__description"&gt;Description&lt;/span&gt;
+    &lt;/div&gt;
+&lt;/label&gt;</code></pre>
+        </section>
+    </div>
+
+    <style>
+        .component-demo {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 40px 20px;
+        }
+
+        .demo-section {
+            margin-bottom: 48px;
+        }
+
+        .demo-section h2 {
+            margin-bottom: 24px;
+            color: var(--text-primary);
+        }
+
+        .input-group {
+            max-width: 600px;
+            margin-bottom: 24px;
+        }
+
+        .checkbox-tree {
+            max-width: 400px;
+        }
+
+        pre {
+            background-color: var(--bg-surface);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-base);
+            padding: 20px;
+            overflow-x: auto;
+        }
+
+        code {
+            color: var(--color-primary);
+            font-family: 'Monaco', 'Consolas', monospace;
+            font-size: 14px;
+        }
+    </style>
+
+    <script>
+        // Indeterminate state demo
+        const selectAllCheckbox = document.getElementById('selectAll');
+        const childCheckboxes = document.querySelectorAll('.child-checkbox');
+
+        function updateSelectAll() {
+            const checkedCount = document.querySelectorAll('.child-checkbox:checked').length;
+            
+            if (checkedCount === 0) {
+                selectAllCheckbox.checked = false;
+                selectAllCheckbox.indeterminate = false;
+            } else if (checkedCount === childCheckboxes.length) {
+                selectAllCheckbox.checked = true;
+                selectAllCheckbox.indeterminate = false;
+            } else {
+                selectAllCheckbox.checked = false;
+                selectAllCheckbox.indeterminate = true;
+            }
+        }
+
+        selectAllCheckbox.addEventListener('change', function() {
+            childCheckboxes.forEach(checkbox => {
+                checkbox.checked = this.checked;
+            });
+        });
+
+        childCheckboxes.forEach(checkbox => {
+            checkbox.addEventListener('change', updateSelectAll);
+        });
+
+        // Initialize state
+        updateSelectAll();
+
+        // Demo: Log checkbox changes
+        document.querySelectorAll('input[type="checkbox"]').forEach(checkbox => {
+            checkbox.addEventListener('change', function() {
+                console.log(`Checkbox changed: ${this.name || 'unnamed'} = ${this.checked}`);
+            });
+        });
+    </script>
+</body>
+</html>

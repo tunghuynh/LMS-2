@@ -1,0 +1,314 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Radio Group Component - LMS</title>
+    <!-- Core CSS -->
+    <link rel="stylesheet" href="../../assets/css/global.css">
+    <link rel="stylesheet" href="../../assets/css/themes.css">
+    <link rel="stylesheet" href="../../assets/css/layout.css">
+    <link rel="stylesheet" href="../../assets/css/components.css">
+    <link rel="stylesheet" href="../../assets/css/utilities.css">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+</head>
+<body>
+    <div class="component-demo">
+        <h1>Radio Group Component</h1>
+        
+        <!-- Basic Radio Group -->
+        <section class="demo-section">
+            <h2>Basic Radio Group</h2>
+            <div class="input-group">
+                <label class="input-group__label">Select an option</label>
+                <div class="radio-group">
+                    <label class="radio">
+                        <input type="radio" name="demo1" value="option1" checked>
+                        <span class="radio__mark"></span>
+                        <span class="radio__label">Option 1</span>
+                    </label>
+                    <label class="radio">
+                        <input type="radio" name="demo1" value="option2">
+                        <span class="radio__mark"></span>
+                        <span class="radio__label">Option 2</span>
+                    </label>
+                    <label class="radio">
+                        <input type="radio" name="demo1" value="option3">
+                        <span class="radio__mark"></span>
+                        <span class="radio__label">Option 3</span>
+                    </label>
+                </div>
+            </div>
+        </section>
+
+        <!-- Horizontal Layout -->
+        <section class="demo-section">
+            <h2>Horizontal Layout</h2>
+            <div class="input-group">
+                <label class="input-group__label">Choose your plan</label>
+                <div class="radio-group radio-group--horizontal">
+                    <label class="radio">
+                        <input type="radio" name="plan" value="basic">
+                        <span class="radio__mark"></span>
+                        <span class="radio__label">Basic</span>
+                    </label>
+                    <label class="radio">
+                        <input type="radio" name="plan" value="pro" checked>
+                        <span class="radio__mark"></span>
+                        <span class="radio__label">Pro</span>
+                    </label>
+                    <label class="radio">
+                        <input type="radio" name="plan" value="enterprise">
+                        <span class="radio__mark"></span>
+                        <span class="radio__label">Enterprise</span>
+                    </label>
+                </div>
+            </div>
+        </section>
+
+        <!-- With Descriptions -->
+        <section class="demo-section">
+            <h2>With Descriptions</h2>
+            <div class="input-group">
+                <label class="input-group__label required">Select role</label>
+                <div class="radio-group">
+                    <label class="radio radio--with-description">
+                        <input type="radio" name="role" value="student" checked>
+                        <span class="radio__mark"></span>
+                        <div class="radio__content">
+                            <span class="radio__label">Student</span>
+                            <span class="radio__description">Access courses and take quizzes</span>
+                        </div>
+                    </label>
+                    <label class="radio radio--with-description">
+                        <input type="radio" name="role" value="teacher">
+                        <span class="radio__mark"></span>
+                        <div class="radio__content">
+                            <span class="radio__label">Teacher</span>
+                            <span class="radio__description">Create and manage courses</span>
+                        </div>
+                    </label>
+                    <label class="radio radio--with-description">
+                        <input type="radio" name="role" value="admin">
+                        <span class="radio__mark"></span>
+                        <div class="radio__content">
+                            <span class="radio__label">Administrator</span>
+                            <span class="radio__description">Full system access and user management</span>
+                        </div>
+                    </label>
+                </div>
+                <span class="input-group__help">Choose the role that best describes you</span>
+            </div>
+        </section>
+
+        <!-- Card Style -->
+        <section class="demo-section">
+            <h2>Card Style</h2>
+            <div class="input-group">
+                <label class="input-group__label">Choose difficulty level</label>
+                <div class="radio-group radio-group--cards">
+                    <label class="radio radio--card">
+                        <input type="radio" name="difficulty" value="beginner" checked>
+                        <div class="radio__card">
+                            <span class="radio__mark"></span>
+                            <i class="fas fa-seedling radio__icon"></i>
+                            <span class="radio__label">Beginner</span>
+                            <span class="radio__description">New to programming</span>
+                        </div>
+                    </label>
+                    <label class="radio radio--card">
+                        <input type="radio" name="difficulty" value="intermediate">
+                        <div class="radio__card">
+                            <span class="radio__mark"></span>
+                            <i class="fas fa-code radio__icon"></i>
+                            <span class="radio__label">Intermediate</span>
+                            <span class="radio__description">Some experience</span>
+                        </div>
+                    </label>
+                    <label class="radio radio--card">
+                        <input type="radio" name="difficulty" value="advanced">
+                        <div class="radio__card">
+                            <span class="radio__mark"></span>
+                            <i class="fas fa-rocket radio__icon"></i>
+                            <span class="radio__label">Advanced</span>
+                            <span class="radio__description">Expert level</span>
+                        </div>
+                    </label>
+                </div>
+            </div>
+        </section>
+
+        <!-- Disabled State -->
+        <section class="demo-section">
+            <h2>Disabled State</h2>
+            <div class="input-group">
+                <label class="input-group__label">Options with disabled items</label>
+                <div class="radio-group">
+                    <label class="radio">
+                        <input type="radio" name="disabled-demo" value="enabled1">
+                        <span class="radio__mark"></span>
+                        <span class="radio__label">Available option</span>
+                    </label>
+                    <label class="radio radio--disabled">
+                        <input type="radio" name="disabled-demo" value="disabled" disabled>
+                        <span class="radio__mark"></span>
+                        <span class="radio__label">Disabled option</span>
+                    </label>
+                    <label class="radio">
+                        <input type="radio" name="disabled-demo" value="enabled2">
+                        <span class="radio__mark"></span>
+                        <span class="radio__label">Another available option</span>
+                    </label>
+                </div>
+            </div>
+
+            <div class="input-group">
+                <label class="input-group__label">Entire group disabled</label>
+                <div class="radio-group radio-group--disabled">
+                    <label class="radio">
+                        <input type="radio" name="all-disabled" value="opt1" disabled>
+                        <span class="radio__mark"></span>
+                        <span class="radio__label">Option 1</span>
+                    </label>
+                    <label class="radio">
+                        <input type="radio" name="all-disabled" value="opt2" disabled checked>
+                        <span class="radio__mark"></span>
+                        <span class="radio__label">Option 2 (selected)</span>
+                    </label>
+                </div>
+            </div>
+        </section>
+
+        <!-- Validation States -->
+        <section class="demo-section">
+            <h2>Validation States</h2>
+            
+            <div class="input-group">
+                <label class="input-group__label">Error state</label>
+                <div class="radio-group radio-group--error">
+                    <label class="radio">
+                        <input type="radio" name="error-demo" value="opt1">
+                        <span class="radio__mark"></span>
+                        <span class="radio__label">Option 1</span>
+                    </label>
+                    <label class="radio">
+                        <input type="radio" name="error-demo" value="opt2">
+                        <span class="radio__mark"></span>
+                        <span class="radio__label">Option 2</span>
+                    </label>
+                </div>
+                <span class="input-group__error">Please select an option</span>
+            </div>
+
+            <div class="input-group">
+                <label class="input-group__label">Success state</label>
+                <div class="radio-group radio-group--success">
+                    <label class="radio">
+                        <input type="radio" name="success-demo" value="opt1" checked>
+                        <span class="radio__mark"></span>
+                        <span class="radio__label">Selected option</span>
+                    </label>
+                    <label class="radio">
+                        <input type="radio" name="success-demo" value="opt2">
+                        <span class="radio__mark"></span>
+                        <span class="radio__label">Other option</span>
+                    </label>
+                </div>
+                <span class="input-group__success">Valid selection</span>
+            </div>
+        </section>
+
+        <!-- Code Example -->
+        <section class="demo-section">
+            <h2>Code Example</h2>
+            <pre><code>&lt;!-- Basic Radio Group --&gt;
+&lt;div class="radio-group"&gt;
+    &lt;label class="radio"&gt;
+        &lt;input type="radio" name="group1" value="option1"&gt;
+        &lt;span class="radio__mark"&gt;&lt;/span&gt;
+        &lt;span class="radio__label"&gt;Option 1&lt;/span&gt;
+    &lt;/label&gt;
+    &lt;label class="radio"&gt;
+        &lt;input type="radio" name="group1" value="option2"&gt;
+        &lt;span class="radio__mark"&gt;&lt;/span&gt;
+        &lt;span class="radio__label"&gt;Option 2&lt;/span&gt;
+    &lt;/label&gt;
+&lt;/div&gt;
+
+&lt;!-- Horizontal Layout --&gt;
+&lt;div class="radio-group radio-group--horizontal"&gt;
+    &lt;!-- Radio options --&gt;
+&lt;/div&gt;
+
+&lt;!-- With Description --&gt;
+&lt;label class="radio radio--with-description"&gt;
+    &lt;input type="radio" name="group2" value="option1"&gt;
+    &lt;span class="radio__mark"&gt;&lt;/span&gt;
+    &lt;div class="radio__content"&gt;
+        &lt;span class="radio__label"&gt;Option Label&lt;/span&gt;
+        &lt;span class="radio__description"&gt;Description text&lt;/span&gt;
+    &lt;/div&gt;
+&lt;/label&gt;
+
+&lt;!-- Card Style --&gt;
+&lt;div class="radio-group radio-group--cards"&gt;
+    &lt;label class="radio radio--card"&gt;
+        &lt;input type="radio" name="group3" value="option1"&gt;
+        &lt;div class="radio__card"&gt;
+            &lt;span class="radio__mark"&gt;&lt;/span&gt;
+            &lt;i class="fas fa-icon radio__icon"&gt;&lt;/i&gt;
+            &lt;span class="radio__label"&gt;Option&lt;/span&gt;
+            &lt;span class="radio__description"&gt;Description&lt;/span&gt;
+        &lt;/div&gt;
+    &lt;/label&gt;
+&lt;/div&gt;</code></pre>
+        </section>
+    </div>
+
+    <style>
+        .component-demo {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 40px 20px;
+        }
+
+        .demo-section {
+            margin-bottom: 48px;
+        }
+
+        .demo-section h2 {
+            margin-bottom: 24px;
+            color: var(--text-primary);
+        }
+
+        .input-group {
+            max-width: 600px;
+            margin-bottom: 24px;
+        }
+
+        pre {
+            background-color: var(--bg-surface);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-base);
+            padding: 20px;
+            overflow-x: auto;
+        }
+
+        code {
+            color: var(--color-primary);
+            font-family: 'Monaco', 'Consolas', monospace;
+            font-size: 14px;
+        }
+    </style>
+
+    <script>
+        // Demo: Log radio changes
+        document.querySelectorAll('input[type="radio"]').forEach(radio => {
+            radio.addEventListener('change', function() {
+                console.log(`Radio changed: ${this.name} = ${this.value}`);
+            });
+        });
+    </script>
+</body>
+</html>

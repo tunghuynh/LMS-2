@@ -134,6 +134,11 @@
             <a href="#dropdowns">Dropdowns</a>
             <a href="#badges">Badges</a>
             <a href="#alerts">Alerts</a>
+            <a href="#datepicker">Date Picker</a>
+            <a href="#tags">Tags</a>
+            <a href="#radio">Radio Groups</a>
+            <a href="#checkbox">Checkboxes</a>
+            <a href="#upload">Upload</a>
             <a href="base/button.html" target="_blank">Full Button Demo →</a>
             <a href="base/input.html" target="_blank">Full Input Demo →</a>
             <a href="base/table.html" target="_blank">Full Table Demo →</a>
@@ -142,6 +147,11 @@
             <a href="base/dropdown.html" target="_blank">Full Dropdown Demo →</a>
             <a href="base/badge.html" target="_blank">Full Badge Demo →</a>
             <a href="base/alert.html" target="_blank">Full Alert Demo →</a>
+            <a href="base/datepicker.html" target="_blank">Full Date Picker Demo →</a>
+            <a href="base/tag.html" target="_blank">Full Tag Demo →</a>
+            <a href="base/radio.html" target="_blank">Full Radio Demo →</a>
+            <a href="base/checkbox.html" target="_blank">Full Checkbox Demo →</a>
+            <a href="base/upload.html" target="_blank">Full Upload Demo →</a>
         </nav>
 
         <!-- Buttons Section -->
@@ -562,6 +572,155 @@
                     <button class="alert__close" aria-label="Close alert">
                         <i class="fas fa-times"></i>
                     </button>
+                </div>
+            </div>
+        </section>
+
+        <!-- Date Picker Section -->
+        <section class="component-section" id="datepicker">
+            <h2 class="component-title">
+                Date Picker
+                <span class="component-subtitle">Date and time selection</span>
+            </h2>
+            
+            <div class="component-demo">
+                <h3>Basic Date Picker</h3>
+                <div class="input-group" style="max-width: 300px;">
+                    <label class="input-group__label">Select Date</label>
+                    <div class="datepicker">
+                        <input type="text" class="datepicker__input" placeholder="DD/MM/YYYY" readonly>
+                        <button class="datepicker__toggle" aria-label="Toggle calendar">
+                            <i class="fas fa-calendar"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Tags Section -->
+        <section class="component-section" id="tags">
+            <h2 class="component-title">
+                Tags
+                <span class="component-subtitle">Labels and categories</span>
+            </h2>
+            
+            <div class="component-demo">
+                <h3>Tag Variants</h3>
+                <div class="demo-group">
+                    <span class="tag">Default</span>
+                    <span class="tag tag--primary">Primary</span>
+                    <span class="tag tag--secondary">Secondary</span>
+                    <span class="tag tag--success">Success</span>
+                    <span class="tag tag--danger">Danger</span>
+                    <span class="tag tag--warning">Warning</span>
+                    <span class="tag tag--info">Info</span>
+                </div>
+                
+                <h3>Removable Tags</h3>
+                <div class="demo-group">
+                    <span class="tag tag--primary tag--removable">
+                        JavaScript
+                        <button class="tag__remove" aria-label="Remove">
+                            <i class="fas fa-times"></i>
+                        </button>
+                    </span>
+                    <span class="tag tag--secondary tag--removable">
+                        React
+                        <button class="tag__remove" aria-label="Remove">
+                            <i class="fas fa-times"></i>
+                        </button>
+                    </span>
+                </div>
+            </div>
+        </section>
+
+        <!-- Radio Groups Section -->
+        <section class="component-section" id="radio">
+            <h2 class="component-title">
+                Radio Groups
+                <span class="component-subtitle">Single selection from options</span>
+            </h2>
+            
+            <div class="component-demo">
+                <h3>Basic Radio Group</h3>
+                <div class="radio-group">
+                    <label class="radio">
+                        <input type="radio" name="demo-radio" value="option1" checked>
+                        <span class="radio__mark"></span>
+                        <span class="radio__label">Option 1</span>
+                    </label>
+                    <label class="radio">
+                        <input type="radio" name="demo-radio" value="option2">
+                        <span class="radio__mark"></span>
+                        <span class="radio__label">Option 2</span>
+                    </label>
+                    <label class="radio">
+                        <input type="radio" name="demo-radio" value="option3">
+                        <span class="radio__mark"></span>
+                        <span class="radio__label">Option 3</span>
+                    </label>
+                </div>
+            </div>
+        </section>
+
+        <!-- Checkbox Section -->
+        <section class="component-section" id="checkbox">
+            <h2 class="component-title">
+                Checkboxes
+                <span class="component-subtitle">Multiple selection options</span>
+            </h2>
+            
+            <div class="component-demo">
+                <h3>Basic Checkboxes</h3>
+                <div class="checkbox-group">
+                    <label class="checkbox">
+                        <input type="checkbox" checked>
+                        <span class="checkbox__mark"></span>
+                        <span class="checkbox__label">Option 1</span>
+                    </label>
+                    <label class="checkbox">
+                        <input type="checkbox">
+                        <span class="checkbox__mark"></span>
+                        <span class="checkbox__label">Option 2</span>
+                    </label>
+                    <label class="checkbox">
+                        <input type="checkbox">
+                        <span class="checkbox__mark"></span>
+                        <span class="checkbox__label">Option 3</span>
+                    </label>
+                </div>
+            </div>
+        </section>
+
+        <!-- Upload Section -->
+        <section class="component-section" id="upload">
+            <h2 class="component-title">
+                Upload
+                <span class="component-subtitle">File upload components</span>
+            </h2>
+            
+            <div class="component-demo">
+                <h3>Basic Upload</h3>
+                <div class="upload upload--button">
+                    <input type="file" id="showcase-upload" class="upload__input">
+                    <label for="showcase-upload" class="upload__label button button--primary">
+                        <i class="fas fa-upload"></i>
+                        Choose File
+                    </label>
+                    <span class="upload__filename">No file chosen</span>
+                </div>
+                
+                <h3>Drag and Drop</h3>
+                <div class="upload upload--dropzone" style="max-width: 500px;">
+                    <input type="file" id="showcase-dropzone" class="upload__input" multiple>
+                    <label for="showcase-dropzone" class="upload__dropzone">
+                        <i class="fas fa-cloud-upload-alt upload__icon"></i>
+                        <span class="upload__text">
+                            Drag and drop files here or 
+                            <span class="upload__link">browse</span>
+                        </span>
+                        <span class="upload__hint">Max file size: 10MB</span>
+                    </label>
                 </div>
             </div>
         </section>
