@@ -34,6 +34,10 @@
                         <i class="fas fa-download" class="icon-mr"></i>
                         <span data-translate="quiz.export">Export All</span>
                     </button>
+                    <button class="btn btn--secondary" onclick="openImportModal()">
+                        <i class="fas fa-file-excel" class="icon-mr"></i>
+                        <span data-translate="quiz.importExcel">Import Excel</span>
+                    </button>
                     <button class="btn btn--primary" onclick="createQuiz()">
                         <i class="fas fa-plus-circle" class="icon-mr"></i>
                         <span data-translate="quiz.create">Create Quiz</span>
@@ -253,6 +257,245 @@
             </div>
         </div>
     </div>
+
+    <!-- Import Excel Modal -->
+    <div class="modal__backdrop" id="importModalBackdrop" onclick="closeImportModal(event)">
+        <div class="modal" onclick="event.stopPropagation()">
+            <div class="modal__header">
+                <h2 data-translate="quiz.importExcel">Import Quiz from Excel</h2>
+                <button class="modal__close" onclick="closeImportModal()">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="modal__body">
+                <!-- Step 1: Download Template -->
+                <div class="import-step">
+                    <h3>
+                        <span class="step-number">1</span>
+                        <span data-translate="quiz.downloadTemplate">Download Template</span>
+                    </h3>
+                    <p data-translate="quiz.downloadTemplateDesc">Download our Excel template with the correct format for quiz questions.</p>
+                    <button class="button button--secondary" onclick="downloadTemplate()">
+                        <i class="fas fa-download"></i>
+                        <span data-translate="quiz.downloadExcelTemplate">Download Excel Template</span>
+                    </button>
+                </div>
+
+                <!-- Step 2: Upload File -->
+                <div class="import-step">
+                    <h3>
+                        <span class="step-number">2</span>
+                        <span data-translate="quiz.uploadFile">Upload Your File</span>
+                    </h3>
+                    <p data-translate="quiz.uploadFileDesc">Fill the template with your questions and upload it here.</p>
+                    
+                    <div class="upload upload--dropzone" id="excelUploadArea">
+                        <input type="file" id="excelFileInput" class="upload__input" accept=".xlsx,.xls">
+                        <label for="excelFileInput" class="upload__dropzone">
+                            <i class="fas fa-file-excel upload__icon"></i>
+                            <span class="upload__text">
+                                <span data-translate="quiz.dragDropExcel">Drag and drop Excel file here or</span>
+                                <span class="upload__link" data-translate="quiz.browse">browse</span>
+                            </span>
+                            <span class="upload__hint" data-translate="quiz.acceptedFormats">Accepts: .xlsx, .xls</span>
+                        </label>
+                    </div>
+                    
+                    <div id="uploadedFileInfo" class="uploaded-file-info" style="display: none;">
+                        <i class="fas fa-file-excel"></i>
+                        <span class="filename"></span>
+                        <button class="button button--ghost button--small" onclick="removeUploadedFile()">
+                            <i class="fas fa-times"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Step 3: Preview -->
+                <div class="import-step" id="previewStep" style="display: none;">
+                    <h3>
+                        <span class="step-number">3</span>
+                        <span data-translate="quiz.preview">Preview Import</span>
+                    </h3>
+                    <div class="import-summary">
+                        <div class="summary-item">
+                            <span data-translate="quiz.quizTitle">Quiz Title:</span>
+                            <strong id="previewTitle">-</strong>
+                        </div>
+                        <div class="summary-item">
+                            <span data-translate="quiz.totalQuestions">Total Questions:</span>
+                            <strong id="previewQuestionCount">0</strong>
+                        </div>
+                        <div class="summary-item">
+                            <span data-translate="quiz.validQuestions">Valid Questions:</span>
+                            <strong id="previewValidCount" class="text-success">0</strong>
+                        </div>
+                        <div class="summary-item">
+                            <span data-translate="quiz.errors">Errors:</span>
+                            <strong id="previewErrorCount" class="text-danger">0</strong>
+                        </div>
+                    </div>
+                    
+                    <div id="importErrors" class="import-errors" style="display: none;">
+                        <h4 data-translate="quiz.importErrors">Import Errors:</h4>
+                        <ul id="errorList"></ul>
+                    </div>
+                    
+                    <div id="previewQuestions" class="preview-questions">
+                        <!-- Questions preview will be inserted here -->
+                    </div>
+                </div>
+            </div>
+            <div class="modal__footer">
+                <button class="button button--ghost" onclick="closeImportModal()">
+                    <span data-translate="common.cancel">Cancel</span>
+                </button>
+                <button class="button button--primary" id="importButton" onclick="performImport()" disabled>
+                    <i class="fas fa-upload"></i>
+                    <span data-translate="quiz.import">Import Quiz</span>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <style>
+        .import-step {
+            margin-bottom: var(--spacing-6);
+            padding: var(--spacing-4);
+            background-color: var(--bg-base);
+            border-radius: var(--radius-base);
+            border: 1px solid var(--border-color);
+        }
+        
+        .import-step h3 {
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-3);
+            margin-bottom: var(--spacing-3);
+        }
+        
+        .step-number {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 28px;
+            height: 28px;
+            background-color: var(--color-primary);
+            color: white;
+            border-radius: 50%;
+            font-size: var(--font-size-sm);
+            font-weight: 600;
+        }
+        
+        .uploaded-file-info {
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-3);
+            padding: var(--spacing-3);
+            background-color: var(--bg-surface);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-base);
+            margin-top: var(--spacing-3);
+        }
+        
+        .uploaded-file-info i {
+            color: var(--color-success);
+            font-size: 1.5rem;
+        }
+        
+        .uploaded-file-info .filename {
+            flex: 1;
+            font-weight: 500;
+        }
+        
+        .import-summary {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: var(--spacing-3);
+            margin-bottom: var(--spacing-4);
+        }
+        
+        .summary-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: var(--spacing-2);
+            background-color: var(--bg-surface);
+            border-radius: var(--radius-sm);
+        }
+        
+        .import-errors {
+            background-color: var(--color-danger-lighter);
+            border: 1px solid var(--color-danger);
+            border-radius: var(--radius-base);
+            padding: var(--spacing-3);
+            margin-bottom: var(--spacing-4);
+        }
+        
+        .import-errors h4 {
+            color: var(--color-danger);
+            margin-bottom: var(--spacing-2);
+        }
+        
+        .import-errors ul {
+            margin: 0;
+            padding-left: var(--spacing-4);
+        }
+        
+        .preview-questions {
+            max-height: 300px;
+            overflow-y: auto;
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-base);
+            padding: var(--spacing-3);
+        }
+        
+        .preview-question {
+            padding: var(--spacing-3);
+            margin-bottom: var(--spacing-3);
+            background-color: var(--bg-base);
+            border-radius: var(--radius-base);
+        }
+        
+        .preview-question:last-child {
+            margin-bottom: 0;
+        }
+        
+        .preview-question-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: var(--spacing-2);
+        }
+        
+        .preview-question-number {
+            font-weight: 600;
+            color: var(--color-primary);
+        }
+        
+        .preview-question-type {
+            font-size: var(--font-size-sm);
+            padding: var(--spacing-1) var(--spacing-2);
+            background-color: var(--bg-surface);
+            border-radius: var(--radius-sm);
+        }
+        
+        .preview-question-text {
+            margin-bottom: var(--spacing-2);
+        }
+        
+        .preview-question-options {
+            font-size: var(--font-size-sm);
+            color: var(--text-secondary);
+        }
+        
+        .text-success {
+            color: var(--color-success);
+        }
+        
+        .text-danger {
+            color: var(--color-danger);
+        }
+    </style>
 
     <!-- Core JavaScript -->
     <script src="../assets/js/global.js"></script>
@@ -607,6 +850,14 @@
                     <i class="fas fa-copy" class="icon-mr"></i>
                     ${LMS.t('quiz.duplicate')}
                 </button>
+                <button class="btn btn--secondary" onclick="exportSingleQuiz('${quiz.id}');">
+                    <i class="fas fa-download" class="icon-mr"></i>
+                    Export JSON
+                </button>
+                <button class="btn btn--danger" onclick="deleteQuiz('${quiz.id}'); closeDetailModal();">
+                    <i class="fas fa-trash" class="icon-mr"></i>
+                    ${LMS.t('common.delete')}
+                </button>
             `;
             
             document.getElementById('detailModalBackdrop').classList.add('active');
@@ -689,6 +940,49 @@
         }
 
         function exportQuizzes() {
+            // Show format selection dialog
+            const format = confirm('Export as JSON?\n\nOK = JSON format (full quiz data)\nCancel = CSV format (summary only)') ? 'json' : 'csv';
+            
+            if (format === 'json') {
+                exportQuizzesAsJSON();
+            } else {
+                exportQuizzesAsCSV();
+            }
+        }
+        
+        function exportQuizzesAsJSON() {
+            // Export full quiz data including questions
+            const exportData = filteredQuizzes.map(quiz => {
+                const course = allCourses.find(c => c.id === quiz.courseId);
+                return {
+                    id: quiz.id,
+                    title: quiz.title,
+                    description: quiz.description,
+                    course: course?.title || 'Unknown',
+                    courseId: quiz.courseId,
+                    teacherId: quiz.teacherId,
+                    timeLimit: quiz.timeLimit,
+                    passScore: quiz.passingScore,
+                    maxAttempts: quiz.maxAttempts,
+                    status: quiz.status,
+                    questions: quiz.questions || [],
+                    createdAt: quiz.createdAt,
+                    updatedAt: quiz.updatedAt || quiz.createdAt
+                };
+            });
+            
+            // Download JSON
+            const jsonString = JSON.stringify(exportData, null, 2);
+            const blob = new Blob([jsonString], { type: 'application/json' });
+            const url = window.URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `quizzes_export_${new Date().toISOString().split('T')[0]}.json`;
+            a.click();
+            window.URL.revokeObjectURL(url);
+        }
+        
+        function exportQuizzesAsCSV() {
             const data = filteredQuizzes.map(quiz => {
                 const course = allCourses.find(c => c.id === quiz.courseId);
                 return {
@@ -717,7 +1011,7 @@
             const url = window.URL.createObjectURL(blob);
             const a = document.createElement('a');
             a.href = url;
-            a.download = `quizzes_${new Date().toISOString().split('T')[0]}.csv`;
+            a.download = `quizzes_summary_${new Date().toISOString().split('T')[0]}.csv`;
             a.click();
             window.URL.revokeObjectURL(url);
         }
@@ -756,6 +1050,373 @@
                 }
             });
         });
+
+        // Import Excel Functions
+        let uploadedExcelData = null;
+        
+        function openImportModal() {
+            document.getElementById('importModalBackdrop').classList.add('active');
+            // Reset form
+            document.getElementById('excelFileInput').value = '';
+            document.getElementById('uploadedFileInfo').style.display = 'none';
+            document.getElementById('previewStep').style.display = 'none';
+            document.getElementById('importButton').disabled = true;
+            uploadedExcelData = null;
+        }
+        
+        function closeImportModal(event) {
+            if (!event || event.target.id === 'importModalBackdrop') {
+                document.getElementById('importModalBackdrop').classList.remove('active');
+            }
+        }
+        
+        function downloadTemplate() {
+            // Create sample template data
+            const templateData = [
+                ['Quiz Title', 'Web Development Basics Quiz'],
+                ['Description', 'Test your knowledge of HTML, CSS, and JavaScript'],
+                ['Time Limit (minutes)', '30'],
+                ['Pass Score (%)', '70'],
+                [''],
+                ['Question', 'Type', 'Option A', 'Option B', 'Option C', 'Option D', 'Correct Answer', 'Points', 'Explanation'],
+                ['What does HTML stand for?', 'multiple_choice', 'Hyper Text Markup Language', 'High Tech Modern Language', 'Home Tool Markup Language', 'Hyper Transfer Markup Language', 'A', '10', 'HTML is the standard markup language for creating web pages.'],
+                ['CSS is used for:', 'multiple_choice', 'Structure', 'Styling', 'Behavior', 'Database', 'B', '10', 'CSS is used for styling and layout of web pages.'],
+                ['Is JavaScript a programming language?', 'true_false', 'True', 'False', '', '', 'A', '5', 'JavaScript is indeed a programming language.'],
+                ['What is the correct HTML tag for the largest heading?', 'text', '', '', '', '', '<h1>', '10', 'H1 is used for the main heading.'],
+                ['Which HTML attribute specifies an alternate text for an image?', 'multiple_choice', 'alt', 'title', 'src', 'href', 'A', '10', 'The alt attribute provides alternative text for images.']
+            ];
+
+            // Create workbook
+            const ws = XLSX.utils.aoa_to_sheet(templateData);
+            const wb = XLSX.utils.book_new();
+            XLSX.utils.book_append_sheet(wb, ws, "Quiz Template");
+            
+            // Style the worksheet
+            ws['!cols'] = [
+                {wch: 40}, // Question
+                {wch: 15}, // Type  
+                {wch: 25}, // Option A
+                {wch: 25}, // Option B
+                {wch: 25}, // Option C
+                {wch: 25}, // Option D
+                {wch: 15}, // Correct Answer
+                {wch: 10}, // Points
+                {wch: 40}  // Explanation
+            ];
+            
+            // Download file
+            XLSX.writeFile(wb, 'quiz_template.xlsx');
+        }
+        
+        // File input change handler
+        document.getElementById('excelFileInput').addEventListener('change', function(e) {
+            const file = e.target.files[0];
+            if (file) {
+                handleExcelFile(file);
+            }
+        });
+        
+        // Drag and drop handlers
+        const dropZone = document.getElementById('excelUploadArea');
+        
+        ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
+            dropZone.addEventListener(eventName, preventDefaults, false);
+        });
+        
+        function preventDefaults(e) {
+            e.preventDefault();
+            e.stopPropagation();
+        }
+        
+        ['dragenter', 'dragover'].forEach(eventName => {
+            dropZone.addEventListener(eventName, highlight, false);
+        });
+        
+        ['dragleave', 'drop'].forEach(eventName => {
+            dropZone.addEventListener(eventName, unhighlight, false);
+        });
+        
+        function highlight(e) {
+            dropZone.classList.add('upload__dropzone--hover');
+        }
+        
+        function unhighlight(e) {
+            dropZone.classList.remove('upload__dropzone--hover');
+        }
+        
+        dropZone.addEventListener('drop', handleDrop, false);
+        
+        function handleDrop(e) {
+            const dt = e.dataTransfer;
+            const files = dt.files;
+            
+            if (files.length > 0) {
+                handleExcelFile(files[0]);
+            }
+        }
+        
+        function handleExcelFile(file) {
+            if (!file.name.match(/\.(xlsx|xls)$/)) {
+                alert('Please upload an Excel file (.xlsx or .xls)');
+                return;
+            }
+            
+            // Show file info
+            document.getElementById('uploadedFileInfo').style.display = 'flex';
+            document.querySelector('#uploadedFileInfo .filename').textContent = file.name;
+            
+            // Read file
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                try {
+                    const data = new Uint8Array(e.target.result);
+                    const workbook = XLSX.read(data, {type: 'array'});
+                    
+                    // Parse the first sheet
+                    const firstSheet = workbook.Sheets[workbook.SheetNames[0]];
+                    const jsonData = XLSX.utils.sheet_to_json(firstSheet, {header: 1});
+                    
+                    // Process and validate data
+                    processExcelData(jsonData);
+                } catch (error) {
+                    alert('Error reading Excel file: ' + error.message);
+                    removeUploadedFile();
+                }
+            };
+            reader.readAsArrayBuffer(file);
+        }
+        
+        function removeUploadedFile() {
+            document.getElementById('excelFileInput').value = '';
+            document.getElementById('uploadedFileInfo').style.display = 'none';
+            document.getElementById('previewStep').style.display = 'none';
+            document.getElementById('importButton').disabled = true;
+            uploadedExcelData = null;
+        }
+        
+        function processExcelData(data) {
+            const quiz = {
+                title: '',
+                description: '',
+                timeLimit: 30,
+                passScore: 70,
+                questions: []
+            };
+            
+            const errors = [];
+            let headerRowIndex = -1;
+            
+            // Find quiz metadata and header row
+            for (let i = 0; i < Math.min(10, data.length); i++) {
+                const row = data[i];
+                if (!row || row.length === 0) continue;
+                
+                if (row[0] === 'Quiz Title' && row[1]) {
+                    quiz.title = row[1].toString();
+                } else if (row[0] === 'Description' && row[1]) {
+                    quiz.description = row[1].toString();
+                } else if (row[0] === 'Time Limit (minutes)' && row[1]) {
+                    quiz.timeLimit = parseInt(row[1]) || 30;
+                } else if (row[0] === 'Pass Score (%)' && row[1]) {
+                    quiz.passScore = parseInt(row[1]) || 70;
+                } else if (row[0] === 'Question') {
+                    headerRowIndex = i;
+                    break;
+                }
+            }
+            
+            if (headerRowIndex === -1) {
+                errors.push('Could not find question header row');
+            } else {
+                // Process questions
+                for (let i = headerRowIndex + 1; i < data.length; i++) {
+                    const row = data[i];
+                    if (!row || row.length < 9 || !row[0]) continue;
+                    
+                    const question = {
+                        text: row[0].toString(),
+                        type: row[1] ? row[1].toString().toLowerCase() : 'multiple_choice',
+                        options: [],
+                        correctAnswer: row[6] ? row[6].toString().toUpperCase() : '',
+                        points: parseInt(row[7]) || 10,
+                        explanation: row[8] ? row[8].toString() : ''
+                    };
+                    
+                    // Validate question type
+                    const validTypes = ['multiple_choice', 'true_false', 'text'];
+                    if (!validTypes.includes(question.type)) {
+                        errors.push(`Row ${i + 1}: Invalid question type "${question.type}"`);
+                        continue;
+                    }
+                    
+                    // Process options based on type
+                    if (question.type === 'multiple_choice') {
+                        for (let j = 2; j <= 5; j++) {
+                            if (row[j]) {
+                                question.options.push(row[j].toString());
+                            }
+                        }
+                        if (question.options.length < 2) {
+                            errors.push(`Row ${i + 1}: Multiple choice questions need at least 2 options`);
+                            continue;
+                        }
+                    } else if (question.type === 'true_false') {
+                        question.options = ['True', 'False'];
+                        // Convert T/F to A/B for consistency
+                        if (question.correctAnswer === 'TRUE' || question.correctAnswer === 'T') {
+                            question.correctAnswer = 'A';
+                        } else if (question.correctAnswer === 'FALSE' || question.correctAnswer === 'F') {
+                            question.correctAnswer = 'B';
+                        }
+                    }
+                    
+                    quiz.questions.push(question);
+                }
+            }
+            
+            // Show preview
+            showImportPreview(quiz, errors);
+        }
+        
+        function showImportPreview(quiz, errors) {
+            uploadedExcelData = quiz;
+            
+            // Update summary
+            document.getElementById('previewTitle').textContent = quiz.title || 'Untitled Quiz';
+            document.getElementById('previewQuestionCount').textContent = quiz.questions.length;
+            document.getElementById('previewValidCount').textContent = quiz.questions.length;
+            document.getElementById('previewErrorCount').textContent = errors.length;
+            
+            // Show errors if any
+            if (errors.length > 0) {
+                document.getElementById('importErrors').style.display = 'block';
+                const errorList = document.getElementById('errorList');
+                errorList.innerHTML = errors.map(err => `<li>${err}</li>`).join('');
+            } else {
+                document.getElementById('importErrors').style.display = 'none';
+            }
+            
+            // Show question preview
+            const previewContainer = document.getElementById('previewQuestions');
+            previewContainer.innerHTML = quiz.questions.map((q, index) => `
+                <div class="preview-question">
+                    <div class="preview-question-header">
+                        <span class="preview-question-number">Question ${index + 1}</span>
+                        <span class="preview-question-type">${q.type.replace('_', ' ')}</span>
+                    </div>
+                    <div class="preview-question-text">${q.text}</div>
+                    ${q.options.length > 0 ? `
+                        <div class="preview-question-options">
+                            Options: ${q.options.join(', ')}
+                        </div>
+                    ` : ''}
+                </div>
+            `).join('');
+            
+            // Show preview step and enable import button
+            document.getElementById('previewStep').style.display = 'block';
+            document.getElementById('importButton').disabled = quiz.questions.length === 0;
+        }
+        
+        async function performImport() {
+            if (!uploadedExcelData || uploadedExcelData.questions.length === 0) {
+                alert('No valid data to import');
+                return;
+            }
+            
+            try {
+                // Create quiz object
+                const newQuiz = {
+                    id: `quiz_${Date.now()}`,
+                    title: uploadedExcelData.title || 'Imported Quiz',
+                    description: uploadedExcelData.description || '',
+                    courseId: '',
+                    teacherId: currentUser.id,
+                    timeLimit: uploadedExcelData.timeLimit,
+                    passScore: uploadedExcelData.passScore,
+                    questions: uploadedExcelData.questions,
+                    status: 'draft',
+                    createdAt: new Date().toISOString(),
+                    updatedAt: new Date().toISOString()
+                };
+                
+                // Save to localStorage (in real app, would save to server)
+                let quizzes = JSON.parse(localStorage.getItem('lms_quizzes') || '[]');
+                quizzes.push(newQuiz);
+                localStorage.setItem('lms_quizzes', JSON.stringify(quizzes));
+                
+                // Close modal and refresh list
+                closeImportModal();
+                alert(`Successfully imported quiz: ${newQuiz.title}`);
+                loadQuizzes();
+            } catch (error) {
+                alert('Error importing quiz: ' + error.message);
+            }
+        }
+
+        // Export single quiz function
+        function exportSingleQuiz(quizId) {
+            const quiz = allQuizzes.find(q => q.id === quizId);
+            if (!quiz) {
+                alert('Quiz not found');
+                return;
+            }
+            
+            const course = allCourses.find(c => c.id === quiz.courseId);
+            const exportData = {
+                id: quiz.id,
+                title: quiz.title,
+                description: quiz.description,
+                course: course?.title || 'Unknown',
+                courseId: quiz.courseId,
+                teacherId: quiz.teacherId,
+                timeLimit: quiz.timeLimit,
+                passScore: quiz.passingScore,
+                maxAttempts: quiz.maxAttempts,
+                status: quiz.status,
+                questions: quiz.questions || [],
+                createdAt: quiz.createdAt,
+                updatedAt: quiz.updatedAt || quiz.createdAt
+            };
+            
+            // Download JSON
+            const jsonString = JSON.stringify(exportData, null, 2);
+            const blob = new Blob([jsonString], { type: 'application/json' });
+            const url = window.URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `quiz_${quiz.title.replace(/[^a-z0-9]/gi, '_').toLowerCase()}_${new Date().toISOString().split('T')[0]}.json`;
+            a.click();
+            window.URL.revokeObjectURL(url);
+        }
+        
+        // Delete quiz function
+        function deleteQuiz(quizId) {
+            if (!confirm('Are you sure you want to delete this quiz? This action cannot be undone.')) {
+                return;
+            }
+            
+            // Remove from allQuizzes array
+            const index = allQuizzes.findIndex(q => q.id === quizId);
+            if (index > -1) {
+                allQuizzes.splice(index, 1);
+                
+                // Update localStorage (in real app, would delete from server)
+                localStorage.setItem('lms_quizzes', JSON.stringify(allQuizzes));
+                
+                // Refresh display
+                loadQuizzes();
+                
+                alert('Quiz deleted successfully');
+            }
+        }
+
+        // Add script tag for XLSX library if not already loaded
+        if (typeof XLSX === 'undefined') {
+            const script = document.createElement('script');
+            script.src = 'https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js';
+            document.head.appendChild(script);
+        }
 
         // Initialize on load
         document.addEventListener('DOMContentLoaded', init);

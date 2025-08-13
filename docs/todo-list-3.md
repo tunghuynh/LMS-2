@@ -251,9 +251,9 @@ This is the master TODO list for LMS Phase I development following the Foundatio
   - Warning modal
   - Impact description
   - Confirm/Cancel buttons
-- [ ] **1.3.4** Phân quyền người dùng. Màn hình phân quyền chức năng cho role dạng TableTree gồm:
-    - [ ] Row là Danh sách các chức năng, cấp row nhỏ hơn của chức năng là các button tương ứng trong từng màn hình
-    - [ ] Col là 3 role Admin/Teacher/Student. Các cột có checkbox để tick phân quyền cho role nào được sử dụng chức năng gì
+- [x] **1.3.4** Phân quyền người dùng. Màn hình phân quyền chức năng cho role dạng TableTree gồm:
+    - [x] Row là Danh sách các chức năng, cấp row nhỏ hơn của chức năng là các button tương ứng trong từng màn hình
+    - [x] Col là 3 role Admin/Teacher/Student. Các cột có checkbox để tick phân quyền cho role nào được sử dụng chức năng gì
 
 #### 1.4 Class Management
 - [x] **1.4.1** Class List Page (`classes.html`):
@@ -450,12 +450,12 @@ This is the master TODO list for LMS Phase I development following the Foundatio
   - Sharing settings
 
 #### 3.4 Quiz Import/Export
-- [ ] **3.4.1** Excel Import:
+- [x] **3.4.1** Excel Import:
   - Download template Excel
   - Upload and parse Excel
   - Validation feedback
   - Preview before save
-- [ ] **3.4.2** JSON Export:
+- [x] **3.4.2** JSON Export:
   - Export quiz structure
   - Include answer key option
   - Bulk export feature
@@ -573,12 +573,12 @@ This is the master TODO list for LMS Phase I development following the Foundatio
 
 ### Completion Status
 - Phase 0 Foundation: 43/43 tasks (100%) ✅ **Hoàn thành tất cả base components!**
-- Phase I.1 User Management: 23/24 tasks (95.8%) 🚀 **Còn 1 task phân quyền**
-- Phase I.2 Learning System: 18/26 tasks (69.2%) ✅ **Module hoàn thành 69%**
-- Phase I.3 Testing System: 13/26 tasks (50%) 🚀 **Còn 2 task import/export**
+- Phase I.1 User Management: 24/24 tasks (100%) ✅ **Module hoàn thành 100%!**
+- Phase I.2 Learning System: 18/26 tasks (69.2%) 🚀 **Còn lesson và enrollment management**
+- Phase I.3 Testing System: 15/26 tasks (57.7%) ✅ **Import/Export hoàn thành!**
 - Integration & Testing: 0/28 tasks (0%)
 
-**Total: 97/147 tasks (66%)**
+**Total: 100/147 tasks (68%)**
 
 ### Critical Path
 1. Phase 0 must be 100% complete
@@ -774,6 +774,49 @@ Notes:
 - Ready to tackle remaining business logic tasks
 - User Management Module at 95.8% (missing permissions screen)
 - Testing System Module at 50% (missing import/export features)
+
+#### Date: 2025-01-12 (Update 2)
+**Completed Today:**
+- [x] 1.3.4: User Permissions Management screen with role-based access control
+- [x] 3.4.1: Excel Import for quizzes with template download and preview
+- [x] 3.4.2: JSON Export for quizzes (both bulk and individual)
+- [x] Added permissions link to User Management page
+- [x] Added import/export buttons to Quiz Management page
+- [x] Added delete functionality for quizzes
+
+**Features Implemented:**
+- Permissions Management:
+  - Tree table structure with features/subfeatures
+  - Role-based checkboxes (Admin/Teacher/Student)  
+  - Select all functionality with indeterminate state
+  - Real-time statistics update
+  - Save/load permissions from localStorage
+  - Export permissions to JSON
+  - Reset to default option
+- Excel Import:
+  - Download Excel template with sample data
+  - Drag & drop file upload
+  - Excel file parsing with validation
+  - Preview imported questions before save
+  - Error reporting for invalid data
+- JSON Export:
+  - Export all quizzes or individual quiz
+  - Format selection (JSON/CSV)
+  - Full quiz data including questions
+
+**Working on Next:**
+- Continue with Learning System Module:
+  - Lesson Builder (2.3.1)
+  - Lesson Viewer (2.4.1) 
+  - Enrollment Management (2.5.1)
+- Testing System remaining tasks
+
+**Notes:**
+- 68% total completion (100/147 tasks)
+- User Management Module now 100% complete! ✅
+- Testing System Module at 57.7% (15/26 tasks)
+- Using XLSX library for Excel functionality
+- All new features follow existing design patterns
 
 ---
 

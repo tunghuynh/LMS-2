@@ -1,0 +1,677 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>User Permissions - LMS Admin</title>
+    <!-- Core CSS -->
+    <link rel="stylesheet" href="../assets/css/global.css">
+    <link rel="stylesheet" href="../assets/css/themes.css">
+    <link rel="stylesheet" href="../assets/css/layout.css">
+    <link rel="stylesheet" href="../assets/css/components.css">
+    <link rel="stylesheet" href="../assets/css/utilities.css">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <style>
+        .permissions-page {
+            padding: var(--spacing-6);
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+        
+        .permissions-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: var(--spacing-6);
+        }
+        
+        .permissions-info {
+            display: flex;
+            gap: var(--spacing-6);
+            margin-bottom: var(--spacing-4);
+        }
+        
+        .info-card {
+            flex: 1;
+            background-color: var(--bg-surface);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-lg);
+            padding: var(--spacing-4);
+        }
+        
+        .info-card h3 {
+            font-size: var(--font-size-sm);
+            color: var(--text-secondary);
+            margin-bottom: var(--spacing-2);
+        }
+        
+        .info-card p {
+            font-size: var(--font-size-xl);
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+        
+        .permissions-table {
+            width: 100%;
+            background-color: var(--bg-surface);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-lg);
+            overflow: hidden;
+        }
+        
+        .permissions-table th {
+            background-color: var(--bg-hover);
+            padding: var(--spacing-3) var(--spacing-4);
+            text-align: left;
+            font-weight: 600;
+            color: var(--text-primary);
+            border-bottom: 2px solid var(--border-color);
+        }
+        
+        .permissions-table th.role-header {
+            text-align: center;
+            min-width: 120px;
+        }
+        
+        .permissions-table td {
+            padding: var(--spacing-3) var(--spacing-4);
+            border-bottom: 1px solid var(--border-color);
+        }
+        
+        .permissions-table td.role-cell {
+            text-align: center;
+        }
+        
+        .feature-row {
+            background-color: var(--bg-surface);
+        }
+        
+        .feature-row:hover {
+            background-color: var(--bg-hover);
+        }
+        
+        .subfeature-row {
+            background-color: var(--bg-base);
+        }
+        
+        .subfeature-row td:first-child {
+            padding-left: var(--spacing-8);
+        }
+        
+        .feature-name {
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-2);
+        }
+        
+        .feature-icon {
+            color: var(--color-primary);
+        }
+        
+        .feature-description {
+            font-size: var(--font-size-sm);
+            color: var(--text-secondary);
+            margin-top: var(--spacing-1);
+        }
+        
+        .expand-toggle {
+            background: none;
+            border: none;
+            color: var(--text-secondary);
+            cursor: pointer;
+            padding: var(--spacing-1);
+            margin-right: var(--spacing-2);
+            transition: transform var(--transition-fast);
+        }
+        
+        .expand-toggle.expanded {
+            transform: rotate(90deg);
+        }
+        
+        .subfeatures {
+            display: none;
+        }
+        
+        .subfeatures.show {
+            display: table-row-group;
+        }
+        
+        .select-all-row {
+            background-color: var(--color-primary-lighter);
+            font-weight: 600;
+        }
+        
+        .actions {
+            display: flex;
+            gap: var(--spacing-3);
+            margin-top: var(--spacing-6);
+            justify-content: flex-end;
+        }
+        
+        @media (max-width: 768px) {
+            .permissions-header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: var(--spacing-3);
+            }
+            
+            .permissions-info {
+                flex-direction: column;
+            }
+            
+            .permissions-table {
+                overflow-x: auto;
+                display: block;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="permissions-page">
+        <!-- Header -->
+        <div class="permissions-header">
+            <div>
+                <h1 data-translate="permissions.title">User Permissions Management</h1>
+                <p data-translate="permissions.subtitle">Configure access rights for different user roles</p>
+            </div>
+            <button class="button button--primary" onclick="savePermissions()">
+                <i class="fas fa-save"></i>
+                <span data-translate="common.save">Save Changes</span>
+            </button>
+        </div>
+
+        <!-- Info Cards -->
+        <div class="permissions-info">
+            <div class="info-card">
+                <h3 data-translate="permissions.totalFeatures">Total Features</h3>
+                <p id="totalFeatures">24</p>
+            </div>
+            <div class="info-card">
+                <h3 data-translate="permissions.adminAccess">Admin Access</h3>
+                <p id="adminAccess">24/24</p>
+            </div>
+            <div class="info-card">
+                <h3 data-translate="permissions.teacherAccess">Teacher Access</h3>
+                <p id="teacherAccess">15/24</p>
+            </div>
+            <div class="info-card">
+                <h3 data-translate="permissions.studentAccess">Student Access</h3>
+                <p id="studentAccess">8/24</p>
+            </div>
+        </div>
+
+        <!-- Permissions Table -->
+        <table class="permissions-table">
+            <thead>
+                <tr>
+                    <th style="width: 50%">
+                        <span data-translate="permissions.feature">Feature / Action</span>
+                    </th>
+                    <th class="role-header">
+                        <label class="checkbox">
+                            <input type="checkbox" id="selectAllAdmin" onchange="toggleAllForRole('admin')">
+                            <span class="checkbox__mark"></span>
+                            <span class="checkbox__label" data-translate="roles.admin">Administrator</span>
+                        </label>
+                    </th>
+                    <th class="role-header">
+                        <label class="checkbox">
+                            <input type="checkbox" id="selectAllTeacher" onchange="toggleAllForRole('teacher')">
+                            <span class="checkbox__mark"></span>
+                            <span class="checkbox__label" data-translate="roles.teacher">Teacher</span>
+                        </label>
+                    </th>
+                    <th class="role-header">
+                        <label class="checkbox">
+                            <input type="checkbox" id="selectAllStudent" onchange="toggleAllForRole('student')">
+                            <span class="checkbox__mark"></span>
+                            <span class="checkbox__label" data-translate="roles.student">Student</span>
+                        </label>
+                    </th>
+                </tr>
+            </thead>
+            <tbody id="permissionsBody">
+                <!-- Permissions rows will be populated by JavaScript -->
+            </tbody>
+        </table>
+
+        <!-- Actions -->
+        <div class="actions">
+            <button class="button button--ghost" onclick="resetToDefault()">
+                <i class="fas fa-undo"></i>
+                <span data-translate="permissions.resetDefault">Reset to Default</span>
+            </button>
+            <button class="button button--secondary" onclick="exportPermissions()">
+                <i class="fas fa-download"></i>
+                <span data-translate="permissions.export">Export</span>
+            </button>
+            <button class="button button--primary" onclick="savePermissions()">
+                <i class="fas fa-save"></i>
+                <span data-translate="common.save">Save Changes</span>
+            </button>
+        </div>
+    </div>
+
+    <!-- JavaScript -->
+    <script src="../assets/js/global.js"></script>
+    <script>
+        // Permission features structure
+        const features = [
+            {
+                id: 'dashboard',
+                name: 'Dashboard',
+                icon: 'fas fa-tachometer-alt',
+                description: 'View system overview and statistics',
+                permissions: { admin: true, teacher: true, student: true },
+                subfeatures: [
+                    { id: 'dashboard.stats', name: 'View Statistics', permissions: { admin: true, teacher: true, student: true } },
+                    { id: 'dashboard.export', name: 'Export Reports', permissions: { admin: true, teacher: true, student: false } }
+                ]
+            },
+            {
+                id: 'users',
+                name: 'User Management',
+                icon: 'fas fa-users',
+                description: 'Manage system users',
+                permissions: { admin: true, teacher: false, student: false },
+                subfeatures: [
+                    { id: 'users.view', name: 'View Users', permissions: { admin: true, teacher: false, student: false } },
+                    { id: 'users.create', name: 'Create User', permissions: { admin: true, teacher: false, student: false } },
+                    { id: 'users.edit', name: 'Edit User', permissions: { admin: true, teacher: false, student: false } },
+                    { id: 'users.delete', name: 'Delete User', permissions: { admin: true, teacher: false, student: false } }
+                ]
+            },
+            {
+                id: 'courses',
+                name: 'Course Management',
+                icon: 'fas fa-book',
+                description: 'Manage courses and lessons',
+                permissions: { admin: true, teacher: true, student: false },
+                subfeatures: [
+                    { id: 'courses.view', name: 'View Courses', permissions: { admin: true, teacher: true, student: true } },
+                    { id: 'courses.create', name: 'Create Course', permissions: { admin: true, teacher: true, student: false } },
+                    { id: 'courses.edit', name: 'Edit Course', permissions: { admin: true, teacher: true, student: false } },
+                    { id: 'courses.delete', name: 'Delete Course', permissions: { admin: true, teacher: true, student: false } },
+                    { id: 'courses.enroll', name: 'Enroll in Course', permissions: { admin: true, teacher: false, student: true } }
+                ]
+            },
+            {
+                id: 'quizzes',
+                name: 'Quiz Management',
+                icon: 'fas fa-question-circle',
+                description: 'Create and manage quizzes',
+                permissions: { admin: true, teacher: true, student: false },
+                subfeatures: [
+                    { id: 'quizzes.view', name: 'View Quizzes', permissions: { admin: true, teacher: true, student: true } },
+                    { id: 'quizzes.create', name: 'Create Quiz', permissions: { admin: true, teacher: true, student: false } },
+                    { id: 'quizzes.edit', name: 'Edit Quiz', permissions: { admin: true, teacher: true, student: false } },
+                    { id: 'quizzes.delete', name: 'Delete Quiz', permissions: { admin: true, teacher: true, student: false } },
+                    { id: 'quizzes.take', name: 'Take Quiz', permissions: { admin: true, teacher: true, student: true } },
+                    { id: 'quizzes.results', name: 'View Results', permissions: { admin: true, teacher: true, student: true } }
+                ]
+            },
+            {
+                id: 'classes',
+                name: 'Class Management',
+                icon: 'fas fa-chalkboard-teacher',
+                description: 'Manage classes and enrollments',
+                permissions: { admin: true, teacher: true, student: false },
+                subfeatures: [
+                    { id: 'classes.view', name: 'View Classes', permissions: { admin: true, teacher: true, student: true } },
+                    { id: 'classes.create', name: 'Create Class', permissions: { admin: true, teacher: false, student: false } },
+                    { id: 'classes.manage', name: 'Manage Students', permissions: { admin: true, teacher: true, student: false } }
+                ]
+            },
+            {
+                id: 'reports',
+                name: 'Reports & Analytics',
+                icon: 'fas fa-chart-bar',
+                description: 'View system reports and analytics',
+                permissions: { admin: true, teacher: true, student: false },
+                subfeatures: [
+                    { id: 'reports.view', name: 'View Reports', permissions: { admin: true, teacher: true, student: false } },
+                    { id: 'reports.export', name: 'Export Reports', permissions: { admin: true, teacher: true, student: false } }
+                ]
+            }
+        ];
+
+        // Initialize page
+        function init() {
+            renderPermissionsTable();
+            updateSelectAllCheckboxes();
+            updateStatistics();
+            
+            // Load saved permissions from localStorage
+            loadSavedPermissions();
+        }
+
+        // Render permissions table
+        function renderPermissionsTable() {
+            const tbody = document.getElementById('permissionsBody');
+            tbody.innerHTML = '';
+
+            features.forEach(feature => {
+                // Main feature row
+                const featureRow = document.createElement('tr');
+                featureRow.className = 'feature-row';
+                featureRow.innerHTML = `
+                    <td>
+                        <div class="feature-name">
+                            ${feature.subfeatures ? `<button class="expand-toggle" onclick="toggleSubfeatures('${feature.id}')">
+                                <i class="fas fa-chevron-right"></i>
+                            </button>` : '<span style="width: 28px;"></span>'}
+                            <i class="${feature.icon} feature-icon"></i>
+                            <div>
+                                <strong>${feature.name}</strong>
+                                <div class="feature-description">${feature.description}</div>
+                            </div>
+                        </div>
+                    </td>
+                    <td class="role-cell">
+                        <label class="checkbox">
+                            <input type="checkbox" 
+                                   id="${feature.id}_admin" 
+                                   ${feature.permissions.admin ? 'checked' : ''} 
+                                   onchange="updatePermission('${feature.id}', 'admin', this.checked)">
+                            <span class="checkbox__mark"></span>
+                        </label>
+                    </td>
+                    <td class="role-cell">
+                        <label class="checkbox">
+                            <input type="checkbox" 
+                                   id="${feature.id}_teacher" 
+                                   ${feature.permissions.teacher ? 'checked' : ''} 
+                                   onchange="updatePermission('${feature.id}', 'teacher', this.checked)">
+                            <span class="checkbox__mark"></span>
+                        </label>
+                    </td>
+                    <td class="role-cell">
+                        <label class="checkbox">
+                            <input type="checkbox" 
+                                   id="${feature.id}_student" 
+                                   ${feature.permissions.student ? 'checked' : ''} 
+                                   onchange="updatePermission('${feature.id}', 'student', this.checked)">
+                            <span class="checkbox__mark"></span>
+                        </label>
+                    </td>
+                `;
+                tbody.appendChild(featureRow);
+
+                // Subfeatures
+                if (feature.subfeatures) {
+                    const subfeaturesContainer = document.createElement('tbody');
+                    subfeaturesContainer.className = 'subfeatures';
+                    subfeaturesContainer.id = `${feature.id}_subfeatures`;
+
+                    feature.subfeatures.forEach(subfeature => {
+                        const subfeatureRow = document.createElement('tr');
+                        subfeatureRow.className = 'subfeature-row';
+                        subfeatureRow.innerHTML = `
+                            <td>
+                                <div class="feature-name">
+                                    <i class="fas fa-angle-right feature-icon"></i>
+                                    ${subfeature.name}
+                                </div>
+                            </td>
+                            <td class="role-cell">
+                                <label class="checkbox">
+                                    <input type="checkbox" 
+                                           id="${subfeature.id}_admin" 
+                                           ${subfeature.permissions.admin ? 'checked' : ''} 
+                                           onchange="updatePermission('${subfeature.id}', 'admin', this.checked)">
+                                    <span class="checkbox__mark"></span>
+                                </label>
+                            </td>
+                            <td class="role-cell">
+                                <label class="checkbox">
+                                    <input type="checkbox" 
+                                           id="${subfeature.id}_teacher" 
+                                           ${subfeature.permissions.teacher ? 'checked' : ''} 
+                                           onchange="updatePermission('${subfeature.id}', 'teacher', this.checked)">
+                                    <span class="checkbox__mark"></span>
+                                </label>
+                            </td>
+                            <td class="role-cell">
+                                <label class="checkbox">
+                                    <input type="checkbox" 
+                                           id="${subfeature.id}_student" 
+                                           ${subfeature.permissions.student ? 'checked' : ''} 
+                                           onchange="updatePermission('${subfeature.id}', 'student', this.checked)">
+                                    <span class="checkbox__mark"></span>
+                                </label>
+                            </td>
+                        `;
+                        subfeaturesContainer.appendChild(subfeatureRow);
+                    });
+
+                    tbody.appendChild(subfeaturesContainer);
+                }
+            });
+        }
+
+        // Toggle subfeatures visibility
+        function toggleSubfeatures(featureId) {
+            const subfeatures = document.getElementById(`${featureId}_subfeatures`);
+            const toggle = event.target.closest('.expand-toggle');
+            
+            if (subfeatures.classList.contains('show')) {
+                subfeatures.classList.remove('show');
+                toggle.classList.remove('expanded');
+            } else {
+                subfeatures.classList.add('show');
+                toggle.classList.add('expanded');
+            }
+        }
+
+        // Update permission
+        function updatePermission(featureId, role, checked) {
+            // Find and update the permission
+            features.forEach(feature => {
+                if (feature.id === featureId) {
+                    feature.permissions[role] = checked;
+                } else if (feature.subfeatures) {
+                    feature.subfeatures.forEach(sub => {
+                        if (sub.id === featureId) {
+                            sub.permissions[role] = checked;
+                        }
+                    });
+                }
+            });
+
+            updateSelectAllCheckboxes();
+            updateStatistics();
+        }
+
+        // Toggle all permissions for a role
+        function toggleAllForRole(role) {
+            const selectAll = document.getElementById(`selectAll${role.charAt(0).toUpperCase() + role.slice(1)}`);
+            const checked = selectAll.checked;
+
+            features.forEach(feature => {
+                feature.permissions[role] = checked;
+                document.getElementById(`${feature.id}_${role}`).checked = checked;
+                
+                if (feature.subfeatures) {
+                    feature.subfeatures.forEach(sub => {
+                        sub.permissions[role] = checked;
+                        document.getElementById(`${sub.id}_${role}`).checked = checked;
+                    });
+                }
+            });
+
+            updateStatistics();
+        }
+
+        // Update select all checkboxes based on individual selections
+        function updateSelectAllCheckboxes() {
+            ['admin', 'teacher', 'student'].forEach(role => {
+                let allChecked = true;
+                let someChecked = false;
+
+                features.forEach(feature => {
+                    if (!feature.permissions[role]) allChecked = false;
+                    if (feature.permissions[role]) someChecked = true;
+                    
+                    if (feature.subfeatures) {
+                        feature.subfeatures.forEach(sub => {
+                            if (!sub.permissions[role]) allChecked = false;
+                            if (sub.permissions[role]) someChecked = true;
+                        });
+                    }
+                });
+
+                const selectAllCheckbox = document.getElementById(`selectAll${role.charAt(0).toUpperCase() + role.slice(1)}`);
+                selectAllCheckbox.checked = allChecked;
+                selectAllCheckbox.indeterminate = !allChecked && someChecked;
+            });
+        }
+
+        // Update statistics
+        function updateStatistics() {
+            let totalCount = 0;
+            let adminCount = 0;
+            let teacherCount = 0;
+            let studentCount = 0;
+
+            features.forEach(feature => {
+                totalCount++;
+                if (feature.permissions.admin) adminCount++;
+                if (feature.permissions.teacher) teacherCount++;
+                if (feature.permissions.student) studentCount++;
+                
+                if (feature.subfeatures) {
+                    feature.subfeatures.forEach(sub => {
+                        totalCount++;
+                        if (sub.permissions.admin) adminCount++;
+                        if (sub.permissions.teacher) teacherCount++;
+                        if (sub.permissions.student) studentCount++;
+                    });
+                }
+            });
+
+            document.getElementById('totalFeatures').textContent = totalCount;
+            document.getElementById('adminAccess').textContent = `${adminCount}/${totalCount}`;
+            document.getElementById('teacherAccess').textContent = `${teacherCount}/${totalCount}`;
+            document.getElementById('studentAccess').textContent = `${studentCount}/${totalCount}`;
+        }
+
+        // Save permissions
+        function savePermissions() {
+            const permissions = {};
+            
+            features.forEach(feature => {
+                permissions[feature.id] = feature.permissions;
+                if (feature.subfeatures) {
+                    feature.subfeatures.forEach(sub => {
+                        permissions[sub.id] = sub.permissions;
+                    });
+                }
+            });
+
+            localStorage.setItem('lms_permissions', JSON.stringify(permissions));
+            
+            // Show success message
+            alert('Permissions saved successfully!');
+        }
+
+        // Load saved permissions
+        function loadSavedPermissions() {
+            const saved = localStorage.getItem('lms_permissions');
+            if (saved) {
+                const permissions = JSON.parse(saved);
+                
+                features.forEach(feature => {
+                    if (permissions[feature.id]) {
+                        feature.permissions = permissions[feature.id];
+                    }
+                    if (feature.subfeatures) {
+                        feature.subfeatures.forEach(sub => {
+                            if (permissions[sub.id]) {
+                                sub.permissions = permissions[sub.id];
+                            }
+                        });
+                    }
+                });
+
+                renderPermissionsTable();
+                updateSelectAllCheckboxes();
+                updateStatistics();
+            }
+        }
+
+        // Reset to default permissions
+        function resetToDefault() {
+            if (confirm('Are you sure you want to reset all permissions to default?')) {
+                // Default permissions logic
+                features.forEach(feature => {
+                    switch(feature.id) {
+                        case 'dashboard':
+                            feature.permissions = { admin: true, teacher: true, student: true };
+                            break;
+                        case 'users':
+                            feature.permissions = { admin: true, teacher: false, student: false };
+                            break;
+                        case 'courses':
+                        case 'quizzes':
+                        case 'classes':
+                        case 'reports':
+                            feature.permissions = { admin: true, teacher: true, student: false };
+                            break;
+                    }
+                    
+                    // Reset subfeatures based on parent
+                    if (feature.subfeatures) {
+                        feature.subfeatures.forEach(sub => {
+                            // Special cases
+                            if (sub.id.includes('.view') || sub.id === 'courses.enroll' || sub.id === 'quizzes.take' || sub.id === 'quizzes.results') {
+                                sub.permissions = { admin: true, teacher: true, student: true };
+                            } else if (sub.id === 'classes.create') {
+                                sub.permissions = { admin: true, teacher: false, student: false };
+                            } else {
+                                sub.permissions = { ...feature.permissions };
+                            }
+                        });
+                    }
+                });
+
+                renderPermissionsTable();
+                updateSelectAllCheckboxes();
+                updateStatistics();
+                localStorage.removeItem('lms_permissions');
+            }
+        }
+
+        // Export permissions
+        function exportPermissions() {
+            const permissions = {};
+            
+            features.forEach(feature => {
+                permissions[feature.id] = {
+                    name: feature.name,
+                    permissions: feature.permissions
+                };
+                if (feature.subfeatures) {
+                    feature.subfeatures.forEach(sub => {
+                        permissions[sub.id] = {
+                            name: sub.name,
+                            permissions: sub.permissions
+                        };
+                    });
+                }
+            });
+
+            const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(permissions, null, 2));
+            const downloadAnchorNode = document.createElement('a');
+            downloadAnchorNode.setAttribute("href", dataStr);
+            downloadAnchorNode.setAttribute("download", "lms_permissions_" + new Date().toISOString().slice(0,10) + ".json");
+            document.body.appendChild(downloadAnchorNode);
+            downloadAnchorNode.click();
+            downloadAnchorNode.remove();
+        }
+
+        // Initialize on page load
+        document.addEventListener('DOMContentLoaded', init);
+    </script>
+</body>
+</html>
