@@ -106,6 +106,12 @@ LMS.Navigation = {
             href: 'pages/lesson-builder.html'
           },
           {
+            id: 'lesson-analytics',
+            icon: 'fa-chart-line',
+            label: 'nav.lessonAnalytics',
+            href: 'pages/lesson-analytics.html'
+          },
+          {
             id: 'categories',
             icon: 'fa-folder',
             label: 'nav.categories',
@@ -246,6 +252,12 @@ LMS.Navigation = {
             icon: 'fa-chalkboard',
             label: 'nav.lessonBuilder',
             href: 'pages/lesson-builder.html'
+          },
+          {
+            id: 'lesson-analytics',
+            icon: 'fa-chart-line',
+            label: 'nav.lessonAnalytics',
+            href: 'pages/lesson-analytics.html'
           },
           {
             id: 'categories',

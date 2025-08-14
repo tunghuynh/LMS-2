@@ -440,11 +440,11 @@ This is the master TODO list for LMS Phase I development following the Foundatio
   - [x] Multi-media lesson combining video + PDF + markdown
   - [x] Lesson prerequisites and dependencies
   - [ ] Lesson completion criteria customization (future enhancement)
-- [ ] **2.3.6** Lesson Analytics (NEW):
-  - **NEW**: Lesson viewing analytics
-  - Student engagement tracking (time spent, replay counts)
-  - Difficulty assessment based on student feedback
-  - Content effectiveness metrics
+- [x] **2.3.6** Lesson Analytics (NEW):
+  - [x] **NEW**: Lesson viewing analytics
+  - [x] Student engagement tracking (time spent, replay counts)
+  - [x] Difficulty assessment based on student feedback
+  - [x] Content effectiveness metrics
 
 #### 2.4 Lesson Viewer
 - [x] **2.4.1** Lesson Page (`lesson.html`):
@@ -931,16 +931,16 @@ This is the master TODO list for LMS Phase I development following the Foundatio
 ### Completion Status
 - **Phase 0 Foundation**: 43/43 tasks (100%) ✅ **Hoàn thành tất cả base components!**
 - **Phase I.1 User Management**: 30/30 tasks (100%) ✅ **Hoàn thành tất cả User Management tasks!**
-- **Phase I.2 Learning System**: 35/42 tasks (83.3%) 🚀 **Còn 7 tasks advanced features**
+- **Phase I.2 Learning System**: 36/42 tasks (85.7%) 🚀 **Còn 6 tasks advanced features**
 - **Phase I.3 Testing System**: 26/35 tasks (74.3%) 🚀 **Còn 9 tasks advanced features**
 - **Phase I.4 Navigation & Integration**: 2/8 tasks (25%) 🚀 **Hoàn thành navigation enhancement**
 - **Integration & Testing**: 1/32 tasks (3.1%) 🚀 **Started with test framework**
 
-**Total: 137/189 tasks (72.5%)**
+**Total: 138/189 tasks (73.0%)**
 
 ### Updated Critical Path
 1. **Phase 0**: ✅ 100% Complete - Foundation ready
-2. **Phase I Business Logic**: 93/114 tasks (81.6%) - In Progress
+2. **Phase I Business Logic**: 94/114 tasks (82.5%) - In Progress
    - ✅ Dashboards (3 tasks) - Completed
    - ✅ User Permissions (visible in navigation) - Completed  
    - ✅ Certificate System (4 tasks) - Completed
@@ -955,6 +955,7 @@ This is the master TODO list for LMS Phase I development following the Foundatio
    - ✅ Enhanced Progress Dashboard (6 sub-tasks) - Completed
    - ✅ Integration Test Framework (1 task) - Completed
    - ✅ Enhanced Category Management (4 sub-tasks) - Completed
+   - ✅ Lesson Analytics (4 sub-tasks) - Completed
    - **Remaining High Priority Tasks:**
      - Enhanced Lesson features
      - Additional Learning/Testing features

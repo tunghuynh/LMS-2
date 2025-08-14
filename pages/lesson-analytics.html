@@ -1,0 +1,895 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title data-translate="lessonAnalytics.title">Lesson Analytics</title>
+    <link rel="stylesheet" href="../assets/css/global.css">
+    <link rel="stylesheet" href="../assets/css/themes.css">
+    <link rel="stylesheet" href="../assets/css/components.css">
+    <link rel="stylesheet" href="../assets/css/layout.css">
+    <style>
+        /* Analytics Grid */
+        .analytics-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: var(--spacing-4);
+            margin-bottom: var(--spacing-6);
+        }
+
+        .analytics-card {
+            background: var(--bg-card);
+            border-radius: var(--radius-base);
+            padding: var(--spacing-4);
+            text-align: center;
+            box-shadow: var(--shadow-sm);
+        }
+
+        .analytics-card__icon {
+            width: 48px;
+            height: 48px;
+            margin: 0 auto var(--spacing-3);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: var(--radius-base);
+            font-size: 24px;
+        }
+
+        .analytics-card__value {
+            font-size: var(--font-size-2xl);
+            font-weight: var(--font-weight-semibold);
+            color: var(--text-primary);
+            margin-bottom: var(--spacing-1);
+        }
+
+        .analytics-card__label {
+            font-size: var(--font-size-sm);
+            color: var(--text-muted);
+        }
+
+        .analytics-card__trend {
+            display: inline-flex;
+            align-items: center;
+            gap: var(--spacing-1);
+            margin-top: var(--spacing-2);
+            font-size: var(--font-size-sm);
+        }
+
+        .analytics-card__trend--up {
+            color: var(--color-success);
+        }
+
+        .analytics-card__trend--down {
+            color: var(--color-error);
+        }
+
+        /* Chart Container */
+        .chart-container {
+            background: var(--bg-card);
+            border-radius: var(--radius-base);
+            padding: var(--spacing-4);
+            box-shadow: var(--shadow-sm);
+            margin-bottom: var(--spacing-4);
+        }
+
+        .chart-placeholder {
+            height: 300px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: var(--bg-secondary);
+            border-radius: var(--radius-base);
+            color: var(--text-muted);
+        }
+
+        /* Engagement Heat Map */
+        .heatmap-container {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            gap: var(--spacing-1);
+            margin-top: var(--spacing-4);
+        }
+
+        .heatmap-cell {
+            aspect-ratio: 1;
+            border-radius: var(--radius-small);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: var(--font-size-xs);
+            font-weight: var(--font-weight-medium);
+            cursor: pointer;
+            transition: all var(--transition-base);
+        }
+
+        .heatmap-cell:hover {
+            transform: scale(1.1);
+        }
+
+        .heatmap-cell--level-0 {
+            background: var(--bg-tertiary);
+            color: var(--text-muted);
+        }
+
+        .heatmap-cell--level-1 {
+            background: #DBEAFE;
+            color: #1E40AF;
+        }
+
+        .heatmap-cell--level-2 {
+            background: #93C5FD;
+            color: #1E3A8A;
+        }
+
+        .heatmap-cell--level-3 {
+            background: #60A5FA;
+            color: #1E3A8A;
+        }
+
+        .heatmap-cell--level-4 {
+            background: #3B82F6;
+            color: white;
+        }
+
+        /* Difficulty Rating */
+        .difficulty-bar {
+            display: flex;
+            gap: var(--spacing-1);
+            margin-top: var(--spacing-2);
+        }
+
+        .difficulty-segment {
+            flex: 1;
+            height: 8px;
+            background: var(--bg-tertiary);
+            border-radius: var(--radius-small);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .difficulty-segment__fill {
+            position: absolute;
+            left: 0;
+            top: 0;
+            height: 100%;
+            border-radius: var(--radius-small);
+            transition: width var(--transition-base);
+        }
+
+        .difficulty-segment--easy .difficulty-segment__fill {
+            background: var(--color-success);
+        }
+
+        .difficulty-segment--medium .difficulty-segment__fill {
+            background: var(--color-warning);
+        }
+
+        .difficulty-segment--hard .difficulty-segment__fill {
+            background: var(--color-error);
+        }
+
+        /* Student List */
+        .student-item {
+            display: flex;
+            align-items: center;
+            padding: var(--spacing-3);
+            border-bottom: 1px solid var(--border-color);
+            transition: background var(--transition-base);
+        }
+
+        .student-item:hover {
+            background: var(--bg-secondary);
+        }
+
+        .student-item__avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: var(--radius-full);
+            background: var(--bg-tertiary);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: var(--spacing-3);
+            font-weight: var(--font-weight-medium);
+        }
+
+        .student-item__info {
+            flex: 1;
+        }
+
+        .student-item__name {
+            font-weight: var(--font-weight-medium);
+            margin-bottom: 2px;
+        }
+
+        .student-item__stats {
+            font-size: var(--font-size-sm);
+            color: var(--text-muted);
+        }
+
+        .student-item__actions {
+            display: flex;
+            gap: var(--spacing-2);
+        }
+
+        /* Effectiveness Meter */
+        .effectiveness-meter {
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-3);
+            padding: var(--spacing-4);
+            background: var(--bg-secondary);
+            border-radius: var(--radius-base);
+        }
+
+        .effectiveness-meter__icon {
+            font-size: 48px;
+        }
+
+        .effectiveness-meter__content {
+            flex: 1;
+        }
+
+        .effectiveness-meter__label {
+            font-size: var(--font-size-sm);
+            color: var(--text-muted);
+            margin-bottom: var(--spacing-1);
+        }
+
+        .effectiveness-meter__value {
+            font-size: var(--font-size-xl);
+            font-weight: var(--font-weight-semibold);
+        }
+
+        .effectiveness-meter__bar {
+            height: 8px;
+            background: var(--bg-tertiary);
+            border-radius: var(--radius-full);
+            margin-top: var(--spacing-2);
+            overflow: hidden;
+        }
+
+        .effectiveness-meter__fill {
+            height: 100%;
+            background: linear-gradient(to right, var(--color-error), var(--color-warning), var(--color-success));
+            border-radius: var(--radius-full);
+            transition: width var(--transition-base);
+        }
+    </style>
+</head>
+<body>
+    <div class="page-container">
+        <div class="page-header">
+            <div>
+                <h1 data-translate="lessonAnalytics.title">Lesson Analytics</h1>
+                <p class="page-subtitle" data-translate="lessonAnalytics.subtitle">Track student engagement and lesson effectiveness</p>
+            </div>
+            <div class="action-group">
+                <button class="btn btn--secondary" onclick="exportAnalytics()">
+                    <span class="btn__icon">📥</span>
+                    <span data-translate="lessonAnalytics.export">Export Report</span>
+                </button>
+                <button class="btn btn--primary" onclick="openSettings()">
+                    <span class="btn__icon">⚙️</span>
+                    <span data-translate="lessonAnalytics.settings">Settings</span>
+                </button>
+            </div>
+        </div>
+
+        <div class="page-content">
+            <!-- Lesson Selector -->
+            <div class="card" style="margin-bottom: var(--spacing-6);">
+                <div class="card__body">
+                    <div style="display: grid; grid-template-columns: 1fr auto; gap: var(--spacing-4); align-items: end;">
+                        <div>
+                            <label class="form-label" data-translate="lessonAnalytics.selectLesson">Select Lesson</label>
+                            <select class="form-select" id="lessonSelect" onchange="loadLessonAnalytics()">
+                                <option value="" data-translate="lessonAnalytics.chooseLessonPlaceholder">Choose a lesson...</option>
+                            </select>
+                        </div>
+                        <div style="display: flex; gap: var(--spacing-2);">
+                            <button class="btn btn--secondary" onclick="previousLesson()">
+                                <span data-translate="common.previous">Previous</span>
+                            </button>
+                            <button class="btn btn--secondary" onclick="nextLesson()">
+                                <span data-translate="common.next">Next</span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Overview Stats -->
+            <div class="analytics-grid">
+                <div class="analytics-card">
+                    <div class="analytics-card__icon" style="background: var(--color-primary-light);">
+                        👁️
+                    </div>
+                    <div class="analytics-card__value" id="totalViews">0</div>
+                    <div class="analytics-card__label" data-translate="lessonAnalytics.totalViews">Total Views</div>
+                    <div class="analytics-card__trend analytics-card__trend--up">
+                        <span>↑</span>
+                        <span>12%</span>
+                    </div>
+                </div>
+                <div class="analytics-card">
+                    <div class="analytics-card__icon" style="background: #D1FAE5;">
+                        ⏱️
+                    </div>
+                    <div class="analytics-card__value" id="avgDuration">0m</div>
+                    <div class="analytics-card__label" data-translate="lessonAnalytics.avgDuration">Avg Duration</div>
+                    <div class="analytics-card__trend analytics-card__trend--up">
+                        <span>↑</span>
+                        <span>5%</span>
+                    </div>
+                </div>
+                <div class="analytics-card">
+                    <div class="analytics-card__icon" style="background: #FEF3C7;">
+                        ✅
+                    </div>
+                    <div class="analytics-card__value" id="completionRate">0%</div>
+                    <div class="analytics-card__label" data-translate="lessonAnalytics.completionRate">Completion Rate</div>
+                    <div class="analytics-card__trend analytics-card__trend--down">
+                        <span>↓</span>
+                        <span>3%</span>
+                    </div>
+                </div>
+                <div class="analytics-card">
+                    <div class="analytics-card__icon" style="background: #E0E7FF;">
+                        🔄
+                    </div>
+                    <div class="analytics-card__value" id="avgReplays">0</div>
+                    <div class="analytics-card__label" data-translate="lessonAnalytics.avgReplays">Avg Replays</div>
+                    <div class="analytics-card__trend analytics-card__trend--up">
+                        <span>↑</span>
+                        <span>8%</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Charts Row -->
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: var(--spacing-4); margin-bottom: var(--spacing-4);">
+                <!-- Engagement Over Time -->
+                <div class="chart-container">
+                    <h3 data-translate="lessonAnalytics.engagementOverTime">Engagement Over Time</h3>
+                    <div class="chart-placeholder">
+                        <canvas id="engagementChart"></canvas>
+                        <span data-translate="lessonAnalytics.chartPlaceholder">Chart visualization would appear here</span>
+                    </div>
+                </div>
+
+                <!-- Watch Pattern Heatmap -->
+                <div class="chart-container">
+                    <h3 data-translate="lessonAnalytics.watchPattern">Watch Pattern Heatmap</h3>
+                    <p style="font-size: var(--font-size-sm); color: var(--text-muted); margin-bottom: var(--spacing-2);">
+                        <span data-translate="lessonAnalytics.heatmapDescription">Shows which parts of the lesson are most watched/replayed</span>
+                    </p>
+                    <div class="heatmap-container" id="watchHeatmap">
+                        <!-- Dynamic heatmap cells -->
+                    </div>
+                    <div style="display: flex; justify-content: space-between; margin-top: var(--spacing-2); font-size: var(--font-size-xs); color: var(--text-muted);">
+                        <span>0:00</span>
+                        <span data-translate="lessonAnalytics.lessonDuration">Lesson Duration</span>
+                        <span id="lessonEndTime">15:00</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Difficulty Assessment & Effectiveness -->
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: var(--spacing-4); margin-bottom: var(--spacing-4);">
+                <!-- Difficulty Assessment -->
+                <div class="card">
+                    <div class="card__header">
+                        <h3 class="card__title" data-translate="lessonAnalytics.difficultyAssessment">Difficulty Assessment</h3>
+                    </div>
+                    <div class="card__body">
+                        <div style="margin-bottom: var(--spacing-4);">
+                            <div style="display: flex; justify-content: space-between; margin-bottom: var(--spacing-2);">
+                                <span data-translate="lessonAnalytics.studentFeedback">Based on student feedback</span>
+                                <span style="font-weight: var(--font-weight-medium);" id="difficultyScore">3.2/5</span>
+                            </div>
+                            <div class="difficulty-bar">
+                                <div class="difficulty-segment difficulty-segment--easy">
+                                    <div class="difficulty-segment__fill" style="width: 25%;"></div>
+                                </div>
+                                <div class="difficulty-segment difficulty-segment--medium">
+                                    <div class="difficulty-segment__fill" style="width: 60%;"></div>
+                                </div>
+                                <div class="difficulty-segment difficulty-segment--hard">
+                                    <div class="difficulty-segment__fill" style="width: 15%;"></div>
+                                </div>
+                            </div>
+                            <div style="display: flex; justify-content: space-between; margin-top: var(--spacing-1); font-size: var(--font-size-xs); color: var(--text-muted);">
+                                <span data-translate="lessonAnalytics.easy">Easy (25%)</span>
+                                <span data-translate="lessonAnalytics.medium">Medium (60%)</span>
+                                <span data-translate="lessonAnalytics.hard">Hard (15%)</span>
+                            </div>
+                        </div>
+
+                        <div style="padding-top: var(--spacing-4); border-top: 1px solid var(--border-color);">
+                            <h4 style="margin-bottom: var(--spacing-2);" data-translate="lessonAnalytics.strugglingTopics">Topics Students Struggle With</h4>
+                            <div style="display: flex; flex-direction: column; gap: var(--spacing-2);">
+                                <div style="display: flex; justify-content: space-between; font-size: var(--font-size-sm);">
+                                    <span>Advanced concepts at 8:30</span>
+                                    <span class="badge badge--error">45% replays</span>
+                                </div>
+                                <div style="display: flex; justify-content: space-between; font-size: var(--font-size-sm);">
+                                    <span>Formula explanation at 12:15</span>
+                                    <span class="badge badge--warning">32% replays</span>
+                                </div>
+                                <div style="display: flex; justify-content: space-between; font-size: var(--font-size-sm);">
+                                    <span>Example problem at 5:45</span>
+                                    <span class="badge badge--warning">28% replays</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Content Effectiveness -->
+                <div class="card">
+                    <div class="card__header">
+                        <h3 class="card__title" data-translate="lessonAnalytics.contentEffectiveness">Content Effectiveness</h3>
+                    </div>
+                    <div class="card__body">
+                        <div class="effectiveness-meter">
+                            <div class="effectiveness-meter__icon">🎯</div>
+                            <div class="effectiveness-meter__content">
+                                <div class="effectiveness-meter__label" data-translate="lessonAnalytics.overallScore">Overall Effectiveness Score</div>
+                                <div class="effectiveness-meter__value">78%</div>
+                                <div class="effectiveness-meter__bar">
+                                    <div class="effectiveness-meter__fill" style="width: 78%;"></div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div style="margin-top: var(--spacing-4);">
+                            <h4 style="margin-bottom: var(--spacing-2);" data-translate="lessonAnalytics.metrics">Key Metrics</h4>
+                            <div style="display: flex; flex-direction: column; gap: var(--spacing-3);">
+                                <div>
+                                    <div style="display: flex; justify-content: space-between; margin-bottom: var(--spacing-1);">
+                                        <span style="font-size: var(--font-size-sm);" data-translate="lessonAnalytics.studentSatisfaction">Student Satisfaction</span>
+                                        <span style="font-size: var(--font-size-sm); font-weight: var(--font-weight-medium);">4.2/5</span>
+                                    </div>
+                                    <div style="height: 4px; background: var(--bg-tertiary); border-radius: var(--radius-full);">
+                                        <div style="width: 84%; height: 100%; background: var(--color-success); border-radius: var(--radius-full);"></div>
+                                    </div>
+                                </div>
+                                <div>
+                                    <div style="display: flex; justify-content: space-between; margin-bottom: var(--spacing-1);">
+                                        <span style="font-size: var(--font-size-sm);" data-translate="lessonAnalytics.learningObjectivesMet">Learning Objectives Met</span>
+                                        <span style="font-size: var(--font-size-sm); font-weight: var(--font-weight-medium);">85%</span>
+                                    </div>
+                                    <div style="height: 4px; background: var(--bg-tertiary); border-radius: var(--radius-full);">
+                                        <div style="width: 85%; height: 100%; background: var(--color-success); border-radius: var(--radius-full);"></div>
+                                    </div>
+                                </div>
+                                <div>
+                                    <div style="display: flex; justify-content: space-between; margin-bottom: var(--spacing-1);">
+                                        <span style="font-size: var(--font-size-sm);" data-translate="lessonAnalytics.engagementLevel">Engagement Level</span>
+                                        <span style="font-size: var(--font-size-sm); font-weight: var(--font-weight-medium);">72%</span>
+                                    </div>
+                                    <div style="height: 4px; background: var(--bg-tertiary); border-radius: var(--radius-full);">
+                                        <div style="width: 72%; height: 100%; background: var(--color-warning); border-radius: var(--radius-full);"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Student Engagement Details -->
+            <div class="card">
+                <div class="card__header">
+                    <h3 class="card__title" data-translate="lessonAnalytics.studentEngagement">Student Engagement Details</h3>
+                    <div class="action-group">
+                        <input type="text" class="form-input" style="width: 200px;" placeholder="Search students..." data-translate-placeholder="lessonAnalytics.searchStudents" onkeyup="filterStudents(this.value)">
+                        <select class="form-select" onchange="sortStudents(this.value)">
+                            <option value="name" data-translate="lessonAnalytics.sortByName">Sort by Name</option>
+                            <option value="views" data-translate="lessonAnalytics.sortByViews">Sort by Views</option>
+                            <option value="duration" data-translate="lessonAnalytics.sortByDuration">Sort by Duration</option>
+                            <option value="completion" data-translate="lessonAnalytics.sortByCompletion">Sort by Completion</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="card__body card__body--no-padding">
+                    <div id="studentList">
+                        <!-- Dynamic student list -->
+                    </div>
+                    <div style="padding: var(--spacing-4); text-align: center; border-top: 1px solid var(--border-color);">
+                        <button class="btn btn--text" onclick="loadMoreStudents()">
+                            <span data-translate="lessonAnalytics.loadMore">Load More Students</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Settings Modal -->
+    <div class="modal" id="settingsModal" style="display: none;">
+        <div class="modal__overlay" onclick="closeSettings()"></div>
+        <div class="modal__content">
+            <div class="modal__header">
+                <h3 class="modal__title" data-translate="lessonAnalytics.analyticsSettings">Analytics Settings</h3>
+                <button class="modal__close" onclick="closeSettings()">&times;</button>
+            </div>
+            <div class="modal__body">
+                <div class="form-group">
+                    <label class="form-label" data-translate="lessonAnalytics.dateRange">Date Range</label>
+                    <select class="form-select" id="dateRange">
+                        <option value="7" data-translate="lessonAnalytics.last7Days">Last 7 days</option>
+                        <option value="30" selected data-translate="lessonAnalytics.last30Days">Last 30 days</option>
+                        <option value="90" data-translate="lessonAnalytics.last90Days">Last 90 days</option>
+                        <option value="365" data-translate="lessonAnalytics.lastYear">Last year</option>
+                        <option value="custom" data-translate="lessonAnalytics.customRange">Custom range</option>
+                    </select>
+                </div>
+                
+                <div class="form-group" id="customDateRange" style="display: none;">
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: var(--spacing-3);">
+                        <div>
+                            <label class="form-label" data-translate="lessonAnalytics.fromDate">From Date</label>
+                            <input type="date" class="form-input" id="fromDate">
+                        </div>
+                        <div>
+                            <label class="form-label" data-translate="lessonAnalytics.toDate">To Date</label>
+                            <input type="date" class="form-input" id="toDate">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label" data-translate="lessonAnalytics.dataGranularity">Data Granularity</label>
+                    <select class="form-select" id="dataGranularity">
+                        <option value="daily" data-translate="lessonAnalytics.daily">Daily</option>
+                        <option value="weekly" data-translate="lessonAnalytics.weekly">Weekly</option>
+                        <option value="monthly" data-translate="lessonAnalytics.monthly">Monthly</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label" data-translate="lessonAnalytics.includeInactive">Include Inactive Students</label>
+                    <label class="checkbox">
+                        <input type="checkbox" id="includeInactive">
+                        <span class="checkbox__mark"></span>
+                        <span class="checkbox__label" data-translate="lessonAnalytics.showInactiveStudents">Show students who haven't accessed the lesson recently</span>
+                    </label>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label" data-translate="lessonAnalytics.minimumWatchTime">Minimum Watch Time</label>
+                    <input type="number" class="form-input" id="minWatchTime" value="30" min="0">
+                    <span class="form-help" data-translate="lessonAnalytics.secondsToCountView">Seconds required to count as a view</span>
+                </div>
+            </div>
+            <div class="modal__footer">
+                <button class="btn btn--secondary" onclick="closeSettings()">
+                    <span data-translate="common.cancel">Cancel</span>
+                </button>
+                <button class="btn btn--primary" onclick="saveSettings()">
+                    <span data-translate="common.save">Save</span>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script src="../assets/js/global.js"></script>
+    <script>
+        // State management
+        let currentLesson = null;
+        let lessons = [];
+        let students = [];
+        let analyticsData = null;
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', function() {
+            loadLessons();
+            generateHeatmap();
+            loadStudentEngagement();
+            setupEventListeners();
+        });
+
+        // Load lessons
+        async function loadLessons() {
+            try {
+                // Mock lessons data
+                lessons = [
+                    { id: 'lesson_1', title: 'Introduction to Web Development', courseId: 'course_1', duration: 900 },
+                    { id: 'lesson_2', title: 'HTML Basics', courseId: 'course_1', duration: 1200 },
+                    { id: 'lesson_3', title: 'CSS Fundamentals', courseId: 'course_1', duration: 1500 },
+                    { id: 'lesson_4', title: 'JavaScript Introduction', courseId: 'course_1', duration: 1800 },
+                    { id: 'lesson_5', title: 'Advanced JavaScript Concepts', courseId: 'course_1', duration: 2100 }
+                ];
+
+                const select = document.getElementById('lessonSelect');
+                lessons.forEach(lesson => {
+                    const option = document.createElement('option');
+                    option.value = lesson.id;
+                    option.textContent = lesson.title;
+                    select.appendChild(option);
+                });
+
+                // Auto-select first lesson
+                if (lessons.length > 0) {
+                    select.value = lessons[0].id;
+                    loadLessonAnalytics();
+                }
+            } catch (error) {
+                console.error('Error loading lessons:', error);
+                showToast(t('common.error'), 'error');
+            }
+        }
+
+        // Load lesson analytics
+        async function loadLessonAnalytics() {
+            const lessonId = document.getElementById('lessonSelect').value;
+            if (!lessonId) return;
+
+            currentLesson = lessons.find(l => l.id === lessonId);
+            if (!currentLesson) return;
+
+            // Update lesson duration display
+            document.getElementById('lessonEndTime').textContent = formatDuration(currentLesson.duration);
+
+            // Generate mock analytics data
+            analyticsData = generateMockAnalytics();
+
+            // Update overview stats
+            updateOverviewStats();
+            
+            // Update charts
+            updateEngagementChart();
+            updateHeatmap();
+            
+            // Update difficulty and effectiveness
+            updateDifficultyAssessment();
+            updateEffectiveness();
+            
+            // Reload student list
+            loadStudentEngagement();
+        }
+
+        // Generate mock analytics
+        function generateMockAnalytics() {
+            return {
+                totalViews: Math.floor(Math.random() * 500) + 100,
+                avgDuration: Math.floor(Math.random() * 600) + 300,
+                completionRate: Math.floor(Math.random() * 40) + 60,
+                avgReplays: (Math.random() * 3 + 0.5).toFixed(1),
+                difficultyScore: (Math.random() * 2 + 2).toFixed(1),
+                effectivenessScore: Math.floor(Math.random() * 20) + 70,
+                satisfactionScore: (Math.random() * 1 + 3.5).toFixed(1),
+                objectivesMet: Math.floor(Math.random() * 15) + 75,
+                engagementLevel: Math.floor(Math.random() * 25) + 65
+            };
+        }
+
+        // Update overview stats
+        function updateOverviewStats() {
+            document.getElementById('totalViews').textContent = analyticsData.totalViews;
+            document.getElementById('avgDuration').textContent = formatDuration(analyticsData.avgDuration);
+            document.getElementById('completionRate').textContent = analyticsData.completionRate + '%';
+            document.getElementById('avgReplays').textContent = analyticsData.avgReplays;
+        }
+
+        // Generate heatmap
+        function generateHeatmap() {
+            const container = document.getElementById('watchHeatmap');
+            container.innerHTML = '';
+
+            // Generate 35 cells (5 rows x 7 columns)
+            for (let i = 0; i < 35; i++) {
+                const cell = document.createElement('div');
+                const level = Math.floor(Math.random() * 5);
+                cell.className = `heatmap-cell heatmap-cell--level-${level}`;
+                
+                // Calculate time position
+                const timePosition = (i / 35) * (currentLesson ? currentLesson.duration : 900);
+                cell.title = `${formatDuration(timePosition)} - ${level * 25}% engagement`;
+                
+                container.appendChild(cell);
+            }
+        }
+
+        // Update heatmap based on lesson
+        function updateHeatmap() {
+            generateHeatmap();
+        }
+
+        // Load student engagement
+        function loadStudentEngagement() {
+            // Generate mock student data
+            students = [];
+            const names = ['John Doe', 'Jane Smith', 'Mike Johnson', 'Sarah Williams', 'Tom Brown', 'Lisa Davis', 'Chris Wilson', 'Emma Garcia'];
+            
+            for (let i = 0; i < names.length; i++) {
+                students.push({
+                    id: 'student_' + i,
+                    name: names[i],
+                    avatar: names[i].split(' ').map(n => n[0]).join(''),
+                    views: Math.floor(Math.random() * 10) + 1,
+                    totalDuration: Math.floor(Math.random() * 1800) + 300,
+                    completion: Math.floor(Math.random() * 100),
+                    lastAccessed: new Date(Date.now() - Math.random() * 7 * 24 * 60 * 60 * 1000)
+                });
+            }
+
+            renderStudentList();
+        }
+
+        // Render student list
+        function renderStudentList() {
+            const container = document.getElementById('studentList');
+            container.innerHTML = '';
+
+            students.forEach(student => {
+                const item = document.createElement('div');
+                item.className = 'student-item';
+                item.innerHTML = `
+                    <div class="student-item__avatar">${student.avatar}</div>
+                    <div class="student-item__info">
+                        <div class="student-item__name">${student.name}</div>
+                        <div class="student-item__stats">
+                            ${student.views} ${t('lessonAnalytics.views')} • ${formatDuration(student.totalDuration)} • ${student.completion}% ${t('lessonAnalytics.completed')}
+                        </div>
+                    </div>
+                    <div class="student-item__actions">
+                        <button class="btn btn--text btn--small" onclick="viewStudentDetails('${student.id}')">
+                            <span data-translate="lessonAnalytics.viewDetails">View Details</span>
+                        </button>
+                    </div>
+                `;
+                container.appendChild(item);
+            });
+        }
+
+        // Update difficulty assessment
+        function updateDifficultyAssessment() {
+            document.getElementById('difficultyScore').textContent = analyticsData.difficultyScore + '/5';
+            
+            // Update difficulty bars
+            const easy = Math.floor(Math.random() * 30) + 10;
+            const medium = Math.floor(Math.random() * 40) + 40;
+            const hard = 100 - easy - medium;
+            
+            document.querySelector('.difficulty-segment--easy .difficulty-segment__fill').style.width = easy + '%';
+            document.querySelector('.difficulty-segment--medium .difficulty-segment__fill').style.width = medium + '%';
+            document.querySelector('.difficulty-segment--hard .difficulty-segment__fill').style.width = hard + '%';
+            
+            // Update percentages
+            const labels = document.querySelectorAll('.difficulty-bar + div span');
+            labels[0].textContent = t('lessonAnalytics.easy') + ` (${easy}%)`;
+            labels[1].textContent = t('lessonAnalytics.medium') + ` (${medium}%)`;
+            labels[2].textContent = t('lessonAnalytics.hard') + ` (${hard}%)`;
+        }
+
+        // Update effectiveness
+        function updateEffectiveness() {
+            document.querySelector('.effectiveness-meter__value').textContent = analyticsData.effectivenessScore + '%';
+            document.querySelector('.effectiveness-meter__fill').style.width = analyticsData.effectivenessScore + '%';
+        }
+
+        // Update engagement chart (mock)
+        function updateEngagementChart() {
+            // In a real implementation, this would use Chart.js or similar
+            console.log('Updating engagement chart...');
+        }
+
+        // Export analytics
+        function exportAnalytics() {
+            if (!currentLesson || !analyticsData) {
+                showToast(t('lessonAnalytics.selectLessonFirst'), 'error');
+                return;
+            }
+
+            // Mock export
+            showToast(t('lessonAnalytics.exportSuccess'), 'success');
+        }
+
+        // Navigation functions
+        function previousLesson() {
+            const select = document.getElementById('lessonSelect');
+            const currentIndex = lessons.findIndex(l => l.id === select.value);
+            if (currentIndex > 0) {
+                select.value = lessons[currentIndex - 1].id;
+                loadLessonAnalytics();
+            }
+        }
+
+        function nextLesson() {
+            const select = document.getElementById('lessonSelect');
+            const currentIndex = lessons.findIndex(l => l.id === select.value);
+            if (currentIndex < lessons.length - 1) {
+                select.value = lessons[currentIndex + 1].id;
+                loadLessonAnalytics();
+            }
+        }
+
+        // Filter students
+        function filterStudents(query) {
+            const filtered = students.filter(s => 
+                s.name.toLowerCase().includes(query.toLowerCase())
+            );
+            students = filtered;
+            renderStudentList();
+        }
+
+        // Sort students
+        function sortStudents(criteria) {
+            students.sort((a, b) => {
+                switch(criteria) {
+                    case 'name':
+                        return a.name.localeCompare(b.name);
+                    case 'views':
+                        return b.views - a.views;
+                    case 'duration':
+                        return b.totalDuration - a.totalDuration;
+                    case 'completion':
+                        return b.completion - a.completion;
+                    default:
+                        return 0;
+                }
+            });
+            renderStudentList();
+        }
+
+        // View student details
+        function viewStudentDetails(studentId) {
+            // In a real app, this would open a detailed view
+            showToast(t('lessonAnalytics.studentDetailsFeature'), 'info');
+        }
+
+        // Load more students
+        function loadMoreStudents() {
+            // Mock loading more students
+            showToast(t('lessonAnalytics.noMoreStudents'), 'info');
+        }
+
+        // Settings modal
+        function openSettings() {
+            document.getElementById('settingsModal').style.display = 'block';
+        }
+
+        function closeSettings() {
+            document.getElementById('settingsModal').style.display = 'none';
+        }
+
+        function saveSettings() {
+            const settings = {
+                dateRange: document.getElementById('dateRange').value,
+                dataGranularity: document.getElementById('dataGranularity').value,
+                includeInactive: document.getElementById('includeInactive').checked,
+                minWatchTime: document.getElementById('minWatchTime').value
+            };
+            
+            localStorage.setItem('lessonAnalyticsSettings', JSON.stringify(settings));
+            showToast(t('lessonAnalytics.settingsSaved'), 'success');
+            closeSettings();
+            
+            // Reload analytics with new settings
+            loadLessonAnalytics();
+        }
+
+        // Setup event listeners
+        function setupEventListeners() {
+            // Date range change
+            document.getElementById('dateRange').addEventListener('change', function() {
+                document.getElementById('customDateRange').style.display = 
+                    this.value === 'custom' ? 'block' : 'none';
+            });
+        }
+
+        // Utility functions
+        function formatDuration(seconds) {
+            const minutes = Math.floor(seconds / 60);
+            const remainingSeconds = seconds % 60;
+            if (minutes === 0) return `${remainingSeconds}s`;
+            if (remainingSeconds === 0) return `${minutes}m`;
+            return `${minutes}:${remainingSeconds.toString().padStart(2, '0')}`;
+        }
+    </script>
+</body>
+</html>
