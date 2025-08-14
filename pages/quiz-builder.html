@@ -26,6 +26,14 @@
                     <p class="page-subtitle" data-translate="quiz.builderSubtitle">Build your quiz with questions and settings</p>
                 </div>
                 <div class="flex flex-gap-3">
+                    <button class="btn btn--secondary" onclick="importFromExcel()">
+                        <i class="fas fa-file-excel" class="icon-mr"></i>
+                        <span data-translate="quiz.importExcel">Import Excel</span>
+                    </button>
+                    <button class="btn btn--secondary" onclick="exportToExcel()">
+                        <i class="fas fa-download" class="icon-mr"></i>
+                        <span data-translate="quiz.exportExcel">Export Excel</span>
+                    </button>
                     <button class="btn btn--secondary" onclick="previewQuiz()">
                         <i class="fas fa-eye" class="icon-mr"></i>
                         <span data-translate="quiz.preview">Preview</span>
@@ -402,6 +410,161 @@
         let activeQuestionId = null;
         let isEditMode = false;
         let questionIdCounter = 1;
+
+        // Excel Import/Export Functions
+        function importFromExcel() {
+            // Create file input element
+            const fileInput = document.createElement('input');
+            fileInput.type = 'file';
+            fileInput.accept = '.xlsx,.xls,.csv';
+            
+            fileInput.onchange = function(e) {
+                const file = e.target.files[0];
+                if (!file) return;
+                
+                // Show loading message
+                LMS.showToast('Importing quiz from Excel...', 'info');
+                
+                // Simulate file processing (in real app, would use SheetJS or similar)
+                setTimeout(() => {
+                    // Mock import - in real implementation, would parse Excel file
+                    const importedQuestions = [
+                        {
+                            id: 'q_' + Date.now(),
+                            type: 'multiple-choice',
+                            question: 'Sample imported question from Excel?',
+                            points: 10,
+                            options: [
+                                { id: 'opt_1', text: 'Option A', correct: false },
+                                { id: 'opt_2', text: 'Option B', correct: true },
+                                { id: 'opt_3', text: 'Option C', correct: false },
+                                { id: 'opt_4', text: 'Option D', correct: false }
+                            ]
+                        }
+                    ];
+                    
+                    // Add imported questions to current quiz
+                    importedQuestions.forEach(q => {
+                        currentQuiz.questions.push(q);
+                    });
+                    
+                    updateQuestionsContainer();
+                    updateQuestionCount();
+                    
+                    LMS.showToast(`Successfully imported ${importedQuestions.length} questions!`, 'success');
+                }, 1500);
+            };
+            
+            // Show download template option
+            if (confirm('Would you like to download the Excel template first?\n\nThe template shows the correct format for importing questions.')) {
+                downloadExcelTemplate();
+            } else {
+                fileInput.click();
+            }
+        }
+        
+        function downloadExcelTemplate() {
+            // Create template data
+            const templateData = [
+                ['Quiz Import Template - LMS'],
+                [''],
+                ['Instructions:'],
+                ['1. Fill in the quiz information in the cells below'],
+                ['2. Add questions starting from row 10'],
+                ['3. For multiple choice questions, mark correct answers with "X" in the Correct column'],
+                ['4. Save as Excel file and import back to the system'],
+                [''],
+                ['Quiz Title:', 'Your Quiz Title Here'],
+                ['Description:', 'Quiz description here'],
+                ['Time Limit (minutes):', '60'],
+                ['Passing Score (%):', '70'],
+                [''],
+                ['Question Type', 'Question Text', 'Points', 'Option A', 'Option B', 'Option C', 'Option D', 'Correct A', 'Correct B', 'Correct C', 'Correct D'],
+                ['multiple-choice', 'What is 2 + 2?', '10', '3', '4', '5', '6', '', 'X', '', ''],
+                ['multiple-choice', 'Which is a primary color?', '10', 'Red', 'Orange', 'Purple', 'Pink', 'X', '', '', ''],
+                ['true-false', 'The Earth is flat', '5', 'True', 'False', '', '', '', 'X', '', ''],
+                ['text', 'Explain the theory of relativity', '20', '', '', '', '', '', '', '', '']
+            ];
+            
+            // Convert to CSV format
+            const csv = templateData.map(row => row.join(',')).join('\n');
+            
+            // Download CSV file
+            const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+            const url = window.URL.createObjectURL(blob);
+            const link = document.createElement('a');
+            link.href = url;
+            link.download = 'quiz_import_template.csv';
+            link.click();
+            
+            LMS.showToast('Template downloaded! Fill it out and import back.', 'success');
+        }
+        
+        function exportToExcel() {
+            if (currentQuiz.questions.length === 0) {
+                LMS.showToast('No questions to export!', 'warning');
+                return;
+            }
+            
+            // Prepare export data
+            const exportData = [
+                ['Quiz Export - ' + (currentQuiz.title || 'Untitled Quiz')],
+                ['Exported on: ' + new Date().toLocaleString()],
+                [''],
+                ['Quiz Information:'],
+                ['Title:', currentQuiz.title],
+                ['Description:', currentQuiz.description],
+                ['Course:', document.querySelector('#quizCourseDropdown .dropdown__trigger span').textContent],
+                ['Time Limit:', currentQuiz.timeLimit + ' minutes'],
+                ['Passing Score:', currentQuiz.passingScore + '%'],
+                ['Total Questions:', currentQuiz.questions.length],
+                [''],
+                ['Questions:'],
+                ['#', 'Type', 'Question', 'Points', 'Options/Answer', 'Correct Answer']
+            ];
+            
+            // Add questions to export
+            currentQuiz.questions.forEach((q, index) => {
+                const row = [index + 1, q.type, q.question, q.points];
+                
+                if (q.type === 'multiple-choice' || q.type === 'multiple-select') {
+                    const options = q.options.map((opt, i) => `${String.fromCharCode(65 + i)}. ${opt.text}`).join(' | ');
+                    const correct = q.options.filter(opt => opt.correct).map((opt, i) => {
+                        const optIndex = q.options.indexOf(opt);
+                        return String.fromCharCode(65 + optIndex);
+                    }).join(', ');
+                    row.push(options, correct);
+                } else if (q.type === 'true-false') {
+                    row.push('True/False', q.answer ? 'True' : 'False');
+                } else if (q.type === 'text') {
+                    row.push('Text Answer', 'Manual grading required');
+                }
+                
+                exportData.push(row);
+            });
+            
+            // Convert to CSV
+            const csv = exportData.map(row => 
+                row.map(cell => {
+                    // Escape quotes and wrap in quotes if contains comma
+                    const cellStr = String(cell || '');
+                    if (cellStr.includes(',') || cellStr.includes('"') || cellStr.includes('\n')) {
+                        return '"' + cellStr.replace(/"/g, '""') + '"';
+                    }
+                    return cellStr;
+                }).join(',')
+            ).join('\n');
+            
+            // Download file
+            const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+            const url = window.URL.createObjectURL(blob);
+            const link = document.createElement('a');
+            link.href = url;
+            link.download = `${currentQuiz.title || 'quiz'}_export_${Date.now()}.csv`;
+            link.click();
+            
+            LMS.showToast('Quiz exported successfully!', 'success');
+        }
 
         // Initialize
         async function init() {

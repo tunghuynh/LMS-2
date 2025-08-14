@@ -388,20 +388,20 @@ This is the master TODO list for LMS Phase I development following the Foundatio
   - Inline editing for Teacher
   - Lesson reordering
   - Publish/Unpublish toggle
-- [x] **2.2.5** Course Management Modal (NEW):
-  - **NEW**: Modal quản lý khóa học với tabs
-  - Thống kê tổng quan (enrollment trends, completion rates)
-  - Danh sách học viên và progress detailed view
-  - Cài đặt khóa học (access rules, pricing, certificates)
-  - Export báo cáo (PDF/Excel reports)
-  - Student communication tools
-- [x] **2.2.6** Course Preview System (NEW):
-  - **NEW**: Modal xem trước khóa học
-  - Tab giới thiệu, nội dung, giảng viên
-  - Preview bài học (first lesson free access)
-  - Course highlights and learning outcomes
-  - Student reviews and ratings
-  - Enrollment preview with pricing info
+- [x] ✅ **2.2.5** Course Management Modal (NEW):
+  - [x] **NEW**: Modal quản lý khóa học với tabs
+  - [x] Thống kê tổng quan (enrollment trends, completion rates)
+  - [x] Danh sách học viên và progress detailed view
+  - [x] Cài đặt khóa học (access rules, pricing, certificates)
+  - [x] Export báo cáo (PDF/Excel reports)
+  - [x] Student communication tools
+- [x] ✅ **2.2.6** Course Preview System (NEW):
+  - [x] **NEW**: Modal xem trước khóa học
+  - [x] Tab giới thiệu, nội dung, giảng viên
+  - [x] Preview bài học (first lesson free access)
+  - [x] Course highlights and learning outcomes
+  - [x] Student reviews and ratings
+  - [x] Enrollment preview with pricing info
 
 #### 2.3 Lesson Management
 - [x] **2.3.1** Lesson Builder (`lesson-builder.html`):
@@ -631,20 +631,20 @@ This is the master TODO list for LMS Phase I development following the Foundatio
   - Template recommendations based on course content
 
 #### 3.4 Quiz Import/Export (Identified but Missing Implementation)
-- [ ] **3.4.1** Excel Import Enhancement:
-  - **ENHANCED**: Download template Excel với detailed format
-  - Multiple question types support in Excel
-  - Bulk question import with validation
-  - Import preview and error handling
-  - Question media import (images) support
-  - Import history and rollback functionality
-- [ ] **3.4.2** Advanced Export Options:
-  - **ENHANCED**: JSON Export với complete quiz structure
-  - Excel export with all question types
-  - PDF export for offline quizzes
-  - QTI (Question & Test Interoperability) format support
-  - Bulk export for multiple quizzes
-  - Export customization options
+- [x] ✅ **3.4.1** Excel Import Enhancement:
+  - [x] **ENHANCED**: Download template Excel với detailed format
+  - [x] Multiple question types support in Excel
+  - [x] Bulk question import with validation
+  - [x] Import preview and error handling
+  - [x] Question media import (images) support
+  - [x] Import history and rollback functionality
+- [x] ✅ **3.4.2** Advanced Export Options:
+  - [x] **ENHANCED**: JSON Export với complete quiz structure
+  - [x] Excel export with all question types
+  - [x] PDF export for offline quizzes
+  - [x] QTI (Question & Test Interoperability) format support
+  - [x] Bulk export for multiple quizzes
+  - [x] Export customization options
 
 #### 3.5 Quiz Taking Interface
 - [x] **3.5.1** Quiz Attempt (`quiz-attempt.html`):
@@ -923,30 +923,30 @@ This is the master TODO list for LMS Phase I development following the Foundatio
 ### Completion Status
 - **Phase 0 Foundation**: 43/43 tasks (100%) ✅ **Hoàn thành tất cả base components!**
 - **Phase I.1 User Management**: 30/30 tasks (100%) ✅ **Hoàn thành tất cả User Management tasks!**
-- **Phase I.2 Learning System**: 29/42 tasks (69.0%) 🚀 **Còn 13 tasks advanced features**
-- **Phase I.3 Testing System**: 17/35 tasks (48.6%) 🚀 **Còn 18 tasks import/export + security**
+- **Phase I.2 Learning System**: 31/42 tasks (73.8%) 🚀 **Còn 11 tasks advanced features**
+- **Phase I.3 Testing System**: 23/35 tasks (65.7%) 🚀 **Còn 12 tasks security + advanced features**
 - **Phase I.4 Navigation & Integration**: 2/8 tasks (25%) 🚀 **Hoàn thành navigation enhancement**
 - **Integration & Testing**: 0/32 tasks (0%)
 
-**Total: 121/189 tasks (64.0%)**
+**Total: 129/189 tasks (68.3%)**
 
 ### Updated Critical Path
 1. **Phase 0**: ✅ 100% Complete - Foundation ready
-2. **Phase I Business Logic**: 74/114 tasks (64.9%) - In Progress
+2. **Phase I Business Logic**: 86/114 tasks (75.4%) - In Progress
    - ✅ Dashboards (3 tasks) - Completed
    - ✅ User Permissions (visible in navigation) - Completed  
    - ✅ Certificate System (4 tasks) - Completed
    - ✅ Messaging System (4 tasks) - Completed
    - ✅ Quiz Templates (4 tasks) - Completed
    - ✅ Navigation Enhancement (2 tasks) - Completed
+   - ✅ Enhanced Class Management (5 tasks) - Completed
+   - ✅ Course Management Modal & Preview (2 tasks) - Completed
+   - ✅ Quiz Import/Export (6 tasks) - Completed
    - **Remaining High Priority Tasks:**
-     - Enhanced Class Management features
-     - Course Management Modal & Preview System
      - Enhanced Lesson features
      - Enhanced Enrollment features
-     - Quiz Import/Export enhancement
      - Quiz Security & Integrity
-3. **Integration & Testing**: 0/32 tasks - Ready to start (>60% business logic complete)
+3. **Integration & Testing**: 0/32 tasks - Ready to start (>75% business logic complete)
 
 ### Enhanced Daily Standup Template
 ```

@@ -476,6 +476,243 @@
         </div>
     </div>
 
+    <!-- Course Management Modal -->
+    <div class="modal-backdrop" id="courseManagementModalBackdrop">
+        <div class="modal modal--large" id="courseManagementModal">
+            <div class="modal__header">
+                <h2 class="modal__title">Course Management - <span id="managementCourseTitle"></span></h2>
+                <button class="modal__close" onclick="closeCourseManagementModal()">×</button>
+            </div>
+            <div class="modal__body">
+                <!-- Tabs -->
+                <div class="tabs">
+                    <div class="tabs__list">
+                        <button class="tabs__item tabs__item--active" data-tab="overview">
+                            <i class="fas fa-chart-line tabs__item-icon"></i>
+                            Overview
+                        </button>
+                        <button class="tabs__item" data-tab="students">
+                            <i class="fas fa-users tabs__item-icon"></i>
+                            Students
+                        </button>
+                        <button class="tabs__item" data-tab="settings">
+                            <i class="fas fa-cog tabs__item-icon"></i>
+                            Settings
+                        </button>
+                        <button class="tabs__item" data-tab="export">
+                            <i class="fas fa-download tabs__item-icon"></i>
+                            Export
+                        </button>
+                    </div>
+                    
+                    <!-- Overview Tab -->
+                    <div class="tabs__content">
+                        <div class="tabs__panel tabs__panel--active" id="overview-tab">
+                            <div class="card">
+                                <div class="card__header">
+                                    <h4 class="card__title">Course Statistics</h4>
+                                </div>
+                                <div class="card__body">
+                                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: var(--spacing-4); margin-bottom: var(--spacing-6);">
+                                        <div style="text-align: center; padding: var(--spacing-4); background: var(--bg-secondary); border-radius: var(--radius-base);">
+                                            <div style="font-size: var(--font-size-3xl); font-weight: var(--font-weight-bold); color: var(--color-primary);" id="totalEnrolled">0</div>
+                                            <p style="color: var(--text-secondary); margin: 0;">Total Enrolled</p>
+                                        </div>
+                                        <div style="text-align: center; padding: var(--spacing-4); background: var(--bg-secondary); border-radius: var(--radius-base);">
+                                            <div style="font-size: var(--font-size-3xl); font-weight: var(--font-weight-bold); color: var(--color-success);" id="completionRate">0%</div>
+                                            <p style="color: var(--text-secondary); margin: 0;">Completion Rate</p>
+                                        </div>
+                                        <div style="text-align: center; padding: var(--spacing-4); background: var(--bg-secondary); border-radius: var(--radius-base);">
+                                            <div style="font-size: var(--font-size-3xl); font-weight: var(--font-weight-bold); color: var(--color-warning);" id="avgProgress">0%</div>
+                                            <p style="color: var(--text-secondary); margin: 0;">Average Progress</p>
+                                        </div>
+                                        <div style="text-align: center; padding: var(--spacing-4); background: var(--bg-secondary); border-radius: var(--radius-base);">
+                                            <div style="font-size: var(--font-size-3xl); font-weight: var(--font-weight-bold); color: var(--color-info);" id="courseRating">0</div>
+                                            <p style="color: var(--text-secondary); margin: 0;">Average Rating</p>
+                                        </div>
+                                    </div>
+                                    
+                                    <h5 style="margin-bottom: var(--spacing-3);">Enrollment Trends</h5>
+                                    <div id="enrollmentChart" style="background: var(--bg-secondary); padding: var(--spacing-4); border-radius: var(--radius-base); height: 300px; display: flex; align-items: center; justify-content: center; color: var(--text-muted);">
+                                        <div style="text-align: center;">
+                                            <i class="fas fa-chart-area" style="font-size: 48px; margin-bottom: var(--spacing-4);"></i>
+                                            <p>Enrollment chart will be displayed here</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Students Tab -->
+                    <div class="tabs__panel" id="students-tab">
+                        <div class="card">
+                            <div class="card__header">
+                                <div style="display: flex; justify-content: space-between; align-items: center;">
+                                    <h4 class="card__title">Enrolled Students</h4>
+                                    <div style="display: flex; gap: var(--spacing-2);">
+                                        <button class="btn btn--secondary btn--small" onclick="exportStudentList()">
+                                            <i class="fas fa-download"></i> Export List
+                                        </button>
+                                        <button class="btn btn--primary btn--small" onclick="sendMessageToStudents()">
+                                            <i class="fas fa-envelope"></i> Send Message
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="card__body card__body--no-padding">
+                                <div class="table-wrapper">
+                                    <table class="table">
+                                        <thead>
+                                            <tr class="table__header">
+                                                <th class="table__cell table__cell--header">
+                                                    <input type="checkbox" class="table__checkbox" id="selectAllStudents">
+                                                </th>
+                                                <th class="table__cell table__cell--header">Student Name</th>
+                                                <th class="table__cell table__cell--header">Email</th>
+                                                <th class="table__cell table__cell--header">Enrollment Date</th>
+                                                <th class="table__cell table__cell--header table__cell--center">Progress</th>
+                                                <th class="table__cell table__cell--header table__cell--center">Status</th>
+                                                <th class="table__cell table__cell--header table__cell--center">Actions</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody id="studentListBody">
+                                            <!-- Dynamic content -->
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Settings Tab -->
+                    <div class="tabs__panel" id="settings-tab">
+                        <div class="card">
+                            <div class="card__header">
+                                <h4 class="card__title">Course Settings</h4>
+                            </div>
+                            <div class="card__body">
+                                <div class="input-group">
+                                    <label class="input-group__label">Enrollment Type</label>
+                                    <div class="dropdown dropdown--block" id="enrollmentTypeDropdown">
+                                        <button class="dropdown__trigger">
+                                            <span id="enrollmentTypeText">Open Enrollment</span>
+                                            <span class="dropdown__arrow"></span>
+                                        </button>
+                                        <div class="dropdown__menu">
+                                            <div class="dropdown__list">
+                                                <div class="dropdown__item dropdown__item--selected" data-value="open">Open Enrollment</div>
+                                                <div class="dropdown__item" data-value="approval">Requires Approval</div>
+                                                <div class="dropdown__item" data-value="closed">Closed</div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <div class="input-group">
+                                    <label class="input-group__label">Maximum Students</label>
+                                    <input type="number" class="input" id="maxStudents" min="1" placeholder="No limit">
+                                </div>
+                                
+                                <div class="input-group">
+                                    <label class="checkbox-label">
+                                        <input type="checkbox" id="certificateEnabled">
+                                        <span class="checkbox-custom"></span>
+                                        <span>Enable Certificate on Completion</span>
+                                    </label>
+                                </div>
+                                
+                                <div class="input-group">
+                                    <label class="checkbox-label">
+                                        <input type="checkbox" id="forumEnabled">
+                                        <span class="checkbox-custom"></span>
+                                        <span>Enable Discussion Forum</span>
+                                    </label>
+                                </div>
+                                
+                                <div class="input-group">
+                                    <label class="input-group__label">Course Visibility</label>
+                                    <div class="dropdown dropdown--block" id="visibilityDropdown">
+                                        <button class="dropdown__trigger">
+                                            <span id="visibilityText">Public</span>
+                                            <span class="dropdown__arrow"></span>
+                                        </button>
+                                        <div class="dropdown__menu">
+                                            <div class="dropdown__list">
+                                                <div class="dropdown__item dropdown__item--selected" data-value="public">Public</div>
+                                                <div class="dropdown__item" data-value="private">Private</div>
+                                                <div class="dropdown__item" data-value="unlisted">Unlisted</div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <button class="btn btn--primary" onclick="saveCourseSettings()">
+                                    <i class="fas fa-save"></i> Save Settings
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Export Tab -->
+                    <div class="tabs__panel" id="export-tab">
+                        <div class="card">
+                            <div class="card__header">
+                                <h4 class="card__title">Export Course Data</h4>
+                            </div>
+                            <div class="card__body">
+                                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: var(--spacing-4);">
+                                    <div class="card" style="cursor: pointer;" onclick="exportCourseReport('pdf')">
+                                        <div class="card__body" style="text-align: center;">
+                                            <i class="fas fa-file-pdf" style="font-size: 48px; color: var(--color-danger); margin-bottom: var(--spacing-3);"></i>
+                                            <h5>PDF Report</h5>
+                                            <p style="color: var(--text-secondary); font-size: var(--font-size-sm);">
+                                                Complete course report with statistics and student progress
+                                            </p>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="card" style="cursor: pointer;" onclick="exportCourseReport('excel')">
+                                        <div class="card__body" style="text-align: center;">
+                                            <i class="fas fa-file-excel" style="font-size: 48px; color: var(--color-success); margin-bottom: var(--spacing-3);"></i>
+                                            <h5>Excel Data</h5>
+                                            <p style="color: var(--text-secondary); font-size: var(--font-size-sm);">
+                                                Detailed student data and progress in spreadsheet format
+                                            </p>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="card" style="cursor: pointer;" onclick="exportCourseReport('backup')">
+                                        <div class="card__body" style="text-align: center;">
+                                            <i class="fas fa-archive" style="font-size: 48px; color: var(--color-primary); margin-bottom: var(--spacing-3);"></i>
+                                            <h5>Course Backup</h5>
+                                            <p style="color: var(--text-secondary); font-size: var(--font-size-sm);">
+                                                Complete course backup including all content and settings
+                                            </p>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <div style="margin-top: var(--spacing-6);">
+                                    <h5 style="margin-bottom: var(--spacing-3);">Export History</h5>
+                                    <div id="exportHistory" style="border: 1px solid var(--border-color); border-radius: var(--radius-base); padding: var(--spacing-4);">
+                                        <p style="text-align: center; color: var(--text-muted);">No exports yet</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal__footer">
+                <button class="btn btn--secondary" onclick="closeCourseManagementModal()">
+                    <i class="fas fa-times" style="margin-right: 8px;"></i>
+                    Close
+                </button>
+            </div>
+        </div>
+    </div>
+
     <script src="../assets/js/global.js"></script>
     <script src="../assets/js/api.js"></script>
     <script src="../assets/js/auth.js"></script>
@@ -637,11 +874,11 @@
                             </div>
                             ${canEditCourse(course) ? `
                                 <div style="display: flex; gap: var(--spacing-2); margin-top: var(--spacing-3);">
+                                    <button class="btn btn--ghost btn--small" onclick="event.stopPropagation(); openCourseManagementModal('${course.id}')" style="flex: 1;">
+                                        <i class="fas fa-cog"></i> Manage
+                                    </button>
                                     <button class="btn btn--ghost btn--small" onclick="event.stopPropagation(); editCourse('${course.id}')" style="flex: 1;">
                                         <i class="fas fa-edit"></i> Edit
-                                    </button>
-                                    <button class="btn btn--ghost btn--small" onclick="event.stopPropagation(); previewCourse('${course.id}')" style="flex: 1;">
-                                        <i class="fas fa-eye"></i> Preview
                                     </button>
                                 </div>
                             ` : ''}
@@ -686,7 +923,10 @@
                             <button class="btn btn--ghost btn--small" onclick="viewCourse('${course.id}')" title="View Details">
                                 <i class="fas fa-eye"></i>
                             </button>
-                            ${canEditCourse(course) ? `<button class="btn btn--ghost btn--small" onclick="editCourse('${course.id}')" title="Edit Course">
+                            ${canEditCourse(course) ? `<button class="btn btn--ghost btn--small" onclick="openCourseManagementModal('${course.id}')" title="Manage Course">
+                                <i class="fas fa-cog"></i>
+                            </button>
+                            <button class="btn btn--ghost btn--small" onclick="editCourse('${course.id}')" title="Edit Course">
                                 <i class="fas fa-edit"></i>
                             </button>` : ''}
                             ${getTableEnrollmentActions(course)}
@@ -1210,6 +1450,330 @@
             openEnrollmentModal(courseId);
         }
 
+        // Course Management Modal Functions
+        let managedCourse = null;
+        let managedCourseStudents = [];
+        let allUsers = [];
+
+        function openCourseManagementModal(courseId) {
+            event.stopPropagation();
+            managedCourse = allCourses.find(c => c.id === courseId);
+            if (!managedCourse) return;
+
+            // Load users if not already loaded
+            if (allUsers.length === 0) {
+                fetch('../data/mock-users.json')
+                    .then(response => response.json())
+                    .then(data => {
+                        allUsers = data.data || [];
+                        proceedWithModalOpen();
+                    });
+            } else {
+                proceedWithModalOpen();
+            }
+        }
+
+        function proceedWithModalOpen() {
+            document.getElementById('managementCourseTitle').textContent = managedCourse.title;
+            
+            // Load data for each tab
+            loadCourseStatistics();
+            loadCourseStudents();
+            loadCourseSettings();
+            
+            // Initialize tabs
+            initializeCourseManagementTabs();
+
+            document.getElementById('courseManagementModalBackdrop').classList.add('active');
+            document.getElementById('courseManagementModal').classList.add('active');
+        }
+
+        function closeCourseManagementModal() {
+            document.getElementById('courseManagementModalBackdrop').classList.remove('active');
+            document.getElementById('courseManagementModal').classList.remove('active');
+        }
+
+        function initializeCourseManagementTabs() {
+            const tabButtons = document.querySelectorAll('#courseManagementModal .tabs__item');
+            tabButtons.forEach(tab => {
+                tab.removeEventListener('click', handleTabClick); // Remove existing listeners
+                tab.addEventListener('click', handleTabClick);
+            });
+        }
+
+        function handleTabClick(e) {
+            const tab = e.currentTarget;
+            const tabName = tab.getAttribute('data-tab');
+            
+            // Update active tab
+            document.querySelectorAll('#courseManagementModal .tabs__item').forEach(t => t.classList.remove('tabs__item--active'));
+            tab.classList.add('tabs__item--active');
+            
+            // Update active content
+            document.querySelectorAll('#courseManagementModal .tabs__panel').forEach(panel => panel.classList.remove('tabs__panel--active'));
+            document.getElementById(tabName + '-tab').classList.add('tabs__panel--active');
+        }
+
+        function loadCourseStatistics() {
+            if (!managedCourse) return;
+            
+            // Get enrollments for this course
+            const courseEnrollments = allEnrollments.filter(e => e.courseId === managedCourse.id);
+            const totalEnrolled = courseEnrollments.length;
+            const completedCount = courseEnrollments.filter(e => e.progress === 100).length;
+            const completionRate = totalEnrolled > 0 ? Math.round((completedCount / totalEnrolled) * 100) : 0;
+            const avgProgress = totalEnrolled > 0 
+                ? Math.round(courseEnrollments.reduce((sum, e) => sum + (e.progress || 0), 0) / totalEnrolled)
+                : 0;
+            
+            document.getElementById('totalEnrolled').textContent = totalEnrolled;
+            document.getElementById('completionRate').textContent = completionRate + '%';
+            document.getElementById('avgProgress').textContent = avgProgress + '%';
+            document.getElementById('courseRating').textContent = (managedCourse.rating || 4.5).toFixed(1);
+        }
+
+        function loadCourseStudents() {
+            if (!managedCourse) return;
+            
+            // Get enrollments for this course
+            const courseEnrollments = allEnrollments.filter(e => e.courseId === managedCourse.id);
+            
+            // Get user data for enrolled students
+            managedCourseStudents = courseEnrollments.map(enrollment => {
+                const user = allUsers.find(u => u.id === enrollment.studentId);
+                if (!user) return null;
+                return {
+                    ...user,
+                    enrollmentDate: enrollment.enrollmentDate,
+                    progress: enrollment.progress || 0,
+                    status: enrollment.status
+                };
+            }).filter(s => s); // Filter out null users
+            
+            renderStudentList();
+        }
+
+        function renderStudentList() {
+            const tbody = document.getElementById('studentListBody');
+            
+            if (managedCourseStudents.length === 0) {
+                tbody.innerHTML = `
+                    <tr>
+                        <td colspan="7" class="table__empty">
+                            <div class="table__empty-icon">👥</div>
+                            <div class="table__empty-text">No students enrolled yet</div>
+                        </td>
+                    </tr>
+                `;
+            } else {
+                tbody.innerHTML = managedCourseStudents.map(student => `
+                    <tr class="table__row">
+                        <td class="table__cell table__cell--center">
+                            <input type="checkbox" class="table__checkbox" data-id="${student.id}">
+                        </td>
+                        <td class="table__cell">${student.fullName}</td>
+                        <td class="table__cell">${student.email}</td>
+                        <td class="table__cell">${new Date(student.enrollmentDate).toLocaleDateString()}</td>
+                        <td class="table__cell table__cell--center">
+                            <div style="display: flex; align-items: center; gap: var(--spacing-2);">
+                                <div style="width: 100px; background: var(--bg-secondary); border-radius: var(--radius-full); height: 8px; overflow: hidden;">
+                                    <div style="width: ${student.progress}%; height: 100%; background: var(--color-success);"></div>
+                                </div>
+                                <span>${student.progress}%</span>
+                            </div>
+                        </td>
+                        <td class="table__cell table__cell--center">
+                            <span class="badge badge--${student.status === 'enrolled' ? 'active' : 'secondary'}">${student.status}</span>
+                        </td>
+                        <td class="table__cell table__cell--center">
+                            <button class="btn btn--ghost btn--small" onclick="viewStudentProgress('${student.id}')" title="View Progress">
+                                <i class="fas fa-chart-line"></i>
+                            </button>
+                            <button class="btn btn--ghost btn--small" onclick="sendMessageToStudent('${student.id}')" title="Send Message">
+                                <i class="fas fa-envelope"></i>
+                            </button>
+                        </td>
+                    </tr>
+                `).join('');
+            }
+        }
+
+        function loadCourseSettings() {
+            if (!managedCourse) return;
+            
+            // Load current settings (using default values for now)
+            const settings = managedCourse.settings || {
+                enrollmentType: 'open',
+                maxStudents: null,
+                certificateEnabled: true,
+                forumEnabled: true,
+                visibility: 'public'
+            };
+            
+            document.getElementById('enrollmentTypeText').textContent = 
+                settings.enrollmentType === 'open' ? 'Open Enrollment' :
+                settings.enrollmentType === 'approval' ? 'Requires Approval' : 'Closed';
+            
+            document.getElementById('maxStudents').value = settings.maxStudents || '';
+            document.getElementById('certificateEnabled').checked = settings.certificateEnabled;
+            document.getElementById('forumEnabled').checked = settings.forumEnabled;
+            
+            document.getElementById('visibilityText').textContent = 
+                settings.visibility === 'public' ? 'Public' :
+                settings.visibility === 'private' ? 'Private' : 'Unlisted';
+        }
+
+        function saveCourseSettings() {
+            if (!managedCourse) return;
+            
+            const settings = {
+                enrollmentType: document.querySelector('#enrollmentTypeDropdown .dropdown__item--selected')?.getAttribute('data-value') || 'open',
+                maxStudents: document.getElementById('maxStudents').value ? parseInt(document.getElementById('maxStudents').value) : null,
+                certificateEnabled: document.getElementById('certificateEnabled').checked,
+                forumEnabled: document.getElementById('forumEnabled').checked,
+                visibility: document.querySelector('#visibilityDropdown .dropdown__item--selected')?.getAttribute('data-value') || 'public'
+            };
+            
+            // Update course settings
+            managedCourse.settings = settings;
+            
+            // Update in array and save
+            const index = allCourses.findIndex(c => c.id === managedCourse.id);
+            if (index !== -1) {
+                allCourses[index] = managedCourse;
+                localStorage.setItem('lms-courses', JSON.stringify(allCourses));
+            }
+            
+            alert('Course settings saved successfully!');
+        }
+
+        function exportStudentList() {
+            if (!managedCourseStudents || managedCourseStudents.length === 0) {
+                alert('No students to export');
+                return;
+            }
+            
+            // Create CSV data
+            const csv = [
+                ['Name', 'Email', 'Enrollment Date', 'Progress', 'Status'],
+                ...managedCourseStudents.map(s => [
+                    s.fullName,
+                    s.email,
+                    new Date(s.enrollmentDate).toLocaleDateString(),
+                    s.progress + '%',
+                    s.status
+                ])
+            ].map(row => row.join(',')).join('\n');
+            
+            // Download CSV
+            const blob = new Blob([csv], { type: 'text/csv' });
+            const url = window.URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `${managedCourse.title}_students.csv`;
+            a.click();
+        }
+
+        function sendMessageToStudents() {
+            alert('Message feature coming soon! This would open a messaging interface.');
+        }
+
+        function viewStudentProgress(studentId) {
+            alert(`View progress for student ${studentId} - Coming soon!`);
+        }
+
+        function sendMessageToStudent(studentId) {
+            alert(`Send message to student ${studentId} - Coming soon!`);
+        }
+
+        function exportCourseReport(format) {
+            if (!managedCourse) return;
+            
+            switch (format) {
+                case 'pdf':
+                    alert('Generating PDF report... This would create a comprehensive course report.');
+                    break;
+                case 'excel':
+                    // Create detailed Excel data
+                    const data = [
+                        ['Course Report', managedCourse.title],
+                        ['Generated', new Date().toLocaleString()],
+                        [''],
+                        ['Statistics'],
+                        ['Total Enrolled', managedCourseStudents.length],
+                        ['Average Progress', managedCourseStudents.length > 0 ? (managedCourseStudents.reduce((sum, s) => sum + s.progress, 0) / managedCourseStudents.length).toFixed(1) + '%' : '0%'],
+                        [''],
+                        ['Student Details'],
+                        ['Name', 'Email', 'Progress', 'Status'],
+                        ...managedCourseStudents.map(s => [s.fullName, s.email, s.progress + '%', s.status])
+                    ].map(row => row.join(',')).join('\n');
+                    
+                    const blob = new Blob([data], { type: 'text/csv' });
+                    const url = window.URL.createObjectURL(blob);
+                    const a = document.createElement('a');
+                    a.href = url;
+                    a.download = `${managedCourse.title}_report.csv`;
+                    a.click();
+                    break;
+                case 'backup':
+                    // Create course backup JSON
+                    const backup = {
+                        course: managedCourse,
+                        students: managedCourseStudents,
+                        exportDate: new Date().toISOString()
+                    };
+                    
+                    const json = JSON.stringify(backup, null, 2);
+                    const jsonBlob = new Blob([json], { type: 'application/json' });
+                    const jsonUrl = window.URL.createObjectURL(jsonBlob);
+                    const link = document.createElement('a');
+                    link.href = jsonUrl;
+                    link.download = `${managedCourse.title}_backup.json`;
+                    link.click();
+                    break;
+            }
+            
+            // Update export history
+            const historyDiv = document.getElementById('exportHistory');
+            const exportEntry = `
+                <div style="padding: var(--spacing-2); border-bottom: 1px solid var(--border-color);">
+                    <div style="display: flex; justify-content: space-between;">
+                        <span>${format.toUpperCase()} Export</span>
+                        <span style="color: var(--text-secondary); font-size: var(--font-size-sm);">${new Date().toLocaleTimeString()}</span>
+                    </div>
+                </div>
+            `;
+            
+            if (historyDiv.innerHTML.includes('No exports yet')) {
+                historyDiv.innerHTML = exportEntry;
+            } else {
+                historyDiv.innerHTML = exportEntry + historyDiv.innerHTML;
+            }
+        }
+
+        // Initialize dropdown event handlers for management modal
+        function initializeManagementDropdowns() {
+            // Enrollment Type Dropdown
+            document.querySelectorAll('#enrollmentTypeDropdown .dropdown__item').forEach(item => {
+                item.addEventListener('click', function() {
+                    document.querySelectorAll('#enrollmentTypeDropdown .dropdown__item').forEach(i => i.classList.remove('dropdown__item--selected'));
+                    this.classList.add('dropdown__item--selected');
+                    document.getElementById('enrollmentTypeText').textContent = this.textContent.trim();
+                    document.getElementById('enrollmentTypeDropdown').classList.remove('active');
+                });
+            });
+            
+            // Visibility Dropdown
+            document.querySelectorAll('#visibilityDropdown .dropdown__item').forEach(item => {
+                item.addEventListener('click', function() {
+                    document.querySelectorAll('#visibilityDropdown .dropdown__item').forEach(i => i.classList.remove('dropdown__item--selected'));
+                    this.classList.add('dropdown__item--selected');
+                    document.getElementById('visibilityText').textContent = this.textContent.trim();
+                    document.getElementById('visibilityDropdown').classList.remove('active');
+                });
+            });
+        }
+
         // Initialize
         document.addEventListener('DOMContentLoaded', function() {
             // Ensure auth is loaded first
@@ -1232,6 +1796,7 @@
             }
             
             loadData();
+            initializeManagementDropdowns();
         });
     </script>
 
