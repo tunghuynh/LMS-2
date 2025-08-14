@@ -1042,6 +1042,71 @@
         "login": "Quản Lý Hệ Thống"
       }
     },
+    "stats": {
+      "title": "Được tin tưởng bởi hàng nghìn người trên toàn thế giới",
+      "subtitle": "Tham gia cùng các nhà giáo dục và học sinh đang chuyển đổi giáo dục với nền tảng của chúng tôi",
+      "students": "Học viên tích cực",
+      "teachers": "Giáo viên chuyên nghiệp",
+      "courses": "Khóa học đã tạo",
+      "satisfaction": "% Tỷ lệ hài lòng"
+    },
+    "testimonials": {
+      "title": "Người dùng nói gì",
+      "subtitle": "Câu chuyện thực từ các nhà giáo dục và người học yêu thích nền tảng của chúng tôi",
+      "quote1": "EduLearn LMS đã hoàn toàn thay đổi cách tôi dạy trực tuyến. Các tính năng tương tác giúp học sinh của tôi tham gia và phân tích giúp tôi theo dõi tiến độ của họ hiệu quả.",
+      "quote2": "Là một sinh viên, tôi thích cách dễ dàng truy cập các khóa học và theo dõi tiến độ của mình. Hệ thống câu hỏi trắc nghiệm rất tuyệt vời và giúp tôi chuẩn bị cho kỳ thi hiệu quả.",
+      "quote3": "Quản lý các chương trình học tập của tổ chức chúng tôi chưa bao giờ dễ dàng hơn. Bảng điều khiển quản trị cung cấp tất cả thông tin chúng tôi cần để đưa ra quyết định dựa trên dữ liệu.",
+      "role1": "Giáo viên Toán học",
+      "role2": "Sinh viên Khoa học Máy tính",
+      "role3": "Quản trị viên Trường học"
+    },
+    "pricing": {
+      "title": "Giá cả đơn giản, minh bạch",
+      "subtitle": "Chọn gói hoàn hảo cho hành trình học tập của bạn",
+      "perMonth": "/tháng",
+      "popular": "Phổ biến nhất",
+      "getStarted": "Bắt đầu",
+      "contactSales": "Liên hệ bán hàng",
+      "free": {
+        "title": "Miễn phí",
+        "desc": "Hoàn hảo cho người học cá nhân",
+        "feature1": "Truy cập 10 khóa học",
+        "feature2": "Câu hỏi trắc nghiệm cơ bản",
+        "feature3": "Theo dõi tiến độ",
+        "feature4": "Hỗ trợ qua email",
+        "disabled1": "Phân tích nâng cao",
+        "disabled2": "Hỗ trợ ưu tiên"
+      },
+      "pro": {
+        "title": "Chuyên nghiệp",
+        "desc": "Cho giáo viên và tổ chức nhỏ",
+        "feature1": "Khóa học không giới hạn",
+        "feature2": "Xây dựng câu hỏi nâng cao",
+        "feature3": "Phân tích học viên",
+        "feature4": "Chứng chỉ tùy chỉnh",
+        "feature5": "Hỗ trợ ưu tiên",
+        "feature6": "Truy cập API"
+      },
+      "enterprise": {
+        "title": "Doanh nghiệp",
+        "desc": "Cho tổ chức lớn",
+        "feature1": "Mọi thứ trong gói Pro",
+        "feature2": "Nhãn trắng",
+        "feature3": "Tích hợp tùy chỉnh",
+        "feature4": "Hỗ trợ chuyên dụng",
+        "feature5": "Đảm bảo SLA",
+        "feature6": "Tùy chọn tại chỗ"
+      }
+    },
+    "cta": {
+      "title": "Sẵn sàng chuyển đổi trải nghiệm học tập của bạn?",
+      "subtitle": "Tham gia cùng hàng nghìn nhà giáo dục và người học đang sử dụng EduLearn LMS",
+      "stat1": "Cài đặt trong 5 phút",
+      "stat2": "Không cần thẻ tín dụng",
+      "stat3": "Hỗ trợ 24/7",
+      "start": "Bắt đầu dùng thử miễn phí",
+      "schedule": "Đặt lịch demo"
+    },
     "footer": {
       "brand": "EduLearn LMS",
       "description": "Trao quyền cho giáo dục thông qua công nghệ. Biến đổi trải nghiệm học tập của bạn với Hệ thống Quản lý Học tập toàn diện của chúng tôi.",

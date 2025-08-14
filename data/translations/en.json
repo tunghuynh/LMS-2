@@ -1044,6 +1044,71 @@
         "login": "Manage System"
       }
     },
+    "stats": {
+      "title": "Trusted by Thousands Worldwide",
+      "subtitle": "Join educators and students who are transforming education with our platform",
+      "students": "Active Students",
+      "teachers": "Expert Teachers",
+      "courses": "Courses Created",
+      "satisfaction": "% Satisfaction Rate"
+    },
+    "testimonials": {
+      "title": "What Our Users Say",
+      "subtitle": "Real stories from educators and learners who love our platform",
+      "quote1": "EduLearn LMS has completely transformed how I teach online. The interactive features keep my students engaged and the analytics help me track their progress effectively.",
+      "quote2": "As a student, I love how easy it is to access my courses and track my progress. The quiz system is fantastic and helps me prepare for exams efficiently.",
+      "quote3": "Managing our institution's learning programs has never been easier. The admin dashboard provides all the insights we need to make data-driven decisions.",
+      "role1": "Mathematics Teacher",
+      "role2": "Computer Science Student",
+      "role3": "School Administrator"
+    },
+    "pricing": {
+      "title": "Simple, Transparent Pricing",
+      "subtitle": "Choose the perfect plan for your learning journey",
+      "perMonth": "/month",
+      "popular": "Most Popular",
+      "getStarted": "Get Started",
+      "contactSales": "Contact Sales",
+      "free": {
+        "title": "Free",
+        "desc": "Perfect for individual learners",
+        "feature1": "Access to 10 courses",
+        "feature2": "Basic quizzes",
+        "feature3": "Progress tracking",
+        "feature4": "Email support",
+        "disabled1": "Advanced analytics",
+        "disabled2": "Priority support"
+      },
+      "pro": {
+        "title": "Professional",
+        "desc": "For teachers and small institutions",
+        "feature1": "Unlimited courses",
+        "feature2": "Advanced quiz builder",
+        "feature3": "Student analytics",
+        "feature4": "Custom certificates",
+        "feature5": "Priority support",
+        "feature6": "API access"
+      },
+      "enterprise": {
+        "title": "Enterprise",
+        "desc": "For large organizations",
+        "feature1": "Everything in Pro",
+        "feature2": "White labeling",
+        "feature3": "Custom integrations",
+        "feature4": "Dedicated support",
+        "feature5": "SLA guarantee",
+        "feature6": "On-premise option"
+      }
+    },
+    "cta": {
+      "title": "Ready to Transform Your Learning Experience?",
+      "subtitle": "Join thousands of educators and learners who are already using EduLearn LMS",
+      "stat1": "Setup in 5 minutes",
+      "stat2": "No credit card required",
+      "stat3": "24/7 support",
+      "start": "Start Free Trial",
+      "schedule": "Schedule Demo"
+    },
     "footer": {
       "brand": "EduLearn LMS",
       "description": "Empowering education through technology. Transform your learning experience with our comprehensive Learning Management System.",

@@ -247,8 +247,72 @@
             right: 0;
             bottom: 0;
             left: 0;
-            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 1000"><circle cx="200" cy="200" r="2" fill="rgba(255,255,255,0.1)"/><circle cx="400" cy="100" r="1" fill="rgba(255,255,255,0.1)"/><circle cx="600" cy="300" r="2" fill="rgba(255,255,255,0.1)"/><circle cx="800" cy="150" r="1" fill="rgba(255,255,255,0.1)"/><circle cx="300" cy="400" r="1" fill="rgba(255,255,255,0.1)"/><circle cx="700" cy="500" r="2" fill="rgba(255,255,255,0.1)"/></svg>') repeat;
-            animation: float 20s infinite linear;
+            pointer-events: none;
+        }
+        
+        /* Educational floating icons */
+        .floating-icons {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            pointer-events: none;
+        }
+        
+        .floating-icon {
+            position: absolute;
+            opacity: 0.15;
+            animation: floatIcon 15s infinite ease-in-out;
+            transition: all 0.3s ease;
+            font-size: 2rem;
+            color: rgba(255, 255, 255, 0.8);
+        }
+        
+        .floating-icon.interactive {
+            pointer-events: auto;
+            cursor: pointer;
+        }
+        
+        .floating-icon:hover {
+            opacity: 0.3;
+            transform: scale(1.2);
+        }
+        
+        @keyframes floatIcon {
+            0%, 100% {
+                transform: translateY(0) rotate(0deg);
+            }
+            25% {
+                transform: translateY(-30px) rotate(10deg);
+            }
+            50% {
+                transform: translateY(20px) rotate(-5deg);
+            }
+            75% {
+                transform: translateY(-10px) rotate(5deg);
+            }
+        }
+        
+        /* Mathematical formulas floating */
+        .formula {
+            position: absolute;
+            font-family: 'Times New Roman', serif;
+            font-style: italic;
+            opacity: 0.1;
+            font-size: 1.5rem;
+            color: rgba(255, 255, 255, 0.7);
+            animation: floatFormula 20s infinite linear;
+        }
+        
+        @keyframes floatFormula {
+            0% {
+                transform: translateX(-100px) translateY(0) rotate(0deg);
+            }
+            100% {
+                transform: translateX(calc(100vw + 100px)) translateY(-50px) rotate(360deg);
+            }
         }
         
         .hero::after {
@@ -396,15 +460,59 @@
             box-shadow: 0 50px 100px rgba(0, 0, 0, 0.4);
             background: white;
             padding: 2rem;
-            transition: all 0.3s ease-out;
+            transition: transform 0.15s ease-out;
             transform-style: preserve-3d;
             cursor: pointer;
+            will-change: transform;
+            transform: perspective(1000px) rotateX(0) rotateY(0);
         }
         
         .hero-mockup-content {
-            transform: translateZ(50px);
+            transform: translateZ(30px);
+            pointer-events: none;
         }
 
+        /* Dark theme fixes */
+        .dark-theme {
+            --demo-bg-gradient: linear-gradient(135deg, #1e293b, #334155);
+        }
+        
+        .dark-theme .hero {
+            background: linear-gradient(135deg, #1e293b 0%, #0f172a 50%, #020617 100%);
+        }
+        
+        .dark-theme .floating-icon {
+            color: rgba(148, 163, 184, 0.8);
+        }
+        
+        .dark-theme .formula {
+            color: rgba(148, 163, 184, 0.7);
+        }
+        
+        .dark-theme .hero-mockup {
+            background: #1e293b;
+            box-shadow: 0 50px 100px rgba(0, 0, 0, 0.8);
+        }
+        
+        .dark-theme .feature-card,
+        .dark-theme .pricing-card,
+        .dark-theme .stat-card {
+            background: #1e293b;
+            border-color: #334155;
+        }
+        
+        .dark-theme .testimonial-card {
+            background: #0f172a;
+        }
+        
+        .dark-theme .cta {
+            background: linear-gradient(135deg, #1e4f78, #0d3b66);
+        }
+        
+        .dark-theme .landing-footer {
+            background: #0f172a;
+        }
+        
         /* Features Section */
         .features {
             padding: 120px 0;
@@ -1033,11 +1141,38 @@
         
         .theme-controls {
             position: fixed;
-            top: var(--spacing-4);
-            right: var(--spacing-4);
+            top: 1.5rem;
+            right: 1.5rem;
             z-index: 1001;
             display: flex;
-            gap: var(--spacing-2);
+            gap: 0.75rem;
+        }
+        
+        .theme-controls .btn {
+            width: 40px;
+            height: 40px;
+            padding: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.9);
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+        }
+        
+        .dark-theme .theme-controls .btn {
+            background: rgba(30, 41, 59, 0.9);
+            color: white;
+        }
+        
+        .theme-controls .btn:hover {
+            transform: scale(1.1);
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+        }
+        
+        .theme-controls .btn i {
+            font-size: 1.2rem;
         }
 
         /* Mobile Responsive */
@@ -1121,6 +1256,26 @@
 
     <!-- Hero Section -->
     <section class="hero">
+        <!-- Floating Educational Icons Background -->
+        <div class="floating-icons">
+            <i class="fas fa-graduation-cap floating-icon" style="top: 10%; left: 5%; animation-delay: 0s;"></i>
+            <i class="fas fa-book floating-icon" style="top: 20%; left: 85%; animation-delay: 2s;"></i>
+            <i class="fas fa-pencil-ruler floating-icon" style="top: 70%; left: 10%; animation-delay: 4s;"></i>
+            <i class="fas fa-microscope floating-icon" style="top: 60%; left: 90%; animation-delay: 1s;"></i>
+            <i class="fas fa-atom floating-icon" style="top: 30%; left: 70%; animation-delay: 3s;"></i>
+            <i class="fas fa-calculator floating-icon" style="top: 80%; left: 60%; animation-delay: 5s;"></i>
+            <i class="fas fa-globe floating-icon" style="top: 15%; left: 40%; animation-delay: 2.5s;"></i>
+            <i class="fas fa-dna floating-icon" style="top: 50%; left: 30%; animation-delay: 1.5s;"></i>
+            <i class="fas fa-palette floating-icon" style="top: 40%; left: 15%; animation-delay: 3.5s;"></i>
+            <i class="fas fa-music floating-icon" style="top: 85%; left: 80%; animation-delay: 4.5s;"></i>
+            
+            <!-- Mathematical Formulas -->
+            <div class="formula" style="top: 25%; animation-delay: 0s;">E = mc²</div>
+            <div class="formula" style="top: 45%; animation-delay: 5s;">∫f(x)dx</div>
+            <div class="formula" style="top: 65%; animation-delay: 10s;">πr²</div>
+            <div class="formula" style="top: 85%; animation-delay: 15s;">a² + b² = c²</div>
+        </div>
+        
         <div class="hero-content">
             <div class="hero-text">
                 <h1 data-translate="landing.hero.title">Transform Your Learning Experience</h1>
@@ -1635,23 +1790,40 @@
         // 3D Tilt Effect for Hero Mockup
         function initTiltEffect() {
             const mockup = document.getElementById('heroMockup');
-            const mockupRect = mockup.getBoundingClientRect();
+            let mockupRect;
+            
+            const updateRect = () => {
+                mockupRect = mockup.getBoundingClientRect();
+            };
+            
+            updateRect();
+            window.addEventListener('resize', updateRect);
+            window.addEventListener('scroll', updateRect);
+            
+            mockup.addEventListener('mouseenter', updateRect);
             
             mockup.addEventListener('mousemove', (e) => {
+                if (!mockupRect) return;
+                
                 const x = e.clientX - mockupRect.left;
                 const y = e.clientY - mockupRect.top;
                 
                 const centerX = mockupRect.width / 2;
                 const centerY = mockupRect.height / 2;
                 
-                const rotateX = ((y - centerY) / centerY) * -10;
-                const rotateY = ((x - centerX) / centerX) * 10;
+                const percentX = (x - centerX) / centerX;
+                const percentY = (y - centerY) / centerY;
                 
-                mockup.style.transform = `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) translateZ(10px)`;
+                const rotateX = percentY * -8;
+                const rotateY = percentX * 8;
+                
+                requestAnimationFrame(() => {
+                    mockup.style.transform = `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg)`;
+                });
             });
             
             mockup.addEventListener('mouseleave', () => {
-                mockup.style.transform = 'perspective(1000px) rotateX(0) rotateY(0) translateZ(0)';
+                mockup.style.transform = 'perspective(1000px) rotateX(0) rotateY(0)';
             });
         }
         
@@ -1763,6 +1935,25 @@
             });
         }
         
+        // Interactive floating icons
+        function initFloatingIconsInteraction() {
+            const heroSection = document.querySelector('.hero');
+            const floatingIcons = document.querySelectorAll('.floating-icon');
+            
+            heroSection.addEventListener('mousemove', (e) => {
+                const x = e.clientX / window.innerWidth;
+                const y = e.clientY / window.innerHeight;
+                
+                floatingIcons.forEach((icon, index) => {
+                    const speed = 0.02 * (index + 1);
+                    const xOffset = (x - 0.5) * speed * 100;
+                    const yOffset = (y - 0.5) * speed * 100;
+                    
+                    icon.style.transform = `translate(${xOffset}px, ${yOffset}px)`;
+                });
+            });
+        }
+        
         // Initialize on load
         document.addEventListener('DOMContentLoaded', () => {
             init();
@@ -1771,6 +1962,7 @@
             initParallax();
             enhancedHeaderScroll();
             initScrollAnimations();
+            initFloatingIconsInteraction();
         });
     </script>
 </body>
