@@ -28,13 +28,45 @@
                     <p class="page-subtitle" data-translate="enrollment.subtitle">Manage student enrollment requests and approvals</p>
                 </div>
                 <div style="display: flex; gap: var(--spacing-3);">
-                    <button class="btn btn--secondary" onclick="exportEnrollments()">
-                        <i class="fas fa-download" style="margin-right: 8px;"></i>
-                        <span data-translate="common.export">Export</span>
+                    <button class="btn btn--ghost" onclick="openAdvancedFilters()">
+                        <i class="fas fa-filter" style="margin-right: 8px;"></i>
+                        <span data-translate="common.advancedFilters">Advanced Filters</span>
                     </button>
+                    <div class="dropdown dropdown--right">
+                        <button class="dropdown__trigger btn btn--secondary">
+                            <i class="fas fa-download" style="margin-right: 8px;"></i>
+                            <span data-translate="common.export">Export</span>
+                            <span class="dropdown__arrow"></span>
+                        </button>
+                        <div class="dropdown__menu">
+                            <div class="dropdown__list">
+                                <div class="dropdown__item" onclick="exportEnrollments('csv')">
+                                    <i class="fas fa-file-csv" style="width: 20px;"></i>
+                                    <span data-translate="export.csv">Export as CSV</span>
+                                </div>
+                                <div class="dropdown__item" onclick="exportEnrollments('excel')">
+                                    <i class="fas fa-file-excel" style="width: 20px;"></i>
+                                    <span data-translate="export.excel">Export as Excel</span>
+                                </div>
+                                <div class="dropdown__item" onclick="exportEnrollments('pdf')">
+                                    <i class="fas fa-file-pdf" style="width: 20px;"></i>
+                                    <span data-translate="export.pdf">Export as PDF</span>
+                                </div>
+                                <div class="dropdown__divider"></div>
+                                <div class="dropdown__item" onclick="exportEnrollments('custom')">
+                                    <i class="fas fa-cog" style="width: 20px;"></i>
+                                    <span data-translate="export.custom">Custom Export</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                     <button class="btn btn--primary" onclick="openBulkInviteModal()">
                         <i class="fas fa-envelope" style="margin-right: 8px;"></i>
                         <span data-translate="enrollment.bulkInvite">Bulk Invite</span>
+                    </button>
+                    <button class="btn btn--success" onclick="openGroupEnrollmentModal()">
+                        <i class="fas fa-users" style="margin-right: 8px;"></i>
+                        <span data-translate="enrollment.groupEnrollment">Group Enrollment</span>
                     </button>
                 </div>
             </div>
@@ -322,6 +354,357 @@
                         </div>
                     </div>
                 </div>
+            </div>
+
+            <!-- Waitlist Management -->
+            <div class="card" style="margin-top: var(--spacing-6);">
+                <div class="card__header">
+                    <div style="display: flex; justify-content: space-between; align-items: center;">
+                        <h3 data-translate="enrollment.waitlist">Waitlist Management</h3>
+                        <button class="btn btn--secondary btn--sm" onclick="refreshWaitlist()">
+                            <i class="fas fa-sync-alt" style="margin-right: 8px;"></i>
+                            <span data-translate="common.refresh">Refresh</span>
+                        </button>
+                    </div>
+                </div>
+                <div class="card__body">
+                    <div class="table-container">
+                        <table class="table">
+                            <thead>
+                                <tr>
+                                    <th data-translate="student.name">Student</th>
+                                    <th data-translate="course.title">Course</th>
+                                    <th data-translate="enrollment.waitlistPosition">Position</th>
+                                    <th data-translate="enrollment.waitingSince">Waiting Since</th>
+                                    <th data-translate="common.actions">Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="waitlistTableBody">
+                                <!-- Dynamic content -->
+                            </tbody>
+                        </table>
+                        
+                        <div id="waitlistEmptyState" class="empty-state" style="display: none;">
+                            <i class="fas fa-clock" style="font-size: 48px; color: var(--text-muted); margin-bottom: var(--spacing-3);"></i>
+                            <p data-translate="enrollment.noWaitlist">No students on waitlist</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Advanced Filters Modal -->
+    <div class="modal-backdrop" id="advancedFiltersModalBackdrop">
+        <div class="modal modal--large" id="advancedFiltersModal">
+            <div class="modal__header">
+                <h2 class="modal__title" data-translate="common.advancedFilters">Advanced Filters</h2>
+                <button class="modal__close" onclick="closeAdvancedFilters()">×</button>
+            </div>
+            <div class="modal__body">
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: var(--spacing-4);">
+                    <div class="input-group">
+                        <label class="input-group__label" data-translate="enrollment.progressRange">Progress Range</label>
+                        <div style="display: flex; gap: var(--spacing-2); align-items: center;">
+                            <input type="number" id="progressMin" class="input" min="0" max="100" placeholder="0">
+                            <span>-</span>
+                            <input type="number" id="progressMax" class="input" min="0" max="100" placeholder="100">
+                            <span>%</span>
+                        </div>
+                    </div>
+                    
+                    <div class="input-group">
+                        <label class="input-group__label" data-translate="enrollment.enrollmentDateRange">Enrollment Date Range</label>
+                        <div style="display: flex; gap: var(--spacing-2);">
+                            <input type="date" id="dateFrom" class="input">
+                            <input type="date" id="dateTo" class="input">
+                        </div>
+                    </div>
+                    
+                    <div class="input-group">
+                        <label class="input-group__label" data-translate="enrollment.prerequisiteStatus">Prerequisite Status</label>
+                        <div class="dropdown dropdown--block" id="prerequisiteFilterDropdown">
+                            <button class="dropdown__trigger">
+                                <span data-translate="common.all">All</span>
+                                <span class="dropdown__arrow"></span>
+                            </button>
+                            <div class="dropdown__menu">
+                                <div class="dropdown__list">
+                                    <div class="dropdown__item" data-value="">All</div>
+                                    <div class="dropdown__item" data-value="met">Prerequisites Met</div>
+                                    <div class="dropdown__item" data-value="notmet">Prerequisites Not Met</div>
+                                    <div class="dropdown__item" data-value="pending">Prerequisites Pending</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="input-group">
+                        <label class="input-group__label" data-translate="enrollment.learningPath">Learning Path</label>
+                        <div class="dropdown dropdown--block" id="learningPathFilterDropdown">
+                            <button class="dropdown__trigger">
+                                <span data-translate="common.all">All</span>
+                                <span class="dropdown__arrow"></span>
+                            </button>
+                            <div class="dropdown__menu">
+                                <div class="dropdown__list">
+                                    <div class="dropdown__item" data-value="">All Paths</div>
+                                    <div class="dropdown__item" data-value="beginner">Beginner Path</div>
+                                    <div class="dropdown__item" data-value="intermediate">Intermediate Path</div>
+                                    <div class="dropdown__item" data-value="advanced">Advanced Path</div>
+                                    <div class="dropdown__item" data-value="professional">Professional Path</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="input-group">
+                        <label class="input-group__label" data-translate="enrollment.completionPrediction">Completion Prediction</label>
+                        <div class="dropdown dropdown--block" id="completionPredictionDropdown">
+                            <button class="dropdown__trigger">
+                                <span data-translate="common.all">All</span>
+                                <span class="dropdown__arrow"></span>
+                            </button>
+                            <div class="dropdown__menu">
+                                <div class="dropdown__list">
+                                    <div class="dropdown__item" data-value="">All Predictions</div>
+                                    <div class="dropdown__item" data-value="high">High Likelihood</div>
+                                    <div class="dropdown__item" data-value="medium">Medium Likelihood</div>
+                                    <div class="dropdown__item" data-value="low">Low Likelihood</div>
+                                    <div class="dropdown__item" data-value="risk">At Risk</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="input-group">
+                        <label class="input-group__label" data-translate="enrollment.organizationGroup">Organization/Group</label>
+                        <input type="text" id="organizationFilter" class="input" placeholder="Enter organization name...">
+                    </div>
+                </div>
+                
+                <div style="margin-top: var(--spacing-4);">
+                    <label class="checkbox-label">
+                        <input type="checkbox" id="showOnlyActiveStudents">
+                        <span class="checkbox-custom"></span>
+                        <span data-translate="enrollment.showOnlyActive">Show only active students</span>
+                    </label>
+                </div>
+                
+                <div style="margin-top: var(--spacing-2);">
+                    <label class="checkbox-label">
+                        <input type="checkbox" id="showExpiredEnrollments">
+                        <span class="checkbox-custom"></span>
+                        <span data-translate="enrollment.showExpired">Include expired enrollments</span>
+                    </label>
+                </div>
+            </div>
+            <div class="modal__footer">
+                <button class="btn btn--ghost" onclick="resetAdvancedFilters()">
+                    <i class="fas fa-undo" style="margin-right: 8px;"></i>
+                    <span data-translate="common.reset">Reset</span>
+                </button>
+                <button class="btn btn--secondary" onclick="closeAdvancedFilters()">
+                    <i class="fas fa-times" style="margin-right: 8px;"></i>
+                    <span data-translate="common.cancel">Cancel</span>
+                </button>
+                <button class="btn btn--primary" onclick="applyAdvancedFilters()">
+                    <i class="fas fa-check" style="margin-right: 8px;"></i>
+                    <span data-translate="common.applyFilters">Apply Filters</span>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Group Enrollment Modal -->
+    <div class="modal-backdrop" id="groupEnrollmentModalBackdrop">
+        <div class="modal modal--large" id="groupEnrollmentModal">
+            <div class="modal__header">
+                <h2 class="modal__title" data-translate="enrollment.groupEnrollment">Group Enrollment</h2>
+                <button class="modal__close" onclick="closeGroupEnrollmentModal()">×</button>
+            </div>
+            <div class="modal__body">
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: var(--spacing-4);">
+                    <div class="input-group">
+                        <label class="input-group__label required" data-translate="enrollment.organizationName">Organization Name</label>
+                        <input type="text" id="organizationName" class="input" placeholder="Enter organization name...">
+                    </div>
+                    
+                    <div class="input-group">
+                        <label class="input-group__label required" data-translate="enrollment.groupSize">Group Size</label>
+                        <input type="number" id="groupSize" class="input" min="2" placeholder="Number of students...">
+                    </div>
+                </div>
+                
+                <div class="input-group">
+                    <label class="input-group__label required" data-translate="course.selectCourses">Select Courses</label>
+                    <div class="card" style="max-height: 200px; overflow-y: auto;">
+                        <div class="card__body" id="groupCoursesList">
+                            <!-- Dynamic course checkboxes -->
+                        </div>
+                    </div>
+                </div>
+                
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: var(--spacing-4);">
+                    <div class="input-group">
+                        <label class="input-group__label" data-translate="enrollment.validFrom">Valid From</label>
+                        <input type="date" id="enrollmentValidFrom" class="input">
+                    </div>
+                    
+                    <div class="input-group">
+                        <label class="input-group__label" data-translate="enrollment.validUntil">Valid Until</label>
+                        <input type="date" id="enrollmentValidUntil" class="input">
+                    </div>
+                </div>
+                
+                <div class="input-group">
+                    <label class="input-group__label" data-translate="enrollment.groupOptions">Group Options</label>
+                    <div style="display: flex; flex-direction: column; gap: var(--spacing-2);">
+                        <label class="checkbox-label">
+                            <input type="checkbox" id="autoApprove" checked>
+                            <span class="checkbox-custom"></span>
+                            <span data-translate="enrollment.autoApprove">Auto-approve enrollments</span>
+                        </label>
+                        <label class="checkbox-label">
+                            <input type="checkbox" id="skipPrerequisites">
+                            <span class="checkbox-custom"></span>
+                            <span data-translate="enrollment.skipPrerequisites">Skip prerequisite checks</span>
+                        </label>
+                        <label class="checkbox-label">
+                            <input type="checkbox" id="generateAccessCodes" checked>
+                            <span class="checkbox-custom"></span>
+                            <span data-translate="enrollment.generateAccessCodes">Generate access codes</span>
+                        </label>
+                    </div>
+                </div>
+                
+                <div class="input-group">
+                    <label class="input-group__label" data-translate="enrollment.contactPerson">Contact Person</label>
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: var(--spacing-2);">
+                        <input type="text" id="contactName" class="input" placeholder="Name...">
+                        <input type="email" id="contactEmail" class="input" placeholder="Email...">
+                    </div>
+                </div>
+            </div>
+            <div class="modal__footer">
+                <button class="btn btn--secondary" onclick="closeGroupEnrollmentModal()">
+                    <i class="fas fa-times" style="margin-right: 8px;"></i>
+                    <span data-translate="common.cancel">Cancel</span>
+                </button>
+                <button class="btn btn--primary" onclick="processGroupEnrollment()">
+                    <i class="fas fa-users" style="margin-right: 8px;"></i>
+                    <span data-translate="enrollment.processGroup">Process Group Enrollment</span>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Custom Export Modal -->
+    <div class="modal-backdrop" id="customExportModalBackdrop">
+        <div class="modal modal--medium" id="customExportModal">
+            <div class="modal__header">
+                <h2 class="modal__title" data-translate="export.customExport">Custom Export</h2>
+                <button class="modal__close" onclick="closeCustomExportModal()">×</button>
+            </div>
+            <div class="modal__body">
+                <div class="input-group">
+                    <label class="input-group__label" data-translate="export.selectFields">Select Fields to Export</label>
+                    <div class="card" style="max-height: 300px; overflow-y: auto;">
+                        <div class="card__body">
+                            <div style="display: flex; flex-direction: column; gap: var(--spacing-2);">
+                                <label class="checkbox-label">
+                                    <input type="checkbox" class="export-field" value="studentName" checked>
+                                    <span class="checkbox-custom"></span>
+                                    <span data-translate="student.name">Student Name</span>
+                                </label>
+                                <label class="checkbox-label">
+                                    <input type="checkbox" class="export-field" value="studentEmail" checked>
+                                    <span class="checkbox-custom"></span>
+                                    <span data-translate="student.email">Student Email</span>
+                                </label>
+                                <label class="checkbox-label">
+                                    <input type="checkbox" class="export-field" value="courseName" checked>
+                                    <span class="checkbox-custom"></span>
+                                    <span data-translate="course.name">Course Name</span>
+                                </label>
+                                <label class="checkbox-label">
+                                    <input type="checkbox" class="export-field" value="enrollmentDate" checked>
+                                    <span class="checkbox-custom"></span>
+                                    <span data-translate="enrollment.date">Enrollment Date</span>
+                                </label>
+                                <label class="checkbox-label">
+                                    <input type="checkbox" class="export-field" value="status" checked>
+                                    <span class="checkbox-custom"></span>
+                                    <span data-translate="common.status">Status</span>
+                                </label>
+                                <label class="checkbox-label">
+                                    <input type="checkbox" class="export-field" value="progress" checked>
+                                    <span class="checkbox-custom"></span>
+                                    <span data-translate="common.progress">Progress</span>
+                                </label>
+                                <label class="checkbox-label">
+                                    <input type="checkbox" class="export-field" value="lastAccessed">
+                                    <span class="checkbox-custom"></span>
+                                    <span data-translate="enrollment.lastAccessed">Last Accessed</span>
+                                </label>
+                                <label class="checkbox-label">
+                                    <input type="checkbox" class="export-field" value="completionDate">
+                                    <span class="checkbox-custom"></span>
+                                    <span data-translate="enrollment.completionDate">Completion Date</span>
+                                </label>
+                                <label class="checkbox-label">
+                                    <input type="checkbox" class="export-field" value="organization">
+                                    <span class="checkbox-custom"></span>
+                                    <span data-translate="enrollment.organization">Organization</span>
+                                </label>
+                                <label class="checkbox-label">
+                                    <input type="checkbox" class="export-field" value="prerequisites">
+                                    <span class="checkbox-custom"></span>
+                                    <span data-translate="enrollment.prerequisites">Prerequisites Status</span>
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="input-group">
+                    <label class="input-group__label" data-translate="export.format">Export Format</label>
+                    <div class="radio-group">
+                        <label class="radio-label">
+                            <input type="radio" name="exportFormat" value="csv" checked>
+                            <span class="radio-custom"></span>
+                            <span>CSV</span>
+                        </label>
+                        <label class="radio-label">
+                            <input type="radio" name="exportFormat" value="excel">
+                            <span class="radio-custom"></span>
+                            <span>Excel</span>
+                        </label>
+                        <label class="radio-label">
+                            <input type="radio" name="exportFormat" value="json">
+                            <span class="radio-custom"></span>
+                            <span>JSON</span>
+                        </label>
+                    </div>
+                </div>
+                
+                <div class="input-group">
+                    <label class="checkbox-label">
+                        <input type="checkbox" id="includeHeaders" checked>
+                        <span class="checkbox-custom"></span>
+                        <span data-translate="export.includeHeaders">Include column headers</span>
+                    </label>
+                </div>
+            </div>
+            <div class="modal__footer">
+                <button class="btn btn--secondary" onclick="closeCustomExportModal()">
+                    <i class="fas fa-times" style="margin-right: 8px;"></i>
+                    <span data-translate="common.cancel">Cancel</span>
+                </button>
+                <button class="btn btn--primary" onclick="performCustomExport()">
+                    <i class="fas fa-download" style="margin-right: 8px;"></i>
+                    <span data-translate="common.export">Export</span>
+                </button>
             </div>
         </div>
     </div>
@@ -962,8 +1345,12 @@
             closeBulkInviteModal();
         }
 
-        // Export enrollments
-        function exportEnrollments() {
+        // Export enrollments with multiple formats
+        function exportEnrollments(format = 'csv') {
+            if (format === 'custom') {
+                openCustomExportModal();
+                return;
+            }
             const data = filteredEnrollments.map(enrollment => {
                 const student = allUsers.find(u => u.id === enrollment.studentId);
                 const course = allCourses.find(c => c.id === enrollment.courseId);
@@ -976,25 +1363,94 @@
                     'Enrollment Date': new Date(enrollment.enrollmentDate).toLocaleDateString(),
                     'Status': enrollment.status,
                     'Progress': Math.round(enrollment.progress || 0) + '%',
-                    'Last Accessed': enrollment.lastAccessed ? new Date(enrollment.lastAccessed).toLocaleDateString() : ''
+                    'Last Accessed': enrollment.lastAccessed ? new Date(enrollment.lastAccessed).toLocaleDateString() : '',
+                    'Organization': enrollment.organization || '',
+                    'Prerequisites': enrollment.prerequisitesMet ? 'Met' : 'Not Met'
                 };
             });
             
-            // Convert to CSV
-            const headers = Object.keys(data[0] || {});
-            const csvContent = [
-                headers.join(','),
-                ...data.map(row => headers.map(header => `"${row[header]}"`).join(','))
-            ].join('\n');
+            let filename = `enrollments_${new Date().toISOString().split('T')[0]}`;
+            let blob;
+            
+            switch (format) {
+                case 'excel':
+                    // Simple Excel format (CSV with Excel MIME type)
+                    const headers = Object.keys(data[0] || {});
+                    const csvContent = [
+                        headers.join('\t'),
+                        ...data.map(row => headers.map(header => row[header]).join('\t'))
+                    ].join('\n');
+                    blob = new Blob([csvContent], { type: 'application/vnd.ms-excel' });
+                    filename += '.xls';
+                    break;
+                
+                case 'pdf':
+                    // Simple PDF format (HTML table converted to PDF)
+                    const pdfContent = generatePDFContent(data);
+                    const pdfWindow = window.open('', '_blank');
+                    pdfWindow.document.write(pdfContent);
+                    pdfWindow.document.close();
+                    pdfWindow.print();
+                    return;
+                
+                case 'csv':
+                default:
+                    const csvHeaders = Object.keys(data[0] || {});
+                    const csv = [
+                        csvHeaders.join(','),
+                        ...data.map(row => csvHeaders.map(header => `"${row[header]}"`).join(','))
+                    ].join('\n');
+                    blob = new Blob([csv], { type: 'text/csv' });
+                    filename += '.csv';
+                    break;
+            }
             
             // Download
-            const blob = new Blob([csvContent], { type: 'text/csv' });
             const url = window.URL.createObjectURL(blob);
             const a = document.createElement('a');
             a.href = url;
-            a.download = `enrollments_${new Date().toISOString().split('T')[0]}.csv`;
+            a.download = filename;
             a.click();
             window.URL.revokeObjectURL(url);
+        }
+
+        // Generate PDF content
+        function generatePDFContent(data) {
+            const headers = Object.keys(data[0] || {});
+            return `
+                <!DOCTYPE html>
+                <html>
+                <head>
+                    <title>Enrollment Report</title>
+                    <style>
+                        body { font-family: Arial, sans-serif; }
+                        table { width: 100%; border-collapse: collapse; }
+                        th, td { border: 1px solid #ddd; padding: 8px; text-align: left; }
+                        th { background-color: #f2f2f2; font-weight: bold; }
+                        h1 { color: #333; }
+                        .report-date { color: #666; font-size: 14px; }
+                    </style>
+                </head>
+                <body>
+                    <h1>Enrollment Report</h1>
+                    <p class="report-date">Generated on: ${new Date().toLocaleDateString()}</p>
+                    <table>
+                        <thead>
+                            <tr>
+                                ${headers.map(h => `<th>${h}</th>`).join('')}
+                            </tr>
+                        </thead>
+                        <tbody>
+                            ${data.map(row => `
+                                <tr>
+                                    ${headers.map(h => `<td>${row[h]}</td>`).join('')}
+                                </tr>
+                            `).join('')}
+                        </tbody>
+                    </table>
+                </body>
+                </html>
+            `;
         }
 
         // Pagination
@@ -1375,6 +1831,453 @@
         function initializeAnalytics() {
             loadAnalyticsData(currentAnalyticsTab);
         }
+
+        // Advanced Filters Functions
+        function openAdvancedFilters() {
+            document.getElementById('advancedFiltersModalBackdrop').classList.add('active');
+            document.getElementById('advancedFiltersModal').classList.add('active');
+            
+            // Initialize dropdowns if not already done
+            ['prerequisiteFilterDropdown', 'learningPathFilterDropdown', 'completionPredictionDropdown'].forEach(id => {
+                if (!document.getElementById(id)._dropdownConfig) {
+                    LMS.Dropdown.init(id);
+                }
+            });
+        }
+
+        function closeAdvancedFilters() {
+            document.getElementById('advancedFiltersModalBackdrop').classList.remove('active');
+            document.getElementById('advancedFiltersModal').classList.remove('active');
+        }
+
+        function resetAdvancedFilters() {
+            document.getElementById('progressMin').value = '';
+            document.getElementById('progressMax').value = '';
+            document.getElementById('dateFrom').value = '';
+            document.getElementById('dateTo').value = '';
+            document.getElementById('organizationFilter').value = '';
+            document.getElementById('showOnlyActiveStudents').checked = false;
+            document.getElementById('showExpiredEnrollments').checked = false;
+            
+            ['prerequisiteFilterDropdown', 'learningPathFilterDropdown', 'completionPredictionDropdown'].forEach(id => {
+                LMS.Dropdown.setValue(id, '');
+            });
+        }
+
+        function applyAdvancedFilters() {
+            // Apply progress range filter
+            const progressMin = parseInt(document.getElementById('progressMin').value) || 0;
+            const progressMax = parseInt(document.getElementById('progressMax').value) || 100;
+            
+            filteredEnrollments = filteredEnrollments.filter(e => 
+                e.progress >= progressMin && e.progress <= progressMax
+            );
+            
+            // Apply date range filter
+            const dateFrom = document.getElementById('dateFrom').value;
+            const dateTo = document.getElementById('dateTo').value;
+            
+            if (dateFrom) {
+                filteredEnrollments = filteredEnrollments.filter(e => 
+                    new Date(e.enrollmentDate) >= new Date(dateFrom)
+                );
+            }
+            
+            if (dateTo) {
+                filteredEnrollments = filteredEnrollments.filter(e => 
+                    new Date(e.enrollmentDate) <= new Date(dateTo)
+                );
+            }
+            
+            // Apply organization filter
+            const orgFilter = document.getElementById('organizationFilter').value.toLowerCase();
+            if (orgFilter) {
+                filteredEnrollments = filteredEnrollments.filter(e => 
+                    (e.organization || '').toLowerCase().includes(orgFilter)
+                );
+            }
+            
+            // Apply prerequisite filter
+            const prereqFilter = LMS.Dropdown.getValue('prerequisiteFilterDropdown');
+            if (prereqFilter) {
+                filteredEnrollments = filteredEnrollments.filter(e => {
+                    switch (prereqFilter) {
+                        case 'met': return e.prerequisitesMet === true;
+                        case 'notmet': return e.prerequisitesMet === false;
+                        case 'pending': return e.prerequisitesMet === null;
+                        default: return true;
+                    }
+                });
+            }
+            
+            // Apply learning path filter
+            const pathFilter = LMS.Dropdown.getValue('learningPathFilterDropdown');
+            if (pathFilter) {
+                filteredEnrollments = filteredEnrollments.filter(e => 
+                    e.learningPath === pathFilter
+                );
+            }
+            
+            // Apply completion prediction filter
+            const predictionFilter = LMS.Dropdown.getValue('completionPredictionDropdown');
+            if (predictionFilter) {
+                filteredEnrollments = filteredEnrollments.filter(e => 
+                    e.completionPrediction === predictionFilter
+                );
+            }
+            
+            // Apply active/expired filters
+            if (document.getElementById('showOnlyActiveStudents').checked) {
+                filteredEnrollments = filteredEnrollments.filter(e => 
+                    e.status === 'enrolled' && e.progress > 0
+                );
+            }
+            
+            if (!document.getElementById('showExpiredEnrollments').checked) {
+                filteredEnrollments = filteredEnrollments.filter(e => 
+                    !e.expiryDate || new Date(e.expiryDate) > new Date()
+                );
+            }
+            
+            currentPage = 1;
+            displayEnrollments();
+            closeAdvancedFilters();
+            LMS.showToast(LMS.t('filters.applied'), 'success');
+        }
+
+        // Group Enrollment Functions
+        function openGroupEnrollmentModal() {
+            document.getElementById('groupEnrollmentModalBackdrop').classList.add('active');
+            document.getElementById('groupEnrollmentModal').classList.add('active');
+            
+            // Populate courses list
+            const coursesList = document.getElementById('groupCoursesList');
+            const currentUser = LMS.Auth.getUser();
+            let coursesToShow = allCourses;
+            
+            if (currentUser.role === 'teacher') {
+                coursesToShow = allCourses.filter(c => c.teacherId === currentUser.id);
+            }
+            
+            coursesList.innerHTML = coursesToShow.map(course => `
+                <label class="checkbox-label" style="display: block; margin-bottom: var(--spacing-2);">
+                    <input type="checkbox" class="group-course-checkbox" value="${course.id}">
+                    <span class="checkbox-custom"></span>
+                    <span>${course.title} (${course.category})</span>
+                </label>
+            `).join('');
+        }
+
+        function closeGroupEnrollmentModal() {
+            document.getElementById('groupEnrollmentModalBackdrop').classList.remove('active');
+            document.getElementById('groupEnrollmentModal').classList.remove('active');
+            
+            // Reset form
+            document.getElementById('organizationName').value = '';
+            document.getElementById('groupSize').value = '';
+            document.getElementById('enrollmentValidFrom').value = '';
+            document.getElementById('enrollmentValidUntil').value = '';
+            document.getElementById('contactName').value = '';
+            document.getElementById('contactEmail').value = '';
+            document.querySelectorAll('.group-course-checkbox').forEach(cb => cb.checked = false);
+        }
+
+        function processGroupEnrollment() {
+            const orgName = document.getElementById('organizationName').value.trim();
+            const groupSize = parseInt(document.getElementById('groupSize').value);
+            const selectedCourses = Array.from(document.querySelectorAll('.group-course-checkbox:checked')).map(cb => cb.value);
+            
+            if (!orgName || !groupSize || selectedCourses.length === 0) {
+                LMS.showToast(LMS.t('validation.required'), 'error');
+                return;
+            }
+            
+            // Generate access codes
+            const generateAccessCodes = document.getElementById('generateAccessCodes').checked;
+            const accessCodes = [];
+            
+            if (generateAccessCodes) {
+                for (let i = 0; i < groupSize; i++) {
+                    accessCodes.push(generateAccessCode());
+                }
+            }
+            
+            // Simulate group enrollment creation
+            const groupEnrollment = {
+                organization: orgName,
+                groupSize: groupSize,
+                courses: selectedCourses,
+                validFrom: document.getElementById('enrollmentValidFrom').value,
+                validUntil: document.getElementById('enrollmentValidUntil').value,
+                autoApprove: document.getElementById('autoApprove').checked,
+                skipPrerequisites: document.getElementById('skipPrerequisites').checked,
+                accessCodes: accessCodes,
+                contactPerson: {
+                    name: document.getElementById('contactName').value,
+                    email: document.getElementById('contactEmail').value
+                },
+                createdAt: new Date().toISOString()
+            };
+            
+            console.log('Group enrollment created:', groupEnrollment);
+            
+            // Show success message with access codes
+            if (generateAccessCodes) {
+                const codesMessage = `
+                    <div style="max-height: 200px; overflow-y: auto;">
+                        <p>${LMS.t('enrollment.accessCodesGenerated')}</p>
+                        <div style="font-family: monospace; background: var(--bg-secondary); padding: var(--spacing-2); border-radius: var(--radius-sm);">
+                            ${accessCodes.join('<br>')}
+                        </div>
+                    </div>
+                `;
+                LMS.showModal('Success', codesMessage);
+            } else {
+                LMS.showToast(LMS.t('enrollment.groupProcessed'), 'success');
+            }
+            
+            closeGroupEnrollmentModal();
+        }
+
+        function generateAccessCode() {
+            const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+            let code = '';
+            for (let i = 0; i < 8; i++) {
+                code += chars[Math.floor(Math.random() * chars.length)];
+                if (i === 3) code += '-'; // Format: XXXX-XXXX
+            }
+            return code;
+        }
+
+        // Custom Export Functions
+        function openCustomExportModal() {
+            document.getElementById('customExportModalBackdrop').classList.add('active');
+            document.getElementById('customExportModal').classList.add('active');
+        }
+
+        function closeCustomExportModal() {
+            document.getElementById('customExportModalBackdrop').classList.remove('active');
+            document.getElementById('customExportModal').classList.remove('active');
+        }
+
+        function performCustomExport() {
+            const selectedFields = Array.from(document.querySelectorAll('.export-field:checked')).map(cb => cb.value);
+            const format = document.querySelector('input[name="exportFormat"]:checked').value;
+            const includeHeaders = document.getElementById('includeHeaders').checked;
+            
+            if (selectedFields.length === 0) {
+                LMS.showToast(LMS.t('export.selectAtLeastOneField'), 'error');
+                return;
+            }
+            
+            // Build custom data based on selected fields
+            const fieldMapping = {
+                studentName: { key: 'Student Name', getter: (e, s, c) => s?.fullName || '' },
+                studentEmail: { key: 'Student Email', getter: (e, s, c) => s?.email || '' },
+                courseName: { key: 'Course Name', getter: (e, s, c) => c?.title || '' },
+                enrollmentDate: { key: 'Enrollment Date', getter: (e, s, c) => new Date(e.enrollmentDate).toLocaleDateString() },
+                status: { key: 'Status', getter: (e, s, c) => e.status },
+                progress: { key: 'Progress', getter: (e, s, c) => Math.round(e.progress || 0) + '%' },
+                lastAccessed: { key: 'Last Accessed', getter: (e, s, c) => e.lastAccessed ? new Date(e.lastAccessed).toLocaleDateString() : '' },
+                completionDate: { key: 'Completion Date', getter: (e, s, c) => e.completionDate ? new Date(e.completionDate).toLocaleDateString() : '' },
+                organization: { key: 'Organization', getter: (e, s, c) => e.organization || '' },
+                prerequisites: { key: 'Prerequisites Status', getter: (e, s, c) => e.prerequisitesMet ? 'Met' : 'Not Met' }
+            };
+            
+            const data = filteredEnrollments.map(enrollment => {
+                const student = allUsers.find(u => u.id === enrollment.studentId);
+                const course = allCourses.find(c => c.id === enrollment.courseId);
+                
+                const row = {};
+                selectedFields.forEach(field => {
+                    const mapping = fieldMapping[field];
+                    if (mapping) {
+                        row[mapping.key] = mapping.getter(enrollment, student, course);
+                    }
+                });
+                return row;
+            });
+            
+            // Export based on format
+            let filename = `custom_enrollment_export_${new Date().toISOString().split('T')[0]}`;
+            let content, blob;
+            
+            switch (format) {
+                case 'json':
+                    content = JSON.stringify(includeHeaders ? data : data.map(row => Object.values(row)), null, 2);
+                    blob = new Blob([content], { type: 'application/json' });
+                    filename += '.json';
+                    break;
+                    
+                case 'excel':
+                    const headers = Object.keys(data[0] || {});
+                    content = includeHeaders ? [headers.join('\t')] : [];
+                    content.push(...data.map(row => headers.map(h => row[h]).join('\t')));
+                    blob = new Blob([content.join('\n')], { type: 'application/vnd.ms-excel' });
+                    filename += '.xls';
+                    break;
+                    
+                case 'csv':
+                default:
+                    const csvHeaders = Object.keys(data[0] || {});
+                    content = includeHeaders ? [csvHeaders.join(',')] : [];
+                    content.push(...data.map(row => csvHeaders.map(h => `"${row[h]}"`).join(',')));
+                    blob = new Blob([content.join('\n')], { type: 'text/csv' });
+                    filename += '.csv';
+                    break;
+            }
+            
+            // Download
+            const url = window.URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = filename;
+            a.click();
+            window.URL.revokeObjectURL(url);
+            
+            closeCustomExportModal();
+            LMS.showToast(LMS.t('export.success'), 'success');
+        }
+
+        // Waitlist Management Functions
+        let waitlistData = [];
+
+        function loadWaitlistData() {
+            // Simulate waitlist data
+            waitlistData = allEnrollments
+                .filter(e => e.status === 'waitlisted')
+                .sort((a, b) => new Date(a.waitlistedDate) - new Date(b.waitlistedDate));
+        }
+
+        function displayWaitlist() {
+            const tbody = document.getElementById('waitlistTableBody');
+            const emptyState = document.getElementById('waitlistEmptyState');
+            
+            loadWaitlistData();
+            
+            if (waitlistData.length === 0) {
+                tbody.innerHTML = '';
+                emptyState.style.display = 'block';
+                return;
+            }
+            
+            emptyState.style.display = 'none';
+            
+            tbody.innerHTML = waitlistData.map((enrollment, index) => {
+                const student = allUsers.find(u => u.id === enrollment.studentId);
+                const course = allCourses.find(c => c.id === enrollment.courseId);
+                
+                return `
+                    <tr>
+                        <td>
+                            <div style="display: flex; align-items: center; gap: var(--spacing-3);">
+                                <img src="${student?.avatar || '../assets/images/default-avatar.svg'}" 
+                                     alt="${student?.fullName}" 
+                                     style="width: 32px; height: 32px; border-radius: 50%; object-fit: cover;">
+                                <div>
+                                    <div style="font-weight: var(--font-weight-medium);">${student?.fullName || 'Unknown'}</div>
+                                    <div style="font-size: var(--font-size-sm); color: var(--text-secondary);">${student?.email || ''}</div>
+                                </div>
+                            </div>
+                        </td>
+                        <td>${course?.title || 'Unknown Course'}</td>
+                        <td>
+                            <span class="badge badge--secondary">#${index + 1}</span>
+                        </td>
+                        <td>${new Date(enrollment.waitlistedDate || enrollment.enrollmentDate).toLocaleDateString()}</td>
+                        <td>
+                            <div class="action-buttons">
+                                <button class="btn btn--ghost btn--sm text-success" onclick="promoteFromWaitlist('${enrollment.id}')" title="${LMS.t('enrollment.promote')}">
+                                    <i class="fas fa-arrow-up"></i>
+                                </button>
+                                <button class="btn btn--ghost btn--sm text-danger" onclick="removeFromWaitlist('${enrollment.id}')" title="${LMS.t('common.remove')}">
+                                    <i class="fas fa-times"></i>
+                                </button>
+                            </div>
+                        </td>
+                    </tr>
+                `;
+            }).join('');
+        }
+
+        function refreshWaitlist() {
+            displayWaitlist();
+            LMS.showToast(LMS.t('common.refreshed'), 'success');
+        }
+
+        function promoteFromWaitlist(enrollmentId) {
+            const enrollment = allEnrollments.find(e => e.id === enrollmentId);
+            if (enrollment) {
+                enrollment.status = 'enrolled';
+                enrollment.enrolledDate = new Date().toISOString();
+                delete enrollment.waitlistedDate;
+                
+                displayWaitlist();
+                displayEnrollments();
+                updateStatistics();
+                LMS.showToast(LMS.t('enrollment.promotedFromWaitlist'), 'success');
+            }
+        }
+
+        function removeFromWaitlist(enrollmentId) {
+            if (!confirm(LMS.t('enrollment.removeFromWaitlistConfirm'))) return;
+            
+            const enrollment = allEnrollments.find(e => e.id === enrollmentId);
+            if (enrollment) {
+                enrollment.status = 'cancelled';
+                
+                displayWaitlist();
+                displayEnrollments();
+                updateStatistics();
+                LMS.showToast(LMS.t('enrollment.removedFromWaitlist'), 'success');
+            }
+        }
+
+        // Check prerequisites for enrollment
+        function checkPrerequisites(studentId, courseId) {
+            const course = allCourses.find(c => c.id === courseId);
+            if (!course || !course.prerequisites || course.prerequisites.length === 0) {
+                return { met: true, missing: [] };
+            }
+            
+            const studentEnrollments = allEnrollments.filter(e => 
+                e.studentId === studentId && e.status === 'enrolled' && e.progress >= 100
+            );
+            
+            const completedCourseIds = studentEnrollments.map(e => e.courseId);
+            const missingPrereqs = course.prerequisites.filter(prereqId => 
+                !completedCourseIds.includes(prereqId)
+            );
+            
+            return {
+                met: missingPrereqs.length === 0,
+                missing: missingPrereqs.map(id => allCourses.find(c => c.id === id)?.title || id)
+            };
+        }
+
+        // Initialize waitlist on load
+        function initializeEnhancedFeatures() {
+            // Initialize dropdown in export button
+            const exportDropdown = document.querySelector('.dropdown:has(.fa-download)');
+            if (exportDropdown && !exportDropdown._dropdownInitialized) {
+                exportDropdown.addEventListener('click', function(e) {
+                    if (e.target.closest('.dropdown__trigger')) {
+                        this.classList.toggle('dropdown--active');
+                    }
+                });
+                exportDropdown._dropdownInitialized = true;
+            }
+            
+            // Display waitlist
+            displayWaitlist();
+        }
+
+        // Update init function to include enhanced features
+        const originalInit = init;
+        init = async function() {
+            await originalInit();
+            initializeEnhancedFeatures();
+        };
 
         // Initialize on load
         document.addEventListener('DOMContentLoaded', init);

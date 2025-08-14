@@ -481,13 +481,13 @@ This is the master TODO list for LMS Phase I development following the Foundatio
   - Enrollment trends chart
   - Completion rates
   - Drop-off analysis
-- [ ] **2.5.4** Enhanced Enrollment Management (NEW):
-  - **NEW**: Advanced enrollment workflows
-  - Waitlist management for popular courses
-  - Enrollment prerequisites checking
-  - Automated enrollment based on criteria
-  - Group enrollment for organizations
-  - Enrollment payment integration (mock)
+- [x] ✅ **2.5.4** Enhanced Enrollment Management (NEW):
+  - [x] **NEW**: Advanced enrollment workflows
+  - [x] Waitlist management for popular courses
+  - [x] Enrollment prerequisites checking
+  - [x] Automated enrollment based on criteria
+  - [x] Group enrollment for organizations
+  - [x] Enrollment payment integration (mock)
 
 #### 2.6 Progress Dashboard
 - [x] **2.6.1** Student Progress (`progress.html`):
@@ -931,16 +931,16 @@ This is the master TODO list for LMS Phase I development following the Foundatio
 ### Completion Status
 - **Phase 0 Foundation**: 43/43 tasks (100%) ✅ **Hoàn thành tất cả base components!**
 - **Phase I.1 User Management**: 30/30 tasks (100%) ✅ **Hoàn thành tất cả User Management tasks!**
-- **Phase I.2 Learning System**: 32/42 tasks (76.2%) 🚀 **Còn 10 tasks advanced features**
+- **Phase I.2 Learning System**: 33/42 tasks (78.6%) 🚀 **Còn 9 tasks advanced features**
 - **Phase I.3 Testing System**: 23/35 tasks (65.7%) 🚀 **Còn 12 tasks security + advanced features**
 - **Phase I.4 Navigation & Integration**: 2/8 tasks (25%) 🚀 **Hoàn thành navigation enhancement**
 - **Integration & Testing**: 0/32 tasks (0%)
 
-**Total: 130/189 tasks (68.8%)**
+**Total: 131/189 tasks (69.3%)**
 
 ### Updated Critical Path
 1. **Phase 0**: ✅ 100% Complete - Foundation ready
-2. **Phase I Business Logic**: 87/114 tasks (76.3%) - In Progress
+2. **Phase I Business Logic**: 88/114 tasks (77.2%) - In Progress
    - ✅ Dashboards (3 tasks) - Completed
    - ✅ User Permissions (visible in navigation) - Completed  
    - ✅ Certificate System (4 tasks) - Completed
@@ -950,9 +950,9 @@ This is the master TODO list for LMS Phase I development following the Foundatio
    - ✅ Enhanced Class Management (5 tasks) - Completed
    - ✅ Course Management Modal & Preview (2 tasks) - Completed
    - ✅ Quiz Import/Export (6 tasks) - Completed
+   - ✅ Enhanced Enrollment Management (6 tasks) - Completed
    - **Remaining High Priority Tasks:**
      - Enhanced Lesson features
-     - Enhanced Enrollment features
      - Quiz Security & Integrity
 3. **Integration & Testing**: 0/32 tasks - Ready to start (>75% business logic complete)
 
