@@ -1,0 +1,642 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quiz Security Monitoring - LMS</title>
+    <!-- Core CSS -->
+    <link rel="stylesheet" href="../assets/css/global.css">
+    <link rel="stylesheet" href="../assets/css/themes.css">
+    <link rel="stylesheet" href="../assets/css/layout.css">
+    <link rel="stylesheet" href="../assets/css/components.css">
+    <link rel="stylesheet" href="../assets/css/utilities.css">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <!-- Configuration -->
+    <script src="../config.js"></script>
+</head>
+<body>
+    <div class="page-container">
+        <!-- Page Header -->
+        <div class="page-header">
+            <div style="display: flex; justify-content: space-between; align-items: center;">
+                <div>
+                    <h1 class="page-title" data-translate="quiz.securityMonitoring">Quiz Security Monitoring</h1>
+                    <p class="page-subtitle" data-translate="quiz.monitoringSubtitle">Monitor live quiz attempts and security violations</p>
+                </div>
+                <div style="display: flex; gap: var(--spacing-3);">
+                    <button class="btn btn--secondary" onclick="refreshMonitoring()">
+                        <i class="fas fa-sync-alt" style="margin-right: 8px;"></i>
+                        <span data-translate="common.refresh">Refresh</span>
+                    </button>
+                    <button class="btn btn--primary" onclick="exportSecurityReport()">
+                        <i class="fas fa-download" style="margin-right: 8px;"></i>
+                        <span data-translate="quiz.exportReport">Export Report</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <div class="page-content">
+            <!-- Active Sessions -->
+            <div class="card" style="margin-bottom: var(--spacing-6);">
+                <div class="card__header">
+                    <h3 data-translate="quiz.activeSessions">Active Quiz Sessions</h3>
+                </div>
+                <div class="card__body">
+                    <div class="table-container">
+                        <table class="table">
+                            <thead>
+                                <tr>
+                                    <th data-translate="student.name">Student</th>
+                                    <th data-translate="quiz.title">Quiz</th>
+                                    <th data-translate="quiz.startTime">Start Time</th>
+                                    <th data-translate="quiz.progress">Progress</th>
+                                    <th data-translate="quiz.violations">Violations</th>
+                                    <th data-translate="quiz.status">Status</th>
+                                    <th data-translate="common.actions">Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="activeSessionsBody">
+                                <!-- Dynamic content -->
+                            </tbody>
+                        </table>
+                        
+                        <div id="noActiveSessions" class="empty-state" style="display: none;">
+                            <i class="fas fa-desktop" style="font-size: 48px; color: var(--text-muted); margin-bottom: var(--spacing-3);"></i>
+                            <p data-translate="quiz.noActiveSessions">No active quiz sessions</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Security Alerts -->
+            <div class="card" style="margin-bottom: var(--spacing-6);">
+                <div class="card__header">
+                    <div style="display: flex; justify-content: space-between; align-items: center;">
+                        <h3 data-translate="quiz.securityAlerts">Recent Security Alerts</h3>
+                        <div style="display: flex; gap: var(--spacing-2);">
+                            <button class="btn btn--ghost btn--sm" onclick="filterAlerts('all')" id="filterAll" class="active">
+                                <span data-translate="common.all">All</span>
+                            </button>
+                            <button class="btn btn--ghost btn--sm" onclick="filterAlerts('high')" id="filterHigh">
+                                <span data-translate="quiz.highSeverity">High</span>
+                            </button>
+                            <button class="btn btn--ghost btn--sm" onclick="filterAlerts('medium')" id="filterMedium">
+                                <span data-translate="quiz.mediumSeverity">Medium</span>
+                            </button>
+                            <button class="btn btn--ghost btn--sm" onclick="filterAlerts('low')" id="filterLow">
+                                <span data-translate="quiz.lowSeverity">Low</span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                <div class="card__body">
+                    <div id="alertsList" style="max-height: 400px; overflow-y: auto;">
+                        <!-- Dynamic alerts -->
+                    </div>
+                    
+                    <div id="noAlerts" class="empty-state" style="display: none;">
+                        <i class="fas fa-shield-alt" style="font-size: 48px; color: var(--text-muted); margin-bottom: var(--spacing-3);"></i>
+                        <p data-translate="quiz.noAlerts">No security alerts</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Violation Statistics -->
+            <div class="grid grid--3-cols" style="margin-bottom: var(--spacing-6);">
+                <div class="card">
+                    <div class="card__body">
+                        <div style="display: flex; justify-content: space-between; align-items: center;">
+                            <div>
+                                <div style="font-size: 2rem; font-weight: var(--font-weight-bold); color: var(--color-danger);" id="totalViolations">0</div>
+                                <div style="color: var(--text-secondary);" data-translate="quiz.totalViolations">Total Violations Today</div>
+                            </div>
+                            <i class="fas fa-exclamation-triangle" style="font-size: 2rem; color: var(--color-danger); opacity: 0.3;"></i>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="card">
+                    <div class="card__body">
+                        <div style="display: flex; justify-content: space-between; align-items: center;">
+                            <div>
+                                <div style="font-size: 2rem; font-weight: var(--font-weight-bold); color: var(--color-warning);" id="focusLossEvents">0</div>
+                                <div style="color: var(--text-secondary);" data-translate="quiz.focusLossEvents">Focus Loss Events</div>
+                            </div>
+                            <i class="fas fa-window-restore" style="font-size: 2rem; color: var(--color-warning); opacity: 0.3;"></i>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="card">
+                    <div class="card__body">
+                        <div style="display: flex; justify-content: space-between; align-items: center;">
+                            <div>
+                                <div style="font-size: 2rem; font-weight: var(--font-weight-bold); color: var(--color-info);" id="suspiciousActivities">0</div>
+                                <div style="color: var(--text-secondary);" data-translate="quiz.suspiciousActivities">Suspicious Activities</div>
+                            </div>
+                            <i class="fas fa-user-secret" style="font-size: 2rem; color: var(--color-info); opacity: 0.3;"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Session Detail Modal -->
+    <div class="modal-backdrop" id="sessionDetailModalBackdrop">
+        <div class="modal modal--large" id="sessionDetailModal">
+            <div class="modal__header">
+                <h2 class="modal__title" data-translate="quiz.sessionDetails">Session Details</h2>
+                <button class="modal__close" onclick="closeSessionDetail()">×</button>
+            </div>
+            <div class="modal__body" id="sessionDetailContent">
+                <!-- Dynamic content -->
+            </div>
+            <div class="modal__footer">
+                <button class="btn btn--secondary" onclick="closeSessionDetail()">
+                    <i class="fas fa-times" style="margin-right: 8px;"></i>
+                    <span data-translate="common.close">Close</span>
+                </button>
+                <button class="btn btn--danger" onclick="terminateSession()" id="terminateBtn">
+                    <i class="fas fa-ban" style="margin-right: 8px;"></i>
+                    <span data-translate="quiz.terminateSession">Terminate Session</span>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Core JavaScript -->
+    <script src="../assets/js/global.js"></script>
+    <script src="../assets/js/auth.js"></script>
+    <script src="../assets/js/api.js"></script>
+    
+    <script>
+        // State management
+        let activeSessions = [];
+        let securityAlerts = [];
+        let currentFilter = 'all';
+        let selectedSessionId = null;
+        let refreshInterval = null;
+
+        // Initialize
+        async function init() {
+            // Check authentication
+            const user = LMS.Auth.getUser();
+            if (!user || (user.role !== 'teacher' && user.role !== 'admin')) {
+                window.location.href = '../index.html';
+                return;
+            }
+
+            // Load translations
+            await LMS.LanguageManager.init();
+            LMS.LanguageManager.updateUI();
+            
+            // Load monitoring data
+            loadMonitoringData();
+            
+            // Auto-refresh every 10 seconds
+            refreshInterval = setInterval(loadMonitoringData, 10000);
+        }
+
+        // Load monitoring data
+        function loadMonitoringData() {
+            // Simulate active sessions
+            activeSessions = generateMockSessions();
+            displayActiveSessions();
+            
+            // Simulate security alerts
+            securityAlerts = generateMockAlerts();
+            displaySecurityAlerts();
+            
+            // Update statistics
+            updateStatistics();
+        }
+
+        // Generate mock sessions
+        function generateMockSessions() {
+            return [
+                {
+                    id: 'session1',
+                    studentId: 'student1',
+                    studentName: 'John Doe',
+                    studentEmail: 'john.doe@example.com',
+                    quizId: 'quiz1',
+                    quizTitle: 'JavaScript Fundamentals',
+                    startTime: new Date(Date.now() - 15 * 60 * 1000).toISOString(),
+                    progress: 45,
+                    questionsAnswered: 9,
+                    totalQuestions: 20,
+                    violations: {
+                        focusLoss: 2,
+                        tabSwitch: 1,
+                        copyAttempts: 0
+                    },
+                    status: 'active',
+                    ipAddress: '192.168.1.100',
+                    webcamEnabled: true,
+                    lastActivity: new Date().toISOString()
+                },
+                {
+                    id: 'session2',
+                    studentId: 'student2',
+                    studentName: 'Jane Smith',
+                    studentEmail: 'jane.smith@example.com',
+                    quizId: 'quiz2',
+                    quizTitle: 'Advanced CSS Techniques',
+                    startTime: new Date(Date.now() - 8 * 60 * 1000).toISOString(),
+                    progress: 20,
+                    questionsAnswered: 4,
+                    totalQuestions: 20,
+                    violations: {
+                        focusLoss: 5,
+                        tabSwitch: 3,
+                        copyAttempts: 2
+                    },
+                    status: 'suspicious',
+                    ipAddress: '192.168.1.101',
+                    webcamEnabled: false,
+                    lastActivity: new Date(Date.now() - 2 * 60 * 1000).toISOString()
+                }
+            ];
+        }
+
+        // Generate mock alerts
+        function generateMockAlerts() {
+            return [
+                {
+                    id: 'alert1',
+                    sessionId: 'session2',
+                    studentName: 'Jane Smith',
+                    type: 'focus_loss',
+                    severity: 'high',
+                    message: 'Student has lost focus 5 times',
+                    timestamp: new Date(Date.now() - 3 * 60 * 1000).toISOString(),
+                    details: 'Multiple tab switches detected'
+                },
+                {
+                    id: 'alert2',
+                    sessionId: 'session2',
+                    studentName: 'Jane Smith',
+                    type: 'copy_attempt',
+                    severity: 'medium',
+                    message: 'Copy attempt detected',
+                    timestamp: new Date(Date.now() - 5 * 60 * 1000).toISOString(),
+                    details: 'Student attempted to copy question text'
+                },
+                {
+                    id: 'alert3',
+                    sessionId: 'session1',
+                    studentName: 'John Doe',
+                    type: 'tab_switch',
+                    severity: 'low',
+                    message: 'Tab switch detected',
+                    timestamp: new Date(Date.now() - 10 * 60 * 1000).toISOString(),
+                    details: 'Student switched to another tab'
+                }
+            ];
+        }
+
+        // Display active sessions
+        function displayActiveSessions() {
+            const tbody = document.getElementById('activeSessionsBody');
+            const emptyState = document.getElementById('noActiveSessions');
+            
+            if (activeSessions.length === 0) {
+                tbody.innerHTML = '';
+                emptyState.style.display = 'block';
+                return;
+            }
+            
+            emptyState.style.display = 'none';
+            
+            tbody.innerHTML = activeSessions.map(session => {
+                const totalViolations = session.violations.focusLoss + session.violations.tabSwitch + session.violations.copyAttempts;
+                const statusClass = session.status === 'suspicious' ? 'text-danger' : 'text-success';
+                const statusIcon = session.status === 'suspicious' ? 'exclamation-triangle' : 'check-circle';
+                
+                return `
+                    <tr>
+                        <td>
+                            <div style="display: flex; align-items: center; gap: var(--spacing-3);">
+                                ${session.webcamEnabled ? '<i class="fas fa-camera text-success" title="Webcam enabled"></i>' : '<i class="fas fa-camera-slash text-muted" title="Webcam disabled"></i>'}
+                                <div>
+                                    <div style="font-weight: var(--font-weight-medium);">${session.studentName}</div>
+                                    <div style="font-size: var(--font-size-sm); color: var(--text-secondary);">${session.studentEmail}</div>
+                                </div>
+                            </div>
+                        </td>
+                        <td>${session.quizTitle}</td>
+                        <td>${new Date(session.startTime).toLocaleTimeString()}</td>
+                        <td>
+                            <div style="display: flex; align-items: center; gap: var(--spacing-2);">
+                                <div style="flex: 1; background: var(--bg-tertiary); height: 8px; border-radius: 4px; overflow: hidden;">
+                                    <div style="background: var(--color-primary); height: 100%; width: ${session.progress}%; transition: width 0.3s;"></div>
+                                </div>
+                                <span style="font-size: var(--font-size-sm); min-width: 35px;">${session.progress}%</span>
+                            </div>
+                            <div style="font-size: var(--font-size-sm); color: var(--text-secondary); margin-top: var(--spacing-1);">
+                                ${session.questionsAnswered}/${session.totalQuestions} questions
+                            </div>
+                        </td>
+                        <td>
+                            ${totalViolations > 0 ? `
+                                <div style="display: flex; gap: var(--spacing-2);">
+                                    ${session.violations.focusLoss > 0 ? `<span class="badge badge--warning" title="Focus loss">${session.violations.focusLoss}</span>` : ''}
+                                    ${session.violations.tabSwitch > 0 ? `<span class="badge badge--info" title="Tab switches">${session.violations.tabSwitch}</span>` : ''}
+                                    ${session.violations.copyAttempts > 0 ? `<span class="badge badge--danger" title="Copy attempts">${session.violations.copyAttempts}</span>` : ''}
+                                </div>
+                            ` : '<span class="badge badge--success">Clean</span>'}
+                        </td>
+                        <td>
+                            <span class="${statusClass}">
+                                <i class="fas fa-${statusIcon}"></i>
+                                ${session.status.charAt(0).toUpperCase() + session.status.slice(1)}
+                            </span>
+                        </td>
+                        <td>
+                            <div class="action-buttons">
+                                <button class="btn btn--ghost btn--sm" onclick="viewSessionDetails('${session.id}')" title="${LMS.t('common.view')}">
+                                    <i class="fas fa-eye"></i>
+                                </button>
+                                <button class="btn btn--ghost btn--sm text-warning" onclick="sendWarning('${session.id}')" title="${LMS.t('quiz.sendWarning')}">
+                                    <i class="fas fa-exclamation-triangle"></i>
+                                </button>
+                                ${session.status === 'suspicious' ? `
+                                    <button class="btn btn--ghost btn--sm text-danger" onclick="confirmTerminate('${session.id}')" title="${LMS.t('quiz.terminate')}">
+                                        <i class="fas fa-ban"></i>
+                                    </button>
+                                ` : ''}
+                            </div>
+                        </td>
+                    </tr>
+                `;
+            }).join('');
+        }
+
+        // Display security alerts
+        function displaySecurityAlerts() {
+            const alertsList = document.getElementById('alertsList');
+            const emptyState = document.getElementById('noAlerts');
+            
+            let filteredAlerts = securityAlerts;
+            if (currentFilter !== 'all') {
+                filteredAlerts = securityAlerts.filter(alert => alert.severity === currentFilter);
+            }
+            
+            if (filteredAlerts.length === 0) {
+                alertsList.innerHTML = '';
+                emptyState.style.display = 'block';
+                return;
+            }
+            
+            emptyState.style.display = 'none';
+            
+            alertsList.innerHTML = filteredAlerts.map(alert => {
+                const severityColors = {
+                    high: 'danger',
+                    medium: 'warning',
+                    low: 'info'
+                };
+                
+                const icons = {
+                    focus_loss: 'window-restore',
+                    tab_switch: 'exchange-alt',
+                    copy_attempt: 'copy',
+                    suspicious_activity: 'user-secret'
+                };
+                
+                return `
+                    <div class="alert alert--${severityColors[alert.severity]}" style="margin-bottom: var(--spacing-3);">
+                        <div style="display: flex; justify-content: space-between; align-items: start;">
+                            <div style="display: flex; gap: var(--spacing-3);">
+                                <i class="fas fa-${icons[alert.type] || 'exclamation-triangle'}" style="margin-top: 2px;"></i>
+                                <div>
+                                    <div style="font-weight: var(--font-weight-medium);">
+                                        ${alert.studentName} - ${alert.message}
+                                    </div>
+                                    <div style="font-size: var(--font-size-sm); margin-top: var(--spacing-1);">
+                                        ${alert.details}
+                                    </div>
+                                    <div style="font-size: var(--font-size-xs); color: var(--text-secondary); margin-top: var(--spacing-1);">
+                                        ${new Date(alert.timestamp).toLocaleString()}
+                                    </div>
+                                </div>
+                            </div>
+                            <button class="btn btn--ghost btn--sm" onclick="viewSessionDetails('${alert.sessionId}')">
+                                <i class="fas fa-external-link-alt"></i>
+                            </button>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        // Update statistics
+        function updateStatistics() {
+            // Calculate totals
+            let totalViolations = 0;
+            let focusLossEvents = 0;
+            let suspiciousCount = 0;
+            
+            activeSessions.forEach(session => {
+                totalViolations += session.violations.focusLoss + session.violations.tabSwitch + session.violations.copyAttempts;
+                focusLossEvents += session.violations.focusLoss;
+                if (session.status === 'suspicious') {
+                    suspiciousCount++;
+                }
+            });
+            
+            document.getElementById('totalViolations').textContent = totalViolations;
+            document.getElementById('focusLossEvents').textContent = focusLossEvents;
+            document.getElementById('suspiciousActivities').textContent = suspiciousCount;
+        }
+
+        // Filter alerts
+        function filterAlerts(severity) {
+            currentFilter = severity;
+            
+            // Update button states
+            document.querySelectorAll('.card__header button').forEach(btn => {
+                btn.classList.remove('btn--primary');
+                btn.classList.add('btn--ghost');
+            });
+            document.getElementById('filter' + severity.charAt(0).toUpperCase() + severity.slice(1)).classList.remove('btn--ghost');
+            document.getElementById('filter' + severity.charAt(0).toUpperCase() + severity.slice(1)).classList.add('btn--primary');
+            
+            displaySecurityAlerts();
+        }
+
+        // View session details
+        function viewSessionDetails(sessionId) {
+            const session = activeSessions.find(s => s.id === sessionId);
+            if (!session) return;
+            
+            selectedSessionId = sessionId;
+            
+            const content = document.getElementById('sessionDetailContent');
+            content.innerHTML = `
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: var(--spacing-6);">
+                    <div>
+                        <h3>${LMS.t('student.information')}</h3>
+                        <div style="margin-bottom: var(--spacing-4);">
+                            <p><strong>${LMS.t('student.name')}:</strong> ${session.studentName}</p>
+                            <p><strong>${LMS.t('student.email')}:</strong> ${session.studentEmail}</p>
+                            <p><strong>${LMS.t('quiz.ipAddress')}:</strong> ${session.ipAddress}</p>
+                            <p><strong>${LMS.t('quiz.webcam')}:</strong> ${session.webcamEnabled ? 'Enabled' : 'Disabled'}</p>
+                        </div>
+                    </div>
+                    <div>
+                        <h3>${LMS.t('quiz.information')}</h3>
+                        <div style="margin-bottom: var(--spacing-4);">
+                            <p><strong>${LMS.t('quiz.title')}:</strong> ${session.quizTitle}</p>
+                            <p><strong>${LMS.t('quiz.startTime')}:</strong> ${new Date(session.startTime).toLocaleString()}</p>
+                            <p><strong>${LMS.t('quiz.progress')}:</strong> ${session.progress}% (${session.questionsAnswered}/${session.totalQuestions})</p>
+                            <p><strong>${LMS.t('quiz.lastActivity')}:</strong> ${new Date(session.lastActivity).toLocaleString()}</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <h3>${LMS.t('quiz.violationsSummary')}</h3>
+                <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: var(--spacing-4); margin-bottom: var(--spacing-4);">
+                    <div class="card">
+                        <div class="card__body" style="text-align: center;">
+                            <div style="font-size: 2rem; font-weight: var(--font-weight-bold); color: var(--color-warning);">${session.violations.focusLoss}</div>
+                            <div style="color: var(--text-secondary);">${LMS.t('quiz.focusLossEvents')}</div>
+                        </div>
+                    </div>
+                    <div class="card">
+                        <div class="card__body" style="text-align: center;">
+                            <div style="font-size: 2rem; font-weight: var(--font-weight-bold); color: var(--color-info);">${session.violations.tabSwitch}</div>
+                            <div style="color: var(--text-secondary);">${LMS.t('quiz.tabSwitches')}</div>
+                        </div>
+                    </div>
+                    <div class="card">
+                        <div class="card__body" style="text-align: center;">
+                            <div style="font-size: 2rem; font-weight: var(--font-weight-bold); color: var(--color-danger);">${session.violations.copyAttempts}</div>
+                            <div style="color: var(--text-secondary);">${LMS.t('quiz.copyAttempts')}</div>
+                        </div>
+                    </div>
+                </div>
+                
+                ${session.webcamEnabled ? `
+                    <h3>${LMS.t('quiz.webcamSnapshots')}</h3>
+                    <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: var(--spacing-3);">
+                        <img src="../assets/images/default-avatar.svg" style="width: 100%; border: 1px solid var(--border-color); border-radius: var(--radius-md);">
+                        <img src="../assets/images/default-avatar.svg" style="width: 100%; border: 1px solid var(--border-color); border-radius: var(--radius-md);">
+                        <img src="../assets/images/default-avatar.svg" style="width: 100%; border: 1px solid var(--border-color); border-radius: var(--radius-md);">
+                        <img src="../assets/images/default-avatar.svg" style="width: 100%; border: 1px solid var(--border-color); border-radius: var(--radius-md);">
+                    </div>
+                ` : ''}
+            `;
+            
+            document.getElementById('terminateBtn').style.display = session.status === 'suspicious' ? 'block' : 'none';
+            
+            document.getElementById('sessionDetailModalBackdrop').classList.add('active');
+            document.getElementById('sessionDetailModal').classList.add('active');
+        }
+
+        function closeSessionDetail() {
+            document.getElementById('sessionDetailModalBackdrop').classList.remove('active');
+            document.getElementById('sessionDetailModal').classList.remove('active');
+        }
+
+        // Send warning
+        function sendWarning(sessionId) {
+            if (confirm(LMS.t('quiz.sendWarningConfirm'))) {
+                // In a real app, this would send a warning to the student
+                LMS.showToast(LMS.t('quiz.warningSent'), 'success');
+                
+                // Log the warning
+                securityAlerts.unshift({
+                    id: 'alert_' + Date.now(),
+                    sessionId: sessionId,
+                    studentName: activeSessions.find(s => s.id === sessionId)?.studentName || 'Unknown',
+                    type: 'warning_sent',
+                    severity: 'low',
+                    message: 'Warning sent to student',
+                    timestamp: new Date().toISOString(),
+                    details: 'Proctor sent a warning message'
+                });
+                
+                displaySecurityAlerts();
+            }
+        }
+
+        // Terminate session
+        function confirmTerminate(sessionId) {
+            selectedSessionId = sessionId;
+            if (confirm(LMS.t('quiz.terminateConfirm'))) {
+                terminateSession();
+            }
+        }
+
+        function terminateSession() {
+            if (!selectedSessionId) return;
+            
+            // In a real app, this would terminate the student's quiz session
+            activeSessions = activeSessions.filter(s => s.id !== selectedSessionId);
+            
+            // Log the termination
+            securityAlerts.unshift({
+                id: 'alert_' + Date.now(),
+                sessionId: selectedSessionId,
+                studentName: 'Session terminated',
+                type: 'session_terminated',
+                severity: 'high',
+                message: 'Quiz session terminated by proctor',
+                timestamp: new Date().toISOString(),
+                details: 'Session was terminated due to suspicious activity'
+            });
+            
+            closeSessionDetail();
+            displayActiveSessions();
+            displaySecurityAlerts();
+            updateStatistics();
+            
+            LMS.showToast(LMS.t('quiz.sessionTerminated'), 'success');
+        }
+
+        // Refresh monitoring
+        function refreshMonitoring() {
+            loadMonitoringData();
+            LMS.showToast(LMS.t('common.refreshed'), 'success');
+        }
+
+        // Export security report
+        function exportSecurityReport() {
+            const report = {
+                generatedAt: new Date().toISOString(),
+                activeSessions: activeSessions,
+                securityAlerts: securityAlerts,
+                statistics: {
+                    totalViolations: document.getElementById('totalViolations').textContent,
+                    focusLossEvents: document.getElementById('focusLossEvents').textContent,
+                    suspiciousActivities: document.getElementById('suspiciousActivities').textContent
+                }
+            };
+            
+            const blob = new Blob([JSON.stringify(report, null, 2)], { type: 'application/json' });
+            const url = window.URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `security_report_${new Date().toISOString().split('T')[0]}.json`;
+            a.click();
+            window.URL.revokeObjectURL(url);
+            
+            LMS.showToast(LMS.t('quiz.reportExported'), 'success');
+        }
+
+        // Cleanup on page unload
+        window.addEventListener('beforeunload', () => {
+            if (refreshInterval) {
+                clearInterval(refreshInterval);
+            }
+        });
+
+        // Initialize on load
+        document.addEventListener('DOMContentLoaded', init);
+    </script>
+</body>
+</html>

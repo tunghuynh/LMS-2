@@ -168,11 +168,117 @@
         <span data-translate="quiz.autoSaved">Auto-saved</span>
     </div>
 
+        <!-- Security Check Modal -->
+    <div class="modal-backdrop" id="securityCheckModalBackdrop">
+        <div class="modal modal--medium" id="securityCheckModal">
+            <div class="modal__header">
+                <h2 class="modal__title" data-translate="quiz.securityCheck">Security Check</h2>
+            </div>
+            <div class="modal__body" id="securityCheckContent">
+                <!-- Dynamic security check content -->
+            </div>
+            <div class="modal__footer" id="securityCheckFooter">
+                <!-- Dynamic footer content -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Password Modal -->
+    <div class="modal-backdrop" id="passwordModalBackdrop">
+        <div class="modal modal--small" id="passwordModal">
+            <div class="modal__header">
+                <h2 class="modal__title" data-translate="quiz.enterPassword">Enter Quiz Password</h2>
+            </div>
+            <div class="modal__body">
+                <div class="input-group">
+                    <label class="input-group__label" data-translate="quiz.password">Password</label>
+                    <input type="password" id="quizPasswordInput" class="input" placeholder="Enter password...">
+                </div>
+                <div id="passwordError" class="alert alert--danger" style="display: none; margin-top: var(--spacing-3);">
+                    <i class="fas fa-exclamation-circle"></i>
+                    <span data-translate="quiz.incorrectPassword">Incorrect password. Please try again.</span>
+                </div>
+            </div>
+            <div class="modal__footer">
+                <button class="btn btn--secondary" onclick="exitQuiz()">
+                    <i class="fas fa-times" style="margin-right: 8px;"></i>
+                    <span data-translate="common.cancel">Cancel</span>
+                </button>
+                <button class="btn btn--primary" onclick="checkPassword()">
+                    <i class="fas fa-check" style="margin-right: 8px;"></i>
+                    <span data-translate="common.submit">Submit</span>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Webcam Verification Modal -->
+    <div class="modal-backdrop" id="webcamModalBackdrop">
+        <div class="modal modal--large" id="webcamModal">
+            <div class="modal__header">
+                <h2 class="modal__title" data-translate="quiz.webcamVerification">Webcam Verification</h2>
+            </div>
+            <div class="modal__body">
+                <div style="text-align: center;">
+                    <video id="webcamPreview" width="640" height="480" autoplay style="border: 2px solid var(--border-color); border-radius: var(--radius-md);"></video>
+                    <canvas id="webcamCanvas" width="640" height="480" style="display: none;"></canvas>
+                    <div style="margin-top: var(--spacing-4);">
+                        <button class="btn btn--primary" onclick="captureWebcamPhoto()">
+                            <i class="fas fa-camera" style="margin-right: 8px;"></i>
+                            <span data-translate="quiz.capturePhoto">Capture Photo</span>
+                        </button>
+                    </div>
+                    <div id="capturedPhoto" style="margin-top: var(--spacing-4); display: none;">
+                        <h4 data-translate="quiz.capturedPhoto">Captured Photo</h4>
+                        <img id="capturedImage" style="max-width: 300px; border: 2px solid var(--border-color); border-radius: var(--radius-md);">
+                    </div>
+                </div>
+            </div>
+            <div class="modal__footer">
+                <button class="btn btn--secondary" onclick="cancelWebcamVerification()">
+                    <i class="fas fa-times" style="margin-right: 8px;"></i>
+                    <span data-translate="common.cancel">Cancel</span>
+                </button>
+                <button class="btn btn--primary" id="proceedWithWebcam" onclick="proceedAfterWebcam()" disabled>
+                    <i class="fas fa-arrow-right" style="margin-right: 8px;"></i>
+                    <span data-translate="common.proceed">Proceed</span>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Focus Loss Warning Modal -->
+    <div class="modal-backdrop" id="focusLossModalBackdrop">
+        <div class="modal modal--small" id="focusLossModal">
+            <div class="modal__header">
+                <h2 class="modal__title" style="color: var(--color-warning);">
+                    <i class="fas fa-exclamation-triangle"></i>
+                    <span data-translate="quiz.focusLossWarning">Focus Loss Warning</span>
+                </h2>
+            </div>
+            <div class="modal__body">
+                <p data-translate="quiz.focusLossMessage">
+                    You have navigated away from the quiz window. This activity has been recorded.
+                </p>
+                <p style="margin-top: var(--spacing-3);">
+                    <strong data-translate="quiz.focusLossCount">Number of violations:</strong>
+                    <span id="focusLossCount" style="color: var(--color-danger);">0</span>
+                </p>
+            </div>
+            <div class="modal__footer">
+                <button class="btn btn--primary" onclick="closeFocusLossWarning()">
+                    <i class="fas fa-check" style="margin-right: 8px;"></i>
+                    <span data-translate="common.understood">Understood</span>
+                </button>
+            </div>
+        </div>
+    </div>
+
     <!-- Core JavaScript -->
     <script src="../assets/js/global.js"></script>
     <script src="../assets/js/auth.js"></script>
     <script src="../assets/js/api.js"></script>
-    
+
     <script>
         // State management
         let quizData = null;
@@ -184,6 +290,14 @@
         let autoSaveInterval = null;
         let currentUser = null;
         let hasUnsavedChanges = false;
+        
+        // Security tracking
+        let focusLossCount = 0;
+        let securityLogs = [];
+        let questionTimerInterval = null;
+        let questionTimeRemaining = 0;
+        let webcamStream = null;
+        let screenshotInterval = null;
 
         // Initialize
         async function init() {
@@ -217,10 +331,18 @@
             
             // Load quiz data
             await loadQuiz(quizId);
+            
+            // Check security requirements before starting
+            const securityPassed = await checkSecurityRequirements();
+            if (!securityPassed) {
+                return;
+            }
+            
             setupQuizAttempt();
             startTimer();
             startAutoSave();
             setupEventListeners();
+            initializeSecurityFeatures();
         }
 
         // Load quiz data
@@ -258,6 +380,30 @@
                 timeLimit: 30, // minutes
                 passingScore: 70,
                 shuffleQuestions: false,
+                // Security settings (mock)
+                security: {
+                    passwordEnabled: true,
+                    password: 'quiz123',
+                    timeWindowEnabled: false,
+                    startTime: null,
+                    endTime: null,
+                    preventTabSwitch: true,
+                    fullScreenMode: true,
+                    disableCopyPaste: true,
+                    randomizeQuestions: true,
+                    randomizeOptions: true,
+                    ipRestriction: false,
+                    allowedIPs: [],
+                    timeLimitPerQuestion: false,
+                    questionTimeLimit: 60,
+                    browserLockdown: false,
+                    trackFocusLoss: true,
+                    recordAnswerChanges: true,
+                    captureScreenshots: false,
+                    webcamRequired: false,
+                    idVerification: false,
+                    liveProctoring: false
+                },
                 questions: [
                     {
                         id: 'q1',
@@ -776,6 +922,348 @@
                 }
             });
         }
+
+        // Security Functions
+        async function checkSecurityRequirements() {
+            if (!quizData.security) {
+                return true; // No security settings, allow access
+            }
+            
+            const security = quizData.security;
+            
+            // Check time window
+            if (security.timeWindowEnabled) {
+                const now = new Date();
+                const startTime = new Date(security.startTime);
+                const endTime = new Date(security.endTime);
+                
+                if (now < startTime || now > endTime) {
+                    LMS.showToast(LMS.t('quiz.outsideTimeWindow'), 'error');
+                    return false;
+                }
+            }
+            
+            // Check IP restriction
+            if (security.ipRestriction && security.allowedIPs.length > 0) {
+                // In a real app, this would check the user's IP
+                // For demo, we'll just show a message
+                console.log('IP restriction check would happen here');
+            }
+            
+            // Show security requirements modal
+            let checks = [];
+            if (security.passwordEnabled) checks.push('password');
+            if (security.webcamRequired) checks.push('webcam');
+            if (security.idVerification) checks.push('id');
+            if (security.fullScreenMode) checks.push('fullscreen');
+            
+            if (checks.length > 0) {
+                return await showSecurityChecks(checks);
+            }
+            
+            return true;
+        }
+        
+        async function showSecurityChecks(checks) {
+            const content = document.getElementById('securityCheckContent');
+            const footer = document.getElementById('securityCheckFooter');
+            
+            let html = '<div class="security-checks">';
+            html += '<p data-translate="quiz.securityRequirements">This quiz has the following security requirements:</p>';
+            html += '<ul style="margin: var(--spacing-4) 0;">';
+            
+            if (checks.includes('password')) {
+                html += '<li><i class="fas fa-lock"></i> Password protected</li>';
+            }
+            if (checks.includes('webcam')) {
+                html += '<li><i class="fas fa-camera"></i> Webcam verification required</li>';
+            }
+            if (checks.includes('id')) {
+                html += '<li><i class="fas fa-id-card"></i> ID verification required</li>';
+            }
+            if (checks.includes('fullscreen')) {
+                html += '<li><i class="fas fa-expand"></i> Full-screen mode required</li>';
+            }
+            
+            html += '</ul>';
+            html += '</div>';
+            
+            content.innerHTML = html;
+            
+            footer.innerHTML = `
+                <button class="btn btn--secondary" onclick="exitQuiz()">
+                    <i class="fas fa-times" style="margin-right: 8px;"></i>
+                    <span data-translate="common.cancel">Cancel</span>
+                </button>
+                <button class="btn btn--primary" onclick="proceedWithSecurityChecks()">
+                    <i class="fas fa-shield-alt" style="margin-right: 8px;"></i>
+                    <span data-translate="common.proceed">Proceed</span>
+                </button>
+            `;
+            
+            document.getElementById('securityCheckModalBackdrop').classList.add('active');
+            document.getElementById('securityCheckModal').classList.add('active');
+            
+            return new Promise((resolve) => {
+                window.securityCheckResolve = resolve;
+            });
+        }
+        
+        async function proceedWithSecurityChecks() {
+            document.getElementById('securityCheckModalBackdrop').classList.remove('active');
+            document.getElementById('securityCheckModal').classList.remove('active');
+            
+            const security = quizData.security;
+            
+            // Check password
+            if (security.passwordEnabled) {
+                const passwordCorrect = await checkQuizPassword();
+                if (!passwordCorrect) {
+                    window.securityCheckResolve(false);
+                    return;
+                }
+            }
+            
+            // Check webcam
+            if (security.webcamRequired) {
+                const webcamReady = await setupWebcam();
+                if (!webcamReady) {
+                    window.securityCheckResolve(false);
+                    return;
+                }
+            }
+            
+            // Enter fullscreen
+            if (security.fullScreenMode) {
+                await enterFullscreen();
+            }
+            
+            window.securityCheckResolve(true);
+        }
+        
+        function checkQuizPassword() {
+            document.getElementById('passwordModalBackdrop').classList.add('active');
+            document.getElementById('passwordModal').classList.add('active');
+            document.getElementById('quizPasswordInput').value = '';
+            document.getElementById('passwordError').style.display = 'none';
+            
+            return new Promise((resolve) => {
+                window.passwordCheckResolve = resolve;
+            });
+        }
+        
+        function checkPassword() {
+            const enteredPassword = document.getElementById('quizPasswordInput').value;
+            const correctPassword = quizData.security.password;
+            
+            if (enteredPassword === correctPassword) {
+                document.getElementById('passwordModalBackdrop').classList.remove('active');
+                document.getElementById('passwordModal').classList.remove('active');
+                window.passwordCheckResolve(true);
+            } else {
+                document.getElementById('passwordError').style.display = 'block';
+                document.getElementById('quizPasswordInput').value = '';
+                document.getElementById('quizPasswordInput').focus();
+            }
+        }
+        
+        async function setupWebcam() {
+            document.getElementById('webcamModalBackdrop').classList.add('active');
+            document.getElementById('webcamModal').classList.add('active');
+            
+            try {
+                const video = document.getElementById('webcamPreview');
+                webcamStream = await navigator.mediaDevices.getUserMedia({ video: true });
+                video.srcObject = webcamStream;
+                
+                return new Promise((resolve) => {
+                    window.webcamSetupResolve = resolve;
+                });
+            } catch (error) {
+                console.error('Webcam error:', error);
+                LMS.showToast(LMS.t('quiz.webcamError'), 'error');
+                return false;
+            }
+        }
+        
+        function captureWebcamPhoto() {
+            const video = document.getElementById('webcamPreview');
+            const canvas = document.getElementById('webcamCanvas');
+            const ctx = canvas.getContext('2d');
+            
+            ctx.drawImage(video, 0, 0, 640, 480);
+            
+            const imageData = canvas.toDataURL('image/png');
+            document.getElementById('capturedImage').src = imageData;
+            document.getElementById('capturedPhoto').style.display = 'block';
+            document.getElementById('proceedWithWebcam').disabled = false;
+            
+            // Store the captured image (in a real app, this would be sent to server)
+            securityLogs.push({
+                type: 'webcam_capture',
+                timestamp: new Date().toISOString(),
+                data: imageData
+            });
+        }
+        
+        function proceedAfterWebcam() {
+            document.getElementById('webcamModalBackdrop').classList.remove('active');
+            document.getElementById('webcamModal').classList.remove('active');
+            window.webcamSetupResolve(true);
+        }
+        
+        function cancelWebcamVerification() {
+            if (webcamStream) {
+                webcamStream.getTracks().forEach(track => track.stop());
+            }
+            document.getElementById('webcamModalBackdrop').classList.remove('active');
+            document.getElementById('webcamModal').classList.remove('active');
+            window.webcamSetupResolve(false);
+        }
+        
+        async function enterFullscreen() {
+            try {
+                const elem = document.documentElement;
+                if (elem.requestFullscreen) {
+                    await elem.requestFullscreen();
+                } else if (elem.webkitRequestFullscreen) {
+                    await elem.webkitRequestFullscreen();
+                } else if (elem.msRequestFullscreen) {
+                    await elem.msRequestFullscreen();
+                }
+            } catch (error) {
+                console.error('Fullscreen error:', error);
+            }
+        }
+        
+        function initializeSecurityFeatures() {
+            const security = quizData.security;
+            
+            // Prevent tab switching
+            if (security.preventTabSwitch || security.trackFocusLoss) {
+                document.addEventListener('visibilitychange', handleVisibilityChange);
+                window.addEventListener('blur', handleWindowBlur);
+            }
+            
+            // Disable copy/paste
+            if (security.disableCopyPaste) {
+                document.addEventListener('copy', (e) => e.preventDefault());
+                document.addEventListener('paste', (e) => e.preventDefault());
+                document.addEventListener('cut', (e) => e.preventDefault());
+            }
+            
+            // Browser lockdown
+            if (security.browserLockdown) {
+                // Disable right-click
+                document.addEventListener('contextmenu', (e) => e.preventDefault());
+                
+                // Disable certain keyboard shortcuts
+                document.addEventListener('keydown', (e) => {
+                    // Disable F12, Ctrl+Shift+I, Ctrl+Shift+J, Ctrl+U
+                    if (e.keyCode === 123 || 
+                        (e.ctrlKey && e.shiftKey && (e.keyCode === 73 || e.keyCode === 74)) ||
+                        (e.ctrlKey && e.keyCode === 85)) {
+                        e.preventDefault();
+                    }
+                });
+            }
+            
+            // Record answer changes
+            if (security.recordAnswerChanges) {
+                // This is handled in saveAnswer function
+            }
+            
+            // Screenshot capture
+            if (security.captureScreenshots && security.webcamRequired) {
+                screenshotInterval = setInterval(captureScreenshot, 60000); // Every minute
+            }
+            
+            // Fullscreen exit prevention
+            if (security.fullScreenMode) {
+                document.addEventListener('fullscreenchange', handleFullscreenChange);
+            }
+        }
+        
+        function handleVisibilityChange() {
+            if (document.hidden && quizData.security.trackFocusLoss) {
+                focusLossCount++;
+                securityLogs.push({
+                    type: 'focus_loss',
+                    timestamp: new Date().toISOString(),
+                    count: focusLossCount
+                });
+                
+                document.getElementById('focusLossCount').textContent = focusLossCount;
+                document.getElementById('focusLossModalBackdrop').classList.add('active');
+                document.getElementById('focusLossModal').classList.add('active');
+            }
+        }
+        
+        function handleWindowBlur() {
+            if (quizData.security.preventTabSwitch) {
+                // Log the event
+                securityLogs.push({
+                    type: 'window_blur',
+                    timestamp: new Date().toISOString()
+                });
+            }
+        }
+        
+        function handleFullscreenChange() {
+            if (!document.fullscreenElement && quizData.security.fullScreenMode) {
+                LMS.showToast(LMS.t('quiz.fullscreenRequired'), 'warning');
+                enterFullscreen();
+            }
+        }
+        
+        function closeFocusLossWarning() {
+            document.getElementById('focusLossModalBackdrop').classList.remove('active');
+            document.getElementById('focusLossModal').classList.remove('active');
+        }
+        
+        function captureScreenshot() {
+            if (webcamStream) {
+                const video = document.getElementById('webcamPreview');
+                const canvas = document.createElement('canvas');
+                canvas.width = 320;
+                canvas.height = 240;
+                const ctx = canvas.getContext('2d');
+                
+                // Create a temporary video element for screenshot
+                const tempVideo = document.createElement('video');
+                tempVideo.srcObject = webcamStream;
+                tempVideo.play();
+                
+                setTimeout(() => {
+                    ctx.drawImage(tempVideo, 0, 0, 320, 240);
+                    const imageData = canvas.toDataURL('image/jpeg', 0.5);
+                    
+                    securityLogs.push({
+                        type: 'periodic_screenshot',
+                        timestamp: new Date().toISOString(),
+                        data: imageData
+                    });
+                }, 100);
+            }
+        }
+        
+        // Override saveAnswer to include change tracking
+        const originalSaveAnswer = saveAnswer;
+        saveAnswer = function(answer) {
+            if (quizData.security.recordAnswerChanges) {
+                const previousAnswer = userAnswers[quizData.questions[currentQuestionIndex].id];
+                if (previousAnswer !== undefined) {
+                    securityLogs.push({
+                        type: 'answer_change',
+                        timestamp: new Date().toISOString(),
+                        questionId: quizData.questions[currentQuestionIndex].id,
+                        from: previousAnswer,
+                        to: answer
+                    });
+                }
+            }
+            originalSaveAnswer(answer);
+        };
 
         // Initialize on load
         document.addEventListener('DOMContentLoaded', init);

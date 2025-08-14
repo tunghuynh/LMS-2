@@ -151,6 +151,174 @@
                         </div>
                     </div>
 
+                    <!-- Security Settings -->
+                    <div class="card" style="margin-bottom: var(--spacing-4);">
+                        <div class="card__header">
+                            <h3 data-translate="quiz.securitySettings">Security Settings</h3>
+                        </div>
+                        <div class="card__body">
+                            <!-- Password Protection -->
+                            <div class="input-group">
+                                <label class="checkbox-label">
+                                    <input type="checkbox" id="quizPasswordEnabled" onchange="togglePasswordField()">
+                                    <span class="checkbox-custom"></span>
+                                    <span data-translate="quiz.passwordProtection">Enable password protection</span>
+                                </label>
+                                <div id="passwordFieldContainer" style="display: none; margin-top: var(--spacing-2); margin-left: var(--spacing-6);">
+                                    <input type="text" id="quizPassword" class="input" placeholder="Enter quiz password...">
+                                </div>
+                            </div>
+
+                            <!-- Access Time Restrictions -->
+                            <div class="input-group">
+                                <label class="checkbox-label">
+                                    <input type="checkbox" id="quizTimeWindowEnabled" onchange="toggleTimeWindow()">
+                                    <span class="checkbox-custom"></span>
+                                    <span data-translate="quiz.timeWindowRestriction">Restrict access time window</span>
+                                </label>
+                                <div id="timeWindowContainer" style="display: none; margin-top: var(--spacing-2); margin-left: var(--spacing-6);">
+                                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: var(--spacing-2);">
+                                        <div>
+                                            <label class="input-group__label" data-translate="quiz.startTime">Start Time</label>
+                                            <input type="datetime-local" id="quizStartTime" class="input">
+                                        </div>
+                                        <div>
+                                            <label class="input-group__label" data-translate="quiz.endTime">End Time</label>
+                                            <input type="datetime-local" id="quizEndTime" class="input">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Anti-Cheating Features -->
+                            <div class="input-group">
+                                <label class="input-group__label" data-translate="quiz.antiCheatingFeatures">Anti-Cheating Features</label>
+                                <div style="display: flex; flex-direction: column; gap: var(--spacing-2);">
+                                    <label class="checkbox-label">
+                                        <input type="checkbox" id="quizPreventTabSwitch">
+                                        <span class="checkbox-custom"></span>
+                                        <span data-translate="quiz.preventTabSwitch">Prevent tab switching (warns on focus loss)</span>
+                                    </label>
+                                    <label class="checkbox-label">
+                                        <input type="checkbox" id="quizFullScreenMode">
+                                        <span class="checkbox-custom"></span>
+                                        <span data-translate="quiz.fullScreenMode">Require full-screen mode</span>
+                                    </label>
+                                    <label class="checkbox-label">
+                                        <input type="checkbox" id="quizDisableCopyPaste">
+                                        <span class="checkbox-custom"></span>
+                                        <span data-translate="quiz.disableCopyPaste">Disable copy/paste functionality</span>
+                                    </label>
+                                    <label class="checkbox-label">
+                                        <input type="checkbox" id="quizRandomizeQuestions" checked>
+                                        <span class="checkbox-custom"></span>
+                                        <span data-translate="quiz.randomizeQuestions">Randomize question order</span>
+                                    </label>
+                                    <label class="checkbox-label">
+                                        <input type="checkbox" id="quizRandomizeOptions" checked>
+                                        <span class="checkbox-custom"></span>
+                                        <span data-translate="quiz.randomizeOptions">Randomize answer options</span>
+                                    </label>
+                                </div>
+                            </div>
+
+                            <!-- IP Restrictions -->
+                            <div class="input-group">
+                                <label class="checkbox-label">
+                                    <input type="checkbox" id="quizIPRestriction" onchange="toggleIPRestriction()">
+                                    <span class="checkbox-custom"></span>
+                                    <span data-translate="quiz.ipRestriction">Restrict to specific IP addresses</span>
+                                </label>
+                                <div id="ipRestrictionContainer" style="display: none; margin-top: var(--spacing-2); margin-left: var(--spacing-6);">
+                                    <textarea id="quizAllowedIPs" class="input input--textarea" rows="3" 
+                                              placeholder="Enter allowed IP addresses or ranges (one per line)..."
+                                              data-translate-placeholder="quiz.ipAddressesPlaceholder"></textarea>
+                                    <div class="input-group__help" data-translate="quiz.ipAddressesHelp">
+                                        Example: 192.168.1.0/24 or 192.168.1.100
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Time Limit Per Question -->
+                            <div class="input-group">
+                                <label class="checkbox-label">
+                                    <input type="checkbox" id="quizTimeLimitPerQuestion" onchange="toggleQuestionTimeLimit()">
+                                    <span class="checkbox-custom"></span>
+                                    <span data-translate="quiz.timeLimitPerQuestion">Set time limit per question</span>
+                                </label>
+                                <div id="questionTimeLimitContainer" style="display: none; margin-top: var(--spacing-2); margin-left: var(--spacing-6);">
+                                    <div style="display: flex; align-items: center; gap: var(--spacing-2);">
+                                        <input type="number" id="quizQuestionTimeLimit" class="input" value="60" min="10" max="300" style="width: 100px;">
+                                        <span data-translate="quiz.secondsPerQuestion">seconds per question</span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Browser Lockdown -->
+                            <div class="input-group">
+                                <label class="checkbox-label">
+                                    <input type="checkbox" id="quizBrowserLockdown">
+                                    <span class="checkbox-custom"></span>
+                                    <span data-translate="quiz.browserLockdown">Enable browser lockdown mode (experimental)</span>
+                                </label>
+                                <div class="input-group__help" data-translate="quiz.browserLockdownHelp">
+                                    This will attempt to prevent right-click, dev tools, and keyboard shortcuts
+                                </div>
+                            </div>
+
+                            <!-- Activity Monitoring -->
+                            <div class="input-group">
+                                <label class="input-group__label" data-translate="quiz.activityMonitoring">Activity Monitoring</label>
+                                <div style="display: flex; flex-direction: column; gap: var(--spacing-2);">
+                                    <label class="checkbox-label">
+                                        <input type="checkbox" id="quizTrackFocusLoss">
+                                        <span class="checkbox-custom"></span>
+                                        <span data-translate="quiz.trackFocusLoss">Track focus loss events</span>
+                                    </label>
+                                    <label class="checkbox-label">
+                                        <input type="checkbox" id="quizRecordAnswerChanges">
+                                        <span class="checkbox-custom"></span>
+                                        <span data-translate="quiz.recordAnswerChanges">Record answer change history</span>
+                                    </label>
+                                    <label class="checkbox-label">
+                                        <input type="checkbox" id="quizCaptureScreenshots">
+                                        <span class="checkbox-custom"></span>
+                                        <span data-translate="quiz.captureScreenshots">Capture periodic screenshots (requires permission)</span>
+                                    </label>
+                                </div>
+                            </div>
+
+                            <!-- Proctoring Options -->
+                            <div class="input-group">
+                                <label class="input-group__label" data-translate="quiz.proctoringOptions">Proctoring Options</label>
+                                <div style="display: flex; flex-direction: column; gap: var(--spacing-2);">
+                                    <label class="checkbox-label">
+                                        <input type="checkbox" id="quizWebcamRequired" onchange="toggleProctoringSettings()">
+                                        <span class="checkbox-custom"></span>
+                                        <span data-translate="quiz.webcamRequired">Require webcam verification</span>
+                                    </label>
+                                    <label class="checkbox-label">
+                                        <input type="checkbox" id="quizIdVerification">
+                                        <span class="checkbox-custom"></span>
+                                        <span data-translate="quiz.idVerification">Require ID verification before starting</span>
+                                    </label>
+                                    <label class="checkbox-label">
+                                        <input type="checkbox" id="quizLiveProctoring">
+                                        <span class="checkbox-custom"></span>
+                                        <span data-translate="quiz.liveProctoring">Enable live proctoring (requires proctor assignment)</span>
+                                    </label>
+                                </div>
+                                <div id="proctoringSettingsContainer" style="display: none; margin-top: var(--spacing-2); margin-left: var(--spacing-6);">
+                                    <div class="alert alert--info" style="margin-top: var(--spacing-2);">
+                                        <i class="fas fa-info-circle"></i>
+                                        <span data-translate="quiz.proctoringInfo">
+                                            Webcam proctoring will capture periodic snapshots during the quiz
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
 
                 </div>
 
@@ -402,7 +570,31 @@
             shuffleQuestions: false,
             showResults: false,
             questions: [],
-            status: 'draft'
+            status: 'draft',
+            // Security settings
+            security: {
+                passwordEnabled: false,
+                password: '',
+                timeWindowEnabled: false,
+                startTime: null,
+                endTime: null,
+                preventTabSwitch: false,
+                fullScreenMode: false,
+                disableCopyPaste: false,
+                randomizeQuestions: true,
+                randomizeOptions: true,
+                ipRestriction: false,
+                allowedIPs: [],
+                timeLimitPerQuestion: false,
+                questionTimeLimit: 60,
+                browserLockdown: false,
+                trackFocusLoss: false,
+                recordAnswerChanges: false,
+                captureScreenshots: false,
+                webcamRequired: false,
+                idVerification: false,
+                liveProctoring: false
+            }
         };
         
         let allCourses = [];
@@ -719,6 +911,9 @@
             document.getElementById('quizShowResults').addEventListener('change', (e) => {
                 currentQuiz.showResults = e.target.checked;
             });
+
+            // Security settings event listeners
+            initializeSecuritySettings();
 
             // Question type modal styles
             document.addEventListener('click', function(e) {
@@ -1463,6 +1658,132 @@
         
         function getDropdownValue(dropdownId) {
             return LMS.Dropdown.getValue(dropdownId);
+        }
+
+        // Security settings functions
+        function initializeSecuritySettings() {
+            // Password protection
+            document.getElementById('quizPasswordEnabled').addEventListener('change', (e) => {
+                currentQuiz.security.passwordEnabled = e.target.checked;
+                togglePasswordField();
+            });
+            
+            document.getElementById('quizPassword').addEventListener('input', (e) => {
+                currentQuiz.security.password = e.target.value;
+            });
+            
+            // Time window
+            document.getElementById('quizTimeWindowEnabled').addEventListener('change', (e) => {
+                currentQuiz.security.timeWindowEnabled = e.target.checked;
+                toggleTimeWindow();
+            });
+            
+            document.getElementById('quizStartTime').addEventListener('change', (e) => {
+                currentQuiz.security.startTime = e.target.value;
+            });
+            
+            document.getElementById('quizEndTime').addEventListener('change', (e) => {
+                currentQuiz.security.endTime = e.target.value;
+            });
+            
+            // Anti-cheating features
+            document.getElementById('quizPreventTabSwitch').addEventListener('change', (e) => {
+                currentQuiz.security.preventTabSwitch = e.target.checked;
+            });
+            
+            document.getElementById('quizFullScreenMode').addEventListener('change', (e) => {
+                currentQuiz.security.fullScreenMode = e.target.checked;
+            });
+            
+            document.getElementById('quizDisableCopyPaste').addEventListener('change', (e) => {
+                currentQuiz.security.disableCopyPaste = e.target.checked;
+            });
+            
+            document.getElementById('quizRandomizeQuestions').addEventListener('change', (e) => {
+                currentQuiz.security.randomizeQuestions = e.target.checked;
+            });
+            
+            document.getElementById('quizRandomizeOptions').addEventListener('change', (e) => {
+                currentQuiz.security.randomizeOptions = e.target.checked;
+            });
+            
+            // IP restriction
+            document.getElementById('quizIPRestriction').addEventListener('change', (e) => {
+                currentQuiz.security.ipRestriction = e.target.checked;
+                toggleIPRestriction();
+            });
+            
+            document.getElementById('quizAllowedIPs').addEventListener('input', (e) => {
+                currentQuiz.security.allowedIPs = e.target.value.split('\n').map(ip => ip.trim()).filter(ip => ip);
+            });
+            
+            // Time limit per question
+            document.getElementById('quizTimeLimitPerQuestion').addEventListener('change', (e) => {
+                currentQuiz.security.timeLimitPerQuestion = e.target.checked;
+                toggleQuestionTimeLimit();
+            });
+            
+            document.getElementById('quizQuestionTimeLimit').addEventListener('input', (e) => {
+                currentQuiz.security.questionTimeLimit = parseInt(e.target.value) || 60;
+            });
+            
+            // Browser lockdown
+            document.getElementById('quizBrowserLockdown').addEventListener('change', (e) => {
+                currentQuiz.security.browserLockdown = e.target.checked;
+            });
+            
+            // Activity monitoring
+            document.getElementById('quizTrackFocusLoss').addEventListener('change', (e) => {
+                currentQuiz.security.trackFocusLoss = e.target.checked;
+            });
+            
+            document.getElementById('quizRecordAnswerChanges').addEventListener('change', (e) => {
+                currentQuiz.security.recordAnswerChanges = e.target.checked;
+            });
+            
+            document.getElementById('quizCaptureScreenshots').addEventListener('change', (e) => {
+                currentQuiz.security.captureScreenshots = e.target.checked;
+            });
+            
+            // Proctoring options
+            document.getElementById('quizWebcamRequired').addEventListener('change', (e) => {
+                currentQuiz.security.webcamRequired = e.target.checked;
+                toggleProctoringSettings();
+            });
+            
+            document.getElementById('quizIdVerification').addEventListener('change', (e) => {
+                currentQuiz.security.idVerification = e.target.checked;
+            });
+            
+            document.getElementById('quizLiveProctoring').addEventListener('change', (e) => {
+                currentQuiz.security.liveProctoring = e.target.checked;
+            });
+        }
+
+        // Toggle functions for security settings
+        function togglePasswordField() {
+            const container = document.getElementById('passwordFieldContainer');
+            container.style.display = document.getElementById('quizPasswordEnabled').checked ? 'block' : 'none';
+        }
+
+        function toggleTimeWindow() {
+            const container = document.getElementById('timeWindowContainer');
+            container.style.display = document.getElementById('quizTimeWindowEnabled').checked ? 'block' : 'none';
+        }
+
+        function toggleIPRestriction() {
+            const container = document.getElementById('ipRestrictionContainer');
+            container.style.display = document.getElementById('quizIPRestriction').checked ? 'block' : 'none';
+        }
+
+        function toggleQuestionTimeLimit() {
+            const container = document.getElementById('questionTimeLimitContainer');
+            container.style.display = document.getElementById('quizTimeLimitPerQuestion').checked ? 'block' : 'none';
+        }
+
+        function toggleProctoringSettings() {
+            const container = document.getElementById('proctoringSettingsContainer');
+            container.style.display = document.getElementById('quizWebcamRequired').checked ? 'block' : 'none';
         }
 
         // Initialize on load
