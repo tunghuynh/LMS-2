@@ -156,6 +156,18 @@ LMS.Navigation = {
             icon: 'fa-clipboard-check',
             label: 'nav.quizTemplates',
             href: 'pages/quiz-templates.html'
+          },
+          {
+            id: 'quiz-monitoring',
+            icon: 'fa-desktop',
+            label: 'nav.quizMonitoring',
+            href: 'pages/quiz-monitoring.html'
+          },
+          {
+            id: 'integration-tests',
+            icon: 'fa-vial',
+            label: 'nav.integrationTests',
+            href: 'pages/integration-tests.html'
           }
         ]
       },
@@ -211,6 +223,12 @@ LMS.Navigation = {
             icon: 'fa-clipboard-list',
             label: 'nav.activityLogs',
             href: 'pages/logs.html'
+          },
+          {
+            id: 'integration-tests',
+            icon: 'fa-vial',
+            label: 'nav.integrationTests',
+            href: 'pages/integration-tests.html'
           }
         ]
       },
@@ -298,6 +316,12 @@ LMS.Navigation = {
             icon: 'fa-analytics',
             label: 'nav.quizAnalytics',
             href: 'pages/quiz-analytics.html'
+          },
+          {
+            id: 'quiz-monitoring',
+            icon: 'fa-desktop',
+            label: 'nav.quizMonitoring',
+            href: 'pages/quiz-monitoring.html'
           }
         ]
       },
