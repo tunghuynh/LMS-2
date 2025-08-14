@@ -14,6 +14,27 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <!-- Configuration -->
     <script src="../config.js"></script>
+    
+    <style>
+        .template-card:hover {
+            border-color: var(--color-primary);
+            transform: translateY(-4px);
+            box-shadow: var(--shadow-md);
+        }
+        
+        .template-card .template-icon {
+            display: block;
+        }
+        
+        .template-card h4 {
+            margin-bottom: var(--spacing-2);
+            color: var(--text-primary);
+        }
+        
+        .template-card p {
+            margin: 0;
+        }
+    </style>
 </head>
 <body>
     <div class="page-container">
@@ -56,6 +77,42 @@
                                     <!-- Course options will be populated dynamically -->
                                 </div>
                             </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Templates Library -->
+            <div class="card" id="templatesCard" style="display: none; margin-bottom: var(--spacing-6);">
+                <div class="card__header">
+                    <div style="display: flex; justify-content: space-between; align-items: center;">
+                        <h3 data-translate="lesson.templates">Lesson Templates</h3>
+                        <button class="btn btn--small btn--ghost" onclick="toggleTemplates()">
+                            <i class="fas fa-chevron-down" id="templateToggleIcon"></i>
+                        </button>
+                    </div>
+                </div>
+                <div class="card__body" id="templatesSection" style="display: none;">
+                    <div class="template-grid" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: var(--spacing-4);">
+                        <div class="template-card" onclick="applyTemplate('lecture')" style="border: 1px solid var(--border-color); border-radius: var(--radius-lg); padding: var(--spacing-4); text-align: center; cursor: pointer; transition: all var(--transition-base);">
+                            <i class="fas fa-chalkboard-teacher" style="font-size: 2.5rem; color: var(--color-primary); margin-bottom: var(--spacing-3);"></i>
+                            <h4 style="margin-bottom: var(--spacing-2);">Lecture Template</h4>
+                            <p style="color: var(--text-secondary); font-size: var(--font-size-sm);">Video + Slides + Notes</p>
+                        </div>
+                        <div class="template-card" onclick="applyTemplate('tutorial')" style="border: 1px solid var(--border-color); border-radius: var(--radius-lg); padding: var(--spacing-4); text-align: center; cursor: pointer; transition: all var(--transition-base);">
+                            <i class="fas fa-code" style="font-size: 2.5rem; color: var(--color-success); margin-bottom: var(--spacing-3);"></i>
+                            <h4 style="margin-bottom: var(--spacing-2);">Tutorial Template</h4>
+                            <p style="color: var(--text-secondary); font-size: var(--font-size-sm);">Code Examples + Instructions</p>
+                        </div>
+                        <div class="template-card" onclick="applyTemplate('workshop')" style="border: 1px solid var(--border-color); border-radius: var(--radius-lg); padding: var(--spacing-4); text-align: center; cursor: pointer; transition: all var(--transition-base);">
+                            <i class="fas fa-tools" style="font-size: 2.5rem; color: var(--color-warning); margin-bottom: var(--spacing-3);"></i>
+                            <h4 style="margin-bottom: var(--spacing-2);">Workshop Template</h4>
+                            <p style="color: var(--text-secondary); font-size: var(--font-size-sm);">Hands-on Activities + Resources</p>
+                        </div>
+                        <div class="template-card" onclick="applyTemplate('assessment')" style="border: 1px solid var(--border-color); border-radius: var(--radius-lg); padding: var(--spacing-4); text-align: center; cursor: pointer; transition: all var(--transition-base);">
+                            <i class="fas fa-tasks" style="font-size: 2.5rem; color: var(--color-info); margin-bottom: var(--spacing-3);"></i>
+                            <h4 style="margin-bottom: var(--spacing-2);">Assessment Template</h4>
+                            <p style="color: var(--text-secondary); font-size: var(--font-size-sm);">Quiz + Assignment + Rubric</p>
                         </div>
                     </div>
                 </div>
@@ -198,6 +255,49 @@
                         </div>
                     </div>
 
+                    <!-- Prerequisites & Dependencies -->
+                    <div class="form-row" style="margin-top: var(--spacing-4);">
+                        <div class="form-col">
+                            <label class="input-group__label" data-translate="lesson.prerequisites">Prerequisite Lessons</label>
+                            <select id="prerequisitesSelect" multiple class="input" style="height: 100px;">
+                                <!-- Will be populated dynamically -->
+                            </select>
+                            <span class="input-group__help" data-translate="lesson.prerequisites.help">Hold Ctrl/Cmd to select multiple lessons</span>
+                        </div>
+                        <div class="form-col">
+                            <label class="input-group__label" data-translate="lesson.estimatedTime">Estimated Time (minutes)</label>
+                            <input type="number" id="estimatedTime" class="input" placeholder="e.g., 45" min="5" step="5">
+                        </div>
+                    </div>
+
+                    <!-- Interactive Elements -->
+                    <div class="input-group" style="margin-top: var(--spacing-4);">
+                        <label class="input-group__label" data-translate="lesson.interactive">Interactive Elements</label>
+                        <div id="interactiveElements" style="border: 1px solid var(--border-color); border-radius: var(--radius-md); padding: var(--spacing-3); min-height: 100px;">
+                            <div id="noInteractiveElements" style="text-align: center; color: var(--text-muted); padding: var(--spacing-4);">
+                                <i class="fas fa-plus-circle" style="font-size: 2rem; margin-bottom: var(--spacing-2);"></i>
+                                <p data-translate="lesson.interactive.empty">No interactive elements added yet</p>
+                            </div>
+                            <div id="interactiveList" style="display: none;">
+                                <!-- Dynamic content -->
+                            </div>
+                        </div>
+                        <div style="margin-top: var(--spacing-2); display: flex; gap: var(--spacing-2); flex-wrap: wrap;">
+                            <button type="button" class="btn btn--small btn--secondary" onclick="addInteractiveElement('poll')">
+                                <i class="fas fa-poll"></i> Add Poll
+                            </button>
+                            <button type="button" class="btn btn--small btn--secondary" onclick="addInteractiveElement('quiz')">
+                                <i class="fas fa-question-circle"></i> Add Quiz
+                            </button>
+                            <button type="button" class="btn btn--small btn--secondary" onclick="addInteractiveElement('discussion')">
+                                <i class="fas fa-comments"></i> Add Discussion
+                            </button>
+                            <button type="button" class="btn btn--small btn--secondary" onclick="addInteractiveElement('assignment')">
+                                <i class="fas fa-tasks"></i> Add Assignment
+                            </button>
+                        </div>
+                    </div>
+
                     <!-- Order and Publishing -->
                     <div style="display: grid; grid-template-columns: 1fr 1fr; gap: var(--spacing-4); margin-top: var(--spacing-6);">
                         <div class="input-group">
@@ -332,12 +432,14 @@
             if (!courseId) {
                 document.getElementById('lessonForm').style.display = 'none';
                 document.getElementById('existingLessons').style.display = 'none';
+                document.getElementById('templatesCard').style.display = 'none';
                 return;
             }
 
             currentCourseId = courseId;
             document.getElementById('lessonForm').style.display = 'block';
             document.getElementById('existingLessons').style.display = 'block';
+            document.getElementById('templatesCard').style.display = 'block';
 
             // Load lessons for this course
             try {
@@ -347,6 +449,7 @@
                 
                 displayLessons();
                 updateOrderSelect();
+                updatePrerequisitesSelect();
             } catch (error) {
                 console.error('Failed to load lessons:', error);
             }
@@ -420,6 +523,18 @@
             if (!document.getElementById('lessonOrderDropdown')._dropdownConfig) {
                 LMS.Dropdown.init('lessonOrderDropdown');
             }
+        }
+        
+        function updatePrerequisitesSelect() {
+            const select = document.getElementById('prerequisitesSelect');
+            select.innerHTML = '';
+            
+            lessons.forEach(lesson => {
+                const option = document.createElement('option');
+                option.value = lesson.id;
+                option.textContent = lesson.title;
+                select.appendChild(option);
+            });
         }
 
         function toggleContentArea(type) {
@@ -609,6 +724,10 @@
             const type = document.querySelector('input[name="lessonType"]:checked').value;
             const order = parseInt(LMS.Dropdown.getValue('lessonOrderDropdown')) || lessons.length + 1;
             
+            // Get selected prerequisites
+            const prerequisitesSelect = document.getElementById('prerequisitesSelect');
+            const prerequisites = Array.from(prerequisitesSelect.selectedOptions).map(opt => opt.value);
+            
             const data = {
                 id: currentLessonId || 'lesson_' + Date.now(),
                 courseId: currentCourseId,
@@ -619,6 +738,9 @@
                 order: order,
                 published: document.getElementById('publishStatus').checked,
                 notes: document.getElementById('instructorNotes').value.trim(),
+                prerequisites: prerequisites,
+                estimatedTime: parseInt(document.getElementById('estimatedTime').value) || 0,
+                interactiveElements: interactiveElements,
                 createdAt: new Date().toISOString(),
                 updatedAt: new Date().toISOString()
             };
@@ -641,11 +763,20 @@
         }
 
         function resetForm() {
+            currentLessonId = null;
             document.getElementById('lessonTitle').value = '';
             document.getElementById('lessonDescription').value = '';
             document.getElementById('lessonDuration').value = '30';
             document.getElementById('instructorNotes').value = '';
             document.getElementById('publishStatus').checked = true;
+            document.getElementById('estimatedTime').value = '';
+            
+            // Reset prerequisites
+            document.getElementById('prerequisitesSelect').selectedIndex = -1;
+            
+            // Reset interactive elements
+            interactiveElements = [];
+            updateInteractiveDisplay();
             
             // Reset content areas
             document.getElementById('videoUrl').value = '';
@@ -723,6 +854,183 @@
             
             displayLessons();
             LMS.showToast(LMS.t('lesson.orderUpdated'), 'success');
+        }
+
+        // Template Functions
+        function toggleTemplates() {
+            const section = document.getElementById('templatesSection');
+            const icon = document.getElementById('templateToggleIcon');
+            
+            if (section.style.display === 'none') {
+                section.style.display = 'block';
+                icon.className = 'fas fa-chevron-up';
+            } else {
+                section.style.display = 'none';
+                icon.className = 'fas fa-chevron-down';
+            }
+        }
+        
+        function applyTemplate(templateType) {
+            let title = '';
+            let description = '';
+            let content = '';
+            let notes = '';
+            
+            switch(templateType) {
+                case 'lecture':
+                    title = 'Lecture: [Topic Name]';
+                    description = 'In this lecture, we will cover the fundamentals of [topic].';
+                    notes = 'Remember to: \n- Start with learning objectives\n- Include practical examples\n- End with summary';
+                    // Set video type
+                    document.querySelector('input[name="lessonType"][value="video"]').checked = true;
+                    toggleContentArea('video');
+                    break;
+                    
+                case 'tutorial':
+                    title = 'Tutorial: [Skill Name]';
+                    description = 'Learn how to [skill] with step-by-step instructions.';
+                    content = '# Tutorial: [Skill Name]\n\n## Prerequisites\n- Basic knowledge of...\n\n## Steps\n1. First, we...\n2. Next, we...\n3. Finally, we...\n\n## Practice Exercise\nTry to...';
+                    // Set markdown type
+                    document.querySelector('input[name="lessonType"][value="markdown"]').checked = true;
+                    toggleContentArea('markdown');
+                    document.getElementById('markdownEditor').value = content;
+                    updateMarkdownPreview();
+                    break;
+                    
+                case 'workshop':
+                    title = 'Workshop: [Project Name]';
+                    description = 'Hands-on workshop to build [project].';
+                    notes = 'Materials needed: \n- [Tool 1]\n- [Tool 2]\n\nDuration: 2 hours';
+                    break;
+                    
+                case 'assessment':
+                    title = 'Assessment: [Module Name]';
+                    description = 'Test your knowledge of [module] concepts.';
+                    notes = 'Assessment includes:\n- 10 multiple choice questions\n- 2 short answer questions\n- 1 practical task';
+                    // Add a quiz element
+                    addInteractiveElement('quiz');
+                    break;
+            }
+            
+            // Apply template values
+            document.getElementById('lessonTitle').value = title;
+            document.getElementById('lessonDescription').value = description;
+            document.getElementById('instructorNotes').value = notes;
+            
+            LMS.showToast('Template applied successfully!', 'success');
+        }
+        
+        // Interactive Elements
+        let interactiveElements = [];
+        let elementIdCounter = 1;
+        
+        function addInteractiveElement(type) {
+            const element = {
+                id: `element_${elementIdCounter++}`,
+                type: type,
+                data: {}
+            };
+            
+            // Default data based on type
+            switch(type) {
+                case 'poll':
+                    element.data = {
+                        question: '',
+                        options: ['Option 1', 'Option 2'],
+                        multipleChoice: false
+                    };
+                    break;
+                case 'quiz':
+                    element.data = {
+                        title: 'Quick Quiz',
+                        questions: [],
+                        passingScore: 70
+                    };
+                    break;
+                case 'discussion':
+                    element.data = {
+                        topic: '',
+                        prompt: ''
+                    };
+                    break;
+                case 'assignment':
+                    element.data = {
+                        title: '',
+                        instructions: '',
+                        dueDate: '',
+                        points: 100
+                    };
+                    break;
+            }
+            
+            interactiveElements.push(element);
+            updateInteractiveDisplay();
+        }
+        
+        function updateInteractiveDisplay() {
+            const container = document.getElementById('interactiveElements');
+            const noElements = document.getElementById('noInteractiveElements');
+            const list = document.getElementById('interactiveList');
+            
+            if (interactiveElements.length === 0) {
+                noElements.style.display = 'block';
+                list.style.display = 'none';
+            } else {
+                noElements.style.display = 'none';
+                list.style.display = 'block';
+                
+                list.innerHTML = interactiveElements.map(elem => {
+                    let icon = '';
+                    let title = '';
+                    
+                    switch(elem.type) {
+                        case 'poll':
+                            icon = 'fa-poll';
+                            title = 'Poll';
+                            break;
+                        case 'quiz':
+                            icon = 'fa-question-circle';
+                            title = 'Quiz';
+                            break;
+                        case 'discussion':
+                            icon = 'fa-comments';
+                            title = 'Discussion';
+                            break;
+                        case 'assignment':
+                            icon = 'fa-tasks';
+                            title = 'Assignment';
+                            break;
+                    }
+                    
+                    return `
+                        <div style="display: flex; align-items: center; justify-content: space-between; padding: var(--spacing-2); border-bottom: 1px solid var(--border-color);">
+                            <div style="display: flex; align-items: center; gap: var(--spacing-2);">
+                                <i class="fas ${icon}" style="color: var(--color-primary);"></i>
+                                <span>${title}</span>
+                            </div>
+                            <div style="display: flex; gap: var(--spacing-1);">
+                                <button class="btn btn--ghost btn--small" onclick="editInteractiveElement('${elem.id}')">
+                                    <i class="fas fa-edit"></i>
+                                </button>
+                                <button class="btn btn--ghost btn--small" onclick="removeInteractiveElement('${elem.id}')">
+                                    <i class="fas fa-trash"></i>
+                                </button>
+                            </div>
+                        </div>
+                    `;
+                }).join('');
+            }
+        }
+        
+        function editInteractiveElement(elementId) {
+            // TODO: Open modal to edit element details
+            console.log('Edit element:', elementId);
+            LMS.showToast('Element editor coming soon!', 'info');
+        }
+        
+        function removeInteractiveElement(elementId) {
+            interactiveElements = interactiveElements.filter(elem => elem.id !== elementId);
+            updateInteractiveDisplay();
         }
 
         // Initialize on load

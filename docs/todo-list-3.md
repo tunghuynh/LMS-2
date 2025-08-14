@@ -430,13 +430,13 @@ This is the master TODO list for LMS Phase I development following the Foundatio
   - Markdown preview
   - Image upload support
   - Code syntax highlighting
-- [ ] **2.3.5** Enhanced Lesson Builder (NEW):
-  - **NEW**: Advanced lesson builder (`lesson-builder-advanced.html`)
-  - Interactive content elements (polls, quizzes within lessons)
-  - Lesson templates library
-  - Multi-media lesson combining video + PDF + markdown
-  - Lesson prerequisites and dependencies
-  - Lesson completion criteria customization
+- [x] ✅ **2.3.5** Enhanced Lesson Builder (NEW):
+  - [x] **NEW**: Advanced lesson builder (enhanced `lesson-builder.html`)
+  - [x] Interactive content elements (polls, quizzes within lessons)
+  - [x] Lesson templates library (Lecture, Tutorial, Workshop, Assessment)
+  - [x] Multi-media lesson combining video + PDF + markdown
+  - [x] Lesson prerequisites and dependencies
+  - [ ] Lesson completion criteria customization (future enhancement)
 - [ ] **2.3.6** Lesson Analytics (NEW):
   - **NEW**: Lesson viewing analytics
   - Student engagement tracking (time spent, replay counts)
@@ -928,16 +928,16 @@ This is the master TODO list for LMS Phase I development following the Foundatio
 ### Completion Status
 - **Phase 0 Foundation**: 43/43 tasks (100%) ✅ **Hoàn thành tất cả base components!**
 - **Phase I.1 User Management**: 30/30 tasks (100%) ✅ **Hoàn thành tất cả User Management tasks!**
-- **Phase I.2 Learning System**: 31/42 tasks (73.8%) 🚀 **Còn 11 tasks advanced features**
+- **Phase I.2 Learning System**: 32/42 tasks (76.2%) 🚀 **Còn 10 tasks advanced features**
 - **Phase I.3 Testing System**: 23/35 tasks (65.7%) 🚀 **Còn 12 tasks security + advanced features**
 - **Phase I.4 Navigation & Integration**: 2/8 tasks (25%) 🚀 **Hoàn thành navigation enhancement**
 - **Integration & Testing**: 0/32 tasks (0%)
 
-**Total: 129/189 tasks (68.3%)**
+**Total: 130/189 tasks (68.8%)**
 
 ### Updated Critical Path
 1. **Phase 0**: ✅ 100% Complete - Foundation ready
-2. **Phase I Business Logic**: 86/114 tasks (75.4%) - In Progress
+2. **Phase I Business Logic**: 87/114 tasks (76.3%) - In Progress
    - ✅ Dashboards (3 tasks) - Completed
    - ✅ User Permissions (visible in navigation) - Completed  
    - ✅ Certificate System (4 tasks) - Completed
