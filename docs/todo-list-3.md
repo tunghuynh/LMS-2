@@ -309,12 +309,12 @@ This is the master TODO list for LMS Phase I development following the Foundatio
   - Class name, description
   - Assign teacher dropdown
   - Initial students selection
-- [x] **1.5.4** Enhanced Class Management:
-  - **NEW**: Class schedule management
-  - Student attendance tracking
-  - Class performance analytics
-  - Bulk operations for student management
-  - Class communication tools
+- [x] ✅ **1.5.4** Enhanced Class Management:
+  - [x] **NEW**: Class schedule management
+  - [x] Student attendance tracking
+  - [x] Class performance analytics
+  - [x] Bulk operations for student management
+  - [x] Class communication tools
 
 #### 1.6 Activity Logs (Admin)
 - [x] **1.6.1** Logs Page (`logs.html`):

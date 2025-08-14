@@ -83,10 +83,16 @@
                 <div class="card__header">
                     <div style="display: flex; justify-content: space-between; align-items: center;">
                         <h3 class="card__title">Class Members</h3>
-                        <button class="btn btn--primary btn--small" onclick="openAddStudentModal()">
-                            <i class="fas fa-user-plus" style="margin-right: 8px;"></i>
-                            Add Student
-                        </button>
+                        <div style="display: flex; gap: var(--spacing-2);">
+                            <button class="btn btn--secondary btn--small" id="bulkActionsBtn" style="display: none;" onclick="showBulkActions()">
+                                <i class="fas fa-list-check" style="margin-right: 8px;"></i>
+                                <span id="selectedCount">0</span> Selected
+                            </button>
+                            <button class="btn btn--primary btn--small" onclick="openAddStudentModal()">
+                                <i class="fas fa-user-plus" style="margin-right: 8px;"></i>
+                                Add Student
+                            </button>
+                        </div>
                     </div>
                 </div>
                 <div class="card__body card__body--no-padding">
@@ -248,6 +254,262 @@
         </div>
     </div>
 
+    <!-- Class Management Modal -->
+    <div class="modal-backdrop" id="classManagementModalBackdrop">
+        <div class="modal modal--large" id="classManagementModal">
+            <div class="modal__header">
+                <h2 class="modal__title">Advanced Class Management - <span id="managementClassName"></span></h2>
+                <button class="modal__close" onclick="closeClassManagementModal()">×</button>
+            </div>
+            <div class="modal__body">
+                <!-- Tabs -->
+                <div class="tabs">
+                    <div class="tabs__list">
+                        <button class="tabs__item tabs__item--active" data-tab="schedule">
+                            <i class="fas fa-calendar-alt tabs__item-icon"></i>
+                            Schedule
+                        </button>
+                        <button class="tabs__item" data-tab="attendance">
+                            <i class="fas fa-clipboard-check tabs__item-icon"></i>
+                            Attendance
+                        </button>
+                        <button class="tabs__item" data-tab="analytics">
+                            <i class="fas fa-chart-line tabs__item-icon"></i>
+                            Analytics
+                        </button>
+                        <button class="tabs__item" data-tab="communication">
+                            <i class="fas fa-comments tabs__item-icon"></i>
+                            Communication
+                        </button>
+                    </div>
+                    
+                    <!-- Schedule Tab -->
+                    <div class="tabs__content">
+                        <div class="tabs__panel tabs__panel--active" id="schedule-tab">
+                        <div class="card">
+                            <div class="card__header">
+                                <h4 class="card__title">Weekly Schedule</h4>
+                                <button class="btn btn--primary btn--small" onclick="addScheduleItem()">
+                                    <i class="fas fa-plus"></i> Add Session
+                                </button>
+                            </div>
+                            <div class="card__body">
+                                <div id="scheduleList">
+                                    <!-- Dynamic schedule items -->
+                                </div>
+                            </div>
+                        </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Attendance Tab -->
+                    <div class="tabs__panel" id="attendance-tab">
+                        <div class="card">
+                            <div class="card__header">
+                                <h4 class="card__title">Attendance Tracking</h4>
+                                <button class="btn btn--primary btn--small" onclick="takeAttendance()">
+                                    <i class="fas fa-check-circle"></i> Take Attendance
+                                </button>
+                            </div>
+                            <div class="card__body">
+                                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: var(--spacing-4); margin-bottom: var(--spacing-6);">
+                                    <div style="text-align: center; padding: var(--spacing-4); background: var(--bg-secondary); border-radius: var(--radius-base);">
+                                        <div style="font-size: var(--font-size-2xl); font-weight: var(--font-weight-bold); color: var(--color-success);" id="attendanceRate">0%</div>
+                                        <p style="color: var(--text-secondary); margin: 0;">Average Attendance</p>
+                                    </div>
+                                    <div style="text-align: center; padding: var(--spacing-4); background: var(--bg-secondary); border-radius: var(--radius-base);">
+                                        <div style="font-size: var(--font-size-2xl); font-weight: var(--font-weight-bold); color: var(--color-primary);" id="totalSessions">0</div>
+                                        <p style="color: var(--text-secondary); margin: 0;">Total Sessions</p>
+                                    </div>
+                                </div>
+                                <div id="attendanceHistory">
+                                    <!-- Attendance history table -->
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Analytics Tab -->
+                    <div class="tabs__panel" id="analytics-tab">
+                        <div class="card">
+                            <div class="card__header">
+                                <h4 class="card__title">Class Performance Analytics</h4>
+                            </div>
+                            <div class="card__body">
+                                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: var(--spacing-4); margin-bottom: var(--spacing-6);">
+                                    <div style="text-align: center; padding: var(--spacing-4); background: var(--bg-secondary); border-radius: var(--radius-base);">
+                                        <div style="font-size: var(--font-size-2xl); font-weight: var(--font-weight-bold); color: var(--color-success);" id="avgGrade">A</div>
+                                        <p style="color: var(--text-secondary); margin: 0;">Average Grade</p>
+                                    </div>
+                                    <div style="text-align: center; padding: var(--spacing-4); background: var(--bg-secondary); border-radius: var(--radius-base);">
+                                        <div style="font-size: var(--font-size-2xl); font-weight: var(--font-weight-bold); color: var(--color-primary);" id="completionRate">85%</div>
+                                        <p style="color: var(--text-secondary); margin: 0;">Completion Rate</p>
+                                    </div>
+                                    <div style="text-align: center; padding: var(--spacing-4); background: var(--bg-secondary); border-radius: var(--radius-base);">
+                                        <div style="font-size: var(--font-size-2xl); font-weight: var(--font-weight-bold); color: var(--color-warning);" id="participationRate">92%</div>
+                                        <p style="color: var(--text-secondary); margin: 0;">Participation Rate</p>
+                                    </div>
+                                </div>
+                                <div id="performanceChart" style="background: var(--bg-secondary); padding: var(--spacing-4); border-radius: var(--radius-base); height: 300px; display: flex; align-items: center; justify-content: center; color: var(--text-muted);">
+                                    <div style="text-align: center;">
+                                        <i class="fas fa-chart-bar" style="font-size: 48px; margin-bottom: var(--spacing-4);"></i>
+                                        <p>Performance chart will be displayed here</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Communication Tab -->
+                    <div class="tabs__panel" id="communication-tab">
+                        <div class="card">
+                            <div class="card__header">
+                                <h4 class="card__title">Class Communication</h4>
+                            </div>
+                            <div class="card__body">
+                                <form id="classMessageForm">
+                                    <div class="input-group">
+                                        <label class="input-group__label">Message Type</label>
+                                        <div class="dropdown dropdown--block">
+                                            <button type="button" class="dropdown__trigger">
+                                                <span id="messageTypeText">Announcement</span>
+                                                <span class="dropdown__arrow"></span>
+                                            </button>
+                                            <div class="dropdown__menu">
+                                                <div class="dropdown__list">
+                                                    <div class="dropdown__item" data-value="announcement">
+                                                        <i class="fas fa-bullhorn dropdown__item-icon"></i>
+                                                        Announcement
+                                                    </div>
+                                                    <div class="dropdown__item" data-value="reminder">
+                                                        <i class="fas fa-bell dropdown__item-icon"></i>
+                                                        Reminder
+                                                    </div>
+                                                    <div class="dropdown__item" data-value="assignment">
+                                                        <i class="fas fa-tasks dropdown__item-icon"></i>
+                                                        Assignment
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="input-group">
+                                        <label class="input-group__label">Subject</label>
+                                        <input type="text" class="input" id="messageSubject" placeholder="Enter message subject...">
+                                    </div>
+                                    
+                                    <div class="input-group">
+                                        <label class="input-group__label">Message</label>
+                                        <textarea class="input input--textarea" id="messageContent" rows="4" placeholder="Enter your message..."></textarea>
+                                    </div>
+                                    
+                                    <div style="display: flex; gap: var(--spacing-3);">
+                                        <button type="button" class="btn btn--primary" onclick="sendClassMessage()">
+                                            <i class="fas fa-paper-plane" style="margin-right: 8px;"></i>
+                                            Send to All Students
+                                        </button>
+                                        <button type="button" class="btn btn--secondary" onclick="previewMessage()">
+                                            <i class="fas fa-eye" style="margin-right: 8px;"></i>
+                                            Preview
+                                        </button>
+                                    </div>
+                                </form>
+                                
+                                <div style="margin-top: var(--spacing-6);">
+                                    <h4 style="margin-bottom: var(--spacing-4);">Recent Messages</h4>
+                                    <div id="recentMessages">
+                                        <!-- Recent messages list -->
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal__footer">
+                <button class="btn btn--secondary" onclick="closeClassManagementModal()">
+                    <i class="fas fa-times" style="margin-right: 8px;"></i>
+                    Close
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bulk Actions Modal -->
+    <div class="modal-backdrop" id="bulkActionsModalBackdrop">
+        <div class="modal modal--small" id="bulkActionsModal">
+            <div class="modal__header">
+                <h2 class="modal__title">Bulk Actions</h2>
+                <button class="modal__close" onclick="closeBulkActionsModal()">×</button>
+            </div>
+            <div class="modal__body">
+                <p style="margin-bottom: var(--spacing-4);">Choose an action to apply to <strong id="bulkSelectedCount">0</strong> selected students:</p>
+                <div style="display: flex; flex-direction: column; gap: var(--spacing-3);">
+                    <button class="btn btn--secondary btn--block" onclick="bulkSendMessage()">
+                        <i class="fas fa-envelope" style="margin-right: 8px;"></i>
+                        Send Message
+                    </button>
+                    <button class="btn btn--secondary btn--block" onclick="bulkExportData()">
+                        <i class="fas fa-download" style="margin-right: 8px;"></i>
+                        Export Data
+                    </button>
+                    <button class="btn btn--danger btn--block" onclick="bulkRemoveStudents()">
+                        <i class="fas fa-user-minus" style="margin-right: 8px;"></i>
+                        Remove from Class
+                    </button>
+                </div>
+            </div>
+            <div class="modal__footer">
+                <button class="btn btn--secondary" onclick="closeBulkActionsModal()">
+                    Cancel
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Attendance Modal -->
+    <div class="modal-backdrop" id="attendanceModalBackdrop">
+        <div class="modal modal--medium" id="attendanceModal">
+            <div class="modal__header">
+                <h2 class="modal__title">Take Attendance - <span id="attendanceDate"></span></h2>
+                <button class="modal__close" onclick="closeAttendanceModal()">×</button>
+            </div>
+            <div class="modal__body">
+                <div class="input-group">
+                    <label class="input-group__label">Session Date & Time</label>
+                    <input type="datetime-local" class="input" id="sessionDateTime" value="">
+                </div>
+                
+                <div style="margin-top: var(--spacing-4);">
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: var(--spacing-3);">
+                        <h4>Student List</h4>
+                        <div style="display: flex; gap: var(--spacing-2);">
+                            <button class="btn btn--secondary btn--small" onclick="markAllPresent()">
+                                <i class="fas fa-check-double"></i> Mark All Present
+                            </button>
+                            <button class="btn btn--secondary btn--small" onclick="markAllAbsent()">
+                                <i class="fas fa-times-circle"></i> Mark All Absent
+                            </button>
+                        </div>
+                    </div>
+                    <div id="attendanceList" style="max-height: 400px; overflow-y: auto;">
+                        <!-- Student attendance list -->
+                    </div>
+                </div>
+            </div>
+            <div class="modal__footer">
+                <button class="btn btn--secondary" onclick="closeAttendanceModal()">
+                    Cancel
+                </button>
+                <button class="btn btn--primary" onclick="saveAttendance()">
+                    <i class="fas fa-save" style="margin-right: 8px;"></i>
+                    Save Attendance
+                </button>
+            </div>
+        </div>
+    </div>
+
     <script src="../assets/js/global.js"></script>
     <script src="../assets/js/api.js"></script>
     <script src="../assets/js/auth.js"></script>
@@ -324,8 +586,11 @@
                             ${getStatusBadge(cls.status)}
                         </td>
                         <td class="table__cell table__cell--center">
-                            <button class="btn btn--ghost btn--small" onclick="selectClass('${cls.id}')" title="Manage">
-                                <i class="fas fa-cog"></i>
+                            <button class="btn btn--ghost btn--small" onclick="openClassManagementModal('${cls.id}')" title="Advanced Management">
+                                <i class="fas fa-tasks"></i>
+                            </button>
+                            <button class="btn btn--ghost btn--small" onclick="selectClass('${cls.id}')" title="View Members">
+                                <i class="fas fa-users"></i>
                             </button>
                             <button class="btn btn--ghost btn--small" onclick="editClass('${cls.id}')" title="Edit">
                                 <i class="fas fa-edit"></i>
@@ -690,6 +955,441 @@
             }
 
             loadData();
+            initializeTabs();
+            initializeCheckboxHandlers();
+        });
+
+        // Enhanced Class Management Functions
+        let managedClass = null;
+        let selectedMembers = new Set();
+
+        function openClassManagementModal(classId) {
+            managedClass = allClasses.find(c => c.id === classId);
+            if (!managedClass) return;
+
+            document.getElementById('managementClassName').textContent = managedClass.name;
+            
+            // Load data for each tab
+            loadScheduleData();
+            loadAttendanceData();
+            loadAnalyticsData();
+            loadRecentMessages();
+
+            document.getElementById('classManagementModalBackdrop').classList.add('active');
+            document.getElementById('classManagementModal').classList.add('active');
+        }
+
+        function closeClassManagementModal() {
+            document.getElementById('classManagementModalBackdrop').classList.remove('active');
+            document.getElementById('classManagementModal').classList.remove('active');
+        }
+
+        // Tab functionality
+        function initializeTabs() {
+            document.querySelectorAll('.tabs__item').forEach(tab => {
+                tab.addEventListener('click', function() {
+                    const tabName = this.getAttribute('data-tab');
+                    
+                    // Update active tab
+                    document.querySelectorAll('.tabs__item').forEach(t => t.classList.remove('tabs__item--active'));
+                    this.classList.add('tabs__item--active');
+                    
+                    // Update active content
+                    document.querySelectorAll('.tabs__panel').forEach(panel => panel.classList.remove('tabs__panel--active'));
+                    document.getElementById(tabName + '-tab').classList.add('tabs__panel--active');
+                });
+            });
+        }
+
+        // Schedule Management
+        function loadScheduleData() {
+            const scheduleList = document.getElementById('scheduleList');
+            const schedule = managedClass.schedule ? managedClass.schedule.split(',') : [];
+            
+            if (schedule.length === 0 || (schedule.length === 1 && schedule[0] === '')) {
+                scheduleList.innerHTML = `
+                    <div style="text-align: center; padding: var(--spacing-6); color: var(--text-muted);">
+                        <i class="fas fa-calendar-times" style="font-size: 48px; margin-bottom: var(--spacing-3);"></i>
+                        <p>No schedule defined yet</p>
+                    </div>
+                `;
+            } else {
+                scheduleList.innerHTML = schedule.map((item, index) => `
+                    <div class="card" style="margin-bottom: var(--spacing-3);">
+                        <div class="card__body" style="display: flex; justify-content: space-between; align-items: center;">
+                            <div>
+                                <i class="fas fa-clock" style="margin-right: 8px; color: var(--color-primary);"></i>
+                                ${item.trim()}
+                            </div>
+                            <button class="btn btn--ghost btn--small" onclick="removeScheduleItem(${index})">
+                                <i class="fas fa-trash"></i>
+                            </button>
+                        </div>
+                    </div>
+                `).join('');
+            }
+        }
+
+        function addScheduleItem() {
+            const newSchedule = prompt('Enter schedule (e.g., Monday 10:00 AM - 12:00 PM):');
+            if (newSchedule) {
+                const currentSchedule = managedClass.schedule ? managedClass.schedule.split(',') : [];
+                currentSchedule.push(newSchedule);
+                managedClass.schedule = currentSchedule.join(', ');
+                
+                // Update in array and save
+                const index = allClasses.findIndex(c => c.id === managedClass.id);
+                if (index !== -1) {
+                    allClasses[index] = managedClass;
+                    localStorage.setItem('lms-classes', JSON.stringify(allClasses));
+                }
+                
+                loadScheduleData();
+            }
+        }
+
+        function removeScheduleItem(index) {
+            const currentSchedule = managedClass.schedule.split(',');
+            currentSchedule.splice(index, 1);
+            managedClass.schedule = currentSchedule.join(', ');
+            
+            // Update in array and save
+            const classIndex = allClasses.findIndex(c => c.id === managedClass.id);
+            if (classIndex !== -1) {
+                allClasses[classIndex] = managedClass;
+                localStorage.setItem('lms-classes', JSON.stringify(allClasses));
+            }
+            
+            loadScheduleData();
+        }
+
+        // Attendance Management
+        function loadAttendanceData() {
+            // Load attendance history from localStorage
+            const attendanceData = JSON.parse(localStorage.getItem('lms-attendance') || '{}');
+            const classAttendance = attendanceData[managedClass.id] || [];
+            
+            // Calculate statistics
+            const totalSessions = classAttendance.length;
+            let totalAttendanceRate = 0;
+            
+            if (totalSessions > 0) {
+                classAttendance.forEach(session => {
+                    const presentCount = Object.values(session.attendance).filter(status => status === 'present').length;
+                    totalAttendanceRate += (presentCount / Object.keys(session.attendance).length) * 100;
+                });
+                totalAttendanceRate = Math.round(totalAttendanceRate / totalSessions);
+            }
+            
+            document.getElementById('attendanceRate').textContent = totalAttendanceRate + '%';
+            document.getElementById('totalSessions').textContent = totalSessions;
+            
+            // Display attendance history
+            const historyDiv = document.getElementById('attendanceHistory');
+            if (classAttendance.length === 0) {
+                historyDiv.innerHTML = `
+                    <div style="text-align: center; padding: var(--spacing-6); color: var(--text-muted);">
+                        <i class="fas fa-clipboard-list" style="font-size: 48px; margin-bottom: var(--spacing-3);"></i>
+                        <p>No attendance records yet</p>
+                    </div>
+                `;
+            } else {
+                historyDiv.innerHTML = `
+                    <table class="table">
+                        <thead>
+                            <tr class="table__header">
+                                <th class="table__cell table__cell--header">Date</th>
+                                <th class="table__cell table__cell--header">Time</th>
+                                <th class="table__cell table__cell--header table__cell--center">Present</th>
+                                <th class="table__cell table__cell--header table__cell--center">Absent</th>
+                                <th class="table__cell table__cell--header table__cell--center">Attendance Rate</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            ${classAttendance.map(session => {
+                                const present = Object.values(session.attendance).filter(s => s === 'present').length;
+                                const absent = Object.values(session.attendance).filter(s => s === 'absent').length;
+                                const rate = Math.round((present / (present + absent)) * 100);
+                                return `
+                                    <tr class="table__row">
+                                        <td class="table__cell">${new Date(session.date).toLocaleDateString()}</td>
+                                        <td class="table__cell">${new Date(session.date).toLocaleTimeString()}</td>
+                                        <td class="table__cell table__cell--center">${present}</td>
+                                        <td class="table__cell table__cell--center">${absent}</td>
+                                        <td class="table__cell table__cell--center">
+                                            <span class="badge ${rate >= 80 ? 'badge--active' : rate >= 60 ? 'badge--warning' : 'badge--danger'}">
+                                                ${rate}%
+                                            </span>
+                                        </td>
+                                    </tr>
+                                `;
+                            }).join('')}
+                        </tbody>
+                    </table>
+                `;
+            }
+        }
+
+        function takeAttendance() {
+            const now = new Date();
+            document.getElementById('attendanceDate').textContent = now.toLocaleDateString();
+            document.getElementById('sessionDateTime').value = now.toISOString().slice(0, 16);
+            
+            // Load student list for attendance
+            const members = allUsers.filter(u => managedClass.students.includes(u.id));
+            const attendanceList = document.getElementById('attendanceList');
+            
+            attendanceList.innerHTML = members.map(student => `
+                <div class="card" style="margin-bottom: var(--spacing-2);">
+                    <div class="card__body" style="display: flex; justify-content: space-between; align-items: center; padding: var(--spacing-3);">
+                        <div>
+                            <strong>${student.fullName}</strong>
+                            <div style="font-size: var(--font-size-sm); color: var(--text-secondary);">${student.username}</div>
+                        </div>
+                        <div style="display: flex; gap: var(--spacing-2);">
+                            <label class="radio-group">
+                                <input type="radio" name="attendance_${student.id}" value="present" checked>
+                                <span class="radio-group__label">Present</span>
+                            </label>
+                            <label class="radio-group">
+                                <input type="radio" name="attendance_${student.id}" value="absent">
+                                <span class="radio-group__label">Absent</span>
+                            </label>
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+            
+            document.getElementById('attendanceModalBackdrop').classList.add('active');
+            document.getElementById('attendanceModal').classList.add('active');
+        }
+
+        function closeAttendanceModal() {
+            document.getElementById('attendanceModalBackdrop').classList.remove('active');
+            document.getElementById('attendanceModal').classList.remove('active');
+        }
+
+        function markAllPresent() {
+            document.querySelectorAll('input[type="radio"][value="present"]').forEach(radio => {
+                radio.checked = true;
+            });
+        }
+
+        function markAllAbsent() {
+            document.querySelectorAll('input[type="radio"][value="absent"]').forEach(radio => {
+                radio.checked = true;
+            });
+        }
+
+        function saveAttendance() {
+            const sessionDate = document.getElementById('sessionDateTime').value;
+            const attendance = {};
+            
+            // Collect attendance data
+            managedClass.students.forEach(studentId => {
+                const radio = document.querySelector(`input[name="attendance_${studentId}"]:checked`);
+                attendance[studentId] = radio ? radio.value : 'absent';
+            });
+            
+            // Save to localStorage
+            const attendanceData = JSON.parse(localStorage.getItem('lms-attendance') || '{}');
+            if (!attendanceData[managedClass.id]) {
+                attendanceData[managedClass.id] = [];
+            }
+            
+            attendanceData[managedClass.id].push({
+                date: sessionDate,
+                attendance: attendance
+            });
+            
+            localStorage.setItem('lms-attendance', JSON.stringify(attendanceData));
+            
+            closeAttendanceModal();
+            loadAttendanceData();
+            alert('Attendance saved successfully!');
+        }
+
+        // Analytics
+        function loadAnalyticsData() {
+            // This would typically calculate real analytics from student performance data
+            // For now, we'll use mock data
+            document.getElementById('avgGrade').textContent = 'B+';
+            document.getElementById('completionRate').textContent = '87%';
+            document.getElementById('participationRate').textContent = '92%';
+        }
+
+        // Communication
+        function loadRecentMessages() {
+            const messages = JSON.parse(localStorage.getItem('lms-class-messages') || '{}');
+            const classMessages = messages[managedClass.id] || [];
+            
+            const recentMessagesDiv = document.getElementById('recentMessages');
+            if (classMessages.length === 0) {
+                recentMessagesDiv.innerHTML = `
+                    <div style="text-align: center; padding: var(--spacing-4); color: var(--text-muted);">
+                        No messages sent yet
+                    </div>
+                `;
+            } else {
+                recentMessagesDiv.innerHTML = classMessages.slice(-5).reverse().map(msg => `
+                    <div class="card" style="margin-bottom: var(--spacing-3);">
+                        <div class="card__body">
+                            <div style="display: flex; justify-content: space-between; margin-bottom: var(--spacing-2);">
+                                <strong>${msg.subject}</strong>
+                                <span style="font-size: var(--font-size-sm); color: var(--text-secondary);">
+                                    ${new Date(msg.date).toLocaleDateString()}
+                                </span>
+                            </div>
+                            <p style="margin: 0; color: var(--text-secondary);">${msg.content}</p>
+                            <div style="margin-top: var(--spacing-2);">
+                                <span class="badge badge--secondary">${msg.type}</span>
+                            </div>
+                        </div>
+                    </div>
+                `).join('');
+            }
+        }
+
+        function sendClassMessage() {
+            const subject = document.getElementById('messageSubject').value;
+            const content = document.getElementById('messageContent').value;
+            const type = document.getElementById('messageTypeText').textContent.toLowerCase();
+            
+            if (!subject || !content) {
+                alert('Please fill in all fields');
+                return;
+            }
+            
+            // Save message to localStorage
+            const messages = JSON.parse(localStorage.getItem('lms-class-messages') || '{}');
+            if (!messages[managedClass.id]) {
+                messages[managedClass.id] = [];
+            }
+            
+            messages[managedClass.id].push({
+                id: 'msg_' + Date.now(),
+                subject: subject,
+                content: content,
+                type: type,
+                date: new Date().toISOString(),
+                recipients: managedClass.students
+            });
+            
+            localStorage.setItem('lms-class-messages', JSON.stringify(messages));
+            
+            // Clear form
+            document.getElementById('messageSubject').value = '';
+            document.getElementById('messageContent').value = '';
+            
+            loadRecentMessages();
+            alert('Message sent to all students!');
+        }
+
+        function previewMessage() {
+            const subject = document.getElementById('messageSubject').value;
+            const content = document.getElementById('messageContent').value;
+            
+            if (!subject || !content) {
+                alert('Please fill in all fields to preview');
+                return;
+            }
+            
+            alert(`Preview:\n\nSubject: ${subject}\n\nMessage:\n${content}`);
+        }
+
+        // Bulk Operations
+        function initializeCheckboxHandlers() {
+            // Select all checkbox
+            document.getElementById('selectAll')?.addEventListener('change', function() {
+                const checkboxes = document.querySelectorAll('#membersTableBody .table__checkbox');
+                checkboxes.forEach(cb => cb.checked = this.checked);
+                updateSelectedCount();
+            });
+            
+            // Individual checkboxes
+            document.addEventListener('change', function(e) {
+                if (e.target.matches('#membersTableBody .table__checkbox')) {
+                    updateSelectedCount();
+                }
+            });
+        }
+
+        function updateSelectedCount() {
+            const checked = document.querySelectorAll('#membersTableBody .table__checkbox:checked');
+            selectedMembers.clear();
+            checked.forEach(cb => selectedMembers.add(cb.getAttribute('data-id')));
+            
+            const count = selectedMembers.size;
+            document.getElementById('selectedCount').textContent = count;
+            document.getElementById('bulkActionsBtn').style.display = count > 0 ? '' : 'none';
+        }
+
+        function showBulkActions() {
+            document.getElementById('bulkSelectedCount').textContent = selectedMembers.size;
+            document.getElementById('bulkActionsModalBackdrop').classList.add('active');
+            document.getElementById('bulkActionsModal').classList.add('active');
+        }
+
+        function closeBulkActionsModal() {
+            document.getElementById('bulkActionsModalBackdrop').classList.remove('active');
+            document.getElementById('bulkActionsModal').classList.remove('active');
+        }
+
+        function bulkSendMessage() {
+            alert(`Send message feature for ${selectedMembers.size} students - Coming soon!`);
+            closeBulkActionsModal();
+        }
+
+        function bulkExportData() {
+            // Create CSV data
+            const members = allUsers.filter(u => selectedMembers.has(u.id));
+            const csv = [
+                ['Name', 'Username', 'Email', 'Status'],
+                ...members.map(m => [m.fullName, m.username, m.email, m.isActive ? 'Active' : 'Inactive'])
+            ].map(row => row.join(',')).join('\n');
+            
+            // Download CSV
+            const blob = new Blob([csv], { type: 'text/csv' });
+            const url = window.URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `class_${selectedClass.name}_students.csv`;
+            a.click();
+            
+            closeBulkActionsModal();
+        }
+
+        function bulkRemoveStudents() {
+            if (!confirm(`Are you sure you want to remove ${selectedMembers.size} students from the class?`)) {
+                return;
+            }
+            
+            selectedClass.students = selectedClass.students.filter(id => !selectedMembers.has(id));
+            selectedClass.enrolledStudents = selectedClass.students.length;
+            
+            // Update class in array
+            const index = allClasses.findIndex(c => c.id === selectedClass.id);
+            if (index !== -1) {
+                allClasses[index] = selectedClass;
+            }
+            
+            // Save to localStorage
+            localStorage.setItem('lms-classes', JSON.stringify(allClasses));
+            
+            closeBulkActionsModal();
+            selectClass(selectedClass.id);
+            alert(`${selectedMembers.size} students removed from class`);
+        }
+
+        // Message type dropdown
+        document.addEventListener('click', function(e) {
+            const item = e.target.closest('#communication-tab .dropdown__item');
+            if (item) {
+                const value = item.getAttribute('data-value');
+                const text = item.textContent.trim();
+                document.getElementById('messageTypeText').textContent = text;
+                item.closest('.dropdown').classList.remove('active');
+            }
         });
     </script>
 </body>
