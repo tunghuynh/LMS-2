@@ -9,17 +9,110 @@
     <link rel="stylesheet" href="assets/css/components.css">
     <!-- Font Awesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <!-- Configuration -->
     <script src="config.js"></script>
     
     <style>
         /* Landing Page Specific Styles */
+        :root {
+            --font-heading: 'Poppins', sans-serif;
+            --font-body: 'Inter', sans-serif;
+        }
+        
+        * {
+            scroll-behavior: smooth;
+        }
+        
         body {
             margin: 0;
             padding: 0;
             background: var(--bg-primary);
-            font-family: var(--font-family);
+            font-family: var(--font-body);
             overflow-x: hidden;
+            font-size: 16px;
+            line-height: 1.6;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+        
+        h1, h2, h3, h4, h5, h6 {
+            font-family: var(--font-heading);
+            font-weight: 700;
+            letter-spacing: -0.02em;
+        }
+        
+        /* Animations */
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        @keyframes fadeInLeft {
+            from {
+                opacity: 0;
+                transform: translateX(-30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+        
+        @keyframes fadeInRight {
+            from {
+                opacity: 0;
+                transform: translateX(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+        
+        @keyframes float {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-20px); }
+        }
+        
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+        }
+        
+        @keyframes gradientShift {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+        
+        .animate-fade-in {
+            animation: fadeInUp 0.8s ease-out;
+        }
+        
+        .animate-fade-in-left {
+            animation: fadeInLeft 0.8s ease-out;
+        }
+        
+        .animate-fade-in-right {
+            animation: fadeInRight 0.8s ease-out;
+        }
+        
+        .animate-float {
+            animation: float 6s ease-in-out infinite;
+        }
+        
+        .animate-pulse {
+            animation: pulse 2s ease-in-out infinite;
         }
 
         /* Header */
@@ -28,39 +121,62 @@
             top: 0;
             left: 0;
             right: 0;
-            background: rgba(255, 255, 255, 0.95);
-            backdrop-filter: blur(10px);
-            border-bottom: 1px solid var(--border-color);
+            background: rgba(255, 255, 255, 0.85);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border-bottom: 1px solid rgba(0, 0, 0, 0.05);
             z-index: 1000;
-            transition: all var(--transition-base);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+        }
+        
+        .landing-header.scrolled {
+            background: rgba(255, 255, 255, 0.98);
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
         }
 
         .dark-theme .landing-header {
-            background: rgba(30, 41, 59, 0.95);
+            background: rgba(30, 41, 59, 0.85);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+        }
+        
+        .dark-theme .landing-header.scrolled {
+            background: rgba(30, 41, 59, 0.98);
         }
 
         .header-content {
-            max-width: 1200px;
+            max-width: 1400px;
             margin: 0 auto;
             display: flex;
             justify-content: space-between;
             align-items: center;
-            padding: var(--spacing-3) var(--spacing-4);
+            padding: 1rem 2rem;
         }
 
         .logo {
             display: flex;
             align-items: center;
-            gap: var(--spacing-2);
-            font-size: 1.5rem;
-            font-weight: var(--font-weight-bold);
+            gap: var(--spacing-3);
+            font-size: 1.75rem;
+            font-weight: 800;
             color: var(--color-primary);
             text-decoration: none;
+            font-family: var(--font-heading);
+            transition: transform 0.3s ease;
+        }
+        
+        .logo:hover {
+            transform: scale(1.05);
+        }
+        
+        .logo i {
+            font-size: 2rem;
+            animation: pulse 2s ease-in-out infinite;
         }
 
         .nav-menu {
             display: flex;
-            gap: var(--spacing-6);
+            gap: var(--spacing-8);
             list-style: none;
             margin: 0;
             padding: 0;
@@ -69,12 +185,30 @@
         .nav-link {
             color: var(--text-primary);
             text-decoration: none;
-            font-weight: var(--font-weight-medium);
-            transition: color var(--transition-base);
+            font-weight: 500;
+            font-size: 0.95rem;
+            position: relative;
+            transition: all 0.3s ease;
+            padding: 0.5rem 0;
+        }
+        
+        .nav-link::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: var(--color-primary);
+            transition: width 0.3s ease;
         }
 
         .nav-link:hover {
             color: var(--color-primary);
+        }
+        
+        .nav-link:hover::after {
+            width: 100%;
         }
 
         .header-actions {
@@ -82,13 +216,25 @@
             gap: var(--spacing-3);
             align-items: center;
         }
+        
+        .header-actions .btn {
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+        
+        .header-actions .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
 
         /* Hero Section */
         .hero {
             min-height: 100vh;
             display: flex;
             align-items: center;
-            background: linear-gradient(135deg, var(--color-primary), var(--color-primary-dark, #1E4F78));
+            background: linear-gradient(135deg, #2C6EAA 0%, #1E4F78 50%, #0D3B66 100%);
+            background-size: 200% 200%;
+            animation: gradientShift 15s ease infinite;
             color: white;
             position: relative;
             overflow: hidden;
@@ -104,6 +250,17 @@
             background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 1000"><circle cx="200" cy="200" r="2" fill="rgba(255,255,255,0.1)"/><circle cx="400" cy="100" r="1" fill="rgba(255,255,255,0.1)"/><circle cx="600" cy="300" r="2" fill="rgba(255,255,255,0.1)"/><circle cx="800" cy="150" r="1" fill="rgba(255,255,255,0.1)"/><circle cx="300" cy="400" r="1" fill="rgba(255,255,255,0.1)"/><circle cx="700" cy="500" r="2" fill="rgba(255,255,255,0.1)"/></svg>') repeat;
             animation: float 20s infinite linear;
         }
+        
+        .hero::after {
+            content: '';
+            position: absolute;
+            top: -50%;
+            right: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 70%);
+            animation: pulse 4s ease-in-out infinite;
+        }
 
         @keyframes float {
             0% { transform: translateY(0px); }
@@ -111,97 +268,141 @@
         }
 
         .hero-content {
-            max-width: 1200px;
+            max-width: 1400px;
             margin: 0 auto;
-            padding: 0 var(--spacing-4);
+            padding: 0 2rem;
             display: grid;
             grid-template-columns: 1fr 1fr;
-            gap: var(--spacing-8);
+            gap: 4rem;
             align-items: center;
             position: relative;
             z-index: 1;
         }
 
         .hero-text h1 {
-            font-size: 3.5rem;
-            font-weight: var(--font-weight-bold);
-            margin-bottom: var(--spacing-4);
-            line-height: 1.2;
+            font-size: clamp(2.5rem, 5vw, 4rem);
+            font-weight: 800;
+            margin-bottom: 1.5rem;
+            line-height: 1.1;
+            animation: fadeInUp 1s ease-out;
+            letter-spacing: -0.03em;
         }
 
         .hero-text .subtitle {
-            font-size: 1.25rem;
-            margin-bottom: var(--spacing-6);
-            opacity: 0.9;
-            line-height: 1.6;
+            font-size: clamp(1.1rem, 2vw, 1.35rem);
+            margin-bottom: 2rem;
+            opacity: 0.95;
+            line-height: 1.7;
+            font-weight: 400;
+            animation: fadeInUp 1s ease-out 0.2s both;
         }
 
         .hero-actions {
             display: flex;
-            gap: var(--spacing-4);
-            margin-bottom: var(--spacing-6);
+            gap: 1.5rem;
+            margin-bottom: 3rem;
+            animation: fadeInUp 1s ease-out 0.4s both;
+            flex-wrap: wrap;
         }
 
         .btn-hero {
-            padding: var(--spacing-4) var(--spacing-6);
+            padding: 1rem 2rem;
             font-size: 1.1rem;
-            font-weight: var(--font-weight-semibold);
-            border-radius: var(--radius-lg);
+            font-weight: 600;
+            border-radius: 100px;
             text-decoration: none;
             display: inline-flex;
             align-items: center;
-            gap: var(--spacing-2);
-            transition: all var(--transition-base);
+            gap: 0.75rem;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .btn-hero::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 0;
+            height: 0;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.2);
+            transform: translate(-50%, -50%);
+            transition: width 0.6s, height 0.6s;
+        }
+        
+        .btn-hero:hover::before {
+            width: 300px;
+            height: 300px;
         }
 
         .btn-hero.primary {
             background: white;
             color: var(--color-primary);
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.12);
         }
 
         .btn-hero.primary:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+            transform: translateY(-3px);
+            box-shadow: 0 12px 40px rgba(0, 0, 0, 0.18);
         }
 
         .btn-hero.secondary {
-            background: transparent;
+            background: rgba(255, 255, 255, 0.1);
             color: white;
-            border: 2px solid white;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            backdrop-filter: blur(10px);
         }
 
         .btn-hero.secondary:hover {
-            background: white;
-            color: var(--color-primary);
+            background: rgba(255, 255, 255, 0.2);
+            border-color: rgba(255, 255, 255, 0.5);
+            transform: translateY(-3px);
         }
 
         .hero-features {
             display: flex;
-            gap: var(--spacing-4);
-            font-size: var(--font-size-sm);
-            opacity: 0.8;
+            gap: 2rem;
+            font-size: 0.95rem;
+            opacity: 0.9;
+            animation: fadeInUp 1s ease-out 0.6s both;
+            flex-wrap: wrap;
         }
 
         .hero-feature {
             display: flex;
             align-items: center;
-            gap: var(--spacing-1);
+            gap: 0.5rem;
+        }
+        
+        .hero-feature i {
+            color: #10B981;
+            font-size: 1.1rem;
         }
 
         .hero-visual {
             display: flex;
             justify-content: center;
             align-items: center;
+            animation: fadeInRight 1s ease-out 0.4s both;
+            perspective: 1000px;
         }
 
         .hero-mockup {
             width: 100%;
-            max-width: 500px;
-            border-radius: var(--radius-xl);
-            box-shadow: 0 25px 50px rgba(0,0,0,0.3);
-            transform: perspective(1000px) rotateY(-15deg) rotateX(10deg);
+            max-width: 550px;
+            border-radius: 24px;
+            box-shadow: 0 50px 100px rgba(0, 0, 0, 0.4);
             background: white;
-            padding: var(--spacing-4);
+            padding: 2rem;
+            transition: all 0.3s ease-out;
+            transform-style: preserve-3d;
+            cursor: pointer;
+        }
+        
+        .hero-mockup-content {
+            transform: translateZ(50px);
         }
 
         /* Features Section */
@@ -459,6 +660,377 @@
             margin-right: auto;
         }
 
+        /* Stats Section */
+        .stats {
+            padding: 120px 0;
+            background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .dark-theme .stats {
+            background: linear-gradient(135deg, #1e293b 0%, #334155 100%);
+        }
+        
+        .stats-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 2rem;
+        }
+        
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 2rem;
+            margin-top: 4rem;
+        }
+        
+        .stat-card {
+            background: var(--bg-primary);
+            border-radius: 20px;
+            padding: 3rem 2rem;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.05);
+            transition: all 0.3s ease;
+            animation: fadeInUp 0.8s ease-out;
+        }
+        
+        .stat-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.1);
+        }
+        
+        .stat-number {
+            font-size: 3.5rem;
+            font-weight: 800;
+            color: var(--color-primary);
+            margin-bottom: 0.5rem;
+            font-family: var(--font-heading);
+        }
+        
+        .stat-label {
+            font-size: 1.1rem;
+            color: var(--text-secondary);
+            font-weight: 500;
+        }
+        
+        .stat-icon {
+            position: absolute;
+            top: -20px;
+            right: -20px;
+            font-size: 6rem;
+            color: var(--color-primary);
+            opacity: 0.1;
+            transform: rotate(-15deg);
+        }
+        
+        /* Testimonials Section */
+        .testimonials {
+            padding: 120px 0;
+            background: var(--bg-primary);
+        }
+        
+        .testimonials-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 2rem;
+        }
+        
+        .testimonials-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 2rem;
+            margin-top: 4rem;
+        }
+        
+        .testimonial-card {
+            background: var(--bg-secondary);
+            border-radius: 20px;
+            padding: 2.5rem;
+            position: relative;
+            transition: all 0.3s ease;
+            animation: fadeInUp 0.8s ease-out;
+        }
+        
+        .testimonial-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.1);
+        }
+        
+        .testimonial-quote {
+            font-size: 3rem;
+            color: var(--color-primary);
+            opacity: 0.2;
+            position: absolute;
+            top: 20px;
+            left: 20px;
+        }
+        
+        .testimonial-text {
+            font-size: 1.1rem;
+            line-height: 1.8;
+            color: var(--text-primary);
+            margin-bottom: 2rem;
+            position: relative;
+            z-index: 1;
+            font-style: italic;
+        }
+        
+        .testimonial-author {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+        
+        .testimonial-avatar {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            object-fit: cover;
+        }
+        
+        .testimonial-name {
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: 0.25rem;
+        }
+        
+        .testimonial-role {
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+        }
+        
+        /* Pricing Section */
+        .pricing {
+            padding: 120px 0;
+            background: var(--bg-secondary);
+        }
+        
+        .pricing-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 2rem;
+        }
+        
+        .pricing-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 2rem;
+            margin-top: 4rem;
+            align-items: start;
+        }
+        
+        .pricing-card {
+            background: var(--bg-primary);
+            border: 2px solid var(--border-color);
+            border-radius: 20px;
+            padding: 2.5rem;
+            position: relative;
+            transition: all 0.3s ease;
+            animation: fadeInUp 0.8s ease-out;
+        }
+        
+        .pricing-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 30px 60px rgba(0, 0, 0, 0.15);
+        }
+        
+        .pricing-card.featured {
+            border-color: var(--color-primary);
+            transform: scale(1.05);
+            box-shadow: 0 20px 50px rgba(44, 110, 170, 0.2);
+        }
+        
+        .pricing-card.featured:hover {
+            transform: scale(1.05) translateY(-10px);
+        }
+        
+        .pricing-badge {
+            position: absolute;
+            top: -15px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: var(--color-primary);
+            color: white;
+            padding: 0.5rem 1.5rem;
+            border-radius: 50px;
+            font-size: 0.85rem;
+            font-weight: 600;
+        }
+        
+        .pricing-header {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+        
+        .pricing-header h3 {
+            font-size: 1.75rem;
+            margin-bottom: 1rem;
+            color: var(--text-primary);
+        }
+        
+        .pricing-price {
+            display: flex;
+            align-items: baseline;
+            justify-content: center;
+            gap: 0.25rem;
+            margin-bottom: 1rem;
+        }
+        
+        .pricing-price .currency {
+            font-size: 1.5rem;
+            color: var(--text-secondary);
+        }
+        
+        .pricing-price .amount {
+            font-size: 3.5rem;
+            font-weight: 800;
+            color: var(--color-primary);
+            font-family: var(--font-heading);
+        }
+        
+        .pricing-price .period {
+            font-size: 1.1rem;
+            color: var(--text-secondary);
+        }
+        
+        .pricing-desc {
+            color: var(--text-secondary);
+            font-size: 0.95rem;
+        }
+        
+        .pricing-features {
+            list-style: none;
+            padding: 0;
+            margin: 0 0 2rem 0;
+        }
+        
+        .pricing-features li {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            padding: 0.75rem 0;
+            color: var(--text-primary);
+        }
+        
+        .pricing-features li i {
+            color: var(--color-success);
+            font-size: 1.1rem;
+        }
+        
+        .pricing-features li.disabled {
+            color: var(--text-muted);
+            opacity: 0.5;
+        }
+        
+        .pricing-features li.disabled i {
+            color: var(--text-muted);
+        }
+        
+        .btn--block {
+            width: 100%;
+            text-align: center;
+            justify-content: center;
+        }
+        
+        /* CTA Section */
+        .cta {
+            padding: 120px 0;
+            background: var(--color-primary);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .cta-content {
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 0 2rem;
+            text-align: center;
+            position: relative;
+            z-index: 1;
+        }
+        
+        .cta-bg {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(135deg, rgba(255,255,255,0.1) 0%, transparent 100%);
+            pointer-events: none;
+        }
+        
+        .cta-text h2 {
+            font-size: clamp(2rem, 4vw, 3rem);
+            color: white;
+            margin-bottom: 1rem;
+            animation: fadeInUp 0.8s ease-out;
+        }
+        
+        .cta-text p {
+            font-size: 1.25rem;
+            color: rgba(255, 255, 255, 0.9);
+            margin-bottom: 3rem;
+            animation: fadeInUp 0.8s ease-out 0.2s both;
+        }
+        
+        .cta-stats {
+            display: flex;
+            justify-content: center;
+            gap: 3rem;
+            margin-bottom: 3rem;
+            flex-wrap: wrap;
+            animation: fadeInUp 0.8s ease-out 0.4s both;
+        }
+        
+        .cta-stat {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            color: white;
+            font-size: 1.1rem;
+        }
+        
+        .cta-stat i {
+            font-size: 1.5rem;
+            color: rgba(255, 255, 255, 0.8);
+        }
+        
+        .cta-actions {
+            display: flex;
+            gap: 1.5rem;
+            justify-content: center;
+            flex-wrap: wrap;
+            animation: fadeInUp 0.8s ease-out 0.6s both;
+        }
+        
+        .cta-actions .btn {
+            min-width: 200px;
+        }
+        
+        .cta-actions .btn--primary {
+            background: white;
+            color: var(--color-primary);
+        }
+        
+        .cta-actions .btn--primary:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.2);
+        }
+        
+        .cta-actions .btn--secondary {
+            background: transparent;
+            color: white;
+            border: 2px solid white;
+        }
+        
+        .cta-actions .btn--secondary:hover {
+            background: white;
+            color: var(--color-primary);
+        }
+        
         .theme-controls {
             position: fixed;
             top: var(--spacing-4);
@@ -581,20 +1153,35 @@
                 </div>
             </div>
             <div class="hero-visual">
-                <div class="hero-mockup">
-                    <div style="background: #f8f9fa; border-radius: 8px; padding: 16px; margin-bottom: 12px;">
-                        <div style="height: 12px; background: var(--color-primary); border-radius: 6px; margin-bottom: 8px; width: 60%;"></div>
-                        <div style="height: 8px; background: #e9ecef; border-radius: 4px; margin-bottom: 4px;"></div>
-                        <div style="height: 8px; background: #e9ecef; border-radius: 4px; width: 80%;"></div>
-                    </div>
-                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
-                        <div style="background: #e3f2fd; border-radius: 8px; padding: 12px; text-align: center;">
-                            <div style="height: 20px; background: #2196f3; border-radius: 50%; width: 20px; margin: 0 auto 8px;"></div>
-                            <div style="height: 6px; background: #90caf9; border-radius: 3px;"></div>
+                <div class="hero-mockup" id="heroMockup">
+                    <div class="hero-mockup-content">
+                        <div style="background: linear-gradient(145deg, #f0f4ff, #e1e8ff); border-radius: 12px; padding: 20px; margin-bottom: 16px; box-shadow: 0 4px 15px rgba(0,0,0,0.08);">
+                            <div style="height: 14px; background: linear-gradient(90deg, #2C6EAA, #4A8BC2); border-radius: 8px; margin-bottom: 10px; width: 65%; box-shadow: 0 2px 8px rgba(44,110,170,0.3);"></div>
+                            <div style="height: 8px; background: #cbd5e1; border-radius: 4px; margin-bottom: 6px;"></div>
+                            <div style="height: 8px; background: #cbd5e1; border-radius: 4px; width: 85%;"></div>
                         </div>
-                        <div style="background: #e8f5e8; border-radius: 8px; padding: 12px; text-align: center;">
-                            <div style="height: 20px; background: #4caf50; border-radius: 50%; width: 20px; margin: 0 auto 8px;"></div>
-                            <div style="height: 6px; background: #a5d6a7; border-radius: 3px;"></div>
+                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px;">
+                            <div style="background: linear-gradient(145deg, #e3f2fd, #bbdefb); border-radius: 12px; padding: 16px; text-align: center; box-shadow: 0 4px 15px rgba(33,150,243,0.15); transition: all 0.3s ease;" onmouseover="this.style.transform='scale(1.05)'" onmouseout="this.style.transform='scale(1)'">
+                                <div style="height: 24px; background: linear-gradient(135deg, #2196f3, #1976d2); border-radius: 50%; width: 24px; margin: 0 auto 10px; box-shadow: 0 3px 10px rgba(33,150,243,0.4);"></div>
+                                <div style="height: 6px; background: #64b5f6; border-radius: 3px; margin-bottom: 4px;"></div>
+                                <div style="height: 6px; background: #90caf9; border-radius: 3px; width: 70%;"></div>
+                            </div>
+                            <div style="background: linear-gradient(145deg, #e8f5e9, #c8e6c9); border-radius: 12px; padding: 16px; text-align: center; box-shadow: 0 4px 15px rgba(76,175,80,0.15); transition: all 0.3s ease;" onmouseover="this.style.transform='scale(1.05)'" onmouseout="this.style.transform='scale(1)'">
+                                <div style="height: 24px; background: linear-gradient(135deg, #4caf50, #388e3c); border-radius: 50%; width: 24px; margin: 0 auto 10px; box-shadow: 0 3px 10px rgba(76,175,80,0.4);"></div>
+                                <div style="height: 6px; background: #81c784; border-radius: 3px; margin-bottom: 4px;"></div>
+                                <div style="height: 6px; background: #a5d6a7; border-radius: 3px; width: 70%;"></div>
+                            </div>
+                        </div>
+                        <div style="margin-top: 16px; background: linear-gradient(145deg, #ffeaa7, #fdcb6e); border-radius: 12px; padding: 16px; box-shadow: 0 4px 15px rgba(253,203,110,0.2);">
+                            <div style="display: flex; gap: 12px; align-items: center;">
+                                <div style="width: 40px; height: 40px; background: linear-gradient(135deg, #f39c12, #e67e22); border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white; font-weight: bold; box-shadow: 0 3px 10px rgba(243,156,18,0.4);">
+                                    <i class="fas fa-chart-line"></i>
+                                </div>
+                                <div style="flex: 1;">
+                                    <div style="height: 8px; background: #f9ca24; border-radius: 4px; margin-bottom: 6px; width: 90%;"></div>
+                                    <div style="height: 6px; background: #ffeaa7; border-radius: 3px; width: 60%;"></div>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -664,6 +1251,174 @@
                 <p data-translate="landing.features.integration.desc">
                     Integrate with your existing tools and systems with our comprehensive API.
                 </p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Stats Section -->
+    <section class="stats">
+        <div class="stats-content">
+            <div class="section-header">
+                <h2 data-translate="landing.stats.title">Trusted by Thousands Worldwide</h2>
+                <p data-translate="landing.stats.subtitle">
+                    Join educators and students who are transforming education with our platform
+                </p>
+            </div>
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-number" data-count="50000">0</div>
+                    <div class="stat-label" data-translate="landing.stats.students">Active Students</div>
+                    <div class="stat-icon"><i class="fas fa-user-graduate"></i></div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number" data-count="2500">0</div>
+                    <div class="stat-label" data-translate="landing.stats.teachers">Expert Teachers</div>
+                    <div class="stat-icon"><i class="fas fa-chalkboard-teacher"></i></div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number" data-count="10000">0</div>
+                    <div class="stat-label" data-translate="landing.stats.courses">Courses Created</div>
+                    <div class="stat-icon"><i class="fas fa-book"></i></div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number" data-count="98">0</div>
+                    <div class="stat-label" data-translate="landing.stats.satisfaction">% Satisfaction Rate</div>
+                    <div class="stat-icon"><i class="fas fa-smile"></i></div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Testimonials Section -->
+    <section class="testimonials">
+        <div class="testimonials-content">
+            <div class="section-header">
+                <h2 data-translate="landing.testimonials.title">What Our Users Say</h2>
+                <p data-translate="landing.testimonials.subtitle">
+                    Real stories from educators and learners who love our platform
+                </p>
+            </div>
+            <div class="testimonials-grid">
+                <div class="testimonial-card">
+                    <div class="testimonial-quote">
+                        <i class="fas fa-quote-left"></i>
+                    </div>
+                    <p class="testimonial-text" data-translate="landing.testimonials.quote1">
+                        "EduLearn LMS has completely transformed how I teach online. The interactive features keep my students engaged and the analytics help me track their progress effectively."
+                    </p>
+                    <div class="testimonial-author">
+                        <img src="https://ui-avatars.com/api/?name=Sarah+Johnson&background=2C6EAA&color=fff" alt="Sarah Johnson" class="testimonial-avatar">
+                        <div>
+                            <div class="testimonial-name">Sarah Johnson</div>
+                            <div class="testimonial-role" data-translate="landing.testimonials.role1">Mathematics Teacher</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="testimonial-card">
+                    <div class="testimonial-quote">
+                        <i class="fas fa-quote-left"></i>
+                    </div>
+                    <p class="testimonial-text" data-translate="landing.testimonials.quote2">
+                        "As a student, I love how easy it is to access my courses and track my progress. The quiz system is fantastic and helps me prepare for exams efficiently."
+                    </p>
+                    <div class="testimonial-author">
+                        <img src="https://ui-avatars.com/api/?name=Mike+Chen&background=10B981&color=fff" alt="Mike Chen" class="testimonial-avatar">
+                        <div>
+                            <div class="testimonial-name">Mike Chen</div>
+                            <div class="testimonial-role" data-translate="landing.testimonials.role2">Computer Science Student</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="testimonial-card">
+                    <div class="testimonial-quote">
+                        <i class="fas fa-quote-left"></i>
+                    </div>
+                    <p class="testimonial-text" data-translate="landing.testimonials.quote3">
+                        "Managing our institution's learning programs has never been easier. The admin dashboard provides all the insights we need to make data-driven decisions."
+                    </p>
+                    <div class="testimonial-author">
+                        <img src="https://ui-avatars.com/api/?name=Emily+Davis&background=8B5CF6&color=fff" alt="Emily Davis" class="testimonial-avatar">
+                        <div>
+                            <div class="testimonial-name">Emily Davis</div>
+                            <div class="testimonial-role" data-translate="landing.testimonials.role3">School Administrator</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Pricing Section -->
+    <section id="pricing" class="pricing">
+        <div class="pricing-content">
+            <div class="section-header">
+                <h2 data-translate="landing.pricing.title">Simple, Transparent Pricing</h2>
+                <p data-translate="landing.pricing.subtitle">
+                    Choose the perfect plan for your learning journey
+                </p>
+            </div>
+            <div class="pricing-grid">
+                <div class="pricing-card">
+                    <div class="pricing-header">
+                        <h3 data-translate="landing.pricing.free.title">Free</h3>
+                        <div class="pricing-price">
+                            <span class="currency">$</span>
+                            <span class="amount">0</span>
+                            <span class="period" data-translate="landing.pricing.perMonth">/month</span>
+                        </div>
+                        <p class="pricing-desc" data-translate="landing.pricing.free.desc">Perfect for individual learners</p>
+                    </div>
+                    <ul class="pricing-features">
+                        <li><i class="fas fa-check"></i> <span data-translate="landing.pricing.free.feature1">Access to 10 courses</span></li>
+                        <li><i class="fas fa-check"></i> <span data-translate="landing.pricing.free.feature2">Basic quizzes</span></li>
+                        <li><i class="fas fa-check"></i> <span data-translate="landing.pricing.free.feature3">Progress tracking</span></li>
+                        <li><i class="fas fa-check"></i> <span data-translate="landing.pricing.free.feature4">Email support</span></li>
+                        <li class="disabled"><i class="fas fa-times"></i> <span data-translate="landing.pricing.free.disabled1">Advanced analytics</span></li>
+                        <li class="disabled"><i class="fas fa-times"></i> <span data-translate="landing.pricing.free.disabled2">Priority support</span></li>
+                    </ul>
+                    <a href="#roles" class="btn btn--secondary btn--large btn--block" data-translate="landing.pricing.getStarted">Get Started</a>
+                </div>
+                <div class="pricing-card featured">
+                    <div class="pricing-badge" data-translate="landing.pricing.popular">Most Popular</div>
+                    <div class="pricing-header">
+                        <h3 data-translate="landing.pricing.pro.title">Professional</h3>
+                        <div class="pricing-price">
+                            <span class="currency">$</span>
+                            <span class="amount">29</span>
+                            <span class="period" data-translate="landing.pricing.perMonth">/month</span>
+                        </div>
+                        <p class="pricing-desc" data-translate="landing.pricing.pro.desc">For teachers and small institutions</p>
+                    </div>
+                    <ul class="pricing-features">
+                        <li><i class="fas fa-check"></i> <span data-translate="landing.pricing.pro.feature1">Unlimited courses</span></li>
+                        <li><i class="fas fa-check"></i> <span data-translate="landing.pricing.pro.feature2">Advanced quiz builder</span></li>
+                        <li><i class="fas fa-check"></i> <span data-translate="landing.pricing.pro.feature3">Student analytics</span></li>
+                        <li><i class="fas fa-check"></i> <span data-translate="landing.pricing.pro.feature4">Custom certificates</span></li>
+                        <li><i class="fas fa-check"></i> <span data-translate="landing.pricing.pro.feature5">Priority support</span></li>
+                        <li><i class="fas fa-check"></i> <span data-translate="landing.pricing.pro.feature6">API access</span></li>
+                    </ul>
+                    <a href="#roles" class="btn btn--primary btn--large btn--block" data-translate="landing.pricing.getStarted">Get Started</a>
+                </div>
+                <div class="pricing-card">
+                    <div class="pricing-header">
+                        <h3 data-translate="landing.pricing.enterprise.title">Enterprise</h3>
+                        <div class="pricing-price">
+                            <span class="currency">$</span>
+                            <span class="amount">99</span>
+                            <span class="period" data-translate="landing.pricing.perMonth">/month</span>
+                        </div>
+                        <p class="pricing-desc" data-translate="landing.pricing.enterprise.desc">For large organizations</p>
+                    </div>
+                    <ul class="pricing-features">
+                        <li><i class="fas fa-check"></i> <span data-translate="landing.pricing.enterprise.feature1">Everything in Pro</span></li>
+                        <li><i class="fas fa-check"></i> <span data-translate="landing.pricing.enterprise.feature2">White labeling</span></li>
+                        <li><i class="fas fa-check"></i> <span data-translate="landing.pricing.enterprise.feature3">Custom integrations</span></li>
+                        <li><i class="fas fa-check"></i> <span data-translate="landing.pricing.enterprise.feature4">Dedicated support</span></li>
+                        <li><i class="fas fa-check"></i> <span data-translate="landing.pricing.enterprise.feature5">SLA guarantee</span></li>
+                        <li><i class="fas fa-check"></i> <span data-translate="landing.pricing.enterprise.feature6">On-premise option</span></li>
+                    </ul>
+                    <a href="#contact" class="btn btn--secondary btn--large btn--block" data-translate="landing.pricing.contactSales">Contact Sales</a>
+                </div>
             </div>
         </div>
     </section>
@@ -757,6 +1512,43 @@
         </div>
     </section>
 
+    <!-- CTA Section -->
+    <section id="contact" class="cta">
+        <div class="cta-content">
+            <div class="cta-bg"></div>
+            <div class="cta-text">
+                <h2 data-translate="landing.cta.title">Ready to Transform Your Learning Experience?</h2>
+                <p data-translate="landing.cta.subtitle">
+                    Join thousands of educators and learners who are already using EduLearn LMS
+                </p>
+                <div class="cta-stats">
+                    <div class="cta-stat">
+                        <i class="fas fa-clock"></i>
+                        <span data-translate="landing.cta.stat1">Setup in 5 minutes</span>
+                    </div>
+                    <div class="cta-stat">
+                        <i class="fas fa-credit-card"></i>
+                        <span data-translate="landing.cta.stat2">No credit card required</span>
+                    </div>
+                    <div class="cta-stat">
+                        <i class="fas fa-headset"></i>
+                        <span data-translate="landing.cta.stat3">24/7 support</span>
+                    </div>
+                </div>
+                <div class="cta-actions">
+                    <a href="#roles" class="btn btn--primary btn--large">
+                        <i class="fas fa-rocket"></i>
+                        <span data-translate="landing.cta.start">Start Free Trial</span>
+                    </a>
+                    <a href="#demo" class="btn btn--secondary btn--large">
+                        <i class="fas fa-calendar"></i>
+                        <span data-translate="landing.cta.schedule">Schedule Demo</span>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </section>
+
     <!-- Footer -->
     <footer class="landing-footer">
         <div class="footer-content">
@@ -840,8 +1632,146 @@
             alert('Demo video would play here. In a real implementation, this would open a video player.');
         }
         
+        // 3D Tilt Effect for Hero Mockup
+        function initTiltEffect() {
+            const mockup = document.getElementById('heroMockup');
+            const mockupRect = mockup.getBoundingClientRect();
+            
+            mockup.addEventListener('mousemove', (e) => {
+                const x = e.clientX - mockupRect.left;
+                const y = e.clientY - mockupRect.top;
+                
+                const centerX = mockupRect.width / 2;
+                const centerY = mockupRect.height / 2;
+                
+                const rotateX = ((y - centerY) / centerY) * -10;
+                const rotateY = ((x - centerX) / centerX) * 10;
+                
+                mockup.style.transform = `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) translateZ(10px)`;
+            });
+            
+            mockup.addEventListener('mouseleave', () => {
+                mockup.style.transform = 'perspective(1000px) rotateX(0) rotateY(0) translateZ(0)';
+            });
+        }
+        
+        // Counter Animation for Stats
+        function animateCounters() {
+            const counters = document.querySelectorAll('.stat-number');
+            
+            const observerOptions = {
+                root: null,
+                rootMargin: '0px',
+                threshold: 0.5
+            };
+            
+            const counterObserver = new IntersectionObserver((entries, observer) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        const counter = entry.target;
+                        const target = parseInt(counter.getAttribute('data-count'));
+                        const duration = 2000;
+                        const increment = target / (duration / 16);
+                        let current = 0;
+                        
+                        const updateCounter = () => {
+                            current += increment;
+                            if (current < target) {
+                                counter.textContent = Math.ceil(current).toLocaleString();
+                                requestAnimationFrame(updateCounter);
+                            } else {
+                                counter.textContent = target.toLocaleString();
+                                if (counter.getAttribute('data-count') === '98') {
+                                    counter.textContent = target + '%';
+                                }
+                            }
+                        };
+                        
+                        updateCounter();
+                        observer.unobserve(counter);
+                    }
+                });
+            }, observerOptions);
+            
+            counters.forEach(counter => {
+                counterObserver.observe(counter);
+            });
+        }
+        
+        // Parallax scrolling effect
+        function initParallax() {
+            window.addEventListener('scroll', () => {
+                const scrolled = window.pageYOffset;
+                const parallaxElements = document.querySelectorAll('.animate-float');
+                
+                parallaxElements.forEach(element => {
+                    const speed = element.getAttribute('data-speed') || 0.5;
+                    element.style.transform = `translateY(${scrolled * speed}px)`;
+                });
+            });
+        }
+        
+        // Smooth scroll header effect enhancement
+        function enhancedHeaderScroll() {
+            let lastScroll = 0;
+            const header = document.querySelector('.landing-header');
+            
+            window.addEventListener('scroll', () => {
+                const currentScroll = window.pageYOffset;
+                
+                if (currentScroll > 100) {
+                    header.classList.add('scrolled');
+                } else {
+                    header.classList.remove('scrolled');
+                }
+                
+                // Hide/show header on scroll
+                if (currentScroll > lastScroll && currentScroll > 500) {
+                    header.style.transform = 'translateY(-100%)';
+                } else {
+                    header.style.transform = 'translateY(0)';
+                }
+                
+                lastScroll = currentScroll;
+            });
+        }
+        
+        // Add fade-in animation to elements on scroll
+        function initScrollAnimations() {
+            const animatedElements = document.querySelectorAll('.feature-card, .role-card, .testimonial-card, .pricing-card, .stat-card');
+            
+            const elementObserver = new IntersectionObserver((entries, observer) => {
+                entries.forEach((entry, index) => {
+                    if (entry.isIntersecting) {
+                        setTimeout(() => {
+                            entry.target.style.opacity = '1';
+                            entry.target.style.transform = 'translateY(0)';
+                        }, index * 100);
+                        observer.unobserve(entry.target);
+                    }
+                });
+            }, {
+                threshold: 0.1,
+                rootMargin: '50px'
+            });
+            
+            animatedElements.forEach(element => {
+                element.style.opacity = '0';
+                element.style.transform = 'translateY(30px)';
+                element.style.transition = 'all 0.6s ease-out';
+                elementObserver.observe(element);
+            });
+        }
+        
         // Initialize on load
-        document.addEventListener('DOMContentLoaded', init);
+        document.addEventListener('DOMContentLoaded', () => {
+            init();
+            initTiltEffect();
+            animateCounters();
+            initParallax();
+            enhancedHeaderScroll();
+            initScrollAnimations();
+        });
     </script>
 </body>
 </html>
