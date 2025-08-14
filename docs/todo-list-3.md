@@ -202,11 +202,14 @@ This is the master TODO list for LMS Phase I development following the Foundatio
   - Links to respective login pages
   - [x] ✅ **Enhanced**: Thiết kế trang landing page giống như 1 trang quảng bá sản phẩm dịch vụ, dùng thử trải nghiệm
   - [x] ✅ **Features**: Hero section, product features showcase, testimonials, call-to-action buttons
-  - [x] **NEW**: Professional fonts (Poppins + Inter)
-  - [x] **NEW**: 3D tilt effect on hero mockup following mouse
-  - [x] **NEW**: Stats section with counter animations
-  - [x] **NEW**: Pricing plans section
-  - [x] **NEW**: Enhanced animations (parallax, fade-in, scroll-triggered)
+            - [x] **NEW**: Professional fonts (Poppins + Inter)
+          - [x] **NEW**: 3D tilt effect on hero mockup following mouse
+          - [x] **NEW**: Stats section with counter animations
+          - [x] **NEW**: Pricing plans section
+          - [x] **NEW**: Enhanced animations (parallax, fade-in, scroll-triggered)
+          - [x] **FIXED**: Theme và language toggle functions
+          - [x] **UPDATED**: Sử dụng tone màu primary thống nhất
+          - [x] **ENHANCED**: Dark/light theme support hoàn chỉnh
 - [x] **1.1.2** Student Login (`login-student.html`):
   - Use base input/button components
   - Remember me checkbox
