@@ -157,7 +157,7 @@
         
         /* Header Compact Mode - Current Extra Style */
         .landing-header.compact {
-            background: rgba(255, 255, 255, 0.85);
+            background: rgba(255, 255, 255, 0.05);
             backdrop-filter: blur(20px);
             -webkit-backdrop-filter: blur(20px);
             border-bottom: 1px solid rgba(0, 0, 0, 0.05);
@@ -879,6 +879,49 @@
         .role-features li i {
             color: var(--color-success);
             width: 16px;
+        }
+        
+        /* Role-specific button styles */
+        .role-btn-student {
+            background: linear-gradient(135deg, #10B981, #34D399);
+            color: white;
+            border: none;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+        
+        .role-btn-student:hover {
+            background: linear-gradient(135deg, #059669, #10B981);
+            transform: translateY(-3px);
+            box-shadow: 0 10px 30px rgba(16, 185, 129, 0.3);
+        }
+        
+        .role-btn-teacher {
+            background: linear-gradient(135deg, #3B82F6, #60A5FA);
+            color: white;
+            border: none;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+        
+        .role-btn-teacher:hover {
+            background: linear-gradient(135deg, #2563EB, #3B82F6);
+            transform: translateY(-3px);
+            box-shadow: 0 10px 30px rgba(59, 130, 246, 0.3);
+        }
+        
+        .role-btn-admin {
+            background: linear-gradient(135deg, #8B5CF6, #A78BFA);
+            color: white;
+            border: none;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+        
+        .role-btn-admin:hover {
+            background: linear-gradient(135deg, #7C3AED, #8B5CF6);
+            transform: translateY(-3px);
+            box-shadow: 0 10px 30px rgba(139, 92, 246, 0.3);
         }
 
                 /* Demo Section */
@@ -1953,7 +1996,7 @@
                     <li><i class="fas fa-check"></i> <span data-translate="landing.roles.student.feature3">Take interactive quizzes</span></li>
                     <li><i class="fas fa-check"></i> <span data-translate="landing.roles.student.feature4">Download certificates</span></li>
                 </ul>
-                <a href="pages/login-student.html" class="btn btn--primary btn--large" style="width: 100%;">
+                <a href="pages/login-student.html" class="btn btn--large role-btn-student" style="width: 100%;">
                     <i class="fas fa-sign-in-alt" style="margin-right: 8px;"></i>
                     <span data-translate="landing.roles.student.login">Start Learning</span>
                 </a>
@@ -1972,7 +2015,7 @@
                     <li><i class="fas fa-check"></i> <span data-translate="landing.roles.teacher.feature3">Monitor student progress</span></li>
                     <li><i class="fas fa-check"></i> <span data-translate="landing.roles.teacher.feature4">Generate reports</span></li>
                 </ul>
-                <a href="pages/login-teacher.html" class="btn btn--primary btn--large" style="width: 100%;">
+                <a href="pages/login-teacher.html" class="btn btn--large role-btn-teacher" style="width: 100%;">
                     <i class="fas fa-sign-in-alt" style="margin-right: 8px;"></i>
                     <span data-translate="landing.roles.teacher.login">Start Teaching</span>
                 </a>
@@ -1991,7 +2034,7 @@
                     <li><i class="fas fa-check"></i> <span data-translate="landing.roles.admin.feature3">Content oversight</span></li>
                     <li><i class="fas fa-check"></i> <span data-translate="landing.roles.admin.feature4">Advanced reporting</span></li>
                 </ul>
-                <a href="pages/login-admin.html" class="btn btn--secondary btn--large" style="width: 100%;">
+                <a href="pages/login-admin.html" class="btn btn--large role-btn-admin" style="width: 100%;">
                     <i class="fas fa-sign-in-alt" style="margin-right: 8px;"></i>
                     <span data-translate="landing.roles.admin.login">Manage System</span>
                 </a>
