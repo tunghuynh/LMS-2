@@ -679,8 +679,10 @@ LMS.Dropdown = {
 
 // Initialize on DOM ready
 document.addEventListener('DOMContentLoaded', async () => {
-  // Initialize auth first (important for AccessControl)
-  await LMS.Auth.init();
+  // Initialize auth first (important for AccessControl) - only if available
+  if (LMS.Auth && typeof LMS.Auth.init === 'function') {
+    await LMS.Auth.init();
+  }
   
   // Initialize theme (sync)
   LMS.ThemeManager.init();
@@ -689,10 +691,14 @@ document.addEventListener('DOMContentLoaded', async () => {
   await LMS.LanguageManager.init();
   
   // Initialize event delegation
-  LMS.Events.init();
+  if (LMS.Events && typeof LMS.Events.init === 'function') {
+    LMS.Events.init();
+  }
   
   // Initialize all dropdowns on page
-  LMS.Dropdown.initAll();
+  if (LMS.Dropdown && typeof LMS.Dropdown.initAll === 'function') {
+    LMS.Dropdown.initAll();
+  }
   
   // Global image error handler
   document.addEventListener('error', (e) => {
