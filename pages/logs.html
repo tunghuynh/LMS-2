@@ -12,35 +12,197 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <!-- Configuration -->
     <script src="../config.js"></script>
+    <style>
+        /* Statistics Grid */
+        .stat-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: var(--spacing-4);
+        }
+
+        .stat-card {
+            background: var(--bg-card);
+            border-radius: var(--radius-base);
+            padding: var(--spacing-4);
+            display: flex;
+            gap: var(--spacing-4);
+            align-items: center;
+            box-shadow: var(--shadow-sm);
+        }
+
+        .stat-card__icon {
+            width: 48px;
+            height: 48px;
+            border-radius: var(--radius-base);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+
+        .stat-card__content {
+            flex: 1;
+        }
+
+        .stat-card__label {
+            font-size: var(--font-size-sm);
+            color: var(--text-muted);
+            margin-bottom: var(--spacing-1);
+        }
+
+        .stat-card__value {
+            font-size: var(--font-size-2xl);
+            font-weight: var(--font-weight-semibold);
+            color: var(--text-primary);
+        }
+
+        /* Switch Component */
+        .switch {
+            position: relative;
+            display: inline-block;
+            width: 44px;
+            height: 24px;
+        }
+
+        .switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+
+        .switch__slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: var(--bg-tertiary);
+            transition: .4s;
+            border-radius: 24px;
+        }
+
+        .switch__slider:before {
+            position: absolute;
+            content: "";
+            height: 16px;
+            width: 16px;
+            left: 4px;
+            bottom: 4px;
+            background-color: white;
+            transition: .4s;
+            border-radius: 50%;
+        }
+
+        .switch input:checked + .switch__slider {
+            background-color: var(--color-primary);
+        }
+
+        .switch input:checked + .switch__slider:before {
+            transform: translateX(20px);
+        }
+
+        /* Enhanced badge styles */
+        .badge--info {
+            background: var(--color-info-light);
+            color: var(--color-info);
+        }
+
+        .badge--warning {
+            background: #FEF3C7;
+            color: #D97706;
+        }
+
+        .badge--error {
+            background: #FEE2E2;
+            color: #DC2626;
+        }
+
+        .badge--secondary {
+            background: var(--bg-tertiary);
+            color: var(--text-secondary);
+        }
+    </style>
 </head>
 <body>
     <div class="page-container">
         <div class="page-header">
             <div style="display: flex; justify-content: space-between; align-items: center;">
                 <div>
-                    <h1 class="page-title">Activity Logs</h1>
-                    <p class="page-subtitle">Monitor system activities and user actions</p>
+                    <h1 class="page-title" data-translate="logs.title">Activity Logs</h1>
+                    <p class="page-subtitle" data-translate="logs.subtitle">Monitor system activities and user actions</p>
                 </div>
-                <button class="btn btn--primary" onclick="exportLogs()">
-                    <i class="fas fa-download" style="margin-right: 8px;"></i>
-                    Export CSV
-                </button>
+                <div class="action-group">
+                    <div class="badge badge--success" id="realtimeStatus">
+                        <span class="badge__icon" style="display: inline-block; width: 8px; height: 8px; background: #10B981; border-radius: 50%; margin-right: 4px;"></span>
+                        <span data-translate="logs.realtime">Real-time</span>
+                    </div>
+                    <button class="btn btn--secondary" onclick="toggleRealtime()">
+                        <i class="fas fa-pause" id="realtimeIcon" style="margin-right: 8px;"></i>
+                        <span id="realtimeText" data-translate="logs.pauseRealtime">Pause</span>
+                    </button>
+                    <button class="btn btn--primary" onclick="exportLogs()">
+                        <i class="fas fa-download" style="margin-right: 8px;"></i>
+                        <span data-translate="logs.export">Export CSV</span>
+                    </button>
+                </div>
             </div>
         </div>
 
         <div class="page-content">
+            <!-- Statistics Cards -->
+            <div class="stat-grid" style="margin-bottom: var(--spacing-6);">
+                <div class="stat-card">
+                    <div class="stat-card__icon" style="background: var(--color-primary-light);">
+                        <i class="fas fa-chart-line" style="color: var(--color-primary);"></i>
+                    </div>
+                    <div class="stat-card__content">
+                        <div class="stat-card__label" data-translate="logs.totalLogs">Total Logs</div>
+                        <div class="stat-card__value" id="totalLogsCount">0</div>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-card__icon" style="background: #FFEDD5;">
+                        <i class="fas fa-exclamation-triangle" style="color: #F59E0B;"></i>
+                    </div>
+                    <div class="stat-card__content">
+                        <div class="stat-card__label" data-translate="logs.warnings">Warnings</div>
+                        <div class="stat-card__value" id="warningCount">0</div>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-card__icon" style="background: #FEE2E2;">
+                        <i class="fas fa-times-circle" style="color: #EF4444;"></i>
+                    </div>
+                    <div class="stat-card__content">
+                        <div class="stat-card__label" data-translate="logs.errors">Errors</div>
+                        <div class="stat-card__value" id="errorCount">0</div>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-card__icon" style="background: #D1FAE5;">
+                        <i class="fas fa-check-circle" style="color: #10B981;"></i>
+                    </div>
+                    <div class="stat-card__content">
+                        <div class="stat-card__label" data-translate="logs.successful">Successful</div>
+                        <div class="stat-card__value" id="successCount">0</div>
+                    </div>
+                </div>
+            </div>
+
             <!-- Filters Section -->
             <div class="card" style="margin-bottom: var(--spacing-6);">
                 <div class="card__body">
                     <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: var(--spacing-4);">
                         <!-- User Filter -->
                         <div class="input-group">
-                            <label class="input-group__label">Filter by User</label>
+                            <label class="input-group__label" data-translate="logs.filterByUser">Filter by User</label>
                             <input 
                                 type="text" 
                                 class="input" 
                                 id="userFilter" 
                                 placeholder="Username or email..."
+                                data-translate-placeholder="logs.userPlaceholder"
                                 onkeyup="applyFilters()"
                             >
                         </div>
@@ -48,27 +210,44 @@
                         <!-- Action Type Filter -->
                         <div class="dropdown dropdown--block" id="actionDropdown">
                             <button class="dropdown__trigger">
-                                <span id="actionFilterText">All Actions</span>
+                                <span id="actionFilterText" data-translate="logs.allActions">All Actions</span>
                                 <span class="dropdown__arrow"></span>
                             </button>
                             <div class="dropdown__menu">
                                 <div class="dropdown__list">
-                                    <div class="dropdown__item dropdown__item--selected" data-value="all">All Actions</div>
-                                    <div class="dropdown__item" data-value="login">Login</div>
-                                    <div class="dropdown__item" data-value="logout">Logout</div>
-                                    <div class="dropdown__item" data-value="register">Registration</div>
-                                    <div class="dropdown__item" data-value="create">Create</div>
-                                    <div class="dropdown__item" data-value="update">Update</div>
-                                    <div class="dropdown__item" data-value="delete">Delete</div>
-                                    <div class="dropdown__item" data-value="enroll">Enrollment</div>
-                                    <div class="dropdown__item" data-value="error">Errors</div>
+                                    <div class="dropdown__item dropdown__item--selected" data-value="all" data-translate="logs.allActions">All Actions</div>
+                                    <div class="dropdown__item" data-value="login" data-translate="logs.login">Login</div>
+                                    <div class="dropdown__item" data-value="logout" data-translate="logs.logout">Logout</div>
+                                    <div class="dropdown__item" data-value="register" data-translate="logs.registration">Registration</div>
+                                    <div class="dropdown__item" data-value="create" data-translate="logs.create">Create</div>
+                                    <div class="dropdown__item" data-value="update" data-translate="logs.update">Update</div>
+                                    <div class="dropdown__item" data-value="delete" data-translate="logs.delete">Delete</div>
+                                    <div class="dropdown__item" data-value="enroll" data-translate="logs.enrollment">Enrollment</div>
+                                    <div class="dropdown__item" data-value="error" data-translate="logs.errors">Errors</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Severity Filter -->
+                        <div class="dropdown dropdown--block" id="severityDropdown">
+                            <button class="dropdown__trigger">
+                                <span id="severityFilterText" data-translate="logs.allSeverities">All Severities</span>
+                                <span class="dropdown__arrow"></span>
+                            </button>
+                            <div class="dropdown__menu">
+                                <div class="dropdown__list">
+                                    <div class="dropdown__item dropdown__item--selected" data-value="all" data-translate="logs.allSeverities">All Severities</div>
+                                    <div class="dropdown__item" data-value="info"><span class="badge badge--info">Info</span></div>
+                                    <div class="dropdown__item" data-value="warning"><span class="badge badge--warning">Warning</span></div>
+                                    <div class="dropdown__item" data-value="error"><span class="badge badge--error">Error</span></div>
+                                    <div class="dropdown__item" data-value="critical"><span class="badge badge--error" style="background: #7C2D12;">Critical</span></div>
                                 </div>
                             </div>
                         </div>
 
                         <!-- Date Range -->
                         <div class="input-group">
-                            <label class="input-group__label">From Date</label>
+                            <label class="input-group__label" data-translate="logs.fromDate">From Date</label>
                             <input 
                                 type="date" 
                                 class="input" 
@@ -78,7 +257,7 @@
                         </div>
 
                         <div class="input-group">
-                            <label class="input-group__label">To Date</label>
+                            <label class="input-group__label" data-translate="logs.toDate">To Date</label>
                             <input 
                                 type="date" 
                                 class="input" 
@@ -88,14 +267,42 @@
                         </div>
                     </div>
 
-                    <div style="margin-top: var(--spacing-4); display: flex; gap: var(--spacing-2);">
-                        <button class="btn btn--secondary" onclick="resetFilters()">
-                            Reset Filters
-                        </button>
-                        <button class="btn btn--secondary" onclick="refreshLogs()">
-                            <i class="fas fa-sync-alt" style="margin-right: 8px;"></i>
-                            Refresh
-                        </button>
+                    <!-- Advanced Search -->
+                    <div style="margin-top: var(--spacing-4);">
+                        <div class="input-group">
+                            <label class="input-group__label" data-translate="logs.advancedSearch">Advanced Search</label>
+                            <input 
+                                type="text" 
+                                class="input" 
+                                id="advancedSearch" 
+                                placeholder="Search in logs..."
+                                data-translate-placeholder="logs.searchPlaceholder"
+                                onkeyup="applyFilters()"
+                            >
+                            <span class="input-group__help" data-translate="logs.searchHelp">Search in descriptions, IPs, and details</span>
+                        </div>
+                    </div>
+
+                    <div style="margin-top: var(--spacing-4); display: flex; justify-content: space-between; align-items: center;">
+                        <div style="display: flex; gap: var(--spacing-2);">
+                            <button class="btn btn--secondary" onclick="resetFilters()">
+                                <span data-translate="logs.resetFilters">Reset Filters</span>
+                            </button>
+                            <button class="btn btn--secondary" onclick="refreshLogs()">
+                                <i class="fas fa-sync-alt" style="margin-right: 8px;"></i>
+                                <span data-translate="logs.refresh">Refresh</span>
+                            </button>
+                        </div>
+                        <div style="display: flex; gap: var(--spacing-2); align-items: center;">
+                            <button class="btn btn--text" onclick="openRetentionSettings()">
+                                <i class="fas fa-cog" style="margin-right: 8px;"></i>
+                                <span data-translate="logs.retentionSettings">Retention Settings</span>
+                            </button>
+                            <button class="btn btn--text" onclick="openAlertSettings()">
+                                <i class="fas fa-bell" style="margin-right: 8px;"></i>
+                                <span data-translate="logs.alertSettings">Alert Settings</span>
+                            </button>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -107,21 +314,22 @@
                         <table class="table" id="logsTable">
                             <thead>
                                 <tr class="table__header">
+                                    <th class="table__cell table__cell--header" style="width: 80px;" data-translate="logs.severity">Severity</th>
                                     <th class="table__cell table__cell--header table__cell--sortable" data-sort="timestamp">
-                                        Timestamp
+                                        <span data-translate="logs.timestamp">Timestamp</span>
                                         <span class="table__sort-icon"></span>
                                     </th>
                                     <th class="table__cell table__cell--header table__cell--sortable" data-sort="user">
-                                        User
+                                        <span data-translate="logs.user">User</span>
                                         <span class="table__sort-icon"></span>
                                     </th>
                                     <th class="table__cell table__cell--header table__cell--sortable" data-sort="action">
-                                        Action
+                                        <span data-translate="logs.action">Action</span>
                                         <span class="table__sort-icon"></span>
                                     </th>
-                                    <th class="table__cell table__cell--header">Description</th>
-                                    <th class="table__cell table__cell--header table__cell--hide-mobile">IP Address</th>
-                                    <th class="table__cell table__cell--header table__cell--center">Details</th>
+                                    <th class="table__cell table__cell--header" data-translate="logs.description">Description</th>
+                                    <th class="table__cell table__cell--header table__cell--hide-mobile" data-translate="logs.ipAddress">IP Address</th>
+                                    <th class="table__cell table__cell--header table__cell--center" data-translate="logs.details">Details</th>
                                 </tr>
                             </thead>
                             <tbody id="logsTableBody">
@@ -146,7 +354,7 @@
     <div class="modal-backdrop" id="detailsModalBackdrop">
         <div class="modal modal--medium" id="detailsModal">
             <div class="modal__header">
-                <h2 class="modal__title">Log Details</h2>
+                <h2 class="modal__title" data-translate="logs.logDetails">Log Details</h2>
                 <button class="modal__close" onclick="closeDetailsModal()">×</button>
             </div>
             <div class="modal__body">
@@ -155,7 +363,119 @@
                 </div>
             </div>
             <div class="modal__footer">
-                <button class="btn btn--secondary" onclick="closeDetailsModal()">Close</button>
+                <button class="btn btn--secondary" onclick="closeDetailsModal()">
+                    <span data-translate="common.close">Close</span>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Retention Settings Modal -->
+    <div class="modal-backdrop" id="retentionModalBackdrop">
+        <div class="modal modal--medium" id="retentionModal">
+            <div class="modal__header">
+                <h2 class="modal__title" data-translate="logs.retentionSettings">Retention Settings</h2>
+                <button class="modal__close" onclick="closeRetentionModal()">×</button>
+            </div>
+            <div class="modal__body">
+                <div class="input-group">
+                    <label class="input-group__label" data-translate="logs.retentionPeriod">Log Retention Period</label>
+                    <select class="input" id="retentionPeriod">
+                        <option value="7" data-translate="logs.days7">7 days</option>
+                        <option value="14" data-translate="logs.days14">14 days</option>
+                        <option value="30" selected data-translate="logs.days30">30 days</option>
+                        <option value="60" data-translate="logs.days60">60 days</option>
+                        <option value="90" data-translate="logs.days90">90 days</option>
+                        <option value="180" data-translate="logs.days180">180 days</option>
+                        <option value="365" data-translate="logs.year1">1 year</option>
+                    </select>
+                </div>
+                <div class="input-group">
+                    <label class="input-group__label" data-translate="logs.autoArchive">Auto-archive old logs</label>
+                    <div style="display: flex; gap: var(--spacing-4);">
+                        <label class="radio">
+                            <input type="radio" name="autoArchive" value="true" checked>
+                            <span class="radio__mark"></span>
+                            <span class="radio__label" data-translate="common.yes">Yes</span>
+                        </label>
+                        <label class="radio">
+                            <input type="radio" name="autoArchive" value="false">
+                            <span class="radio__mark"></span>
+                            <span class="radio__label" data-translate="common.no">No</span>
+                        </label>
+                    </div>
+                </div>
+                <div class="input-group">
+                    <label class="input-group__label" data-translate="logs.deletePolicy">Delete Policy</label>
+                    <select class="input" id="deletePolicy">
+                        <option value="auto" data-translate="logs.autoDelete">Automatic deletion after retention period</option>
+                        <option value="manual" data-translate="logs.manualDelete">Manual deletion only</option>
+                        <option value="archive" data-translate="logs.archiveThenDelete">Archive then delete</option>
+                    </select>
+                </div>
+                <div class="alert alert--info" style="margin-top: var(--spacing-4);">
+                    <i class="fas fa-info-circle" style="margin-right: 8px;"></i>
+                    <span data-translate="logs.retentionWarning">Changes to retention settings will take effect from the next cleanup cycle (daily at 2:00 AM)</span>
+                </div>
+            </div>
+            <div class="modal__footer">
+                <button class="btn btn--secondary" onclick="closeRetentionModal()">
+                    <span data-translate="common.cancel">Cancel</span>
+                </button>
+                <button class="btn btn--primary" onclick="saveRetentionSettings()">
+                    <span data-translate="common.save">Save</span>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Alert Settings Modal -->
+    <div class="modal-backdrop" id="alertModalBackdrop">
+        <div class="modal modal--large" id="alertModal">
+            <div class="modal__header">
+                <h2 class="modal__title" data-translate="logs.alertSettings">Alert Settings</h2>
+                <button class="modal__close" onclick="closeAlertModal()">×</button>
+            </div>
+            <div class="modal__body">
+                <h3 data-translate="logs.alertRules">Alert Rules</h3>
+                <div id="alertRulesList" style="margin-bottom: var(--spacing-4);">
+                    <!-- Dynamic alert rules -->
+                </div>
+                <button class="btn btn--secondary" onclick="addAlertRule()">
+                    <i class="fas fa-plus" style="margin-right: 8px;"></i>
+                    <span data-translate="logs.addRule">Add Rule</span>
+                </button>
+                
+                <h3 style="margin-top: var(--spacing-6);" data-translate="logs.notificationSettings">Notification Settings</h3>
+                <div class="input-group">
+                    <label class="checkbox">
+                        <input type="checkbox" id="emailNotifications" checked>
+                        <span class="checkbox__mark"></span>
+                        <span class="checkbox__label" data-translate="logs.emailNotifications">Email notifications</span>
+                    </label>
+                </div>
+                <div class="input-group">
+                    <label class="checkbox">
+                        <input type="checkbox" id="dashboardNotifications" checked>
+                        <span class="checkbox__mark"></span>
+                        <span class="checkbox__label" data-translate="logs.dashboardNotifications">Dashboard notifications</span>
+                    </label>
+                </div>
+                <div class="input-group">
+                    <label class="checkbox">
+                        <input type="checkbox" id="soundAlerts">
+                        <span class="checkbox__mark"></span>
+                        <span class="checkbox__label" data-translate="logs.soundAlerts">Sound alerts for critical events</span>
+                    </label>
+                </div>
+            </div>
+            <div class="modal__footer">
+                <button class="btn btn--secondary" onclick="closeAlertModal()">
+                    <span data-translate="common.cancel">Cancel</span>
+                </button>
+                <button class="btn btn--primary" onclick="saveAlertSettings()">
+                    <span data-translate="common.save">Save</span>
+                </button>
             </div>
         </div>
     </div>
@@ -172,18 +492,30 @@
         let sortColumn = 'timestamp';
         let sortDirection = 'desc';
         let currentActionFilter = 'all';
+        let currentSeverityFilter = 'all';
+        let realtimeEnabled = true;
+        let realtimeInterval = null;
+        let alertRules = [];
+
+        // Severity levels
+        const severityLevels = {
+            info: { label: 'Info', color: 'badge--info', priority: 1 },
+            warning: { label: 'Warning', color: 'badge--warning', priority: 2 },
+            error: { label: 'Error', color: 'badge--error', priority: 3 },
+            critical: { label: 'Critical', color: 'badge--error', style: 'background: #7C2D12;', priority: 4 }
+        };
 
         // Generate mock logs
         function generateMockLogs() {
             const actions = [
-                { type: 'login', template: 'User logged in' },
-                { type: 'logout', template: 'User logged out' },
-                { type: 'register', template: 'New user registered' },
-                { type: 'create', template: 'Created new {resource}' },
-                { type: 'update', template: 'Updated {resource}' },
-                { type: 'delete', template: 'Deleted {resource}' },
-                { type: 'enroll', template: 'Enrolled in course: {course}' },
-                { type: 'error', template: 'Failed login attempt' }
+                { type: 'login', template: 'User logged in', severity: 'info' },
+                { type: 'logout', template: 'User logged out', severity: 'info' },
+                { type: 'register', template: 'New user registered', severity: 'info' },
+                { type: 'create', template: 'Created new {resource}', severity: 'info' },
+                { type: 'update', template: 'Updated {resource}', severity: 'info' },
+                { type: 'delete', template: 'Deleted {resource}', severity: 'warning' },
+                { type: 'enroll', template: 'Enrolled in course: {course}', severity: 'info' },
+                { type: 'error', template: 'Failed login attempt', severity: 'error' }
             ];
 
             const resources = ['course', 'quiz', 'user', 'class', 'lesson'];
@@ -217,18 +549,28 @@
                     description = description.replace('{course}', course);
                 }
                 
+                // Add random critical events
+                let severity = action.severity;
+                if (Math.random() < 0.05) {
+                    severity = 'critical';
+                    description = 'Critical: ' + description;
+                }
+                
                 logs.push({
                     id: 'log_' + i,
                     timestamp: timestamp.toISOString(),
                     user: user.username,
                     userRole: user.role,
                     action: action.type,
+                    severity: severity,
                     description: description,
                     ipAddress: `192.168.${Math.floor(Math.random() * 255)}.${Math.floor(Math.random() * 255)}`,
                     details: {
                         browser: 'Chrome 120.0',
                         os: 'Windows 10',
-                        additionalInfo: `${action.type} action performed successfully`
+                        additionalInfo: `${action.type} action performed successfully`,
+                        requestId: 'req_' + Math.random().toString(36).substr(2, 9),
+                        sessionId: 'sess_' + Math.random().toString(36).substr(2, 9)
                     }
                 });
             }
@@ -256,6 +598,7 @@
             const userFilter = document.getElementById('userFilter').value.toLowerCase();
             const fromDate = document.getElementById('fromDate').value;
             const toDate = document.getElementById('toDate').value;
+            const advancedSearch = document.getElementById('advancedSearch').value.toLowerCase();
             
             filteredLogs = allLogs.filter(log => {
                 // User filter
@@ -268,6 +611,11 @@
                     return false;
                 }
                 
+                // Severity filter
+                if (currentSeverityFilter !== 'all' && log.severity !== currentSeverityFilter) {
+                    return false;
+                }
+                
                 // Date range filter
                 const logDate = new Date(log.timestamp);
                 if (fromDate && logDate < new Date(fromDate + 'T00:00:00')) {
@@ -277,9 +625,18 @@
                     return false;
                 }
                 
+                // Advanced search
+                if (advancedSearch) {
+                    const searchText = `${log.description} ${log.ipAddress} ${JSON.stringify(log.details)}`.toLowerCase();
+                    if (!searchText.includes(advancedSearch)) {
+                        return false;
+                    }
+                }
+                
                 return true;
             });
             
+            updateStatistics();
             currentPage = 1;
             renderTable();
         }
@@ -311,33 +668,39 @@
             if (pageData.length === 0) {
                 tbody.innerHTML = `
                     <tr>
-                        <td colspan="6" class="table__empty">
+                        <td colspan="7" class="table__empty">
                             <div class="table__empty-icon">📋</div>
-                            <div class="table__empty-text">No logs found</div>
-                            <div class="table__empty-subtext">Try adjusting your filters</div>
+                            <div class="table__empty-text" data-translate="logs.noLogsFound">No logs found</div>
+                            <div class="table__empty-subtext" data-translate="logs.adjustFilters">Try adjusting your filters</div>
                         </td>
                     </tr>
                 `;
             } else {
-                tbody.innerHTML = pageData.map(log => `
-                    <tr class="table__row">
-                        <td class="table__cell">${formatTimestamp(log.timestamp)}</td>
-                        <td class="table__cell">
-                            <div>
-                                <div>${log.user}</div>
-                                <div style="font-size: var(--font-size-xs); color: var(--text-muted);">${getRoleBadge(log.userRole)}</div>
-                            </div>
-                        </td>
-                        <td class="table__cell">${getActionBadge(log.action)}</td>
-                        <td class="table__cell">${log.description}</td>
-                        <td class="table__cell table__cell--hide-mobile">${log.ipAddress}</td>
-                        <td class="table__cell table__cell--center">
-                            <button class="btn btn--ghost btn--small" onclick="showDetails('${log.id}')" title="View Details">
-                                <i class="fas fa-eye"></i>
-                            </button>
-                        </td>
-                    </tr>
-                `).join('');
+                tbody.innerHTML = pageData.map(log => {
+                    const severityInfo = severityLevels[log.severity || 'info'];
+                    const severityBadge = `<span class="badge ${severityInfo.color}" ${severityInfo.style ? `style="${severityInfo.style}"` : ''}>${severityInfo.label}</span>`;
+                    
+                    return `
+                        <tr class="table__row">
+                            <td class="table__cell">${severityBadge}</td>
+                            <td class="table__cell">${formatTimestamp(log.timestamp)}</td>
+                            <td class="table__cell">
+                                <div>
+                                    <div>${log.user}</div>
+                                    <div style="font-size: var(--font-size-xs); color: var(--text-muted);">${getRoleBadge(log.userRole)}</div>
+                                </div>
+                            </td>
+                            <td class="table__cell">${getActionBadge(log.action)}</td>
+                            <td class="table__cell">${log.description}</td>
+                            <td class="table__cell table__cell--hide-mobile">${log.ipAddress}</td>
+                            <td class="table__cell table__cell--center">
+                                <button class="btn btn--ghost btn--small" onclick="showDetails('${log.id}')" title="View Details">
+                                    <i class="fas fa-eye"></i>
+                                </button>
+                            </td>
+                        </tr>
+                    `;
+                }).join('');
             }
             
             // Update pagination
@@ -495,6 +858,300 @@
             loadLogs();
         }
 
+        // Update statistics
+        function updateStatistics() {
+            const totalLogsCount = allLogs.length;
+            const warningCount = allLogs.filter(log => log.severity === 'warning').length;
+            const errorCount = allLogs.filter(log => log.severity === 'error' || log.severity === 'critical').length;
+            const successCount = allLogs.filter(log => log.severity === 'info').length;
+            
+            document.getElementById('totalLogsCount').textContent = totalLogsCount;
+            document.getElementById('warningCount').textContent = warningCount;
+            document.getElementById('errorCount').textContent = errorCount;
+            document.getElementById('successCount').textContent = successCount;
+        }
+
+        // Real-time monitoring
+        function toggleRealtime() {
+            realtimeEnabled = !realtimeEnabled;
+            const icon = document.getElementById('realtimeIcon');
+            const text = document.getElementById('realtimeText');
+            const status = document.getElementById('realtimeStatus');
+            
+            if (realtimeEnabled) {
+                icon.className = 'fas fa-pause';
+                text.setAttribute('data-translate', 'logs.pauseRealtime');
+                text.textContent = t('logs.pauseRealtime');
+                status.classList.remove('badge--secondary');
+                status.classList.add('badge--success');
+                startRealtimeMonitoring();
+            } else {
+                icon.className = 'fas fa-play';
+                text.setAttribute('data-translate', 'logs.startRealtime');
+                text.textContent = t('logs.startRealtime');
+                status.classList.remove('badge--success');
+                status.classList.add('badge--secondary');
+                stopRealtimeMonitoring();
+            }
+        }
+
+        function startRealtimeMonitoring() {
+            if (realtimeInterval) return;
+            
+            realtimeInterval = setInterval(() => {
+                // Simulate new logs
+                const actions = [
+                    { type: 'login', template: 'User logged in', severity: 'info' },
+                    { type: 'update', template: 'Updated user profile', severity: 'info' },
+                    { type: 'error', template: 'Failed API request', severity: 'error' }
+                ];
+                
+                const action = actions[Math.floor(Math.random() * actions.length)];
+                const users = JSON.parse(localStorage.getItem('lms-users') || '[]');
+                const user = users.length > 0 ? users[Math.floor(Math.random() * users.length)] : { username: 'demo_user', role: 'student' };
+                
+                const newLog = {
+                    id: 'log_' + Date.now(),
+                    timestamp: new Date().toISOString(),
+                    user: user.username,
+                    userRole: user.role,
+                    action: action.type,
+                    severity: action.severity,
+                    description: action.template,
+                    ipAddress: `192.168.${Math.floor(Math.random() * 255)}.${Math.floor(Math.random() * 255)}`,
+                    details: {
+                        browser: 'Chrome 120.0',
+                        os: 'Windows 10',
+                        additionalInfo: 'Real-time event',
+                        requestId: 'req_' + Math.random().toString(36).substr(2, 9),
+                        sessionId: 'sess_' + Math.random().toString(36).substr(2, 9)
+                    }
+                };
+                
+                allLogs.unshift(newLog);
+                
+                // Check alert rules
+                checkAlertRules(newLog);
+                
+                // Refresh display
+                applyFilters();
+                
+                // Show notification for critical events
+                if (newLog.severity === 'critical' || newLog.severity === 'error') {
+                    showToast(`${newLog.severity.toUpperCase()}: ${newLog.description}`, newLog.severity);
+                }
+            }, 5000); // New log every 5 seconds
+        }
+
+        function stopRealtimeMonitoring() {
+            if (realtimeInterval) {
+                clearInterval(realtimeInterval);
+                realtimeInterval = null;
+            }
+        }
+
+        // Alert rules
+        function checkAlertRules(log) {
+            alertRules.forEach(rule => {
+                if (rule.enabled && matchesAlertRule(log, rule)) {
+                    triggerAlert(rule, log);
+                }
+            });
+        }
+
+        function matchesAlertRule(log, rule) {
+            // Check severity
+            if (rule.severity && rule.severity !== 'all' && log.severity !== rule.severity) {
+                return false;
+            }
+            
+            // Check action
+            if (rule.action && rule.action !== 'all' && log.action !== rule.action) {
+                return false;
+            }
+            
+            // Check keyword
+            if (rule.keyword && !log.description.toLowerCase().includes(rule.keyword.toLowerCase())) {
+                return false;
+            }
+            
+            return true;
+        }
+
+        function triggerAlert(rule, log) {
+            const alertSettings = getAlertSettings();
+            
+            if (alertSettings.dashboardNotifications) {
+                showToast(`Alert: ${rule.name} - ${log.description}`, 'warning');
+            }
+            
+            if (alertSettings.soundAlerts && (log.severity === 'critical' || log.severity === 'error')) {
+                // Play sound (mock)
+                console.log('🔔 Sound alert triggered');
+            }
+            
+            if (alertSettings.emailNotifications) {
+                // Send email (mock)
+                console.log('📧 Email notification sent');
+            }
+        }
+
+        // Modal functions
+        function openRetentionSettings() {
+            document.getElementById('retentionModalBackdrop').classList.add('modal-backdrop--active');
+            loadRetentionSettings();
+        }
+
+        function closeRetentionModal() {
+            document.getElementById('retentionModalBackdrop').classList.remove('modal-backdrop--active');
+        }
+
+        function loadRetentionSettings() {
+            const settings = JSON.parse(localStorage.getItem('lms-retention-settings') || '{}');
+            document.getElementById('retentionPeriod').value = settings.period || '30';
+            document.querySelector(`input[name="autoArchive"][value="${settings.autoArchive !== false}"]`).checked = true;
+            document.getElementById('deletePolicy').value = settings.deletePolicy || 'auto';
+        }
+
+        function saveRetentionSettings() {
+            const settings = {
+                period: document.getElementById('retentionPeriod').value,
+                autoArchive: document.querySelector('input[name="autoArchive"]:checked').value === 'true',
+                deletePolicy: document.getElementById('deletePolicy').value
+            };
+            
+            localStorage.setItem('lms-retention-settings', JSON.stringify(settings));
+            showToast(t('logs.retentionSaved'), 'success');
+            closeRetentionModal();
+        }
+
+        function openAlertSettings() {
+            document.getElementById('alertModalBackdrop').classList.add('modal-backdrop--active');
+            loadAlertRules();
+            loadAlertSettings();
+        }
+
+        function closeAlertModal() {
+            document.getElementById('alertModalBackdrop').classList.remove('modal-backdrop--active');
+        }
+
+        function loadAlertRules() {
+            const savedRules = JSON.parse(localStorage.getItem('lms-alert-rules') || '[]');
+            alertRules = savedRules.length > 0 ? savedRules : [
+                {
+                    id: 'rule_1',
+                    name: 'Critical Errors',
+                    severity: 'critical',
+                    action: 'all',
+                    keyword: '',
+                    enabled: true
+                },
+                {
+                    id: 'rule_2',
+                    name: 'Failed Logins',
+                    severity: 'error',
+                    action: 'login',
+                    keyword: 'failed',
+                    enabled: true
+                }
+            ];
+            renderAlertRules();
+        }
+
+        function renderAlertRules() {
+            const container = document.getElementById('alertRulesList');
+            container.innerHTML = alertRules.map(rule => `
+                <div class="alert-rule" style="padding: var(--spacing-3); border: 1px solid var(--border-color); border-radius: var(--radius-base); margin-bottom: var(--spacing-2);">
+                    <div style="display: flex; justify-content: space-between; align-items: center;">
+                        <div style="flex: 1;">
+                            <strong>${rule.name}</strong>
+                            <div style="font-size: var(--font-size-sm); color: var(--text-muted); margin-top: var(--spacing-1);">
+                                Severity: ${rule.severity}, Action: ${rule.action}${rule.keyword ? `, Keyword: "${rule.keyword}"` : ''}
+                            </div>
+                        </div>
+                        <div style="display: flex; gap: var(--spacing-2); align-items: center;">
+                            <label class="switch">
+                                <input type="checkbox" ${rule.enabled ? 'checked' : ''} onchange="toggleAlertRule('${rule.id}')">
+                                <span class="switch__slider"></span>
+                            </label>
+                            <button class="btn btn--text btn--small" onclick="editAlertRule('${rule.id}')">
+                                <i class="fas fa-edit"></i>
+                            </button>
+                            <button class="btn btn--text btn--small" onclick="deleteAlertRule('${rule.id}')">
+                                <i class="fas fa-trash"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function addAlertRule() {
+            const newRule = {
+                id: 'rule_' + Date.now(),
+                name: prompt(t('logs.ruleName')) || 'New Rule',
+                severity: 'all',
+                action: 'all',
+                keyword: '',
+                enabled: true
+            };
+            
+            if (newRule.name) {
+                alertRules.push(newRule);
+                renderAlertRules();
+            }
+        }
+
+        function toggleAlertRule(ruleId) {
+            const rule = alertRules.find(r => r.id === ruleId);
+            if (rule) {
+                rule.enabled = !rule.enabled;
+            }
+        }
+
+        function editAlertRule(ruleId) {
+            const rule = alertRules.find(r => r.id === ruleId);
+            if (rule) {
+                rule.name = prompt(t('logs.ruleName'), rule.name) || rule.name;
+                renderAlertRules();
+            }
+        }
+
+        function deleteAlertRule(ruleId) {
+            if (confirm(t('logs.confirmDeleteRule'))) {
+                alertRules = alertRules.filter(r => r.id !== ruleId);
+                renderAlertRules();
+            }
+        }
+
+        function loadAlertSettings() {
+            const settings = getAlertSettings();
+            document.getElementById('emailNotifications').checked = settings.emailNotifications;
+            document.getElementById('dashboardNotifications').checked = settings.dashboardNotifications;
+            document.getElementById('soundAlerts').checked = settings.soundAlerts;
+        }
+
+        function getAlertSettings() {
+            return JSON.parse(localStorage.getItem('lms-alert-settings') || JSON.stringify({
+                emailNotifications: true,
+                dashboardNotifications: true,
+                soundAlerts: false
+            }));
+        }
+
+        function saveAlertSettings() {
+            const settings = {
+                emailNotifications: document.getElementById('emailNotifications').checked,
+                dashboardNotifications: document.getElementById('dashboardNotifications').checked,
+                soundAlerts: document.getElementById('soundAlerts').checked
+            };
+            
+            localStorage.setItem('lms-alert-settings', JSON.stringify(settings));
+            localStorage.setItem('lms-alert-rules', JSON.stringify(alertRules));
+            showToast(t('logs.alertsSaved'), 'success');
+            closeAlertModal();
+        }
+
         // Export logs to CSV
         function exportLogs() {
             const csvContent = [
@@ -562,10 +1219,31 @@
             });
         });
 
-        // Setup dropdown
+        // Setup severity dropdown
+        document.querySelectorAll('#severityDropdown .dropdown__item').forEach(item => {
+            item.addEventListener('click', function() {
+                currentSeverityFilter = this.dataset.value;
+                document.getElementById('severityFilterText').innerHTML = this.innerHTML;
+                
+                document.querySelectorAll('#severityDropdown .dropdown__item').forEach(i => {
+                    i.classList.remove('dropdown__item--selected');
+                });
+                this.classList.add('dropdown__item--selected');
+                
+                document.getElementById('severityDropdown').classList.remove('active');
+                applyFilters();
+            });
+        });
+
+        // Setup dropdowns
         document.getElementById('actionDropdown').querySelector('.dropdown__trigger').addEventListener('click', function(e) {
             e.stopPropagation();
             document.getElementById('actionDropdown').classList.toggle('active');
+        });
+
+        document.getElementById('severityDropdown').querySelector('.dropdown__trigger').addEventListener('click', function(e) {
+            e.stopPropagation();
+            document.getElementById('severityDropdown').classList.toggle('active');
         });
 
         // Close dropdown on outside click
@@ -587,6 +1265,9 @@
             }
             
             loadLogs();
+            
+            // Start real-time monitoring
+            startRealtimeMonitoring();
         });
     </script>
 </body>
