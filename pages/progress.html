@@ -29,6 +29,256 @@
             overflow: hidden;
         }
         
+        /* Enhanced Analytics Styles */
+        .analytics-tabs {
+            display: flex;
+            gap: var(--spacing-2);
+            margin-bottom: var(--spacing-4);
+            border-bottom: 2px solid var(--border-color);
+        }
+        
+        .analytics-tab {
+            padding: var(--spacing-3) var(--spacing-4);
+            background: none;
+            border: none;
+            color: var(--text-secondary);
+            font-size: var(--font-size-base);
+            cursor: pointer;
+            position: relative;
+            transition: color var(--transition-base);
+        }
+        
+        .analytics-tab:hover {
+            color: var(--text-primary);
+        }
+        
+        .analytics-tab.active {
+            color: var(--color-primary);
+        }
+        
+        .analytics-tab.active::after {
+            content: '';
+            position: absolute;
+            bottom: -2px;
+            left: 0;
+            right: 0;
+            height: 2px;
+            background: var(--color-primary);
+        }
+        
+        .analytics-content {
+            display: none;
+        }
+        
+        .analytics-content.active {
+            display: block;
+        }
+        
+        .learning-insights {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: var(--spacing-4);
+            margin-bottom: var(--spacing-6);
+        }
+        
+        .insight-card {
+            background: var(--bg-card);
+            padding: var(--spacing-5);
+            border-radius: var(--radius-lg);
+            border: 1px solid var(--border-color);
+        }
+        
+        .insight-card h4 {
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-2);
+            margin-bottom: var(--spacing-3);
+            color: var(--text-primary);
+        }
+        
+        .insight-card h4 i {
+            color: var(--color-primary);
+        }
+        
+        .peer-comparison {
+            position: relative;
+            padding: var(--spacing-4);
+            background: var(--bg-secondary);
+            border-radius: var(--radius-md);
+        }
+        
+        .comparison-bar {
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-3);
+            margin-bottom: var(--spacing-3);
+        }
+        
+        .comparison-bar__label {
+            min-width: 120px;
+            font-size: var(--font-size-sm);
+        }
+        
+        .comparison-bar__track {
+            flex: 1;
+            height: 20px;
+            background: var(--bg-tertiary);
+            border-radius: 10px;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .comparison-bar__fill {
+            height: 100%;
+            background: var(--color-primary);
+            border-radius: 10px;
+            transition: width 1s ease-out;
+        }
+        
+        .comparison-bar__value {
+            font-size: var(--font-size-sm);
+            font-weight: var(--font-weight-medium);
+            min-width: 50px;
+            text-align: right;
+        }
+        
+        .goals-section {
+            background: var(--bg-card);
+            padding: var(--spacing-6);
+            border-radius: var(--radius-lg);
+            margin-bottom: var(--spacing-6);
+        }
+        
+        .goal-item {
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-3);
+            padding: var(--spacing-3);
+            background: var(--bg-secondary);
+            border-radius: var(--radius-md);
+            margin-bottom: var(--spacing-3);
+        }
+        
+        .goal-item__checkbox {
+            width: 24px;
+            height: 24px;
+            border: 2px solid var(--border-color);
+            border-radius: 50%;
+            cursor: pointer;
+            transition: all var(--transition-base);
+        }
+        
+        .goal-item__checkbox.completed {
+            background: var(--color-success);
+            border-color: var(--color-success);
+        }
+        
+        .goal-item__checkbox.completed::after {
+            content: '✓';
+            display: block;
+            text-align: center;
+            color: white;
+            line-height: 20px;
+        }
+        
+        .goal-item__content {
+            flex: 1;
+        }
+        
+        .goal-item__title {
+            font-weight: var(--font-weight-medium);
+            margin-bottom: var(--spacing-1);
+        }
+        
+        .goal-item__progress {
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-2);
+            font-size: var(--font-size-sm);
+            color: var(--text-secondary);
+        }
+        
+        .learning-habits {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: var(--spacing-4);
+        }
+        
+        .habit-card {
+            background: var(--bg-secondary);
+            padding: var(--spacing-4);
+            border-radius: var(--radius-md);
+            text-align: center;
+        }
+        
+        .habit-card__icon {
+            font-size: 2.5rem;
+            margin-bottom: var(--spacing-2);
+        }
+        
+        .habit-card__value {
+            font-size: var(--font-size-xl);
+            font-weight: var(--font-weight-bold);
+            color: var(--text-primary);
+            margin-bottom: var(--spacing-1);
+        }
+        
+        .habit-card__label {
+            font-size: var(--font-size-sm);
+            color: var(--text-secondary);
+        }
+        
+        .recommendation-card {
+            display: flex;
+            gap: var(--spacing-4);
+            padding: var(--spacing-4);
+            background: var(--bg-secondary);
+            border-radius: var(--radius-md);
+            margin-bottom: var(--spacing-3);
+            transition: all var(--transition-base);
+        }
+        
+        .recommendation-card:hover {
+            transform: translateX(4px);
+            box-shadow: var(--shadow-sm);
+        }
+        
+        .recommendation-card__image {
+            width: 80px;
+            height: 80px;
+            border-radius: var(--radius-md);
+            background: var(--bg-tertiary);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+        
+        .recommendation-card__content {
+            flex: 1;
+        }
+        
+        .recommendation-card__title {
+            font-weight: var(--font-weight-medium);
+            margin-bottom: var(--spacing-1);
+        }
+        
+        .recommendation-card__reason {
+            font-size: var(--font-size-sm);
+            color: var(--text-secondary);
+            margin-bottom: var(--spacing-2);
+        }
+        
+        .recommendation-card__match {
+            display: inline-block;
+            padding: 2px 8px;
+            background: var(--color-primary-light);
+            color: var(--color-primary);
+            border-radius: var(--radius-sm);
+            font-size: var(--font-size-xs);
+            font-weight: var(--font-weight-medium);
+        }
+        
         .progress-hero::before {
             content: '';
             position: absolute;
@@ -480,6 +730,263 @@
                     </div>
                     <div class="stat-card__value" id="currentStreak">0</div>
                     <div class="stat-card__label" data-translate="progress.dayStreak">Day Streak</div>
+                </div>
+            </div>
+
+            <!-- Enhanced Analytics Section -->
+            <div class="card" style="margin-bottom: var(--spacing-6);">
+                <div class="card__header">
+                    <h3 data-translate="progress.advancedAnalytics">Advanced Analytics</h3>
+                </div>
+                <div class="card__body">
+                    <!-- Analytics Tabs -->
+                    <div class="analytics-tabs">
+                        <button class="analytics-tab active" onclick="switchAnalyticsTab('insights')" data-tab="insights">
+                            <i class="fas fa-lightbulb" style="margin-right: 8px;"></i>
+                            <span data-translate="progress.insights">Insights</span>
+                        </button>
+                        <button class="analytics-tab" onclick="switchAnalyticsTab('habits')" data-tab="habits">
+                            <i class="fas fa-chart-line" style="margin-right: 8px;"></i>
+                            <span data-translate="progress.learningHabits">Learning Habits</span>
+                        </button>
+                        <button class="analytics-tab" onclick="switchAnalyticsTab('comparison')" data-tab="comparison">
+                            <i class="fas fa-users" style="margin-right: 8px;"></i>
+                            <span data-translate="progress.peerComparison">Peer Comparison</span>
+                        </button>
+                        <button class="analytics-tab" onclick="switchAnalyticsTab('recommendations')" data-tab="recommendations">
+                            <i class="fas fa-compass" style="margin-right: 8px;"></i>
+                            <span data-translate="progress.recommendations">Recommendations</span>
+                        </button>
+                    </div>
+                    
+                    <!-- Insights Tab -->
+                    <div class="analytics-content active" id="insights-tab">
+                        <div class="learning-insights">
+                            <div class="insight-card">
+                                <h4>
+                                    <i class="fas fa-brain"></i>
+                                    <span data-translate="progress.learningStyle">Your Learning Style</span>
+                                </h4>
+                                <p data-translate="progress.visualLearner">You are a <strong>Visual Learner</strong>. You learn best through videos, diagrams, and interactive content.</p>
+                                <div style="margin-top: var(--spacing-3);">
+                                    <small data-translate="progress.basedOn">Based on your interaction patterns</small>
+                                </div>
+                            </div>
+                            <div class="insight-card">
+                                <h4>
+                                    <i class="fas fa-clock"></i>
+                                    <span data-translate="progress.bestTime">Best Learning Time</span>
+                                </h4>
+                                <p data-translate="progress.eveningLearner">You're most productive in the <strong>Evening (7-10 PM)</strong></p>
+                                <div style="margin-top: var(--spacing-3);">
+                                    <div style="display: flex; justify-content: space-between; font-size: var(--font-size-sm);">
+                                        <span>Morning: 20%</span>
+                                        <span>Afternoon: 30%</span>
+                                        <span>Evening: 50%</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="insight-card">
+                                <h4>
+                                    <i class="fas fa-trophy"></i>
+                                    <span data-translate="progress.strongestSubject">Strongest Subject</span>
+                                </h4>
+                                <p data-translate="progress.programmingStrong">You excel in <strong>Programming & Development</strong> courses</p>
+                                <div style="margin-top: var(--spacing-3);">
+                                    <small data-translate="progress.avgScore">Average score: 92%</small>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Learning Habits Tab -->
+                    <div class="analytics-content" id="habits-tab">
+                        <div class="learning-habits">
+                            <div class="habit-card">
+                                <div class="habit-card__icon">📚</div>
+                                <div class="habit-card__value">45</div>
+                                <div class="habit-card__label" data-translate="progress.minutesPerSession">Minutes per session</div>
+                            </div>
+                            <div class="habit-card">
+                                <div class="habit-card__icon">📅</div>
+                                <div class="habit-card__value">5</div>
+                                <div class="habit-card__label" data-translate="progress.daysPerWeek">Days per week</div>
+                            </div>
+                            <div class="habit-card">
+                                <div class="habit-card__icon">🎯</div>
+                                <div class="habit-card__value">87%</div>
+                                <div class="habit-card__label" data-translate="progress.goalCompletion">Goal completion rate</div>
+                            </div>
+                            <div class="habit-card">
+                                <div class="habit-card__icon">⚡</div>
+                                <div class="habit-card__value">2.3x</div>
+                                <div class="habit-card__label" data-translate="progress.videoSpeed">Preferred video speed</div>
+                            </div>
+                        </div>
+                        <div style="margin-top: var(--spacing-4);">
+                            <h4 style="margin-bottom: var(--spacing-3);" data-translate="progress.weeklyPattern">Weekly Learning Pattern</h4>
+                            <canvas id="weeklyPatternChart" height="200"></canvas>
+                        </div>
+                    </div>
+                    
+                    <!-- Peer Comparison Tab -->
+                    <div class="analytics-content" id="comparison-tab">
+                        <div class="peer-comparison">
+                            <p style="margin-bottom: var(--spacing-4); color: var(--text-secondary);" data-translate="progress.anonymizedComparison">
+                                <i class="fas fa-info-circle"></i> All comparisons are anonymized and based on learners with similar enrollment patterns.
+                            </p>
+                            <div class="comparison-bar">
+                                <div class="comparison-bar__label" data-translate="progress.overallProgress">Overall Progress</div>
+                                <div class="comparison-bar__track">
+                                    <div class="comparison-bar__fill" style="width: 75%; background: var(--color-primary);"></div>
+                                    <div class="comparison-bar__fill" style="width: 65%; background: var(--color-secondary); opacity: 0.5;"></div>
+                                </div>
+                                <div class="comparison-bar__value">
+                                    <span style="color: var(--color-primary);">You: 75%</span>
+                                </div>
+                            </div>
+                            <div class="comparison-bar">
+                                <div class="comparison-bar__label" data-translate="progress.completionSpeed">Completion Speed</div>
+                                <div class="comparison-bar__track">
+                                    <div class="comparison-bar__fill" style="width: 85%; background: var(--color-success);"></div>
+                                    <div class="comparison-bar__fill" style="width: 60%; background: var(--color-secondary); opacity: 0.5;"></div>
+                                </div>
+                                <div class="comparison-bar__value">
+                                    <span style="color: var(--color-success);">You: 85%</span>
+                                </div>
+                            </div>
+                            <div class="comparison-bar">
+                                <div class="comparison-bar__label" data-translate="progress.quizScores">Quiz Scores</div>
+                                <div class="comparison-bar__track">
+                                    <div class="comparison-bar__fill" style="width: 92%; background: var(--color-info);"></div>
+                                    <div class="comparison-bar__fill" style="width: 78%; background: var(--color-secondary); opacity: 0.5;"></div>
+                                </div>
+                                <div class="comparison-bar__value">
+                                    <span style="color: var(--color-info);">You: 92%</span>
+                                </div>
+                            </div>
+                            <div style="margin-top: var(--spacing-4); padding: var(--spacing-3); background: var(--bg-tertiary); border-radius: var(--radius-md);">
+                                <p style="font-size: var(--font-size-sm);">
+                                    <strong data-translate="progress.ranking">Your Ranking:</strong> 
+                                    <span data-translate="progress.top15">Top 15% of learners in your cohort</span> 🎉
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Recommendations Tab -->
+                    <div class="analytics-content" id="recommendations-tab">
+                        <h4 style="margin-bottom: var(--spacing-3);" data-translate="progress.recommendedPaths">Recommended Learning Paths</h4>
+                        <div class="recommendation-card" onclick="viewCourse('adv-js')">
+                            <div class="recommendation-card__image">
+                                <i class="fas fa-code" style="font-size: 2rem; color: var(--color-primary);"></i>
+                            </div>
+                            <div class="recommendation-card__content">
+                                <div class="recommendation-card__title">Advanced JavaScript Patterns</div>
+                                <div class="recommendation-card__reason" data-translate="progress.becauseCompleted">
+                                    Because you completed "JavaScript Basics" with 95% score
+                                </div>
+                                <span class="recommendation-card__match">98% Match</span>
+                            </div>
+                        </div>
+                        <div class="recommendation-card" onclick="viewCourse('react-native')">
+                            <div class="recommendation-card__image">
+                                <i class="fas fa-mobile-alt" style="font-size: 2rem; color: var(--color-success);"></i>
+                            </div>
+                            <div class="recommendation-card__content">
+                                <div class="recommendation-card__title">React Native Development</div>
+                                <div class="recommendation-card__reason" data-translate="progress.basedOnInterests">
+                                    Based on your interest in mobile development topics
+                                </div>
+                                <span class="recommendation-card__match">92% Match</span>
+                            </div>
+                        </div>
+                        <div class="recommendation-card" onclick="viewCourse('data-structures')">
+                            <div class="recommendation-card__image">
+                                <i class="fas fa-project-diagram" style="font-size: 2rem; color: var(--color-warning);"></i>
+                            </div>
+                            <div class="recommendation-card__content">
+                                <div class="recommendation-card__title">Data Structures & Algorithms</div>
+                                <div class="recommendation-card__reason" data-translate="progress.toImprove">
+                                    To strengthen your programming fundamentals
+                                </div>
+                                <span class="recommendation-card__match">87% Match</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Goals & Milestones Section -->
+            <div class="goals-section">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: var(--spacing-4);">
+                    <h3 data-translate="progress.learningGoals">Learning Goals</h3>
+                    <button class="btn btn--primary btn--small" onclick="openGoalModal()">
+                        <i class="fas fa-plus" style="margin-right: 8px;"></i>
+                        <span data-translate="progress.addGoal">Add Goal</span>
+                    </button>
+                </div>
+                <div id="goalsList">
+                    <div class="goal-item">
+                        <div class="goal-item__checkbox completed" onclick="toggleGoal(this)"></div>
+                        <div class="goal-item__content">
+                            <div class="goal-item__title" data-translate="progress.completeJsCourse">Complete JavaScript Advanced Course</div>
+                            <div class="goal-item__progress">
+                                <i class="fas fa-check-circle" style="color: var(--color-success);"></i>
+                                <span data-translate="progress.completedOn">Completed on Dec 15, 2024</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="goal-item">
+                        <div class="goal-item__checkbox" onclick="toggleGoal(this)"></div>
+                        <div class="goal-item__content">
+                            <div class="goal-item__title" data-translate="progress.learn3Hours">Learn 3 hours per week</div>
+                            <div class="goal-item__progress">
+                                <div style="display: flex; align-items: center; gap: var(--spacing-2);">
+                                    <div style="flex: 1; height: 6px; background: var(--bg-tertiary); border-radius: 3px;">
+                                        <div style="width: 80%; height: 100%; background: var(--color-primary); border-radius: 3px;"></div>
+                                    </div>
+                                    <span>2.4/3 hours</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="goal-item">
+                        <div class="goal-item__checkbox" onclick="toggleGoal(this)"></div>
+                        <div class="goal-item__content">
+                            <div class="goal-item__title" data-translate="progress.earn5Certificates">Earn 5 certificates this year</div>
+                            <div class="goal-item__progress">
+                                <i class="fas fa-certificate" style="color: var(--color-warning);"></i>
+                                <span>3/5 certificates earned</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Share Progress -->
+            <div style="text-align: center; padding: var(--spacing-4); background: var(--bg-secondary); border-radius: var(--radius-lg); margin-bottom: var(--spacing-6);">
+                <h4 style="margin-bottom: var(--spacing-3);" data-translate="progress.shareProgress">Share Your Progress</h4>
+                <p style="color: var(--text-secondary); margin-bottom: var(--spacing-3);" data-translate="progress.proudOfProgress">
+                    Proud of your learning journey? Share it with others!
+                </p>
+                <div style="display: flex; gap: var(--spacing-2); justify-content: center;">
+                    <button class="btn btn--primary btn--small" onclick="shareProgress('linkedin')">
+                        <i class="fab fa-linkedin" style="margin-right: 8px;"></i>
+                        LinkedIn
+                    </button>
+                    <button class="btn btn--info btn--small" onclick="shareProgress('twitter')">
+                        <i class="fab fa-twitter" style="margin-right: 8px;"></i>
+                        Twitter
+                    </button>
+                    <button class="btn btn--success btn--small" onclick="shareProgress('facebook')">
+                        <i class="fab fa-facebook" style="margin-right: 8px;"></i>
+                        Facebook
+                    </button>
+                    <button class="btn btn--secondary btn--small" onclick="shareProgress('copy')">
+                        <i class="fas fa-link" style="margin-right: 8px;"></i>
+                        <span data-translate="common.copyLink">Copy Link</span>
+                    </button>
                 </div>
             </div>
 
@@ -1325,6 +1832,150 @@ Congratulations on completing this course!`;
             a.download = `learning_progress_${new Date().toISOString().split('T')[0]}.csv`;
             a.click();
             window.URL.revokeObjectURL(url);
+        }
+
+        // Enhanced Analytics Functions
+        function switchAnalyticsTab(tabName) {
+            // Update tab buttons
+            document.querySelectorAll('.analytics-tab').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            document.querySelector(`[data-tab="${tabName}"]`).classList.add('active');
+            
+            // Update content
+            document.querySelectorAll('.analytics-content').forEach(content => {
+                content.classList.remove('active');
+            });
+            document.getElementById(`${tabName}-tab`).classList.add('active');
+            
+            // Initialize specific tab content
+            if (tabName === 'habits') {
+                createWeeklyPatternChart();
+            }
+        }
+
+        // Create weekly pattern chart
+        function createWeeklyPatternChart() {
+            const ctx = document.getElementById('weeklyPatternChart');
+            if (!ctx) return;
+            
+            // Destroy existing chart if any
+            if (window.weeklyPatternChart) {
+                window.weeklyPatternChart.destroy();
+            }
+            
+            window.weeklyPatternChart = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
+                    datasets: [{
+                        label: 'Hours Studied',
+                        data: [1.5, 2.0, 0.5, 3.0, 2.5, 4.0, 3.5],
+                        backgroundColor: 'rgba(59, 130, 246, 0.8)',
+                        borderColor: 'rgba(59, 130, 246, 1)',
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            max: 5
+                        }
+                    },
+                    plugins: {
+                        legend: {
+                            display: false
+                        }
+                    }
+                }
+            });
+        }
+
+        // Goal management
+        function toggleGoal(checkbox) {
+            checkbox.classList.toggle('completed');
+            
+            // Save to localStorage
+            const goals = getGoals();
+            const goalTitle = checkbox.parentElement.querySelector('.goal-item__title').textContent;
+            const goalIndex = goals.findIndex(g => g.title === goalTitle);
+            
+            if (goalIndex !== -1) {
+                goals[goalIndex].completed = checkbox.classList.contains('completed');
+                localStorage.setItem('learning-goals', JSON.stringify(goals));
+            }
+        }
+
+        function openGoalModal() {
+            const goalTitle = prompt(LMS.t('progress.enterGoalTitle'));
+            if (goalTitle) {
+                const goals = getGoals();
+                goals.push({
+                    title: goalTitle,
+                    completed: false,
+                    createdAt: new Date().toISOString()
+                });
+                localStorage.setItem('learning-goals', JSON.stringify(goals));
+                displayGoals();
+            }
+        }
+
+        function getGoals() {
+            return JSON.parse(localStorage.getItem('learning-goals') || '[]');
+        }
+
+        function displayGoals() {
+            const goalsList = document.getElementById('goalsList');
+            const goals = getGoals();
+            
+            goalsList.innerHTML = goals.map(goal => `
+                <div class="goal-item">
+                    <div class="goal-item__checkbox ${goal.completed ? 'completed' : ''}" onclick="toggleGoal(this)"></div>
+                    <div class="goal-item__content">
+                        <div class="goal-item__title">${goal.title}</div>
+                        <div class="goal-item__progress">
+                            ${goal.completed ? 
+                                `<i class="fas fa-check-circle" style="color: var(--color-success);"></i>
+                                <span>${LMS.t('progress.completedOn')} ${new Date(goal.completedAt || goal.createdAt).toLocaleDateString()}</span>` :
+                                `<span style="color: var(--text-secondary);">${LMS.t('progress.inProgress')}</span>`
+                            }
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        // Share progress functionality
+        function shareProgress(platform) {
+            const shareText = `I've completed ${userProgress.completedCourses} courses and achieved ${userProgress.totalProgress}% overall progress on LMS! 🎉`;
+            const shareUrl = window.location.href;
+            
+            switch(platform) {
+                case 'linkedin':
+                    window.open(`https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(shareUrl)}&summary=${encodeURIComponent(shareText)}`, '_blank');
+                    break;
+                case 'twitter':
+                    window.open(`https://twitter.com/intent/tweet?text=${encodeURIComponent(shareText)}&url=${encodeURIComponent(shareUrl)}`, '_blank');
+                    break;
+                case 'facebook':
+                    window.open(`https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(shareUrl)}&quote=${encodeURIComponent(shareText)}`, '_blank');
+                    break;
+                case 'copy':
+                    const fullText = `${shareText}\n\n${shareUrl}`;
+                    navigator.clipboard.writeText(fullText).then(() => {
+                        LMS.showToast(LMS.t('common.linkCopied'), 'success');
+                    });
+                    break;
+            }
+        }
+
+        // View recommended course
+        function viewCourse(courseId) {
+            // In a real app, this would navigate to the course page
+            window.location.href = `courses.html#${courseId}`;
         }
 
         // Initialize on load

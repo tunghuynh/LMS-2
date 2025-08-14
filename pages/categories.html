@@ -1,0 +1,805 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title data-translate="categories.title">Category Management</title>
+    <link rel="stylesheet" href="../assets/css/global.css">
+    <link rel="stylesheet" href="../assets/css/themes.css">
+    <link rel="stylesheet" href="../assets/css/components.css">
+    <link rel="stylesheet" href="../assets/css/layout.css">
+</head>
+<body>
+    <div class="page-container">
+        <div class="page-header">
+            <h1 data-translate="categories.title">Category Management</h1>
+            <div class="action-group">
+                <button class="btn btn--secondary" onclick="exportCategories()">
+                    <span class="btn__icon">📥</span>
+                    <span data-translate="categories.export">Export</span>
+                </button>
+                <button class="btn btn--secondary" onclick="importCategories()">
+                    <span class="btn__icon">📤</span>
+                    <span data-translate="categories.import">Import</span>
+                </button>
+                <button class="btn btn--primary" onclick="addCategory()">
+                    <span class="btn__icon">➕</span>
+                    <span data-translate="categories.add">Add Category</span>
+                </button>
+            </div>
+        </div>
+
+        <div class="page-content">
+            <div style="display: grid; grid-template-columns: 1fr 300px; gap: var(--spacing-6);">
+                <!-- Category Tree -->
+                <div class="card">
+                    <div class="card__header">
+                        <h3 class="card__title" data-translate="categories.structure">Category Structure</h3>
+                        <button class="btn btn--text btn--small" onclick="expandAll()">
+                            <span data-translate="categories.expandAll">Expand All</span>
+                        </button>
+                    </div>
+                    <div class="card__body">
+                        <div class="tree-view tree-view--sortable" id="categoryTree">
+                            <!-- Tree items will be loaded dynamically -->
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Analytics Panel -->
+                <div>
+                    <!-- Category Stats -->
+                    <div class="card">
+                        <div class="card__header">
+                            <h3 class="card__title" data-translate="categories.analytics">Analytics</h3>
+                        </div>
+                        <div class="card__body">
+                            <div id="categoryStats" style="display: flex; flex-direction: column; gap: var(--spacing-4);">
+                                <div class="stat-item">
+                                    <div class="stat-item__label" data-translate="categories.totalCategories">Total Categories</div>
+                                    <div class="stat-item__value" id="totalCategories">0</div>
+                                </div>
+                                <div class="stat-item">
+                                    <div class="stat-item__label" data-translate="categories.totalCourses">Total Courses</div>
+                                    <div class="stat-item__value" id="totalCourses">0</div>
+                                </div>
+                                <div class="stat-item">
+                                    <div class="stat-item__label" data-translate="categories.avgCoursesPerCategory">Avg Courses/Category</div>
+                                    <div class="stat-item__value" id="avgCourses">0</div>
+                                </div>
+                                <div class="stat-item">
+                                    <div class="stat-item__label" data-translate="categories.totalEnrollments">Total Enrollments</div>
+                                    <div class="stat-item__value" id="totalEnrollments">0</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Selected Category Details -->
+                    <div class="card" style="margin-top: var(--spacing-4);">
+                        <div class="card__header">
+                            <h3 class="card__title" data-translate="categories.selectedCategory">Selected Category</h3>
+                        </div>
+                        <div class="card__body">
+                            <div id="selectedCategoryInfo" style="text-align: center; color: var(--text-muted); padding: var(--spacing-6);">
+                                <span data-translate="categories.selectCategory">Select a category to view details</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Quick Actions -->
+                    <div class="card" style="margin-top: var(--spacing-4);">
+                        <div class="card__header">
+                            <h3 class="card__title" data-translate="categories.templates">Category Templates</h3>
+                        </div>
+                        <div class="card__body">
+                            <button class="btn btn--secondary btn--small btn--block" onclick="applyTemplate('technical')">
+                                <span data-translate="categories.applyTechnical">Apply Technical Template</span>
+                            </button>
+                            <button class="btn btn--secondary btn--small btn--block" style="margin-top: var(--spacing-2);" onclick="applyTemplate('business')">
+                                <span data-translate="categories.applyBusiness">Apply Business Template</span>
+                            </button>
+                            <button class="btn btn--secondary btn--small btn--block" style="margin-top: var(--spacing-2);" onclick="applyTemplate('creative')">
+                                <span data-translate="categories.applyCreative">Apply Creative Template</span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Category Modal -->
+    <div class="modal" id="categoryModal" style="display: none;">
+        <div class="modal__overlay" onclick="closeCategoryModal()"></div>
+        <div class="modal__content">
+            <div class="modal__header">
+                <h3 class="modal__title" id="categoryModalTitle" data-translate="categories.addCategory">Add Category</h3>
+                <button class="modal__close" onclick="closeCategoryModal()">&times;</button>
+            </div>
+            <div class="modal__body">
+                <form id="categoryForm">
+                    <div class="form-group">
+                        <label class="form-label" data-translate="categories.categoryName">Category Name</label>
+                        <input type="text" class="form-input" id="categoryName" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label" data-translate="categories.description">Description</label>
+                        <textarea class="form-input" id="categoryDescription" rows="3"></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label" data-translate="categories.parentCategory">Parent Category</label>
+                        <select class="form-select" id="parentCategory">
+                            <option value="" data-translate="categories.noParent">No Parent (Top Level)</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label" data-translate="categories.icon">Icon</label>
+                        <div class="icon-picker" style="display: grid; grid-template-columns: repeat(8, 1fr); gap: var(--spacing-2);">
+                            <button type="button" class="icon-option" data-icon="💻">💻</button>
+                            <button type="button" class="icon-option" data-icon="📊">📊</button>
+                            <button type="button" class="icon-option" data-icon="🎨">🎨</button>
+                            <button type="button" class="icon-option" data-icon="💼">💼</button>
+                            <button type="button" class="icon-option" data-icon="🏥">🏥</button>
+                            <button type="button" class="icon-option" data-icon="🎯">🎯</button>
+                            <button type="button" class="icon-option" data-icon="🌐">🌐</button>
+                            <button type="button" class="icon-option" data-icon="📱">📱</button>
+                            <button type="button" class="icon-option" data-icon="🔒">🔒</button>
+                            <button type="button" class="icon-option" data-icon="🗄️">🗄️</button>
+                            <button type="button" class="icon-option" data-icon="🤖">🤖</button>
+                            <button type="button" class="icon-option" data-icon="⚡">⚡</button>
+                            <button type="button" class="icon-option" data-icon="🎮">🎮</button>
+                            <button type="button" class="icon-option" data-icon="📸">📸</button>
+                            <button type="button" class="icon-option" data-icon="🎵">🎵</button>
+                            <button type="button" class="icon-option" data-icon="📚">📚</button>
+                        </div>
+                        <input type="hidden" id="categoryIcon" value="📁">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label" data-translate="categories.color">Color Theme</label>
+                        <div class="color-picker" style="display: flex; gap: var(--spacing-2);">
+                            <button type="button" class="color-option" data-color="#2C6EAA" style="background: #2C6EAA;"></button>
+                            <button type="button" class="color-option" data-color="#10B981" style="background: #10B981;"></button>
+                            <button type="button" class="color-option" data-color="#F59E0B" style="background: #F59E0B;"></button>
+                            <button type="button" class="color-option" data-color="#EF4444" style="background: #EF4444;"></button>
+                            <button type="button" class="color-option" data-color="#8B5CF6" style="background: #8B5CF6;"></button>
+                            <button type="button" class="color-option" data-color="#EC4899" style="background: #EC4899;"></button>
+                            <button type="button" class="color-option" data-color="#6B7280" style="background: #6B7280;"></button>
+                        </div>
+                        <input type="hidden" id="categoryColor" value="#2C6EAA">
+                    </div>
+                </form>
+            </div>
+            <div class="modal__footer">
+                <button class="btn btn--secondary" onclick="closeCategoryModal()">
+                    <span data-translate="common.cancel">Cancel</span>
+                </button>
+                <button class="btn btn--primary" onclick="saveCategory()">
+                    <span data-translate="common.save">Save</span>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Import Modal -->
+    <div class="modal" id="importModal" style="display: none;">
+        <div class="modal__overlay" onclick="closeImportModal()"></div>
+        <div class="modal__content">
+            <div class="modal__header">
+                <h3 class="modal__title" data-translate="categories.importCategories">Import Categories</h3>
+                <button class="modal__close" onclick="closeImportModal()">&times;</button>
+            </div>
+            <div class="modal__body">
+                <div class="form-group">
+                    <label class="form-label" data-translate="categories.selectFile">Select File</label>
+                    <input type="file" class="form-input" id="importFile" accept=".json,.csv">
+                    <p class="form-help" data-translate="categories.importHelp">Supported formats: JSON, CSV</p>
+                </div>
+                <div class="alert alert--info" style="margin-top: var(--spacing-4);">
+                    <p data-translate="categories.importWarning">
+                        Importing will merge categories with existing ones. Duplicate names will be updated.
+                    </p>
+                </div>
+            </div>
+            <div class="modal__footer">
+                <button class="btn btn--secondary" onclick="closeImportModal()">
+                    <span data-translate="common.cancel">Cancel</span>
+                </button>
+                <button class="btn btn--primary" onclick="performImport()">
+                    <span data-translate="categories.import">Import</span>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <style>
+        .stat-item {
+            text-align: center;
+            padding: var(--spacing-3);
+            background: var(--bg-secondary);
+            border-radius: var(--radius-base);
+        }
+
+        .stat-item__label {
+            font-size: var(--font-size-sm);
+            color: var(--text-muted);
+            margin-bottom: var(--spacing-1);
+        }
+
+        .stat-item__value {
+            font-size: var(--font-size-2xl);
+            font-weight: var(--font-weight-semibold);
+            color: var(--color-primary);
+        }
+
+        .icon-option, .color-option {
+            width: 40px;
+            height: 40px;
+            border: 2px solid transparent;
+            border-radius: var(--radius-base);
+            cursor: pointer;
+            transition: all var(--transition-base);
+            background: var(--bg-secondary);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+        }
+
+        .icon-option:hover, .color-option:hover {
+            transform: scale(1.1);
+        }
+
+        .icon-option.selected, .color-option.selected {
+            border-color: var(--color-primary);
+            box-shadow: 0 0 0 3px var(--color-primary-light);
+        }
+
+        .tree-view__stats {
+            display: flex;
+            gap: var(--spacing-2);
+            margin-left: auto;
+            font-size: var(--font-size-xs);
+        }
+
+        .tree-view__stat {
+            background: var(--bg-tertiary);
+            padding: 2px 8px;
+            border-radius: var(--radius-full);
+            color: var(--text-secondary);
+        }
+    </style>
+
+    <script src="../assets/js/global.js"></script>
+    <script>
+        let categories = [];
+        let selectedCategoryId = null;
+        let editingCategoryId = null;
+
+        // Load categories
+        async function loadCategories() {
+            try {
+                const response = await mockAPI.get('../data/mock-categories.json');
+                categories = response.data || [];
+                renderCategoryTree();
+                updateAnalytics();
+            } catch (error) {
+                console.error('Error loading categories:', error);
+                showToast(t('common.error'), 'error');
+            }
+        }
+
+        // Render category tree
+        function renderCategoryTree() {
+            const tree = document.getElementById('categoryTree');
+            tree.innerHTML = '';
+
+            const rootCategories = categories.filter(cat => !cat.parentId);
+            rootCategories.forEach(category => {
+                tree.appendChild(createCategoryNode(category));
+            });
+
+            if (categories.length === 0) {
+                tree.innerHTML = `
+                    <div class="tree-view__empty">
+                        <div style="font-size: 48px; margin-bottom: var(--spacing-3);">📁</div>
+                        <p data-translate="categories.noCategories">No categories found</p>
+                        <button class="btn btn--primary btn--small" onclick="addCategory()">
+                            <span data-translate="categories.addFirst">Add First Category</span>
+                        </button>
+                    </div>
+                `;
+            }
+        }
+
+        // Create category node
+        function createCategoryNode(category) {
+            const item = document.createElement('div');
+            item.className = 'tree-view__item';
+            item.draggable = true;
+
+            const children = categories.filter(cat => cat.parentId === category.id);
+            const courseCount = getCourseCount(category.id);
+            const enrollmentCount = getEnrollmentCount(category.id);
+
+            item.innerHTML = `
+                <div class="tree-view__node ${children.length > 0 ? 'tree-view__node--parent' : ''}" data-id="${category.id}">
+                    ${children.length > 0 ? '<span class="tree-view__toggle">▶</span>' : '<span style="width: 20px; display: inline-block;"></span>'}
+                    <span class="tree-view__icon">${category.icon || '📁'}</span>
+                    <div class="tree-view__content">
+                        <span class="tree-view__text">${category.name}</span>
+                        <div class="tree-view__stats">
+                            <span class="tree-view__stat">${courseCount} ${t('categories.courses')}</span>
+                            <span class="tree-view__stat">${enrollmentCount} ${t('categories.students')}</span>
+                        </div>
+                    </div>
+                    <div class="tree-view__actions">
+                        <button class="tree-view__action" onclick="editCategory('${category.id}')" title="${t('common.edit')}">✏️</button>
+                        <button class="tree-view__action" onclick="deleteCategory('${category.id}')" title="${t('common.delete')}">🗑️</button>
+                    </div>
+                </div>
+            `;
+
+            if (children.length > 0) {
+                const childrenContainer = document.createElement('div');
+                childrenContainer.className = 'tree-view__children';
+                children.forEach(child => {
+                    childrenContainer.appendChild(createCategoryNode(child));
+                });
+                item.appendChild(childrenContainer);
+            }
+
+            // Add event listeners
+            const node = item.querySelector('.tree-view__node');
+            node.addEventListener('click', () => selectCategory(category.id));
+
+            const toggle = item.querySelector('.tree-view__toggle');
+            if (toggle) {
+                toggle.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    toggle.classList.toggle('tree-view__toggle--expanded');
+                    const childContainer = item.querySelector('.tree-view__children');
+                    if (childContainer) {
+                        childContainer.classList.toggle('tree-view__children--expanded');
+                    }
+                });
+            }
+
+            // Drag and drop
+            item.addEventListener('dragstart', handleDragStart);
+            item.addEventListener('dragend', handleDragEnd);
+            item.addEventListener('dragover', handleDragOver);
+            item.addEventListener('dragleave', handleDragLeave);
+            item.addEventListener('drop', handleDrop);
+
+            return item;
+        }
+
+        // Get course count for category
+        function getCourseCount(categoryId) {
+            // Mock implementation - in real app, this would come from the data
+            return Math.floor(Math.random() * 20) + 1;
+        }
+
+        // Get enrollment count for category
+        function getEnrollmentCount(categoryId) {
+            // Mock implementation - in real app, this would come from the data
+            return Math.floor(Math.random() * 100) + 10;
+        }
+
+        // Select category
+        function selectCategory(categoryId) {
+            selectedCategoryId = categoryId;
+            
+            // Update selection state
+            document.querySelectorAll('.tree-view__node').forEach(node => {
+                node.classList.remove('tree-view__node--selected');
+            });
+            document.querySelector(`[data-id="${categoryId}"]`).classList.add('tree-view__node--selected');
+
+            // Update details panel
+            const category = categories.find(c => c.id === categoryId);
+            if (category) {
+                const courseCount = getCourseCount(categoryId);
+                const enrollmentCount = getEnrollmentCount(categoryId);
+                
+                document.getElementById('selectedCategoryInfo').innerHTML = `
+                    <div style="text-align: left;">
+                        <div style="display: flex; align-items: center; gap: var(--spacing-2); margin-bottom: var(--spacing-3);">
+                            <span style="font-size: 24px;">${category.icon || '📁'}</span>
+                            <h4 style="margin: 0;">${category.name}</h4>
+                        </div>
+                        ${category.description ? `<p style="color: var(--text-secondary); margin-bottom: var(--spacing-3);">${category.description}</p>` : ''}
+                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: var(--spacing-2);">
+                            <div class="stat-item">
+                                <div class="stat-item__label">${t('categories.courses')}</div>
+                                <div class="stat-item__value" style="font-size: var(--font-size-xl);">${courseCount}</div>
+                            </div>
+                            <div class="stat-item">
+                                <div class="stat-item__label">${t('categories.students')}</div>
+                                <div class="stat-item__value" style="font-size: var(--font-size-xl);">${enrollmentCount}</div>
+                            </div>
+                        </div>
+                        <div style="margin-top: var(--spacing-3);">
+                            <button class="btn btn--secondary btn--small btn--block" onclick="viewCategoryPermissions('${categoryId}')">
+                                ${t('categories.managePermissions')}
+                            </button>
+                        </div>
+                    </div>
+                `;
+            }
+        }
+
+        // Update analytics
+        function updateAnalytics() {
+            const totalCategories = categories.length;
+            const totalCourses = categories.reduce((sum, cat) => sum + getCourseCount(cat.id), 0);
+            const totalEnrollments = categories.reduce((sum, cat) => sum + getEnrollmentCount(cat.id), 0);
+            const avgCourses = totalCategories > 0 ? (totalCourses / totalCategories).toFixed(1) : 0;
+
+            document.getElementById('totalCategories').textContent = totalCategories;
+            document.getElementById('totalCourses').textContent = totalCourses;
+            document.getElementById('avgCourses').textContent = avgCourses;
+            document.getElementById('totalEnrollments').textContent = totalEnrollments;
+        }
+
+        // Category CRUD operations
+        function addCategory() {
+            editingCategoryId = null;
+            document.getElementById('categoryModalTitle').setAttribute('data-translate', 'categories.addCategory');
+            document.getElementById('categoryModalTitle').textContent = t('categories.addCategory');
+            document.getElementById('categoryForm').reset();
+            document.getElementById('categoryIcon').value = '📁';
+            document.getElementById('categoryColor').value = '#2C6EAA';
+            updateParentCategoryOptions();
+            document.getElementById('categoryModal').style.display = 'block';
+        }
+
+        function editCategory(categoryId) {
+            editingCategoryId = categoryId;
+            const category = categories.find(c => c.id === categoryId);
+            if (category) {
+                document.getElementById('categoryModalTitle').setAttribute('data-translate', 'categories.editCategory');
+                document.getElementById('categoryModalTitle').textContent = t('categories.editCategory');
+                document.getElementById('categoryName').value = category.name;
+                document.getElementById('categoryDescription').value = category.description || '';
+                document.getElementById('parentCategory').value = category.parentId || '';
+                document.getElementById('categoryIcon').value = category.icon || '📁';
+                document.getElementById('categoryColor').value = category.color || '#2C6EAA';
+                updateParentCategoryOptions(categoryId);
+                document.getElementById('categoryModal').style.display = 'block';
+            }
+        }
+
+        function updateParentCategoryOptions(excludeId = null) {
+            const select = document.getElementById('parentCategory');
+            select.innerHTML = `<option value="" data-translate="categories.noParent">${t('categories.noParent')}</option>`;
+            
+            function addOptions(parentId = null, level = 0) {
+                const cats = categories.filter(c => c.parentId === parentId && c.id !== excludeId);
+                cats.forEach(cat => {
+                    const option = document.createElement('option');
+                    option.value = cat.id;
+                    option.textContent = '  '.repeat(level) + cat.name;
+                    select.appendChild(option);
+                    addOptions(cat.id, level + 1);
+                });
+            }
+            
+            addOptions();
+        }
+
+        async function saveCategory() {
+            const name = document.getElementById('categoryName').value.trim();
+            if (!name) {
+                showToast(t('categories.nameRequired'), 'error');
+                return;
+            }
+
+            const categoryData = {
+                name: name,
+                description: document.getElementById('categoryDescription').value.trim(),
+                parentId: document.getElementById('parentCategory').value || null,
+                icon: document.getElementById('categoryIcon').value,
+                color: document.getElementById('categoryColor').value
+            };
+
+            if (editingCategoryId) {
+                // Update existing category
+                const index = categories.findIndex(c => c.id === editingCategoryId);
+                if (index !== -1) {
+                    categories[index] = { ...categories[index], ...categoryData };
+                }
+                showToast(t('categories.updated'), 'success');
+            } else {
+                // Add new category
+                const newCategory = {
+                    id: 'cat_' + Date.now(),
+                    ...categoryData,
+                    createdAt: new Date().toISOString()
+                };
+                categories.push(newCategory);
+                showToast(t('categories.added'), 'success');
+            }
+
+            localStorage.setItem('categories', JSON.stringify(categories));
+            renderCategoryTree();
+            updateAnalytics();
+            closeCategoryModal();
+        }
+
+        async function deleteCategory(categoryId) {
+            if (confirm(t('categories.confirmDelete'))) {
+                // Check if category has children
+                const hasChildren = categories.some(c => c.parentId === categoryId);
+                if (hasChildren) {
+                    showToast(t('categories.hasChildrenError'), 'error');
+                    return;
+                }
+
+                // Check if category has courses (mock check)
+                const courseCount = getCourseCount(categoryId);
+                if (courseCount > 0) {
+                    if (!confirm(t('categories.hasCoursesWarning').replace('{count}', courseCount))) {
+                        return;
+                    }
+                }
+
+                categories = categories.filter(c => c.id !== categoryId);
+                localStorage.setItem('categories', JSON.stringify(categories));
+                renderCategoryTree();
+                updateAnalytics();
+                showToast(t('categories.deleted'), 'success');
+            }
+        }
+
+        function closeCategoryModal() {
+            document.getElementById('categoryModal').style.display = 'none';
+        }
+
+        // Export/Import functionality
+        function exportCategories() {
+            const exportData = {
+                version: '1.0',
+                exportDate: new Date().toISOString(),
+                categories: categories
+            };
+            
+            const dataStr = JSON.stringify(exportData, null, 2);
+            const dataBlob = new Blob([dataStr], { type: 'application/json' });
+            const url = URL.createObjectURL(dataBlob);
+            const link = document.createElement('a');
+            link.href = url;
+            link.download = `categories_export_${new Date().getTime()}.json`;
+            link.click();
+            URL.revokeObjectURL(url);
+            
+            showToast(t('categories.exportSuccess'), 'success');
+        }
+
+        function importCategories() {
+            document.getElementById('importModal').style.display = 'block';
+        }
+
+        function closeImportModal() {
+            document.getElementById('importModal').style.display = 'none';
+            document.getElementById('importFile').value = '';
+        }
+
+        async function performImport() {
+            const fileInput = document.getElementById('importFile');
+            const file = fileInput.files[0];
+            
+            if (!file) {
+                showToast(t('categories.selectFileError'), 'error');
+                return;
+            }
+
+            try {
+                const text = await file.text();
+                const data = JSON.parse(text);
+                
+                if (data.categories && Array.isArray(data.categories)) {
+                    // Merge with existing categories
+                    data.categories.forEach(importedCat => {
+                        const existingIndex = categories.findIndex(c => c.name === importedCat.name);
+                        if (existingIndex !== -1) {
+                            // Update existing
+                            categories[existingIndex] = { ...categories[existingIndex], ...importedCat };
+                        } else {
+                            // Add new
+                            categories.push({
+                                ...importedCat,
+                                id: 'cat_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9)
+                            });
+                        }
+                    });
+                    
+                    localStorage.setItem('categories', JSON.stringify(categories));
+                    renderCategoryTree();
+                    updateAnalytics();
+                    closeImportModal();
+                    showToast(t('categories.importSuccess'), 'success');
+                } else {
+                    throw new Error('Invalid file format');
+                }
+            } catch (error) {
+                console.error('Import error:', error);
+                showToast(t('categories.importError'), 'error');
+            }
+        }
+
+        // Apply template
+        function applyTemplate(templateType) {
+            const templates = {
+                technical: [
+                    { name: 'Programming', icon: '💻', children: [
+                        { name: 'Web Development', icon: '🌐' },
+                        { name: 'Mobile Development', icon: '📱' },
+                        { name: 'Desktop Applications', icon: '🖥️' }
+                    ]},
+                    { name: 'Data Science', icon: '📊', children: [
+                        { name: 'Machine Learning', icon: '🤖' },
+                        { name: 'Data Analysis', icon: '📈' },
+                        { name: 'Big Data', icon: '🗄️' }
+                    ]},
+                    { name: 'DevOps', icon: '⚙️', children: [
+                        { name: 'Cloud Computing', icon: '☁️' },
+                        { name: 'CI/CD', icon: '🔄' },
+                        { name: 'Infrastructure', icon: '🏗️' }
+                    ]}
+                ],
+                business: [
+                    { name: 'Management', icon: '💼', children: [
+                        { name: 'Project Management', icon: '📋' },
+                        { name: 'Leadership', icon: '👔' },
+                        { name: 'Strategy', icon: '🎯' }
+                    ]},
+                    { name: 'Marketing', icon: '📢', children: [
+                        { name: 'Digital Marketing', icon: '💻' },
+                        { name: 'Content Marketing', icon: '✍️' },
+                        { name: 'Social Media', icon: '📱' }
+                    ]},
+                    { name: 'Finance', icon: '💰', children: [
+                        { name: 'Accounting', icon: '🧮' },
+                        { name: 'Investment', icon: '📈' },
+                        { name: 'Financial Planning', icon: '💳' }
+                    ]}
+                ],
+                creative: [
+                    { name: 'Design', icon: '🎨', children: [
+                        { name: 'Graphic Design', icon: '🖼️' },
+                        { name: 'UI/UX Design', icon: '📱' },
+                        { name: 'Web Design', icon: '🌐' }
+                    ]},
+                    { name: 'Media', icon: '🎬', children: [
+                        { name: 'Video Production', icon: '📹' },
+                        { name: 'Photography', icon: '📸' },
+                        { name: 'Audio Production', icon: '🎵' }
+                    ]},
+                    { name: 'Writing', icon: '✍️', children: [
+                        { name: 'Creative Writing', icon: '📝' },
+                        { name: 'Technical Writing', icon: '📄' },
+                        { name: 'Copywriting', icon: '💬' }
+                    ]}
+                ]
+            };
+
+            if (confirm(t('categories.confirmApplyTemplate'))) {
+                const template = templates[templateType];
+                template.forEach(parentCat => {
+                    const parentId = 'cat_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
+                    categories.push({
+                        id: parentId,
+                        name: parentCat.name,
+                        icon: parentCat.icon,
+                        color: '#2C6EAA',
+                        createdAt: new Date().toISOString()
+                    });
+
+                    if (parentCat.children) {
+                        parentCat.children.forEach(childCat => {
+                            categories.push({
+                                id: 'cat_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9),
+                                name: childCat.name,
+                                icon: childCat.icon,
+                                parentId: parentId,
+                                color: '#4A8BC2',
+                                createdAt: new Date().toISOString()
+                            });
+                        });
+                    }
+                });
+
+                localStorage.setItem('categories', JSON.stringify(categories));
+                renderCategoryTree();
+                updateAnalytics();
+                showToast(t('categories.templateApplied'), 'success');
+            }
+        }
+
+        // Expand all categories
+        function expandAll() {
+            document.querySelectorAll('.tree-view__toggle').forEach(toggle => {
+                toggle.classList.add('tree-view__toggle--expanded');
+            });
+            document.querySelectorAll('.tree-view__children').forEach(children => {
+                children.classList.add('tree-view__children--expanded');
+            });
+        }
+
+        // View category permissions
+        function viewCategoryPermissions(categoryId) {
+            // In a real app, this would open a permissions management modal
+            alert(t('categories.permissionsFeature'));
+        }
+
+        // Drag and drop handlers
+        let draggedItem = null;
+
+        function handleDragStart(e) {
+            draggedItem = this;
+            this.querySelector('.tree-view__node').classList.add('tree-view__node--dragging');
+        }
+
+        function handleDragEnd(e) {
+            this.querySelector('.tree-view__node').classList.remove('tree-view__node--dragging');
+        }
+
+        function handleDragOver(e) {
+            e.preventDefault();
+            const node = this.querySelector('.tree-view__node');
+            node.classList.add('tree-view__node--drag-over');
+        }
+
+        function handleDragLeave(e) {
+            const node = this.querySelector('.tree-view__node');
+            node.classList.remove('tree-view__node--drag-over');
+        }
+
+        function handleDrop(e) {
+            e.preventDefault();
+            const node = this.querySelector('.tree-view__node');
+            node.classList.remove('tree-view__node--drag-over');
+            
+            if (this !== draggedItem) {
+                const draggedId = draggedItem.querySelector('.tree-view__node').dataset.id;
+                const targetId = node.dataset.id;
+                
+                // Update parent relationship
+                const draggedCategory = categories.find(c => c.id === draggedId);
+                if (draggedCategory) {
+                    draggedCategory.parentId = targetId;
+                    localStorage.setItem('categories', JSON.stringify(categories));
+                    renderCategoryTree();
+                    showToast(t('categories.moved'), 'success');
+                }
+            }
+        }
+
+        // Icon and color pickers
+        document.addEventListener('click', (e) => {
+            if (e.target.classList.contains('icon-option')) {
+                document.querySelectorAll('.icon-option').forEach(opt => opt.classList.remove('selected'));
+                e.target.classList.add('selected');
+                document.getElementById('categoryIcon').value = e.target.dataset.icon;
+            }
+            
+            if (e.target.classList.contains('color-option')) {
+                document.querySelectorAll('.color-option').forEach(opt => opt.classList.remove('selected'));
+                e.target.classList.add('selected');
+                document.getElementById('categoryColor').value = e.target.dataset.color;
+            }
+        });
+
+        // Load saved categories from localStorage or use mock data
+        const savedCategories = localStorage.getItem('categories');
+        if (savedCategories) {
+            categories = JSON.parse(savedCategories);
+        }
+
+        // Initialize
+        loadCategories();
+    </script>
+</body>
+</html>
