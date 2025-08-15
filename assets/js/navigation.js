@@ -164,6 +164,18 @@ LMS.Navigation = {
             href: 'pages/quiz-templates.html'
           },
           {
+            id: 'quiz-analytics',
+            icon: 'fa-chart-bar',
+            label: 'nav.quizAnalytics',
+            href: 'pages/quiz-analytics.html'
+          },
+          {
+            id: 'quiz-analytics',
+            icon: 'fa-chart-bar',
+            label: 'nav.quizAnalytics',
+            href: 'pages/quiz-analytics.html'
+          },
+          {
             id: 'quiz-monitoring',
             icon: 'fa-desktop',
             label: 'nav.quizMonitoring',
@@ -322,6 +334,12 @@ LMS.Navigation = {
             icon: 'fa-clipboard-check',
             label: 'nav.quizTemplates',
             href: 'pages/quiz-templates.html'
+          },
+          {
+            id: 'quiz-analytics',
+            icon: 'fa-chart-bar',
+            label: 'nav.quizAnalytics',
+            href: 'pages/quiz-analytics.html'
           },
           {
             id: 'quiz-analytics',

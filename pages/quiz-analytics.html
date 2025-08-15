@@ -4,102 +4,106 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Quiz Analytics - LMS</title>
-    <!-- Core CSS -->
     <link rel="stylesheet" href="../assets/css/global.css">
     <link rel="stylesheet" href="../assets/css/themes.css">
     <link rel="stylesheet" href="../assets/css/layout.css">
     <link rel="stylesheet" href="../assets/css/components.css">
     <link rel="stylesheet" href="../assets/css/utilities.css">
-    <!-- Font Awesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-    <!-- Chart.js -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <!-- Configuration -->
     <script src="../config.js"></script>
-
-
 </head>
 <body>
     <div class="page-container">
-        <!-- Analytics Header -->
-        <div class="analytics-header">
+        <!-- Page Header -->
+        <div class="page-header">
             <div class="flex-between">
                 <div>
-                    <h1 class="analytics-title" data-translate="quiz.analytics">Quiz Analytics</h1>
-                    <p class="analytics-subtitle" data-translate="quiz.analyticsSubtitle">Comprehensive performance analysis and insights</p>
+                    <h1 class="page-title" data-translate="quiz.analytics">Quiz Analytics</h1>
+                    <p class="page-subtitle" data-translate="quiz.analyticsSubtitle">Detailed performance metrics and insights for all quizzes</p>
                 </div>
                 <div class="flex flex-gap-3">
-                    <button class="btn btn--secondary"  onclick="refreshAnalytics()">
+                    <button class="btn btn--secondary" onclick="exportAnalytics()">
+                        <i class="fas fa-download" class="icon-mr"></i>
+                        <span data-translate="common.export">Export Report</span>
+                    </button>
+                    <button class="btn btn--primary" onclick="refreshAnalytics()">
                         <i class="fas fa-sync-alt" class="icon-mr"></i>
                         <span data-translate="common.refresh">Refresh</span>
-                    </button>
-                    <button class="btn btn--success" onclick="exportAllData()">
-                        <i class="fas fa-download" class="icon-mr"></i>
-                        <span data-translate="quiz.exportAll">Export All</span>
                     </button>
                 </div>
             </div>
         </div>
 
         <div class="page-content">
-            <!-- Filters Section -->
-            <div class="analytics-filters">
-                <div class="filters-grid">
-                    <div class="input-group">
-                        <label class="input-group__label" data-translate="quiz.selectQuiz">Select Quiz</label>
-                        <div class="dropdown dropdown--block" id="quizFilterDropdown">
-                            <button class="dropdown__trigger">
-                                <span data-translate="quiz.allQuizzes">All Quizzes</span>
-                                <span class="dropdown__arrow"></span>
-                            </button>
-                            <div class="dropdown__menu">
-                                <div class="dropdown__list" id="quizFilterList">
-                                    <!-- Quiz options will be populated dynamically -->
+            <!-- Key Metrics Cards -->
+            <div class="grid grid--4-cols mb-6">
+                <div class="card">
+                    <div class="card__body">
+                        <div class="metric-card">
+                            <div class="metric-card__icon metric-card__icon--primary">
+                                <i class="fas fa-chart-line"></i>
+                            </div>
+                            <div class="metric-card__content">
+                                <div class="metric-card__value" id="avgScore">0%</div>
+                                <div class="metric-card__label" data-translate="quiz.avgScore">Average Score</div>
+                                <div class="metric-card__trend metric-card__trend--up">
+                                    <i class="fas fa-arrow-up"></i>
+                                    <span>+5%</span>
                                 </div>
                             </div>
                         </div>
                     </div>
-                    <div class="input-group">
-                        <label class="input-group__label" data-translate="course.selectCourse">Course</label>
-                        <div class="dropdown dropdown--block" id="courseFilterDropdown">
-                            <button class="dropdown__trigger">
-                                <span data-translate="common.allCourses">All Courses</span>
-                                <span class="dropdown__arrow"></span>
-                            </button>
-                            <div class="dropdown__menu">
-                                <div class="dropdown__list" id="courseFilterList">
-                                    <!-- Course options will be populated dynamically -->
+                </div>
+                
+                <div class="card">
+                    <div class="card__body">
+                        <div class="metric-card">
+                            <div class="metric-card__icon metric-card__icon--success">
+                                <i class="fas fa-check-circle"></i>
+                            </div>
+                            <div class="metric-card__content">
+                                <div class="metric-card__value" id="passRate">0%</div>
+                                <div class="metric-card__label" data-translate="quiz.passRate">Pass Rate</div>
+                                <div class="metric-card__trend metric-card__trend--up">
+                                    <i class="fas fa-arrow-up"></i>
+                                    <span>+3%</span>
                                 </div>
                             </div>
                         </div>
                     </div>
-                    <div class="input-group">
-                        <label class="input-group__label" data-translate="quiz.timePeriod">Time Period</label>
-                        <div class="dropdown dropdown--block" id="timePeriodFilterDropdown">
-                            <button class="dropdown__trigger">
-                                <span data-translate="quiz.last30Days">Last 30 Days</span>
-                                <span class="dropdown__arrow"></span>
-                            </button>
-                            <div class="dropdown__menu">
-                                <div class="dropdown__list">
-                                    <div class="dropdown__item" data-value="7" data-translate="quiz.last7Days">Last 7 Days</div>
-                                    <div class="dropdown__item dropdown__item--selected" data-value="30" data-translate="quiz.last30Days">Last 30 Days</div>
-                                    <div class="dropdown__item" data-value="90" data-translate="quiz.last90Days">Last 90 Days</div>
-                                    <div class="dropdown__item" data-value="all" data-translate="quiz.allTime">All Time</div>
+                </div>
+                
+                <div class="card">
+                    <div class="card__body">
+                        <div class="metric-card">
+                            <div class="metric-card__icon metric-card__icon--warning">
+                                <i class="fas fa-clock"></i>
+                            </div>
+                            <div class="metric-card__content">
+                                <div class="metric-card__value" id="avgTime">0 min</div>
+                                <div class="metric-card__label" data-translate="quiz.avgCompletionTime">Avg Completion Time</div>
+                                <div class="metric-card__trend metric-card__trend--down">
+                                    <i class="fas fa-arrow-down"></i>
+                                    <span>-2 min</span>
                                 </div>
                             </div>
                         </div>
                     </div>
-                    <div class="input-group">
-                        <label class="input-group__label" data-translate="class.selectClass">Class</label>
-                        <div class="dropdown dropdown--block" id="classFilterDropdown">
-                            <button class="dropdown__trigger">
-                                <span data-translate="common.allClasses">All Classes</span>
-                                <span class="dropdown__arrow"></span>
-                            </button>
-                            <div class="dropdown__menu">
-                                <div class="dropdown__list" id="classFilterList">
-                                    <!-- Class options will be populated dynamically -->
+                </div>
+                
+                <div class="card">
+                    <div class="card__body">
+                        <div class="metric-card">
+                            <div class="metric-card__icon metric-card__icon--info">
+                                <i class="fas fa-users"></i>
+                            </div>
+                            <div class="metric-card__content">
+                                <div class="metric-card__value" id="totalAttempts">0</div>
+                                <div class="metric-card__label" data-translate="quiz.totalAttempts">Total Attempts</div>
+                                <div class="metric-card__trend metric-card__trend--up">
+                                    <i class="fas fa-arrow-up"></i>
+                                    <span>+15</span>
                                 </div>
                             </div>
                         </div>
@@ -107,128 +111,198 @@
                 </div>
             </div>
 
-            <!-- Statistics Cards -->
-            <div class="analytics-stats" id="analyticsStats">
-                <!-- Dynamic statistics cards -->
-            </div>
-
-            <!-- Charts Section -->
-            <div class="grid grid-2fr-1fr grid-gap-6 mb-6">
-                <!-- Performance Trend Chart -->
+            <!-- Charts Row -->
+            <div class="grid grid--2-cols grid-gap-6 mb-6">
+                <!-- Performance Over Time Chart -->
                 <div class="card">
                     <div class="card__header">
-                        <h3 data-translate="quiz.performanceTrend">Performance Trend</h3>
+                        <h3 data-translate="quiz.performanceOverTime">Performance Over Time</h3>
                     </div>
                     <div class="card__body">
-                        <div class="chart-container">
-                            <canvas id="performanceChart"></canvas>
-                        </div>
+                        <canvas id="performanceChart" height="250"></canvas>
                     </div>
                 </div>
 
-                <!-- Score Distribution -->
+                <!-- Score Distribution Chart -->
                 <div class="card">
                     <div class="card__header">
                         <h3 data-translate="quiz.scoreDistribution">Score Distribution</h3>
                     </div>
                     <div class="card__body">
-                        <div class="chart-container small">
-                            <canvas id="distributionChart"></canvas>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Performance Insights -->
-            <div class="card">
-                <div class="card__header">
-                    <h3 data-translate="quiz.performanceInsights">Performance Insights</h3>
-                </div>
-                <div class="card__body">
-                    <div class="performance-insights" id="performanceInsights">
-                        <!-- Dynamic insights -->
+                        <canvas id="scoreDistributionChart" height="250"></canvas>
                     </div>
                 </div>
             </div>
 
             <!-- Question Difficulty Analysis -->
-            <div class="card">
+            <div class="card mb-6">
                 <div class="card__header">
-                    <div class="flex-between">
-                        <h3 data-translate="quiz.questionAnalysis">Question Difficulty Analysis</h3>
-                        <button class="btn btn--secondary btn--small" onclick="exportQuestionAnalysis()">
-                            <i class="fas fa-download" class="icon-mr"></i>
-                            <span data-translate="quiz.exportAnalysis">Export Analysis</span>
-                        </button>
-                    </div>
+                    <h3 data-translate="quiz.questionDifficultyAnalysis">Question Difficulty Analysis</h3>
                 </div>
                 <div class="card__body">
-                    <div class="difficulty-analysis" id="difficultyAnalysis">
-                        <!-- Dynamic question analysis -->
+                    <div class="difficulty-analysis">
+                        <canvas id="difficultyChart" height="300"></canvas>
                     </div>
                 </div>
             </div>
 
-            <!-- Export Section -->
+            <!-- Detailed Quiz Metrics Table -->
             <div class="card">
                 <div class="card__header">
-                    <h3 data-translate="quiz.dataExport">Data Export</h3>
+                    <h3 data-translate="quiz.detailedMetrics">Detailed Quiz Metrics</h3>
                 </div>
                 <div class="card__body">
-                    <div class="export-section">
-                        <p class="mb-4 text-secondary" data-translate="quiz.exportDescription">
-                            Export detailed analytics data in various formats for further analysis.
-                        </p>
-                        <div class="export-options">
-                            <button class="btn btn--primary" onclick="exportStudentResults()">
-                                <i class="fas fa-file-csv" class="icon-mr"></i>
-                                <span data-translate="quiz.exportStudentResults">Student Results (CSV)</span>
-                            </button>
-                            <button class="btn btn--primary" onclick="exportQuestionAnalysis()">
-                                <i class="fas fa-chart-bar" class="icon-mr"></i>
-                                <span data-translate="quiz.exportQuestionAnalysis">Question Analysis (CSV)</span>
-                            </button>
-                            <button class="btn btn--primary" onclick="exportPerformanceReport()">
-                                <i class="fas fa-file-pdf" class="icon-mr"></i>
-                                <span data-translate="quiz.exportPerformanceReport">Performance Report (PDF)</span>
-                            </button>
-                            <button class="btn btn--secondary" onclick="exportRawData()">
-                                <i class="fas fa-database" class="icon-mr"></i>
-                                <span data-translate="quiz.exportRawData">Raw Data (JSON)</span>
-                            </button>
-                        </div>
+                    <div class="table-container">
+                        <table class="table">
+                            <thead>
+                                <tr>
+                                    <th data-translate="quiz.title">Quiz Title</th>
+                                    <th data-translate="quiz.attempts">Attempts</th>
+                                    <th data-translate="quiz.avgScore">Avg Score</th>
+                                    <th data-translate="quiz.passRate">Pass Rate</th>
+                                    <th data-translate="quiz.avgTime">Avg Time</th>
+                                    <th data-translate="quiz.difficulty">Difficulty</th>
+                                    <th data-translate="quiz.effectiveness">Effectiveness</th>
+                                    <th data-translate="common.actions">Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="metricsTableBody">
+                                <!-- Dynamic content -->
+                            </tbody>
+                        </table>
                     </div>
                 </div>
             </div>
         </div>
     </div>
+    <!-- Custom Styles -->
+    <style>
+        .metric-card {
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-4);
+        }
 
-    <!-- Core JavaScript -->
+        .metric-card__icon {
+            width: 60px;
+            height: 60px;
+            border-radius: var(--radius-lg);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            color: white;
+        }
+
+        .metric-card__icon--primary {
+            background: var(--color-primary);
+        }
+
+        .metric-card__icon--success {
+            background: var(--color-success);
+        }
+
+        .metric-card__icon--warning {
+            background: var(--color-warning);
+        }
+
+        .metric-card__icon--info {
+            background: var(--color-info);
+        }
+
+        .metric-card__content {
+            flex: 1;
+        }
+
+        .metric-card__value {
+            font-size: 28px;
+            font-weight: 700;
+            color: var(--text-primary);
+            line-height: 1;
+        }
+
+        .metric-card__label {
+            font-size: var(--font-size-sm);
+            color: var(--text-secondary);
+            margin-top: var(--spacing-1);
+        }
+
+        .metric-card__trend {
+            display: inline-flex;
+            align-items: center;
+            gap: var(--spacing-1);
+            font-size: var(--font-size-sm);
+            margin-top: var(--spacing-2);
+            padding: var(--spacing-1) var(--spacing-2);
+            border-radius: var(--radius-sm);
+        }
+
+        .metric-card__trend--up {
+            color: var(--color-success);
+            background: rgba(16, 185, 129, 0.1);
+        }
+
+        .metric-card__trend--down {
+            color: var(--color-danger);
+            background: rgba(239, 68, 68, 0.1);
+        }
+
+        .difficulty-analysis {
+            padding: var(--spacing-4);
+            background: var(--bg-secondary);
+            border-radius: var(--radius-base);
+        }
+
+        .effectiveness-badge {
+            padding: var(--spacing-1) var(--spacing-3);
+            border-radius: var(--radius-full);
+            font-size: var(--font-size-sm);
+            font-weight: 600;
+        }
+
+        .effectiveness-badge--high {
+            background: rgba(16, 185, 129, 0.1);
+            color: var(--color-success);
+        }
+
+        .effectiveness-badge--medium {
+            background: rgba(245, 158, 11, 0.1);
+            color: var(--color-warning);
+        }
+
+        .effectiveness-badge--low {
+            background: rgba(239, 68, 68, 0.1);
+            color: var(--color-danger);
+        }
+    </style>
+
     <script src="../assets/js/global.js"></script>
     <script src="../assets/js/auth.js"></script>
     <script src="../assets/js/api.js"></script>
     
+    <!-- Page JavaScript -->
     <script>
         // State management
-        let allQuizzes = [];
-        let allCourses = [];
-        let allClasses = [];
-        let quizSubmissions = [];
-        let currentUser = null;
+        let analyticsData = {
+            avgScore: 78.5,
+            passRate: 72.3,
+            avgTime: 25,
+            totalAttempts: 1234,
+            quizzes: []
+        };
         let charts = {};
 
         // Initialize
         async function init() {
-            // Ensure auth is loaded first
-            if (!LMS.Auth.currentUser) {
-                LMS.Auth.loadSession();
+            // Check authentication
+            if (!LMS.Auth.isAuthenticated()) {
+                window.location.href = '../index.html';
+                return;
             }
-            
-            // Get current user after auth is ready
-            currentUser = LMS.Auth.getUser();
-            
-            // Check authentication - teachers and admins only
-            if (!LMS.AccessControl.checkRole(['teacher', 'admin'])) {
+
+            const currentUser = LMS.Auth.getUser();
+            if (currentUser.role !== 'teacher' && currentUser.role !== 'admin') {
+                window.location.href = '../index.html';
                 return;
             }
 
@@ -236,406 +310,60 @@
             await LMS.LanguageManager.init();
             LMS.LanguageManager.updateUI();
             
-            // Load data
-            await loadData();
-            populateFilters();
-            updateAnalytics();
+            // Display initial data
+            displayMetrics();
+            renderCharts();
+            loadQuizMetrics();
         }
 
-        // Load all data
-        async function loadData() {
-            try {
-                // Load courses
-                const courseResponse = await LMS.API.loadJSON('mock-courses.json');
-                allCourses = courseResponse.data || [];
-
-                // Load classes
-                const classResponse = await LMS.API.loadJSON('mock-classes.json');
-                allClasses = classResponse.data || [];
-
-                // Generate mock quiz data
-                allQuizzes = generateMockQuizData();
-                
-                // Generate mock submission data
-                quizSubmissions = generateMockSubmissionData();
-                
-            } catch (error) {
-                console.error('Failed to load data:', error);
-                LMS.showToast(LMS.t('error.loadData'), 'error');
-            }
+        // Display metrics
+        function displayMetrics() {
+            document.getElementById('avgScore').textContent = analyticsData.avgScore + '%';
+            document.getElementById('passRate').textContent = analyticsData.passRate + '%';
+            document.getElementById('avgTime').textContent = analyticsData.avgTime + ' min';
+            document.getElementById('totalAttempts').textContent = analyticsData.totalAttempts;
         }
 
-        // Generate mock quiz data
-        function generateMockQuizData() {
-            const quizzes = [];
-            for (let i = 0; i < 8; i++) {
-                const course = allCourses[i % allCourses.length];
-                quizzes.push({
-                    id: `quiz_${String(i + 1).padStart(3, '0')}`,
-                    title: `${course?.title || 'Course'} - Quiz ${i + 1}`,
-                    courseId: course?.id || 'course_001',
-                    courseName: course?.title || 'Sample Course',
-                    questionCount: Math.floor(Math.random() * 20) + 10,
-                    createdAt: new Date(Date.now() - Math.random() * 60 * 24 * 60 * 60 * 1000).toISOString(),
-                    createdBy: currentUser.role === 'teacher' ? currentUser.id : 'teacher_001'
-                });
-            }
-            
-            // Filter for teachers
-            if (currentUser.role === 'teacher') {
-                return quizzes.filter(q => q.createdBy === currentUser.id);
-            }
-            
-            return quizzes;
+        // Render charts
+        function renderCharts() {
+            renderPerformanceChart();
+            renderScoreDistributionChart();
+            renderDifficultyChart();
         }
 
-        // Generate mock submission data
-        function generateMockSubmissionData() {
-            const submissions = [];
-            const studentIds = ['student_001', 'student_002', 'student_003', 'student_004', 'student_005'];
-            
-            allQuizzes.forEach(quiz => {
-                // Generate 15-30 submissions per quiz
-                const submissionCount = Math.floor(Math.random() * 16) + 15;
-                
-                for (let i = 0; i < submissionCount; i++) {
-                    const studentId = studentIds[i % studentIds.length];
-                    const score = Math.floor(Math.random() * 100);
-                    const timeSpent = Math.floor(Math.random() * 1800) + 300; // 5-35 minutes
-                    
-                    submissions.push({
-                        id: `submission_${quiz.id}_${studentId}_${i}`,
-                        quizId: quiz.id,
-                        studentId: studentId,
-                        score: score,
-                        timeSpent: timeSpent,
-                        submittedAt: new Date(Date.now() - Math.random() * 30 * 24 * 60 * 60 * 1000).toISOString(),
-                        questionResults: generateQuestionResults(quiz.questionCount, score)
-                    });
-                }
-            });
-            
-            return submissions;
-        }
-
-        // Generate question results
-        function generateQuestionResults(questionCount, overallScore) {
-            const results = [];
-            for (let i = 0; i < questionCount; i++) {
-                const isCorrect = Math.random() < (overallScore / 100);
-                results.push({
-                    questionId: `q${i + 1}`,
-                    isCorrect: isCorrect,
-                    timeSpent: Math.floor(Math.random() * 180) + 30, // 30-210 seconds
-                    selectedAnswer: isCorrect ? 'correct_answer' : 'wrong_answer'
-                });
-            }
-            return results;
-        }
-
-        // Populate filters
-        function populateFilters() {
-            // Quiz filter
-            const quizOptions = [{value: '', text: LMS.t('quiz.allQuizzes')}];
-            allQuizzes.forEach(quiz => {
-                quizOptions.push({value: quiz.id, text: quiz.title});
-            });
-            LMS.Dropdown.populate('quizFilterDropdown', quizOptions);
-
-            // Course filter
-            const uniqueCourses = [...new Set(allQuizzes.map(q => q.courseId))]
-                .map(id => allCourses.find(c => c.id === id))
-                .filter(Boolean);
-            
-            const courseOptions = [{value: '', text: LMS.t('common.allCourses')}];
-            uniqueCourses.forEach(course => {
-                courseOptions.push({value: course.id, text: course.title});
-            });
-            LMS.Dropdown.populate('courseFilterDropdown', courseOptions);
-
-            // Class filter
-            const classOptions = [{value: '', text: LMS.t('common.allClasses')}];
-            allClasses.forEach(cls => {
-                classOptions.push({value: cls.id, text: cls.name});
-            });
-            LMS.Dropdown.populate('classFilterDropdown', classOptions);
-            
-            // Initialize dropdowns with onChange handlers
-            LMS.Dropdown.init('quizFilterDropdown', {
-                onSelect: () => updateAnalytics()
-            });
-            
-            LMS.Dropdown.init('courseFilterDropdown', {
-                onSelect: () => updateAnalytics()
-            });
-            
-            LMS.Dropdown.init('timePeriodFilterDropdown', {
-                onSelect: () => updateAnalytics()
-            });
-            
-            LMS.Dropdown.init('classFilterDropdown', {
-                onSelect: () => updateAnalytics()
-            });
-        }
-
-        // Update analytics
-        function updateAnalytics() {
-            const filteredData = getFilteredData();
-            updateStatistics(filteredData);
-            updateCharts(filteredData);
-            updateInsights(filteredData);
-            updateQuestionAnalysis(filteredData);
-        }
-
-        // Get filtered data
-        function getFilteredData() {
-            let filteredSubmissions = [...quizSubmissions];
-            let filteredQuizzes = [...allQuizzes];
-
-            // Quiz filter
-            const quizId = LMS.Dropdown.getValue('quizFilterDropdown');
-            if (quizId) {
-                filteredSubmissions = filteredSubmissions.filter(s => s.quizId === quizId);
-                filteredQuizzes = filteredQuizzes.filter(q => q.id === quizId);
-            }
-
-            // Course filter
-            const courseId = LMS.Dropdown.getValue('courseFilterDropdown');
-            if (courseId) {
-                const courseQuizIds = allQuizzes.filter(q => q.courseId === courseId).map(q => q.id);
-                filteredSubmissions = filteredSubmissions.filter(s => courseQuizIds.includes(s.quizId));
-                filteredQuizzes = filteredQuizzes.filter(q => q.courseId === courseId);
-            }
-
-            // Time period filter
-            const timePeriod = LMS.Dropdown.getValue('timePeriodFilterDropdown');
-            if (timePeriod !== 'all') {
-                const cutoffDate = new Date();
-                cutoffDate.setDate(cutoffDate.getDate() - parseInt(timePeriod));
-                filteredSubmissions = filteredSubmissions.filter(s => 
-                    new Date(s.submittedAt) >= cutoffDate
-                );
-            }
-
-            return {
-                submissions: filteredSubmissions,
-                quizzes: filteredQuizzes
-            };
-        }
-
-        // Update statistics
-        function updateStatistics(data) {
-            const stats = calculateStatistics(data);
-            
-            document.getElementById('analyticsStats').innerHTML = `
-                <div class="stat-card primary">
-                    <div class="stat-value primary">${stats.totalSubmissions}</div>
-                    <div class="stat-label" data-translate="quiz.totalSubmissions">Total Submissions</div>
-                    <div class="stat-change positive">
-                        <i class="fas fa-arrow-up"></i>
-                        <span>+${stats.submissionChange}%</span>
-                    </div>
-                </div>
-                <div class="stat-card success">
-                    <div class="stat-value success">${stats.averageScore}%</div>
-                    <div class="stat-label" data-translate="quiz.averageScore">Average Score</div>
-                    <div class="stat-change ${stats.scoreChange >= 0 ? 'positive' : 'negative'}">
-                        <i class="fas fa-arrow-${stats.scoreChange >= 0 ? 'up' : 'down'}"></i>
-                        <span>${stats.scoreChange >= 0 ? '+' : ''}${stats.scoreChange}%</span>
-                    </div>
-                </div>
-                <div class="stat-card warning">
-                    <div class="stat-value warning">${stats.passRate}%</div>
-                    <div class="stat-label" data-translate="quiz.passRate">Pass Rate</div>
-                    <div class="stat-change ${stats.passRateChange >= 0 ? 'positive' : 'negative'}">
-                        <i class="fas fa-arrow-${stats.passRateChange >= 0 ? 'up' : 'down'}"></i>
-                        <span>${stats.passRateChange >= 0 ? '+' : ''}${stats.passRateChange}%</span>
-                    </div>
-                </div>
-                <div class="stat-card danger">
-                    <div class="stat-value danger">${stats.averageTime}m</div>
-                    <div class="stat-label" data-translate="quiz.averageTime">Average Time</div>
-                    <div class="stat-change ${stats.timeChange <= 0 ? 'positive' : 'negative'}">
-                        <i class="fas fa-arrow-${stats.timeChange <= 0 ? 'down' : 'up'}"></i>
-                        <span>${stats.timeChange <= 0 ? '' : '+'}${stats.timeChange}%</span>
-                    </div>
-                </div>
-            `;
-        }
-
-        // Calculate statistics
-        function calculateStatistics(data) {
-            const submissions = data.submissions;
-            
-            if (submissions.length === 0) {
-                return {
-                    totalSubmissions: 0,
-                    averageScore: 0,
-                    passRate: 0,
-                    averageTime: 0,
-                    submissionChange: 0,
-                    scoreChange: 0,
-                    passRateChange: 0,
-                    timeChange: 0
-                };
-            }
-
-            const totalSubmissions = submissions.length;
-            const averageScore = Math.round(submissions.reduce((sum, s) => sum + s.score, 0) / totalSubmissions);
-            const passedSubmissions = submissions.filter(s => s.score >= 70).length;
-            const passRate = Math.round((passedSubmissions / totalSubmissions) * 100);
-            const averageTime = Math.round(submissions.reduce((sum, s) => sum + s.timeSpent, 0) / totalSubmissions / 60);
-
-            // Mock percentage changes
-            return {
-                totalSubmissions,
-                averageScore,
-                passRate,
-                averageTime,
-                submissionChange: Math.floor(Math.random() * 20) + 5,
-                scoreChange: Math.floor(Math.random() * 10) - 5,
-                passRateChange: Math.floor(Math.random() * 8) - 3,
-                timeChange: Math.floor(Math.random() * 6) - 3
-            };
-        }
-
-        // Update charts
-        function updateCharts(data) {
-            updatePerformanceChart(data);
-            updateDistributionChart(data);
-        }
-
-        // Update performance trend chart
-        function updatePerformanceChart(data) {
+        // Render performance chart
+        function renderPerformanceChart() {
             const ctx = document.getElementById('performanceChart').getContext('2d');
             
-            // Destroy existing chart
-            if (charts.performance) {
-                charts.performance.destroy();
-            }
-
-            // Generate trend data (last 7 days)
             const labels = [];
-            const scores = [];
-            const submissions = [];
+            const scoreData = [];
+            const passRateData = [];
             
-            for (let i = 6; i >= 0; i--) {
+            // Generate last 30 days data
+            for (let i = 29; i >= 0; i--) {
                 const date = new Date();
                 date.setDate(date.getDate() - i);
                 labels.push(date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' }));
-                
-                // Mock data for each day
-                scores.push(Math.floor(Math.random() * 20) + 70);
-                submissions.push(Math.floor(Math.random() * 10) + 5);
+                scoreData.push(Math.floor(Math.random() * 20) + 70);
+                passRateData.push(Math.floor(Math.random() * 20) + 60);
             }
 
             charts.performance = new Chart(ctx, {
                 type: 'line',
                 data: {
                     labels: labels,
-                    datasets: [
-                        {
-                            label: 'Average Score (%)',
-                            data: scores,
-                            borderColor: 'rgb(44, 110, 170)',
-                            backgroundColor: 'rgba(44, 110, 170, 0.1)',
-                            tension: 0.3,
-                            yAxisID: 'y'
-                        },
-                        {
-                            label: 'Submissions',
-                            data: submissions,
-                            borderColor: 'rgb(16, 185, 129)',
-                            backgroundColor: 'rgba(16, 185, 129, 0.1)',
-                            tension: 0.3,
-                            yAxisID: 'y1'
-                        }
-                    ]
-                },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    interaction: {
-                        mode: 'index',
-                        intersect: false,
-                    },
-                    scales: {
-                        x: {
-                            display: true,
-                            title: {
-                                display: true,
-                                text: 'Date'
-                            }
-                        },
-                        y: {
-                            type: 'linear',
-                            display: true,
-                            position: 'left',
-                            title: {
-                                display: true,
-                                text: 'Average Score (%)'
-                            },
-                            min: 0,
-                            max: 100
-                        },
-                        y1: {
-                            type: 'linear',
-                            display: true,
-                            position: 'right',
-                            title: {
-                                display: true,
-                                text: 'Number of Submissions'
-                            },
-                            grid: {
-                                drawOnChartArea: false,
-                            },
-                        }
-                    }
-                }
-            });
-        }
-
-        // Update score distribution chart
-        function updateDistributionChart(data) {
-            const ctx = document.getElementById('distributionChart').getContext('2d');
-            
-            // Destroy existing chart
-            if (charts.distribution) {
-                charts.distribution.destroy();
-            }
-
-            // Calculate score distribution
-            const ranges = ['0-40', '41-60', '61-70', '71-80', '81-90', '91-100'];
-            const counts = [0, 0, 0, 0, 0, 0];
-            
-            data.submissions.forEach(submission => {
-                const score = submission.score;
-                if (score <= 40) counts[0]++;
-                else if (score <= 60) counts[1]++;
-                else if (score <= 70) counts[2]++;
-                else if (score <= 80) counts[3]++;
-                else if (score <= 90) counts[4]++;
-                else counts[5]++;
-            });
-
-            const colors = [
-                'rgba(239, 68, 68, 0.8)',    // Red
-                'rgba(245, 158, 11, 0.8)',   // Orange
-                'rgba(251, 191, 36, 0.8)',   // Yellow
-                'rgba(34, 197, 94, 0.8)',    // Green
-                'rgba(59, 130, 246, 0.8)',   // Blue
-                'rgba(147, 51, 234, 0.8)'    // Purple
-            ];
-
-            charts.distribution = new Chart(ctx, {
-                type: 'doughnut',
-                data: {
-                    labels: ranges,
                     datasets: [{
-                        data: counts,
-                        backgroundColor: colors,
-                        borderWidth: 2,
-                        borderColor: '#fff'
+                        label: 'Average Score',
+                        data: scoreData,
+                        borderColor: '#2C6EAA',
+                            backgroundColor: 'rgba(44, 110, 170, 0.1)',
+                        tension: 0.4
+                    }, {
+                        label: 'Pass Rate',
+                        data: passRateData,
+                        borderColor: '#10B981',
+                            backgroundColor: 'rgba(16, 185, 129, 0.1)',
+                        tension: 0.4
                     }]
                 },
                 options: {
@@ -643,254 +371,192 @@
                     maintainAspectRatio: false,
                     plugins: {
                         legend: {
-                            position: 'bottom',
+                            position: 'bottom'
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            max: 100
                         }
                     }
                 }
             });
         }
 
-        // Update insights
-        function updateInsights(data) {
-            const insights = generateInsights(data);
-            
-            document.getElementById('performanceInsights').innerHTML = insights.map(insight => `
-                <div class="insight-item ${insight.type}">
-                    <div class="insight-icon ${insight.type}">
-                        <i class="fas fa-${insight.icon}"></i>
-                    </div>
-                    <div class="insight-content">
-                        <h5>${insight.title}</h5>
-                        <p>${insight.description}</p>
-                    </div>
-                </div>
-            `).join('');
-        }
+        // Render score distribution chart
+        function renderScoreDistributionChart() {
+            const ctx = document.getElementById('scoreDistributionChart').getContext('2d');
 
-        // Generate insights
-        function generateInsights(data) {
-            const stats = calculateStatistics(data);
-            const insights = [];
-
-            if (stats.averageScore >= 80) {
-                insights.push({
-                    type: 'success',
-                    icon: 'thumbs-up',
-                    title: LMS.t('quiz.excellentPerformance'),
-                    description: LMS.t('quiz.excellentPerformanceDesc')
-                });
-            } else if (stats.averageScore < 60) {
-                insights.push({
-                    type: 'warning',
-                    icon: 'exclamation-triangle',
-                    title: LMS.t('quiz.lowPerformance'),
-                    description: LMS.t('quiz.lowPerformanceDesc')
-                });
-            }
-
-            if (stats.passRate < 70) {
-                insights.push({
-                    type: 'warning',
-                    icon: 'chart-line',
-                    title: LMS.t('quiz.lowPassRate'),
-                    description: LMS.t('quiz.lowPassRateDesc')
-                });
-            }
-
-            if (stats.averageTime > 45) {
-                insights.push({
-                    type: 'info',
-                    icon: 'clock',
-                    title: LMS.t('quiz.longDuration'),
-                    description: LMS.t('quiz.longDurationDesc')
-                });
-            }
-
-            // Default insight if no specific issues
-            if (insights.length === 0) {
-                insights.push({
-                    type: 'info',
-                    icon: 'info-circle',
-                    title: LMS.t('quiz.normalPerformance'),
-                    description: LMS.t('quiz.normalPerformanceDesc')
-                });
-            }
-
-            return insights;
-        }
-
-        // Update question analysis
-        function updateQuestionAnalysis(data) {
-            const analysis = analyzeQuestions(data);
-            
-            document.getElementById('difficultyAnalysis').innerHTML = analysis.map((question, index) => `
-                <div class="question-item">
-                    <div class="question-header">
-                        <span class="question-number">${LMS.t('quiz.question')} ${index + 1}</span>
-                        <span class="difficulty-badge ${question.difficulty}">${question.difficulty.toUpperCase()}</span>
-                    </div>
-                    
-                    <div class="question-stats">
-                        <div class="question-stat">
-                            <div class="question-stat-value" class="text-success">${question.correctRate}%</div>
-                            <div class="question-stat-label" data-translate="quiz.correctRate">Correct</div>
-                        </div>
-                        <div class="question-stat">
-                            <div class="question-stat-value" class="text-info">${question.avgTime}s</div>
-                            <div class="question-stat-label" data-translate="quiz.avgTime">Avg Time</div>
-                        </div>
-                        <div class="question-stat">
-                            <div class="question-stat-value" class="text-primary">${question.attempts}</div>
-                            <div class="question-stat-label" data-translate="quiz.attempts">Attempts</div>
-                        </div>
-                        <div class="question-stat">
-                            <div class="question-stat-value" class="text-warning">${question.difficulty}</div>
-                            <div class="question-stat-label" data-translate="quiz.difficulty">Difficulty</div>
-                        </div>
-                    </div>
-                    
-                    ${question.commonMistakes.length > 0 ? `
-                        <div class="common-mistakes">
-                            <h5 class="mb-2 text-sm" data-translate="quiz.commonMistakes">Common Mistakes:</h5>
-                            ${question.commonMistakes.map(mistake => `
-                                <div class="mistake-item">
-                                    <span class="mistake-text">${mistake.text}</span>
-                                    <span class="mistake-count">${mistake.count}</span>
-                                </div>
-                            `).join('')}
-                        </div>
-                    ` : ''}
-                </div>
-            `).join('');
-        }
-
-        // Analyze questions
-        function analyzeQuestions(data) {
-            const analysis = [];
-            const maxQuestions = 5; // Show analysis for first 5 questions
-            
-            for (let i = 0; i < maxQuestions; i++) {
-                const questionResults = data.submissions.flatMap(s => 
-                    s.questionResults.filter(qr => qr.questionId === `q${i + 1}`)
-                );
-                
-                if (questionResults.length === 0) continue;
-                
-                const correctCount = questionResults.filter(qr => qr.isCorrect).length;
-                const correctRate = Math.round((correctCount / questionResults.length) * 100);
-                const avgTime = Math.round(questionResults.reduce((sum, qr) => sum + qr.timeSpent, 0) / questionResults.length);
-                
-                let difficulty = 'easy';
-                if (correctRate < 50) difficulty = 'hard';
-                else if (correctRate < 75) difficulty = 'medium';
-                
-                // Generate mock common mistakes
-                const commonMistakes = [];
-                if (correctRate < 80) {
-                    commonMistakes.push(
-                        { text: 'Selected option B instead of correct option A', count: Math.floor(Math.random() * 5) + 3 },
-                        { text: 'Misunderstood the question requirements', count: Math.floor(Math.random() * 3) + 2 }
-                    );
+            charts.distribution = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: ['0-20', '21-40', '41-60', '61-80', '81-100'],
+                    datasets: [{
+                        label: 'Number of Students',
+                        data: [5, 12, 25, 45, 38],
+                        backgroundColor: [
+                            '#EF4444',
+                            '#F59E0B',
+                            '#EAB308',
+                            '#3B82F6',
+                            '#10B981'
+                        ]
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            display: false
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true
+                        }
+                    }
                 }
-                
-                analysis.push({
-                    questionId: `q${i + 1}`,
-                    correctRate,
-                    avgTime,
-                    attempts: questionResults.length,
-                    difficulty,
-                    commonMistakes
-                });
-            }
-            
-            return analysis;
-        }
-
-        // Export functions
-        function exportAllData() {
-            exportStudentResults();
-            exportQuestionAnalysis();
-            LMS.showToast(LMS.t('quiz.exportComplete'), 'success');
-        }
-
-        function exportStudentResults() {
-            const data = getFilteredData();
-            const csvContent = generateStudentResultsCSV(data);
-            downloadCSV(csvContent, 'student_results.csv');
-        }
-
-        function exportQuestionAnalysis() {
-            const data = getFilteredData();
-            const analysis = analyzeQuestions(data);
-            const csvContent = generateQuestionAnalysisCSV(analysis);
-            downloadCSV(csvContent, 'question_analysis.csv');
-        }
-
-        function exportPerformanceReport() {
-            // For demo, just show a toast
-            LMS.showToast(LMS.t('quiz.pdfExportNotImplemented'), 'info');
-        }
-
-        function exportRawData() {
-            const data = getFilteredData();
-            const jsonContent = JSON.stringify(data, null, 2);
-            const blob = new Blob([jsonContent], { type: 'application/json' });
-            const url = window.URL.createObjectURL(blob);
-            const a = document.createElement('a');
-            a.href = url;
-            a.download = 'quiz_analytics_raw_data.json';
-            a.click();
-            window.URL.revokeObjectURL(url);
-        }
-
-        // Generate student results CSV
-        function generateStudentResultsCSV(data) {
-            const headers = ['Student ID', 'Quiz', 'Score (%)', 'Time Spent (min)', 'Pass/Fail', 'Submitted At'];
-            const rows = data.submissions.map(submission => {
-                const quiz = data.quizzes.find(q => q.id === submission.quizId);
-                return [
-                    submission.studentId,
-                    quiz?.title || 'Unknown Quiz',
-                    submission.score,
-                    Math.round(submission.timeSpent / 60),
-                    submission.score >= 70 ? 'Pass' : 'Fail',
-                    new Date(submission.submittedAt).toLocaleDateString()
-                ];
             });
-            
-            return [headers, ...rows].map(row => row.map(cell => `"${cell}"`).join(',')).join('\n');
         }
 
-        // Generate question analysis CSV
-        function generateQuestionAnalysisCSV(analysis) {
-            const headers = ['Question', 'Correct Rate (%)', 'Average Time (s)', 'Attempts', 'Difficulty'];
-            const rows = analysis.map(question => [
-                question.questionId,
-                question.correctRate,
-                question.avgTime,
-                question.attempts,
-                question.difficulty
-            ]);
+        // Render difficulty chart
+        function renderDifficultyChart() {
+            const ctx = document.getElementById('difficultyChart').getContext('2d');
             
-            return [headers, ...rows].map(row => row.map(cell => `"${cell}"`).join(',')).join('\n');
+            const questions = [];
+            const correctRates = [];
+            const avgTimes = [];
+            
+            // Generate sample data for 20 questions
+            for (let i = 1; i <= 20; i++) {
+                questions.push(`Q${i}`);
+                correctRates.push(Math.floor(Math.random() * 40) + 50);
+                avgTimes.push(Math.random() * 3 + 0.5);
+            }
+
+            charts.difficulty = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: questions,
+                    datasets: [{
+                        label: 'Correct Rate (%)',
+                        data: correctRates,
+                        backgroundColor: '#2C6EAA',
+                        yAxisID: 'y'
+                    }, {
+                        label: 'Avg Time (min)',
+                        data: avgTimes,
+                        type: 'line',
+                        borderColor: '#F59E0B',
+                        backgroundColor: 'transparent',
+                        yAxisID: 'y1'
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            position: 'bottom'
+                        }
+                    },
+                    scales: {
+                        y: {
+                            type: 'linear',
+                            display: true,
+                            position: 'left',
+                            beginAtZero: true,
+                            max: 100
+                        },
+                        y1: {
+                            type: 'linear',
+                            display: true,
+                            position: 'right',
+                            beginAtZero: true,
+                            grid: {
+                                drawOnChartArea: false
+                            }
+                        }
+                    }
+                }
+            });
         }
 
-        // Download CSV helper
-        function downloadCSV(content, filename) {
-            const blob = new Blob([content], { type: 'text/csv' });
-            const url = window.URL.createObjectURL(blob);
-            const a = document.createElement('a');
-            a.href = url;
-            a.download = filename;
-            a.click();
-            window.URL.revokeObjectURL(url);
-            LMS.showToast(LMS.t('quiz.exportSuccess'), 'success');
+        // Load quiz metrics
+        function loadQuizMetrics() {
+            const quizzes = [
+                { title: 'JavaScript Fundamentals', attempts: 234, avgScore: 82.5, passRate: 75.2, avgTime: 22, difficulty: 'medium', effectiveness: 'high' },
+                { title: 'HTML & CSS Basics', attempts: 189, avgScore: 88.3, passRate: 85.1, avgTime: 18, difficulty: 'easy', effectiveness: 'high' },
+                { title: 'React Components', attempts: 156, avgScore: 72.4, passRate: 65.5, avgTime: 28, difficulty: 'hard', effectiveness: 'medium' },
+                { title: 'Database Design', attempts: 145, avgScore: 69.8, passRate: 58.2, avgTime: 32, difficulty: 'hard', effectiveness: 'low' },
+                { title: 'Web Security', attempts: 178, avgScore: 76.5, passRate: 70.3, avgTime: 25, difficulty: 'medium', effectiveness: 'medium' }
+            ];
+
+            const tbody = document.getElementById('metricsTableBody');
+            tbody.innerHTML = quizzes.map(quiz => `
+                <tr>
+                    <td><div class="font-medium">${quiz.title}</div></td>
+                    <td class="table__cell--center">${quiz.attempts}</td>
+                    <td class="table__cell--center">${quiz.avgScore}%</td>
+                    <td class="table__cell--center">${quiz.passRate}%</td>
+                    <td class="table__cell--center">${quiz.avgTime} min</td>
+                    <td class="table__cell--center">${getDifficultyBadge(quiz.difficulty)}</td>
+                    <td class="table__cell--center">${getEffectivenessBadge(quiz.effectiveness)}</td>
+                    <td class="table__cell--center">
+                        <button class="btn btn--ghost btn--small" onclick="viewQuizDetails('${quiz.title}')">
+                            <i class="fas fa-chart-line"></i>
+                        </button>
+                    </td>
+                </tr>
+            `).join('');
+        }
+
+        // Get difficulty badge
+        function getDifficultyBadge(difficulty) {
+            const badges = {
+                easy: '<span class="badge badge--success">Easy</span>',
+                medium: '<span class="badge badge--warning">Medium</span>',
+                hard: '<span class="badge badge--danger">Hard</span>'
+            };
+            return badges[difficulty];
+        }
+
+        // Get effectiveness badge
+        function getEffectivenessBadge(effectiveness) {
+            return `<span class="effectiveness-badge effectiveness-badge--${effectiveness}">${effectiveness.toUpperCase()}</span>`;
+        }
+
+        // View quiz details
+        function viewQuizDetails(quizTitle) {
+            LMS.showToast(`Opening details for: ${quizTitle}`, 'info');
+        }
+
+        // Export analytics
+        function exportAnalytics() {
+            LMS.showToast('Exporting analytics report...', 'info');
+            
+            // In a real implementation, this would generate and download a report
+            setTimeout(() => {
+                LMS.showToast('Analytics report exported successfully!', 'success');
+            }, 2000);
         }
 
         // Refresh analytics
         function refreshAnalytics() {
-            updateAnalytics();
-            LMS.showToast(LMS.t('quiz.analyticsRefreshed'), 'success');
+            LMS.showToast('Refreshing analytics data...', 'info');
+            
+            // Destroy existing charts
+            Object.values(charts).forEach(chart => chart.destroy());
+            
+            // Regenerate data
+            setTimeout(() => {
+                displayMetrics();
+                renderCharts();
+                loadQuizMetrics();
+                LMS.showToast('Analytics refreshed!', 'success');
+            }, 1000);
         }
 
         // Initialize on load
