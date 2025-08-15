@@ -16,7 +16,299 @@
     <!-- Configuration -->
     <script src="../config.js"></script>
     
-
+    <style>
+        /* Enhanced Quiz Interface Styles */
+        
+        /* Notes Modal */
+        .bookmarked-list {
+            max-height: 300px;
+            overflow-y: auto;
+            margin-top: var(--spacing-2);
+        }
+        
+        .bookmarked-item {
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-3);
+            padding: var(--spacing-3);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-md);
+            margin-bottom: var(--spacing-2);
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+        
+        .bookmarked-item:hover {
+            background: var(--bg-secondary);
+            border-color: var(--color-primary);
+        }
+        
+        .question-number {
+            font-weight: 600;
+            color: var(--color-primary);
+        }
+        
+        .question-preview {
+            flex: 1;
+            color: var(--text-secondary);
+            font-size: 0.875rem;
+        }
+        
+        /* Accessibility Panel */
+        .accessibility-panel {
+            position: fixed;
+            right: -300px;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 300px;
+            background: var(--bg-primary);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-lg);
+            padding: var(--spacing-4);
+            box-shadow: var(--shadow-lg);
+            transition: right 0.3s ease;
+            z-index: 1000;
+        }
+        
+        .accessibility-panel.active {
+            right: var(--spacing-4);
+        }
+        
+        .accessibility-panel h3 {
+            margin-bottom: var(--spacing-3);
+        }
+        
+        .accessibility-options {
+            display: flex;
+            flex-direction: column;
+            gap: var(--spacing-3);
+        }
+        
+        .accessibility-toggle {
+            position: fixed;
+            right: var(--spacing-4);
+            top: 50%;
+            transform: translateY(-50%);
+            width: 48px;
+            height: 48px;
+            border-radius: 50%;
+            background: var(--color-primary);
+            color: white;
+            border: none;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.25rem;
+            box-shadow: var(--shadow-md);
+            transition: all 0.2s ease;
+            z-index: 999;
+        }
+        
+        .accessibility-toggle:hover {
+            transform: translateY(-50%) scale(1.1);
+            box-shadow: var(--shadow-lg);
+        }
+        
+        /* High Contrast Mode */
+        body.high-contrast {
+            --bg-primary: #000;
+            --bg-secondary: #111;
+            --text-primary: #fff;
+            --text-secondary: #ccc;
+            --border-color: #fff;
+            --color-primary: #00f;
+        }
+        
+        /* Large Text Mode */
+        body.large-text {
+            font-size: 1.25rem;
+        }
+        
+        body.large-text .page-title {
+            font-size: 2.5rem;
+        }
+        
+        body.large-text .btn {
+            font-size: 1.125rem;
+            padding: var(--spacing-3) var(--spacing-5);
+        }
+        
+        /* Offline Indicator */
+        .offline-indicator {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            background: var(--color-warning);
+            color: white;
+            padding: var(--spacing-2) var(--spacing-4);
+            text-align: center;
+            z-index: 1100;
+        }
+        
+        /* Tab Switch Warning */
+        .tab-switch-warning {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.8);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 1200;
+        }
+        
+        .warning-content {
+            background: var(--bg-primary);
+            border-radius: var(--radius-lg);
+            padding: var(--spacing-6);
+            text-align: center;
+            max-width: 400px;
+        }
+        
+        /* Proctoring Indicator */
+        .proctoring-indicator {
+            position: fixed;
+            top: var(--spacing-4);
+            right: var(--spacing-4);
+            background: var(--bg-primary);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-md);
+            padding: var(--spacing-2) var(--spacing-3);
+            box-shadow: var(--shadow-sm);
+            z-index: 100;
+        }
+        
+        .proctoring-status {
+            display: flex;
+            gap: var(--spacing-3);
+            align-items: center;
+        }
+        
+        .webcam-status,
+        .screen-status {
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-1);
+            font-size: 0.875rem;
+        }
+        
+        .webcam-status i,
+        .screen-status i {
+            color: var(--color-error);
+            animation: pulse 2s infinite;
+        }
+        
+        @keyframes pulse {
+            0% { opacity: 1; }
+            50% { opacity: 0.5; }
+            100% { opacity: 1; }
+        }
+        
+        /* Mobile Quiz Controls */
+        .mobile-quiz-controls {
+            display: none;
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: var(--bg-primary);
+            border-top: 1px solid var(--border-color);
+            padding: var(--spacing-2);
+            gap: var(--spacing-2);
+            z-index: 100;
+        }
+        
+        .mobile-control {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: var(--spacing-2);
+            background: none;
+            border: none;
+            cursor: pointer;
+            font-size: 0.75rem;
+            color: var(--text-secondary);
+            transition: all 0.2s ease;
+        }
+        
+        .mobile-control:hover,
+        .mobile-control:active {
+            color: var(--color-primary);
+            background: var(--bg-secondary);
+            border-radius: var(--radius-sm);
+        }
+        
+        .mobile-control i {
+            font-size: 1.25rem;
+            margin-bottom: var(--spacing-1);
+        }
+        
+        /* Mobile Responsive */
+        @media (max-width: 768px) {
+            .question-actions {
+                flex-direction: column;
+                gap: var(--spacing-3);
+            }
+            
+            .question-nav-buttons {
+                width: 100%;
+            }
+            
+            .accessibility-toggle {
+                bottom: 80px;
+                top: auto;
+                transform: none;
+            }
+            
+            .accessibility-panel {
+                right: -100%;
+                width: 100%;
+                top: auto;
+                bottom: 0;
+                transform: none;
+                border-radius: var(--radius-lg) var(--radius-lg) 0 0;
+            }
+            
+            .accessibility-panel.active {
+                right: 0;
+            }
+            
+            .proctoring-indicator {
+                top: auto;
+                bottom: 80px;
+                left: var(--spacing-2);
+                right: var(--spacing-2);
+            }
+        }
+        
+        /* Keyboard Focus Indicators */
+        .btn:focus,
+        .question-nav-item:focus,
+        input:focus,
+        textarea:focus {
+            outline: 3px solid var(--color-primary);
+            outline-offset: 2px;
+        }
+        
+        /* Screen Reader Only Text */
+        .sr-only {
+            position: absolute;
+            width: 1px;
+            height: 1px;
+            padding: 0;
+            margin: -1px;
+            overflow: hidden;
+            clip: rect(0, 0, 0, 0);
+            white-space: nowrap;
+            border-width: 0;
+        }
+    </style>
 
 </head>
 <body>
@@ -131,6 +423,14 @@
                                 <i class="fas fa-flag" class="icon-mr"></i>
                                 <span data-translate="quiz.flagForReview">Flag for Review</span>
                             </button>
+                            <button class="btn btn--ghost" onclick="toggleBookmark()" id="bookmarkBtn">
+                                <i class="fas fa-bookmark" class="icon-mr"></i>
+                                <span data-translate="quiz.bookmark">Bookmark</span>
+                            </button>
+                            <button class="btn btn--ghost" onclick="openNotes()" id="notesBtn">
+                                <i class="fas fa-sticky-note" class="icon-mr"></i>
+                                <span data-translate="quiz.notes">Notes</span>
+                            </button>
                             <button class="btn btn--secondary" onclick="clearAnswer()">
                                 <i class="fas fa-eraser" class="icon-mr"></i>
                                 <span data-translate="quiz.clearAnswer">Clear Answer</span>
@@ -166,6 +466,138 @@
     <div class="auto-save-indicator" id="autoSaveIndicator">
         <i class="fas fa-check" class="icon-mr"></i>
         <span data-translate="quiz.autoSaved">Auto-saved</span>
+    </div>
+
+    <!-- Notes Modal -->
+    <div class="modal-backdrop" id="notesModalBackdrop">
+        <div class="modal modal--medium" id="notesModal">
+            <div class="modal__header">
+                <h2 class="modal__title" data-translate="quiz.questionNotes">Question Notes</h2>
+                <button class="modal__close" onclick="closeNotesModal()">×</button>
+            </div>
+            <div class="modal__body">
+                <div class="input-group">
+                    <label class="input-group__label" data-translate="quiz.yourNotes">Your Notes</label>
+                    <textarea id="questionNotes" class="input" rows="8" 
+                              placeholder="Add your notes for this question..." 
+                              data-translate-placeholder="quiz.notesPlaceholder"></textarea>
+                    <div class="input-group__help" data-translate="quiz.notesHelp">
+                        These notes are private and will be saved with your quiz attempt
+                    </div>
+                </div>
+                
+                <div class="bookmarked-questions mt-4">
+                    <h4 class="mb-3" data-translate="quiz.bookmarkedQuestions">Bookmarked Questions</h4>
+                    <div id="bookmarkedList" class="bookmarked-list">
+                        <!-- Dynamic bookmarked questions list -->
+                    </div>
+                </div>
+            </div>
+            <div class="modal__footer">
+                <button class="btn btn--secondary" onclick="closeNotesModal()">
+                    <i class="fas fa-times" class="icon-mr"></i>
+                    <span data-translate="common.close">Close</span>
+                </button>
+                <button class="btn btn--primary" onclick="saveNotes()">
+                    <i class="fas fa-save" class="icon-mr"></i>
+                    <span data-translate="common.save">Save</span>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Accessibility Panel -->
+    <div class="accessibility-panel" id="accessibilityPanel">
+        <h3 data-translate="quiz.accessibilityOptions">Accessibility Options</h3>
+        <div class="accessibility-options">
+            <label class="checkbox-label">
+                <input type="checkbox" id="highContrastMode" onchange="toggleHighContrast()">
+                <span class="checkbox-custom"></span>
+                <span data-translate="quiz.highContrast">High Contrast Mode</span>
+            </label>
+            <label class="checkbox-label">
+                <input type="checkbox" id="largeTextMode" onchange="toggleLargeText()">
+                <span class="checkbox-custom"></span>
+                <span data-translate="quiz.largeText">Large Text</span>
+            </label>
+            <label class="checkbox-label">
+                <input type="checkbox" id="screenReaderMode" onchange="toggleScreenReader()">
+                <span class="checkbox-custom"></span>
+                <span data-translate="quiz.screenReader">Screen Reader Optimized</span>
+            </label>
+            <label class="checkbox-label">
+                <input type="checkbox" id="keyboardOnlyMode" onchange="toggleKeyboardOnly()">
+                <span class="checkbox-custom"></span>
+                <span data-translate="quiz.keyboardOnly">Keyboard Navigation Only</span>
+            </label>
+        </div>
+        <button class="btn btn--ghost btn--small" onclick="toggleAccessibilityPanel()">
+            <i class="fas fa-times"></i>
+        </button>
+    </div>
+
+    <!-- Accessibility Toggle Button -->
+    <button class="accessibility-toggle" onclick="toggleAccessibilityPanel()" 
+            aria-label="Accessibility Options" title="Accessibility Options">
+        <i class="fas fa-universal-access"></i>
+    </button>
+
+    <!-- Offline Indicator -->
+    <div class="offline-indicator" id="offlineIndicator" style="display: none;">
+        <i class="fas fa-wifi-slash" class="icon-mr"></i>
+        <span data-translate="quiz.offlineMode">Offline Mode - Answers will sync when connected</span>
+    </div>
+
+    <!-- Tab Switch Warning -->
+    <div class="tab-switch-warning" id="tabSwitchWarning" style="display: none;">
+        <div class="warning-content">
+            <i class="fas fa-exclamation-triangle text-warning text-3xl mb-3"></i>
+            <h3 data-translate="quiz.tabSwitchDetected">Tab Switch Detected!</h3>
+            <p data-translate="quiz.tabSwitchWarning">
+                You have switched away from the quiz tab. This activity has been recorded.
+            </p>
+            <p class="text-sm text-secondary mt-2">
+                <span data-translate="quiz.tabSwitchCount">Tab switches:</span>
+                <span id="tabSwitchCount">0</span>
+            </p>
+            <button class="btn btn--primary mt-4" onclick="acknowledgeTabSwitch()">
+                <span data-translate="quiz.understand">I Understand</span>
+            </button>
+        </div>
+    </div>
+
+    <!-- Proctoring Indicator -->
+    <div class="proctoring-indicator" id="proctoringIndicator" style="display: none;">
+        <div class="proctoring-status">
+            <div class="webcam-status" id="webcamStatus">
+                <i class="fas fa-video"></i>
+                <span data-translate="quiz.webcamActive">Camera Active</span>
+            </div>
+            <div class="screen-status" id="screenStatus">
+                <i class="fas fa-desktop"></i>
+                <span data-translate="quiz.screenRecording">Screen Recording</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Mobile Quiz Controls -->
+    <div class="mobile-quiz-controls" id="mobileControls">
+        <button class="mobile-control" onclick="showQuestionNav()">
+            <i class="fas fa-th"></i>
+            <span data-translate="quiz.allQuestions">All</span>
+        </button>
+        <button class="mobile-control" onclick="toggleTimer()">
+            <i class="fas fa-clock"></i>
+            <span data-translate="quiz.timer">Timer</span>
+        </button>
+        <button class="mobile-control" onclick="toggleFlag()">
+            <i class="fas fa-flag"></i>
+            <span data-translate="quiz.flag">Flag</span>
+        </button>
+        <button class="mobile-control" onclick="openNotes()">
+            <i class="fas fa-sticky-note"></i>
+            <span data-translate="quiz.notes">Notes</span>
+        </button>
     </div>
 
         <!-- Security Check Modal -->
@@ -591,9 +1023,157 @@
                                   oninput="hasUnsavedChanges = true">${userAnswers[question.id] || ''}</textarea>
                     `;
                     
+                case 'drag-drop':
+                    return renderDragDropQuestion(question);
+                    
+                case 'hotspot':
+                    return renderHotspotQuestion(question);
+                    
+                case 'code':
+                    return renderCodeQuestion(question);
+                    
+                case 'matching':
+                    return renderMatchingQuestion(question);
+                    
+                case 'ordering':
+                    return renderOrderingQuestion(question);
+                    
                 default:
                     return '<p>Unknown question type</p>';
             }
+        }
+
+        // Render functions for advanced question types
+        function renderDragDropQuestion(question) {
+            const userAnswer = userAnswers[question.id] || {};
+            return `
+                <div class="drag-drop-container">
+                    <div class="drag-sources">
+                        <h4 data-translate="quiz.dragItems">Drag Items</h4>
+                        ${question.pairs.map(pair => `
+                            <div class="drag-item" draggable="true" data-source="${pair.source}">
+                                ${pair.source}
+                            </div>
+                        `).join('')}
+                    </div>
+                    <div class="drop-targets">
+                        <h4 data-translate="quiz.dropHere">Drop Here</h4>
+                        ${question.pairs.map(pair => `
+                            <div class="drop-zone" data-target="${pair.target}">
+                                <div class="drop-label">${pair.target}</div>
+                                <div class="dropped-item" data-dropped="${userAnswer[pair.target] || ''}">
+                                    ${userAnswer[pair.target] || 'Drop here'}
+                                </div>
+                            </div>
+                        `).join('')}
+                    </div>
+                </div>
+                <script>
+                    initDragDrop('${question.id}');
+                </script>
+            `;
+        }
+
+        function renderHotspotQuestion(question) {
+            const userAnswer = userAnswers[question.id] || [];
+            return `
+                <div class="hotspot-container">
+                    <img src="${question.imageUrl}" alt="Click on the correct areas" 
+                         class="hotspot-image" id="hotspot-${question.id}">
+                    <div class="hotspot-clicks" id="clicks-${question.id}">
+                        ${userAnswer.map(click => `
+                            <div class="click-marker" style="left: ${click.x}px; top: ${click.y}px;"></div>
+                        `).join('')}
+                    </div>
+                </div>
+                <p class="text-sm text-secondary mt-2" data-translate="quiz.hotspotInstructions">
+                    Click on the correct areas in the image
+                </p>
+                <script>
+                    initHotspot('${question.id}');
+                </script>
+            `;
+        }
+
+        function renderCodeQuestion(question) {
+            const userAnswer = userAnswers[question.id] || question.starterCode || '';
+            return `
+                <div class="code-question-container">
+                    <div class="code-header">
+                        <span class="code-language">${question.language || 'JavaScript'}</span>
+                        ${question.runnable ? `<button class="btn btn--secondary btn--small" onclick="runCode('${question.id}')">
+                            <i class="fas fa-play" class="icon-mr"></i>
+                            <span data-translate="quiz.runCode">Run Code</span>
+                        </button>` : ''}
+                    </div>
+                    <textarea class="code-editor" 
+                              id="code-${question.id}"
+                              placeholder="Write your code here..."
+                              onchange="setCodeAnswer('${question.id}', this.value)"
+                              oninput="hasUnsavedChanges = true"
+                              style="font-family: 'Courier New', monospace;">${userAnswer}</textarea>
+                    <div class="code-output" id="output-${question.id}" style="display: none;">
+                        <h4 data-translate="quiz.output">Output</h4>
+                        <pre id="code-result-${question.id}"></pre>
+                    </div>
+                </div>
+            `;
+        }
+
+        function renderMatchingQuestion(question) {
+            const userAnswer = userAnswers[question.id] || {};
+            return `
+                <div class="matching-container">
+                    <div class="matching-grid">
+                        <div class="left-column">
+                            <h4 data-translate="quiz.leftColumn">Left Column</h4>
+                            ${question.matches.map((match, i) => `
+                                <div class="match-item">${i + 1}. ${match.left}</div>
+                            `).join('')}
+                        </div>
+                        <div class="right-column">
+                            <h4 data-translate="quiz.rightColumn">Right Column</h4>
+                            ${question.matches.map((match, i) => `
+                                <div class="match-select">
+                                    <select onchange="setMatchingAnswer('${question.id}', '${match.left}', this.value)">
+                                        <option value="">Select match...</option>
+                                        ${question.matches.map((m, j) => `
+                                            <option value="${m.right}" ${userAnswer[match.left] === m.right ? 'selected' : ''}>
+                                                ${String.fromCharCode(65 + j)}. ${m.right}
+                                            </option>
+                                        `).join('')}
+                                    </select>
+                                </div>
+                            `).join('')}
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
+        function renderOrderingQuestion(question) {
+            const userAnswer = userAnswers[question.id] || [];
+            const shuffled = userAnswer.length > 0 ? userAnswer : [...question.items].sort(() => Math.random() - 0.5);
+            
+            return `
+                <div class="ordering-container" id="ordering-${question.id}">
+                    <p class="text-sm text-secondary mb-3" data-translate="quiz.orderingInstructions">
+                        Drag items to arrange them in the correct order
+                    </p>
+                    <div class="ordering-list">
+                        ${shuffled.map((item, i) => `
+                            <div class="ordering-item" draggable="true" data-item="${item}">
+                                <i class="fas fa-grip-vertical drag-handle"></i>
+                                <span class="order-number">${i + 1}.</span>
+                                <span class="order-text">${item}</span>
+                            </div>
+                        `).join('')}
+                    </div>
+                </div>
+                <script>
+                    initOrdering('${question.id}');
+                </script>
+            `;
         }
 
         // Answer handling functions
@@ -1265,8 +1845,497 @@
             originalSaveAnswer(answer);
         };
 
+        // Notes and Bookmarks Functions
+        function toggleBookmark() {
+            const currentQuestion = questions[currentQuestionIndex];
+            currentQuestion.bookmarked = !currentQuestion.bookmarked;
+            
+            const bookmarkBtn = document.getElementById('bookmarkBtn');
+            if (currentQuestion.bookmarked) {
+                bookmarkBtn.classList.add('btn--primary');
+                bookmarkBtn.classList.remove('btn--ghost');
+                LMS.showToast(LMS.t('quiz.bookmarked'), 'success');
+            } else {
+                bookmarkBtn.classList.remove('btn--primary');
+                bookmarkBtn.classList.add('btn--ghost');
+                LMS.showToast(LMS.t('quiz.bookmarkRemoved'), 'info');
+            }
+            
+            saveProgress();
+        }
+
+        function openNotes() {
+            const currentQuestion = questions[currentQuestionIndex];
+            document.getElementById('questionNotes').value = currentQuestion.notes || '';
+            
+            // Update bookmarked list
+            const bookmarkedList = document.getElementById('bookmarkedList');
+            const bookmarkedQuestions = questions.filter(q => q.bookmarked);
+            
+            if (bookmarkedQuestions.length === 0) {
+                bookmarkedList.innerHTML = '<p class="text-secondary">' + LMS.t('quiz.noBookmarks') + '</p>';
+            } else {
+                bookmarkedList.innerHTML = bookmarkedQuestions.map((q, idx) => {
+                    const qIndex = questions.indexOf(q);
+                    return `
+                        <div class="bookmarked-item" onclick="goToQuestion(${qIndex})">
+                            <span class="question-number">Q${qIndex + 1}</span>
+                            <span class="question-preview">${q.question.substring(0, 50)}...</span>
+                        </div>
+                    `;
+                }).join('');
+            }
+            
+            document.getElementById('notesModalBackdrop').classList.add('active');
+            document.getElementById('notesModal').classList.add('active');
+        }
+
+        function closeNotesModal() {
+            document.getElementById('notesModalBackdrop').classList.remove('active');
+            document.getElementById('notesModal').classList.remove('active');
+        }
+
+        function saveNotes() {
+            const currentQuestion = questions[currentQuestionIndex];
+            currentQuestion.notes = document.getElementById('questionNotes').value;
+            
+            const notesBtn = document.getElementById('notesBtn');
+            if (currentQuestion.notes) {
+                notesBtn.classList.add('text-primary');
+            } else {
+                notesBtn.classList.remove('text-primary');
+            }
+            
+            saveProgress();
+            closeNotesModal();
+            LMS.showToast(LMS.t('quiz.notesSaved'), 'success');
+        }
+
+        function goToQuestion(index) {
+            currentQuestionIndex = index;
+            showQuestion();
+            closeNotesModal();
+        }
+
+        // Accessibility Functions
+        function toggleAccessibilityPanel() {
+            const panel = document.getElementById('accessibilityPanel');
+            panel.classList.toggle('active');
+        }
+
+        function toggleHighContrast() {
+            document.body.classList.toggle('high-contrast');
+            localStorage.setItem('highContrast', document.body.classList.contains('high-contrast'));
+        }
+
+        function toggleLargeText() {
+            document.body.classList.toggle('large-text');
+            localStorage.setItem('largeText', document.body.classList.contains('large-text'));
+        }
+
+        function toggleScreenReader() {
+            const enabled = document.getElementById('screenReaderMode').checked;
+            if (enabled) {
+                // Add ARIA live regions and enhance screen reader support
+                document.querySelectorAll('.question-content').forEach(el => {
+                    el.setAttribute('aria-live', 'polite');
+                    el.setAttribute('aria-atomic', 'true');
+                });
+                LMS.showToast(LMS.t('quiz.screenReaderEnabled'), 'info');
+            }
+            localStorage.setItem('screenReader', enabled);
+        }
+
+        function toggleKeyboardOnly() {
+            const enabled = document.getElementById('keyboardOnlyMode').checked;
+            if (enabled) {
+                // Enable keyboard-only navigation
+                document.addEventListener('keydown', handleKeyboardNavigation);
+                LMS.showToast(LMS.t('quiz.keyboardNavEnabled'), 'info');
+            } else {
+                document.removeEventListener('keydown', handleKeyboardNavigation);
+            }
+            localStorage.setItem('keyboardOnly', enabled);
+        }
+
+        function handleKeyboardNavigation(e) {
+            switch(e.key) {
+                case 'ArrowRight':
+                case 'n':
+                    if (!document.getElementById('nextBtn').disabled) nextQuestion();
+                    break;
+                case 'ArrowLeft':
+                case 'p':
+                    if (!document.getElementById('prevBtn').disabled) previousQuestion();
+                    break;
+                case 'f':
+                    toggleFlag();
+                    break;
+                case 'b':
+                    toggleBookmark();
+                    break;
+                case 'o':
+                    openNotes();
+                    break;
+                case '1':
+                case '2':
+                case '3':
+                case '4':
+                case '5':
+                case '6':
+                case '7':
+                case '8':
+                case '9':
+                    // Select answer option
+                    const optionIndex = parseInt(e.key) - 1;
+                    const options = document.querySelectorAll('input[type="radio"], input[type="checkbox"]');
+                    if (options[optionIndex]) {
+                        options[optionIndex].click();
+                        options[optionIndex].focus();
+                    }
+                    break;
+            }
+        }
+
+        // Offline Support
+        function setupOfflineSupport() {
+            window.addEventListener('online', () => {
+                document.getElementById('offlineIndicator').style.display = 'none';
+                syncOfflineAnswers();
+            });
+            
+            window.addEventListener('offline', () => {
+                document.getElementById('offlineIndicator').style.display = 'block';
+                LMS.showToast(LMS.t('quiz.offlineDetected'), 'warning');
+            });
+        }
+
+        function syncOfflineAnswers() {
+            // Sync any offline answers with server
+            const offlineAnswers = localStorage.getItem('offlineAnswers_' + quizId);
+            if (offlineAnswers) {
+                // In real implementation, send to server
+                console.log('Syncing offline answers:', offlineAnswers);
+                localStorage.removeItem('offlineAnswers_' + quizId);
+                LMS.showToast(LMS.t('quiz.answersSynced'), 'success');
+            }
+        }
+
+        // Anti-cheating Features
+        function setupAntiCheating() {
+            if (currentQuiz.security?.preventTabSwitch) {
+                let tabSwitchCount = 0;
+                
+                document.addEventListener('visibilitychange', () => {
+                    if (document.hidden) {
+                        tabSwitchCount++;
+                        securityLogs.push({
+                            type: 'tab_switch',
+                            timestamp: new Date().toISOString(),
+                            count: tabSwitchCount
+                        });
+                        
+                        // Show warning on return
+                        if (!document.hidden) {
+                            document.getElementById('tabSwitchCount').textContent = tabSwitchCount;
+                            document.getElementById('tabSwitchWarning').style.display = 'flex';
+                        }
+                    }
+                });
+            }
+            
+            if (currentQuiz.security?.disableCopyPaste) {
+                document.addEventListener('copy', (e) => {
+                    e.preventDefault();
+                    LMS.showToast(LMS.t('quiz.copyDisabled'), 'warning');
+                });
+                
+                document.addEventListener('paste', (e) => {
+                    e.preventDefault();
+                    LMS.showToast(LMS.t('quiz.pasteDisabled'), 'warning');
+                });
+                
+                document.addEventListener('contextmenu', (e) => {
+                    e.preventDefault();
+                    return false;
+                });
+            }
+            
+            if (currentQuiz.security?.fullScreenMode) {
+                requestFullScreen();
+                
+                document.addEventListener('fullscreenchange', () => {
+                    if (!document.fullscreenElement) {
+                        LMS.showToast(LMS.t('quiz.fullScreenRequired'), 'warning');
+                        setTimeout(requestFullScreen, 2000);
+                    }
+                });
+            }
+        }
+
+        function acknowledgeTabSwitch() {
+            document.getElementById('tabSwitchWarning').style.display = 'none';
+        }
+
+        function requestFullScreen() {
+            const elem = document.documentElement;
+            if (elem.requestFullscreen) {
+                elem.requestFullscreen();
+            } else if (elem.webkitRequestFullscreen) {
+                elem.webkitRequestFullscreen();
+            } else if (elem.msRequestFullscreen) {
+                elem.msRequestFullscreen();
+            }
+        }
+
+        // Mobile Support
+        function setupMobileSupport() {
+            if (window.innerWidth <= 768) {
+                document.getElementById('mobileControls').style.display = 'flex';
+                
+                // Hide sidebar on mobile by default
+                document.querySelector('.sidebar-column').style.display = 'none';
+            }
+        }
+
+        function showQuestionNav() {
+            const sidebar = document.querySelector('.sidebar-column');
+            if (window.innerWidth <= 768) {
+                sidebar.style.display = sidebar.style.display === 'none' ? 'block' : 'none';
+            }
+        }
+
+        function toggleTimer() {
+            const timerCard = document.getElementById('timerCard');
+            timerCard.classList.toggle('minimized');
+        }
+
+        // Proctoring Support (Mock)
+        function setupProctoring() {
+            if (currentQuiz.security?.webcamRequired || currentQuiz.security?.screenRecording) {
+                document.getElementById('proctoringIndicator').style.display = 'flex';
+                
+                // Mock periodic screenshot capture
+                if (currentQuiz.security?.captureScreenshots) {
+                    setInterval(() => {
+                        captureScreenshot();
+                    }, 30000); // Every 30 seconds
+                }
+            }
+        }
+
+        function captureScreenshot() {
+            // Mock screenshot capture
+            securityLogs.push({
+                type: 'screenshot',
+                timestamp: new Date().toISOString(),
+                questionIndex: currentQuestionIndex
+            });
+            console.log('Screenshot captured (mock)');
+        }
+
+        // Enhanced Initialization
+        function initEnhancedFeatures() {
+            setupOfflineSupport();
+            setupAntiCheating();
+            setupMobileSupport();
+            setupProctoring();
+            
+            // Load saved accessibility preferences
+            if (localStorage.getItem('highContrast') === 'true') {
+                document.getElementById('highContrastMode').checked = true;
+                toggleHighContrast();
+            }
+            if (localStorage.getItem('largeText') === 'true') {
+                document.getElementById('largeTextMode').checked = true;
+                toggleLargeText();
+            }
+            if (localStorage.getItem('screenReader') === 'true') {
+                document.getElementById('screenReaderMode').checked = true;
+                toggleScreenReader();
+            }
+            if (localStorage.getItem('keyboardOnly') === 'true') {
+                document.getElementById('keyboardOnlyMode').checked = true;
+                toggleKeyboardOnly();
+            }
+        }
+
+        // Advanced question type handlers
+        function initDragDrop(questionId) {
+            // Implement drag and drop functionality
+            setTimeout(() => {
+                const container = document.querySelector('.drag-drop-container');
+                if (!container) return;
+                
+                const dragItems = container.querySelectorAll('.drag-item');
+                const dropZones = container.querySelectorAll('.drop-zone');
+                
+                dragItems.forEach(item => {
+                    item.addEventListener('dragstart', (e) => {
+                        e.dataTransfer.setData('text', item.dataset.source);
+                        item.classList.add('dragging');
+                    });
+                    
+                    item.addEventListener('dragend', () => {
+                        item.classList.remove('dragging');
+                    });
+                });
+                
+                dropZones.forEach(zone => {
+                    zone.addEventListener('dragover', (e) => {
+                        e.preventDefault();
+                        zone.classList.add('drag-over');
+                    });
+                    
+                    zone.addEventListener('dragleave', () => {
+                        zone.classList.remove('drag-over');
+                    });
+                    
+                    zone.addEventListener('drop', (e) => {
+                        e.preventDefault();
+                        zone.classList.remove('drag-over');
+                        
+                        const source = e.dataTransfer.getData('text');
+                        const target = zone.dataset.target;
+                        
+                        zone.querySelector('.dropped-item').textContent = source;
+                        zone.querySelector('.dropped-item').dataset.dropped = source;
+                        
+                        if (!userAnswers[questionId]) userAnswers[questionId] = {};
+                        userAnswers[questionId][target] = source;
+                        hasUnsavedChanges = true;
+                        saveAnswer(userAnswers[questionId]);
+                    });
+                });
+            }, 100);
+        }
+        
+        function initHotspot(questionId) {
+            setTimeout(() => {
+                const img = document.getElementById(`hotspot-${questionId}`);
+                const clicksContainer = document.getElementById(`clicks-${questionId}`);
+                
+                if (!img) return;
+                
+                img.addEventListener('click', (e) => {
+                    const rect = img.getBoundingClientRect();
+                    const x = e.clientX - rect.left;
+                    const y = e.clientY - rect.top;
+                    
+                    // Add click marker
+                    const marker = document.createElement('div');
+                    marker.className = 'click-marker';
+                    marker.style.left = x + 'px';
+                    marker.style.top = y + 'px';
+                    clicksContainer.appendChild(marker);
+                    
+                    // Save answer
+                    if (!userAnswers[questionId]) userAnswers[questionId] = [];
+                    userAnswers[questionId].push({ x, y });
+                    hasUnsavedChanges = true;
+                    saveAnswer(userAnswers[questionId]);
+                });
+            }, 100);
+        }
+        
+        function setCodeAnswer(questionId, code) {
+            userAnswers[questionId] = code;
+            hasUnsavedChanges = true;
+            saveAnswer(code);
+        }
+        
+        function runCode(questionId) {
+            const code = document.getElementById(`code-${questionId}`).value;
+            const output = document.getElementById(`output-${questionId}`);
+            const result = document.getElementById(`code-result-${questionId}`);
+            
+            output.style.display = 'block';
+            result.textContent = 'Running code...\n';
+            
+            // Mock code execution
+            setTimeout(() => {
+                try {
+                    // In real implementation, would use a sandboxed environment
+                    result.textContent = '> Code executed successfully!\n> Output: Hello World!';
+                } catch (error) {
+                    result.textContent = 'Error: ' + error.message;
+                }
+            }, 1000);
+        }
+        
+        function setMatchingAnswer(questionId, left, right) {
+            if (!userAnswers[questionId]) userAnswers[questionId] = {};
+            userAnswers[questionId][left] = right;
+            hasUnsavedChanges = true;
+            saveAnswer(userAnswers[questionId]);
+        }
+        
+        function initOrdering(questionId) {
+            setTimeout(() => {
+                const container = document.getElementById(`ordering-${questionId}`);
+                if (!container) return;
+                
+                const list = container.querySelector('.ordering-list');
+                let draggedItem = null;
+                
+                list.addEventListener('dragstart', (e) => {
+                    if (e.target.classList.contains('ordering-item')) {
+                        draggedItem = e.target;
+                        e.target.classList.add('dragging');
+                    }
+                });
+                
+                list.addEventListener('dragend', (e) => {
+                    if (e.target.classList.contains('ordering-item')) {
+                        e.target.classList.remove('dragging');
+                    }
+                });
+                
+                list.addEventListener('dragover', (e) => {
+                    e.preventDefault();
+                    const afterElement = getDragAfterElement(list, e.clientY);
+                    if (afterElement == null) {
+                        list.appendChild(draggedItem);
+                    } else {
+                        list.insertBefore(draggedItem, afterElement);
+                    }
+                });
+                
+                list.addEventListener('drop', () => {
+                    // Update order numbers and save answer
+                    const items = Array.from(list.querySelectorAll('.ordering-item'));
+                    items.forEach((item, index) => {
+                        item.querySelector('.order-number').textContent = (index + 1) + '.';
+                    });
+                    
+                    const orderedItems = items.map(item => item.dataset.item);
+                    userAnswers[questionId] = orderedItems;
+                    hasUnsavedChanges = true;
+                    saveAnswer(orderedItems);
+                });
+            }, 100);
+        }
+        
+        function getDragAfterElement(container, y) {
+            const draggableElements = [...container.querySelectorAll('.ordering-item:not(.dragging)')];
+            
+            return draggableElements.reduce((closest, child) => {
+                const box = child.getBoundingClientRect();
+                const offset = y - box.top - box.height / 2;
+                
+                if (offset < 0 && offset > closest.offset) {
+                    return { offset: offset, element: child };
+                } else {
+                    return closest;
+                }
+            }, { offset: Number.NEGATIVE_INFINITY }).element;
+        }
+
         // Initialize on load
-        document.addEventListener('DOMContentLoaded', init);
+        document.addEventListener('DOMContentLoaded', () => {
+            init();
+            initEnhancedFeatures();
+        });
     </script>
 </body>
 </html>
