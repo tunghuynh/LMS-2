@@ -151,6 +151,78 @@
                         </div>
                     </div>
 
+                    <!-- Question Pools & Randomization -->
+                    <div class="card mb-4">
+                        <div class="card__header">
+                            <h3 data-translate="quiz.questionPools">Question Pools</h3>
+                        </div>
+                        <div class="card__body">
+                            <div class="input-group">
+                                <label class="checkbox-label">
+                                    <input type="checkbox" id="quizUseRandomPools" onchange="toggleQuestionPools()">
+                                    <span class="checkbox-custom"></span>
+                                    <span data-translate="quiz.useQuestionPools">Use question pools for randomization</span>
+                                </label>
+                            </div>
+                            
+                            <div id="questionPoolsContainer" style="display: none; margin-top: var(--spacing-3);">
+                                <div class="input-group">
+                                    <label class="input-group__label" data-translate="quiz.poolStrategy">Pool Strategy</label>
+                                    <div class="dropdown dropdown--block" id="poolStrategyDropdown">
+                                        <button class="dropdown__trigger">
+                                            <span data-translate="quiz.randomSelection">Random Selection</span>
+                                            <span class="dropdown__arrow"></span>
+                                        </button>
+                                        <div class="dropdown__menu">
+                                            <div class="dropdown__list">
+                                                <div class="dropdown__item" data-value="random">Random Selection</div>
+                                                <div class="dropdown__item" data-value="balanced">Balanced by Difficulty</div>
+                                                <div class="dropdown__item" data-value="adaptive">Adaptive Testing</div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <div class="input-group">
+                                    <label class="input-group__label" data-translate="quiz.questionsPerAttempt">Questions per attempt</label>
+                                    <input type="number" id="questionsPerAttempt" class="input" value="10" min="1" max="50">
+                                    <span class="input-group__help" data-translate="quiz.poolHelp">
+                                        Number of questions to randomly select from the pool
+                                    </span>
+                                </div>
+                                
+                                <button class="btn btn--secondary btn--small" onclick="openPoolManager()">
+                                    <i class="fas fa-layer-group" class="icon-mr"></i>
+                                    <span data-translate="quiz.manageQuestionPools">Manage Question Pools</span>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Quiz Version Control -->
+                    <div class="card mb-4">
+                        <div class="card__header">
+                            <h3 data-translate="quiz.versionControl">Version Control</h3>
+                        </div>
+                        <div class="card__body">
+                            <div class="version-info">
+                                <p class="text-sm text-secondary" data-translate="quiz.currentVersion">Current Version: v1.0</p>
+                                <p class="text-sm text-secondary" data-translate="quiz.lastModified">Last Modified: Today</p>
+                            </div>
+                            
+                            <div class="flex flex-gap-2 mt-3">
+                                <button class="btn btn--secondary btn--small" onclick="viewVersionHistory()">
+                                    <i class="fas fa-history" class="icon-mr"></i>
+                                    <span data-translate="quiz.viewHistory">View History</span>
+                                </button>
+                                <button class="btn btn--secondary btn--small" onclick="createVersion()">
+                                    <i class="fas fa-code-branch" class="icon-mr"></i>
+                                    <span data-translate="quiz.createVersion">Create Version</span>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
                     <!-- Security Settings -->
                     <div class="card" style="margin-bottom: var(--spacing-4);">
                         <div class="card__header">
@@ -353,7 +425,7 @@
                 <button class="modal__close" onclick="closeQuestionTypeModal()">×</button>
             </div>
             <div class="modal__body">
-                <div class="grid grid--2-cols" class="grid-gap-4">
+                <div class="grid grid--3-cols" class="grid-gap-4">
                     <div class="question-type-option" onclick="createQuestion('multiple-choice')">
                         <div class="question-type-card">
                             <i class="fas fa-list" class="text-2xl text-primary mb-2"></i>
@@ -390,6 +462,57 @@
                             <h4 data-translate="quiz.multipleSelect">Multiple Select</h4>
                             <p class="text-sm text-secondary" data-translate="quiz.multipleSelectDesc">
                                 Multiple correct answers
+                            </p>
+                        </div>
+                    </div>
+
+                    <!-- Advanced Question Types -->
+                    <div class="question-type-option" onclick="createQuestion('drag-drop')">
+                        <div class="question-type-card">
+                            <i class="fas fa-arrows-alt" class="text-2xl text-purple mb-2" style="color: #8B5CF6;"></i>
+                            <h4 data-translate="quiz.dragDrop">Drag & Drop</h4>
+                            <p class="text-sm text-secondary" data-translate="quiz.dragDropDesc">
+                                Match items by dragging
+                            </p>
+                        </div>
+                    </div>
+
+                    <div class="question-type-option" onclick="createQuestion('hotspot')">
+                        <div class="question-type-card">
+                            <i class="fas fa-crosshairs" class="text-2xl text-pink mb-2" style="color: #EC4899;"></i>
+                            <h4 data-translate="quiz.hotspot">Hotspot</h4>
+                            <p class="text-sm text-secondary" data-translate="quiz.hotspotDesc">
+                                Click on image areas
+                            </p>
+                        </div>
+                    </div>
+
+                    <div class="question-type-option" onclick="createQuestion('code')">
+                        <div class="question-type-card">
+                            <i class="fas fa-code" class="text-2xl text-indigo mb-2" style="color: #6366F1;"></i>
+                            <h4 data-translate="quiz.code">Code Question</h4>
+                            <p class="text-sm text-secondary" data-translate="quiz.codeDesc">
+                                Programming with syntax highlight
+                            </p>
+                        </div>
+                    </div>
+
+                    <div class="question-type-option" onclick="createQuestion('matching')">
+                        <div class="question-type-card">
+                            <i class="fas fa-project-diagram" class="text-2xl text-teal mb-2" style="color: #14B8A6;"></i>
+                            <h4 data-translate="quiz.matching">Matching</h4>
+                            <p class="text-sm text-secondary" data-translate="quiz.matchingDesc">
+                                Connect related items
+                            </p>
+                        </div>
+                    </div>
+
+                    <div class="question-type-option" onclick="createQuestion('ordering')">
+                        <div class="question-type-card">
+                            <i class="fas fa-sort" class="text-2xl text-orange mb-2" style="color: #F97316;"></i>
+                            <h4 data-translate="quiz.ordering">Ordering</h4>
+                            <p class="text-sm text-secondary" data-translate="quiz.orderingDesc">
+                                Arrange items in sequence
                             </p>
                         </div>
                     </div>
@@ -548,6 +671,161 @@
                     <i class="fas fa-save" class="icon-mr"></i>
                     <span data-translate="quiz.saveTemplate">Save Template</span>
                 </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Question Pool Manager Modal -->
+    <div class="modal-backdrop" id="poolManagerModal">
+        <div class="modal modal--large">
+            <div class="modal__header">
+                <h2 class="modal__title" data-translate="quiz.questionPoolManager">Question Pool Manager</h2>
+                <button class="modal__close" onclick="closePoolManager()">×</button>
+            </div>
+            <div class="modal__body">
+                <div class="pool-manager-content">
+                    <!-- Pool List -->
+                    <div class="pool-list">
+                        <div class="pool-header flex-between mb-3">
+                            <h3 data-translate="quiz.questionPools">Question Pools</h3>
+                            <button class="btn btn--primary btn--small" onclick="createNewPool()">
+                                <i class="fas fa-plus" class="icon-mr"></i>
+                                <span data-translate="quiz.createPool">Create Pool</span>
+                            </button>
+                        </div>
+                        
+                        <div id="poolsList">
+                            <!-- Dynamic pool items -->
+                            <div class="pool-item">
+                                <div class="pool-item__header">
+                                    <h4>Easy Questions</h4>
+                                    <span class="badge badge--info">15 questions</span>
+                                </div>
+                                <div class="pool-item__actions">
+                                    <button class="btn btn--ghost btn--small" onclick="editPool('pool1')">
+                                        <i class="fas fa-edit"></i>
+                                    </button>
+                                    <button class="btn btn--ghost btn--small" onclick="deletePool('pool1')">
+                                        <i class="fas fa-trash"></i>
+                                    </button>
+                                </div>
+                            </div>
+                            
+                            <div class="pool-item">
+                                <div class="pool-item__header">
+                                    <h4>Medium Questions</h4>
+                                    <span class="badge badge--warning">20 questions</span>
+                                </div>
+                                <div class="pool-item__actions">
+                                    <button class="btn btn--ghost btn--small" onclick="editPool('pool2')">
+                                        <i class="fas fa-edit"></i>
+                                    </button>
+                                    <button class="btn btn--ghost btn--small" onclick="deletePool('pool2')">
+                                        <i class="fas fa-trash"></i>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Pool Details -->
+                    <div class="pool-details">
+                        <h3 data-translate="quiz.poolDetails">Pool Details</h3>
+                        <div class="alert alert--info">
+                            <i class="fas fa-info-circle"></i>
+                            <span data-translate="quiz.selectPoolToEdit">Select a pool to view and edit questions</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Version History Modal -->
+    <div class="modal-backdrop" id="versionHistoryModal">
+        <div class="modal modal--large">
+            <div class="modal__header">
+                <h2 class="modal__title" data-translate="quiz.versionHistory">Version History</h2>
+                <button class="modal__close" onclick="closeVersionHistory()">×</button>
+            </div>
+            <div class="modal__body">
+                <div class="version-timeline">
+                    <!-- Version items -->
+                    <div class="version-item">
+                        <div class="version-item__marker"></div>
+                        <div class="version-item__content">
+                            <div class="version-item__header">
+                                <h4>Version 1.2 <span class="badge badge--success">Current</span></h4>
+                                <span class="text-sm text-secondary">Modified 2 hours ago by You</span>
+                            </div>
+                            <div class="version-item__changes">
+                                <ul class="text-sm">
+                                    <li>Added 3 new questions</li>
+                                    <li>Updated passing score to 80%</li>
+                                    <li>Enabled question shuffling</li>
+                                </ul>
+                            </div>
+                            <div class="version-item__actions">
+                                <button class="btn btn--secondary btn--small" onclick="viewVersion('v1.2')">
+                                    <i class="fas fa-eye" class="icon-mr"></i>
+                                    <span data-translate="quiz.view">View</span>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="version-item">
+                        <div class="version-item__marker"></div>
+                        <div class="version-item__content">
+                            <div class="version-item__header">
+                                <h4>Version 1.1</h4>
+                                <span class="text-sm text-secondary">Modified yesterday by John Doe</span>
+                            </div>
+                            <div class="version-item__changes">
+                                <ul class="text-sm">
+                                    <li>Fixed typo in question 5</li>
+                                    <li>Added time limit of 60 minutes</li>
+                                </ul>
+                            </div>
+                            <div class="version-item__actions">
+                                <button class="btn btn--secondary btn--small" onclick="viewVersion('v1.1')">
+                                    <i class="fas fa-eye" class="icon-mr"></i>
+                                    <span data-translate="quiz.view">View</span>
+                                </button>
+                                <button class="btn btn--secondary btn--small" onclick="restoreVersion('v1.1')">
+                                    <i class="fas fa-undo" class="icon-mr"></i>
+                                    <span data-translate="quiz.restore">Restore</span>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="version-item">
+                        <div class="version-item__marker"></div>
+                        <div class="version-item__content">
+                            <div class="version-item__header">
+                                <h4>Version 1.0</h4>
+                                <span class="text-sm text-secondary">Created 3 days ago by You</span>
+                            </div>
+                            <div class="version-item__changes">
+                                <ul class="text-sm">
+                                    <li>Initial quiz creation</li>
+                                    <li>10 questions added</li>
+                                </ul>
+                            </div>
+                            <div class="version-item__actions">
+                                <button class="btn btn--secondary btn--small" onclick="viewVersion('v1.0')">
+                                    <i class="fas fa-eye" class="icon-mr"></i>
+                                    <span data-translate="quiz.view">View</span>
+                                </button>
+                                <button class="btn btn--secondary btn--small" onclick="restoreVersion('v1.0')">
+                                    <i class="fas fa-undo" class="icon-mr"></i>
+                                    <span data-translate="quiz.restore">Restore</span>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
@@ -1022,6 +1300,16 @@
                     return renderTrueFalseEditor(question);
                 case 'text-input':
                     return renderTextInputEditor(question);
+                case 'drag-drop':
+                    return renderDragDropEditor(question);
+                case 'hotspot':
+                    return renderHotspotEditor(question);
+                case 'code':
+                    return renderCodeEditor(question);
+                case 'matching':
+                    return renderMatchingEditor(question);
+                case 'ordering':
+                    return renderOrderingEditor(question);
                 default:
                     return '<p>Unknown question type</p>';
             }
@@ -1117,13 +1405,257 @@
             `;
         }
 
+        // Render drag & drop editor
+        function renderDragDropEditor(question) {
+            return `
+                <div class="input-group">
+                    <label class="input-group__label" data-translate="quiz.questionText">Question Text</label>
+                    <textarea class="input" rows="3" onchange="updateQuestionText('${question.id}', this.value)">${question.question}</textarea>
+                </div>
+                
+                <div class="input-group">
+                    <label class="input-group__label" data-translate="quiz.points">Points</label>
+                    <input type="number" class="input" value="${question.points || 1}" min="0" max="10" onchange="updateQuestionPoints('${question.id}', this.value)" class="w-25">
+                </div>
+                
+                <div class="input-group">
+                    <label class="input-group__label" data-translate="quiz.dragDropPairs">Drag & Drop Pairs</label>
+                    <div class="drag-drop-pairs">
+                        ${(question.pairs || []).map((pair, index) => `
+                            <div class="drag-drop-pair-row">
+                                <input type="text" class="input" value="${pair.source}" 
+                                       placeholder="Source item ${index + 1}" 
+                                       onchange="updateDragDropPair('${question.id}', ${index}, 'source', this.value)">
+                                <i class="fas fa-arrows-alt-h mx-3"></i>
+                                <input type="text" class="input" value="${pair.target}" 
+                                       placeholder="Target item ${index + 1}" 
+                                       onchange="updateDragDropPair('${question.id}', ${index}, 'target', this.value)">
+                                <button class="btn btn--ghost btn--small text-danger" onclick="removeDragDropPair('${question.id}', ${index})">
+                                    <i class="fas fa-times"></i>
+                                </button>
+                            </div>
+                        `).join('')}
+                    </div>
+                    <button class="btn btn--secondary btn--small mt-2" onclick="addDragDropPair('${question.id}')">
+                        <i class="fas fa-plus" class="icon-mr"></i>
+                        <span data-translate="quiz.addPair">Add Pair</span>
+                    </button>
+                </div>
+            `;
+        }
+
+        // Render hotspot editor
+        function renderHotspotEditor(question) {
+            return `
+                <div class="input-group">
+                    <label class="input-group__label" data-translate="quiz.questionText">Question Text</label>
+                    <textarea class="input" rows="3" onchange="updateQuestionText('${question.id}', this.value)">${question.question}</textarea>
+                </div>
+                
+                <div class="input-group">
+                    <label class="input-group__label" data-translate="quiz.points">Points</label>
+                    <input type="number" class="input" value="${question.points || 1}" min="0" max="10" onchange="updateQuestionPoints('${question.id}', this.value)" class="w-25">
+                </div>
+                
+                <div class="input-group">
+                    <label class="input-group__label" data-translate="quiz.uploadImage">Upload Image</label>
+                    <div class="upload-area">
+                        <input type="file" id="hotspot-image-${question.id}" accept="image/*" onchange="uploadHotspotImage('${question.id}', this)">
+                        ${question.imageUrl ? `
+                            <div class="uploaded-image mt-3">
+                                <img src="${question.imageUrl}" alt="Hotspot image" style="max-width: 400px; max-height: 300px;">
+                                <div class="mt-2">
+                                    <button class="btn btn--secondary btn--small" onclick="defineHotspots('${question.id}')">
+                                        <i class="fas fa-crosshairs" class="icon-mr"></i>
+                                        <span data-translate="quiz.defineHotspots">Define Hotspots</span>
+                                    </button>
+                                </div>
+                            </div>
+                        ` : ''}
+                    </div>
+                    <span class="input-group__help" data-translate="quiz.hotspotHelp">Upload an image and define clickable areas</span>
+                </div>
+                
+                <div class="input-group">
+                    <label class="input-group__label" data-translate="quiz.hotspots">Defined Hotspots</label>
+                    <div class="hotspot-list">
+                        ${(question.hotspots || []).map((hotspot, index) => `
+                            <div class="hotspot-item">
+                                <span>${hotspot.label} (${hotspot.x}, ${hotspot.y})</span>
+                                <button class="btn btn--ghost btn--small text-danger" onclick="removeHotspot('${question.id}', ${index})">
+                                    <i class="fas fa-times"></i>
+                                </button>
+                            </div>
+                        `).join('')}
+                    </div>
+                </div>
+            `;
+        }
+
+        // Render code editor
+        function renderCodeEditor(question) {
+            return `
+                <div class="input-group">
+                    <label class="input-group__label" data-translate="quiz.questionText">Question Text</label>
+                    <textarea class="input" rows="3" onchange="updateQuestionText('${question.id}', this.value)">${question.question}</textarea>
+                </div>
+                
+                <div class="input-group">
+                    <label class="input-group__label" data-translate="quiz.points">Points</label>
+                    <input type="number" class="input" value="${question.points || 1}" min="0" max="10" onchange="updateQuestionPoints('${question.id}', this.value)" class="w-25">
+                </div>
+                
+                <div class="input-group">
+                    <label class="input-group__label" data-translate="quiz.programmingLanguage">Programming Language</label>
+                    <div class="dropdown dropdown--block" id="codeLanguage-${question.id}">
+                        <button class="dropdown__trigger">
+                            <span>${question.language || 'JavaScript'}</span>
+                            <span class="dropdown__arrow"></span>
+                        </button>
+                        <div class="dropdown__menu">
+                            <div class="dropdown__list">
+                                <div class="dropdown__item" onclick="setCodeLanguage('${question.id}', 'javascript')">JavaScript</div>
+                                <div class="dropdown__item" onclick="setCodeLanguage('${question.id}', 'python')">Python</div>
+                                <div class="dropdown__item" onclick="setCodeLanguage('${question.id}', 'java')">Java</div>
+                                <div class="dropdown__item" onclick="setCodeLanguage('${question.id}', 'cpp')">C++</div>
+                                <div class="dropdown__item" onclick="setCodeLanguage('${question.id}', 'csharp')">C#</div>
+                                <div class="dropdown__item" onclick="setCodeLanguage('${question.id}', 'html')">HTML/CSS</div>
+                                <div class="dropdown__item" onclick="setCodeLanguage('${question.id}', 'sql')">SQL</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="input-group">
+                    <label class="input-group__label" data-translate="quiz.starterCode">Starter Code (Optional)</label>
+                    <textarea class="input code-editor" rows="8" 
+                              placeholder="// Provide starter code for students..."
+                              onchange="updateCodeStarter('${question.id}', this.value)"
+                              style="font-family: 'Courier New', monospace;">${question.starterCode || ''}</textarea>
+                </div>
+                
+                <div class="input-group">
+                    <label class="input-group__label" data-translate="quiz.expectedCode">Expected Solution (for reference)</label>
+                    <textarea class="input code-editor" rows="8" 
+                              placeholder="// Expected solution for grading reference..."
+                              onchange="updateCodeSolution('${question.id}', this.value)"
+                              style="font-family: 'Courier New', monospace;">${question.expectedCode || ''}</textarea>
+                    <span class="input-group__help" data-translate="quiz.codeHelp">This will be used as reference during grading</span>
+                </div>
+                
+                <div class="input-group">
+                    <label class="checkbox-label">
+                        <input type="checkbox" ${question.runnable ? 'checked' : ''} 
+                               onchange="updateCodeRunnable('${question.id}', this.checked)">
+                        <span class="checkbox-custom"></span>
+                        <span data-translate="quiz.allowCodeRun">Allow students to run code</span>
+                    </label>
+                </div>
+            `;
+        }
+
+        // Render matching editor
+        function renderMatchingEditor(question) {
+            return `
+                <div class="input-group">
+                    <label class="input-group__label" data-translate="quiz.questionText">Question Text</label>
+                    <textarea class="input" rows="3" onchange="updateQuestionText('${question.id}', this.value)">${question.question}</textarea>
+                </div>
+                
+                <div class="input-group">
+                    <label class="input-group__label" data-translate="quiz.points">Points</label>
+                    <input type="number" class="input" value="${question.points || 1}" min="0" max="10" onchange="updateQuestionPoints('${question.id}', this.value)" class="w-25">
+                </div>
+                
+                <div class="input-group">
+                    <label class="input-group__label" data-translate="quiz.matchingPairs">Matching Pairs</label>
+                    <div class="matching-pairs">
+                        <div class="matching-header">
+                            <span class="flex-1" data-translate="quiz.leftColumn">Left Column</span>
+                            <span class="flex-1" data-translate="quiz.rightColumn">Right Column</span>
+                            <span style="width: 40px;"></span>
+                        </div>
+                        ${(question.matches || []).map((match, index) => `
+                            <div class="matching-pair-row">
+                                <input type="text" class="input" value="${match.left}" 
+                                       placeholder="Left item ${index + 1}" 
+                                       onchange="updateMatchingPair('${question.id}', ${index}, 'left', this.value)">
+                                <input type="text" class="input" value="${match.right}" 
+                                       placeholder="Right item ${index + 1}" 
+                                       onchange="updateMatchingPair('${question.id}', ${index}, 'right', this.value)">
+                                <button class="btn btn--ghost btn--small text-danger" onclick="removeMatchingPair('${question.id}', ${index})">
+                                    <i class="fas fa-times"></i>
+                                </button>
+                            </div>
+                        `).join('')}
+                    </div>
+                    <button class="btn btn--secondary btn--small mt-2" onclick="addMatchingPair('${question.id}')">
+                        <i class="fas fa-plus" class="icon-mr"></i>
+                        <span data-translate="quiz.addMatch">Add Match</span>
+                    </button>
+                </div>
+            `;
+        }
+
+        // Render ordering editor
+        function renderOrderingEditor(question) {
+            return `
+                <div class="input-group">
+                    <label class="input-group__label" data-translate="quiz.questionText">Question Text</label>
+                    <textarea class="input" rows="3" onchange="updateQuestionText('${question.id}', this.value)">${question.question}</textarea>
+                </div>
+                
+                <div class="input-group">
+                    <label class="input-group__label" data-translate="quiz.points">Points</label>
+                    <input type="number" class="input" value="${question.points || 1}" min="0" max="10" onchange="updateQuestionPoints('${question.id}', this.value)" class="w-25">
+                </div>
+                
+                <div class="input-group">
+                    <label class="input-group__label" data-translate="quiz.itemsInOrder">Items (in correct order)</label>
+                    <div class="ordering-items">
+                        ${(question.items || []).map((item, index) => `
+                            <div class="ordering-item-row">
+                                <span class="order-number">${index + 1}.</span>
+                                <input type="text" class="input" value="${item}" 
+                                       placeholder="Item ${index + 1}" 
+                                       onchange="updateOrderingItem('${question.id}', ${index}, this.value)">
+                                <div class="order-buttons">
+                                    <button class="btn btn--ghost btn--small" onclick="moveOrderingItem('${question.id}', ${index}, -1)"
+                                            ${index === 0 ? 'disabled' : ''}>
+                                        <i class="fas fa-chevron-up"></i>
+                                    </button>
+                                    <button class="btn btn--ghost btn--small" onclick="moveOrderingItem('${question.id}', ${index}, 1)"
+                                            ${index === (question.items || []).length - 1 ? 'disabled' : ''}>
+                                        <i class="fas fa-chevron-down"></i>
+                                    </button>
+                                    <button class="btn btn--ghost btn--small text-danger" onclick="removeOrderingItem('${question.id}', ${index})">
+                                        <i class="fas fa-times"></i>
+                                    </button>
+                                </div>
+                            </div>
+                        `).join('')}
+                    </div>
+                    <button class="btn btn--secondary btn--small mt-2" onclick="addOrderingItem('${question.id}')">
+                        <i class="fas fa-plus" class="icon-mr"></i>
+                        <span data-translate="quiz.addItem">Add Item</span>
+                    </button>
+                    <span class="input-group__help" data-translate="quiz.orderingHelp">Items will be shuffled when presented to students</span>
+                </div>
+            `;
+        }
+
         // Get question type display name
         function getQuestionTypeName(type) {
             const names = {
                 'multiple-choice': LMS.t('quiz.multipleChoice'),
                 'multiple-select': LMS.t('quiz.multipleSelect'),
                 'true-false': LMS.t('quiz.trueFalse'),
-                'text-input': LMS.t('quiz.textInput')
+                'text-input': LMS.t('quiz.textInput'),
+                'drag-drop': LMS.t('quiz.dragDrop'),
+                'hotspot': LMS.t('quiz.hotspot'),
+                'code': LMS.t('quiz.code'),
+                'matching': LMS.t('quiz.matching'),
+                'ordering': LMS.t('quiz.ordering')
             };
             return names[type] || type;
         }
@@ -1164,6 +1696,38 @@
                     break;
                 case 'text-input':
                     newQuestion.expectedAnswer = '';
+                    break;
+                case 'drag-drop':
+                    newQuestion.pairs = [
+                        { source: 'Source 1', target: 'Target 1' },
+                        { source: 'Source 2', target: 'Target 2' },
+                        { source: 'Source 3', target: 'Target 3' }
+                    ];
+                    break;
+                case 'hotspot':
+                    newQuestion.imageUrl = '';
+                    newQuestion.hotspots = [];
+                    break;
+                case 'code':
+                    newQuestion.language = 'javascript';
+                    newQuestion.starterCode = '';
+                    newQuestion.expectedCode = '';
+                    newQuestion.runnable = false;
+                    break;
+                case 'matching':
+                    newQuestion.matches = [
+                        { left: 'Item 1', right: 'Match 1' },
+                        { left: 'Item 2', right: 'Match 2' },
+                        { left: 'Item 3', right: 'Match 3' }
+                    ];
+                    break;
+                case 'ordering':
+                    newQuestion.items = [
+                        'First item',
+                        'Second item',
+                        'Third item',
+                        'Fourth item'
+                    ];
                     break;
             }
             
@@ -1314,6 +1878,190 @@
                 }
             } else {
                 LMS.showToast(LMS.t('quiz.minimumOptions'), 'warning');
+            }
+        }
+
+        // Advanced question type handlers
+        
+        // Drag & Drop handlers
+        function updateDragDropPair(questionId, index, field, value) {
+            const question = currentQuiz.questions.find(q => q.id === questionId);
+            if (question && question.pairs && question.pairs[index]) {
+                question.pairs[index][field] = value;
+            }
+        }
+
+        function addDragDropPair(questionId) {
+            const question = currentQuiz.questions.find(q => q.id === questionId);
+            if (question && question.pairs) {
+                question.pairs.push({
+                    source: `Source ${question.pairs.length + 1}`,
+                    target: `Target ${question.pairs.length + 1}`
+                });
+                updateQuestionsContainer();
+            }
+        }
+
+        function removeDragDropPair(questionId, index) {
+            const question = currentQuiz.questions.find(q => q.id === questionId);
+            if (question && question.pairs && question.pairs.length > 1) {
+                question.pairs.splice(index, 1);
+                updateQuestionsContainer();
+            } else {
+                LMS.showToast('At least one pair is required', 'warning');
+            }
+        }
+
+        // Hotspot handlers
+        function uploadHotspotImage(questionId, input) {
+            const file = input.files[0];
+            if (file) {
+                // In real implementation, upload to server
+                // For demo, use local URL
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    const question = currentQuiz.questions.find(q => q.id === questionId);
+                    if (question) {
+                        question.imageUrl = e.target.result;
+                        updateQuestionsContainer();
+                    }
+                };
+                reader.readAsDataURL(file);
+            }
+        }
+
+        function defineHotspots(questionId) {
+            // In real implementation, open image editor modal
+            // For demo, add sample hotspot
+            const question = currentQuiz.questions.find(q => q.id === questionId);
+            if (question) {
+                if (!question.hotspots) question.hotspots = [];
+                question.hotspots.push({
+                    label: `Hotspot ${question.hotspots.length + 1}`,
+                    x: Math.floor(Math.random() * 300),
+                    y: Math.floor(Math.random() * 200),
+                    radius: 20
+                });
+                updateQuestionsContainer();
+                LMS.showToast('Hotspot added! In production, this would open an image editor.', 'info');
+            }
+        }
+
+        function removeHotspot(questionId, index) {
+            const question = currentQuiz.questions.find(q => q.id === questionId);
+            if (question && question.hotspots) {
+                question.hotspots.splice(index, 1);
+                updateQuestionsContainer();
+            }
+        }
+
+        // Code question handlers
+        function setCodeLanguage(questionId, language) {
+            const question = currentQuiz.questions.find(q => q.id === questionId);
+            if (question) {
+                question.language = language;
+                // Update dropdown display
+                const dropdown = document.querySelector(`#codeLanguage-${questionId} .dropdown__trigger span`);
+                if (dropdown) {
+                    const languageNames = {
+                        'javascript': 'JavaScript',
+                        'python': 'Python',
+                        'java': 'Java',
+                        'cpp': 'C++',
+                        'csharp': 'C#',
+                        'html': 'HTML/CSS',
+                        'sql': 'SQL'
+                    };
+                    dropdown.textContent = languageNames[language] || language;
+                }
+            }
+        }
+
+        function updateCodeStarter(questionId, code) {
+            const question = currentQuiz.questions.find(q => q.id === questionId);
+            if (question) {
+                question.starterCode = code;
+            }
+        }
+
+        function updateCodeSolution(questionId, code) {
+            const question = currentQuiz.questions.find(q => q.id === questionId);
+            if (question) {
+                question.expectedCode = code;
+            }
+        }
+
+        function updateCodeRunnable(questionId, runnable) {
+            const question = currentQuiz.questions.find(q => q.id === questionId);
+            if (question) {
+                question.runnable = runnable;
+            }
+        }
+
+        // Matching handlers
+        function updateMatchingPair(questionId, index, side, value) {
+            const question = currentQuiz.questions.find(q => q.id === questionId);
+            if (question && question.matches && question.matches[index]) {
+                question.matches[index][side] = value;
+            }
+        }
+
+        function addMatchingPair(questionId) {
+            const question = currentQuiz.questions.find(q => q.id === questionId);
+            if (question && question.matches) {
+                question.matches.push({
+                    left: `Item ${question.matches.length + 1}`,
+                    right: `Match ${question.matches.length + 1}`
+                });
+                updateQuestionsContainer();
+            }
+        }
+
+        function removeMatchingPair(questionId, index) {
+            const question = currentQuiz.questions.find(q => q.id === questionId);
+            if (question && question.matches && question.matches.length > 2) {
+                question.matches.splice(index, 1);
+                updateQuestionsContainer();
+            } else {
+                LMS.showToast('At least two matches are required', 'warning');
+            }
+        }
+
+        // Ordering handlers
+        function updateOrderingItem(questionId, index, value) {
+            const question = currentQuiz.questions.find(q => q.id === questionId);
+            if (question && question.items && question.items[index] !== undefined) {
+                question.items[index] = value;
+            }
+        }
+
+        function addOrderingItem(questionId) {
+            const question = currentQuiz.questions.find(q => q.id === questionId);
+            if (question && question.items) {
+                question.items.push(`Item ${question.items.length + 1}`);
+                updateQuestionsContainer();
+            }
+        }
+
+        function removeOrderingItem(questionId, index) {
+            const question = currentQuiz.questions.find(q => q.id === questionId);
+            if (question && question.items && question.items.length > 2) {
+                question.items.splice(index, 1);
+                updateQuestionsContainer();
+            } else {
+                LMS.showToast('At least two items are required', 'warning');
+            }
+        }
+
+        function moveOrderingItem(questionId, index, direction) {
+            const question = currentQuiz.questions.find(q => q.id === questionId);
+            if (question && question.items) {
+                const newIndex = index + direction;
+                if (newIndex >= 0 && newIndex < question.items.length) {
+                    [question.items[index], question.items[newIndex]] = 
+                    [question.items[newIndex], question.items[index]];
+                    updateQuestionsContainer();
+                }
             }
         }
 
@@ -1786,10 +2534,268 @@
             container.style.display = document.getElementById('quizWebcamRequired').checked ? 'block' : 'none';
         }
 
+        // Question Pool Management Functions
+        function toggleQuestionPools() {
+            const enabled = document.getElementById('quizUseRandomPools').checked;
+            document.getElementById('questionPoolsContainer').style.display = enabled ? 'block' : 'none';
+            currentQuiz.useQuestionPools = enabled;
+        }
+
+        function openPoolManager() {
+            document.getElementById('poolManagerModal').classList.add('active');
+            loadQuestionPools();
+        }
+
+        function closePoolManager() {
+            document.getElementById('poolManagerModal').classList.remove('active');
+        }
+
+        function loadQuestionPools() {
+            // In real implementation, load from API
+            // For demo, show sample pools
+            const pools = [
+                { id: 'pool1', name: 'Easy Questions', count: 15, difficulty: 'easy' },
+                { id: 'pool2', name: 'Medium Questions', count: 20, difficulty: 'medium' },
+                { id: 'pool3', name: 'Hard Questions', count: 10, difficulty: 'hard' }
+            ];
+            
+            const poolsList = document.getElementById('poolsList');
+            poolsList.innerHTML = pools.map(pool => `
+                <div class="pool-item">
+                    <div class="pool-item__header">
+                        <h4>${pool.name}</h4>
+                        <span class="badge badge--${getDifficultyColor(pool.difficulty)}">${pool.count} questions</span>
+                    </div>
+                    <div class="pool-item__actions">
+                        <button class="btn btn--ghost btn--small" onclick="editPool('${pool.id}')">
+                            <i class="fas fa-edit"></i>
+                        </button>
+                        <button class="btn btn--ghost btn--small text-danger" onclick="deletePool('${pool.id}')">
+                            <i class="fas fa-trash"></i>
+                        </button>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function getDifficultyColor(difficulty) {
+            const colors = {
+                easy: 'success',
+                medium: 'warning',
+                hard: 'danger'
+            };
+            return colors[difficulty] || 'info';
+        }
+
+        function createNewPool() {
+            const poolName = prompt('Enter pool name:');
+            if (poolName) {
+                LMS.showToast(`Pool "${poolName}" created!`, 'success');
+                loadQuestionPools();
+            }
+        }
+
+        function editPool(poolId) {
+            // In real implementation, open pool editor
+            LMS.showToast(`Editing pool ${poolId}...`, 'info');
+        }
+
+        function deletePool(poolId) {
+            if (confirm('Are you sure you want to delete this pool?')) {
+                LMS.showToast('Pool deleted!', 'success');
+                loadQuestionPools();
+            }
+        }
+
+        // Version Control Functions
+        function viewVersionHistory() {
+            document.getElementById('versionHistoryModal').classList.add('active');
+            loadVersionHistory();
+        }
+
+        function closeVersionHistory() {
+            document.getElementById('versionHistoryModal').classList.remove('active');
+        }
+
+        function loadVersionHistory() {
+            // In real implementation, load from API
+            // Demo data is already in the modal
+        }
+
+        function createVersion() {
+            const versionNote = prompt('Enter version note:');
+            if (versionNote) {
+                // Save current state as new version
+                const newVersion = {
+                    id: `v${Date.now()}`,
+                    number: '1.3',
+                    note: versionNote,
+                    quiz: JSON.parse(JSON.stringify(currentQuiz)),
+                    createdBy: currentUser.id,
+                    createdAt: new Date().toISOString()
+                };
+                
+                // In real implementation, save to API
+                LMS.showToast(`Version ${newVersion.number} created!`, 'success');
+                
+                // Update version info
+                document.querySelector('.version-info p:first-child').textContent = `Current Version: v${newVersion.number}`;
+            }
+        }
+
+        function viewVersion(versionId) {
+            // In real implementation, load version data
+            LMS.showToast(`Viewing version ${versionId}...`, 'info');
+        }
+
+        function restoreVersion(versionId) {
+            if (confirm(`Are you sure you want to restore version ${versionId}? Current changes will be saved as a new version.`)) {
+                // Create new version with current state
+                // Then restore selected version
+                LMS.showToast(`Version ${versionId} restored!`, 'success');
+            }
+        }
+
+        // Collaborative Features (Mock)
+        function initCollaboration() {
+            // In real implementation, setup WebSocket for real-time collaboration
+            // For demo, show occasional notifications
+            if (currentUser.role === 'teacher') {
+                setTimeout(() => {
+                    if (Math.random() > 0.7) {
+                        LMS.showToast('John Doe is also editing this quiz', 'info');
+                    }
+                }, 5000);
+            }
+        }
+
+        // Advanced Preview with new question types
+        function renderQuestionPreview(question) {
+            switch (question.type) {
+                case 'multiple-choice':
+                    return `
+                        <div class="mt-3">
+                            ${question.options.map(option => `
+                                <label class="radio-label" class="block mb-2">
+                                    <input type="radio" name="preview-${question.id}" disabled>
+                                    <span class="radio-custom"></span>
+                                    <span>${option.text}</span>
+                                </label>
+                            `).join('')}
+                        </div>
+                    `;
+                case 'multiple-select':
+                    return `
+                        <div class="mt-3">
+                            ${question.options.map(option => `
+                                <label class="checkbox-label" class="block mb-2">
+                                    <input type="checkbox" disabled>
+                                    <span class="checkbox-custom"></span>
+                                    <span>${option.text}</span>
+                                </label>
+                            `).join('')}
+                        </div>
+                    `;
+                case 'true-false':
+                    return `
+                        <div class="mt-3 flex flex-gap-4">
+                            <label class="radio-label">
+                                <input type="radio" name="preview-${question.id}" disabled>
+                                <span class="radio-custom"></span>
+                                <span>True</span>
+                            </label>
+                            <label class="radio-label">
+                                <input type="radio" name="preview-${question.id}" disabled>
+                                <span class="radio-custom"></span>
+                                <span>False</span>
+                            </label>
+                        </div>
+                    `;
+                case 'text-input':
+                    return `
+                        <div class="mt-3">
+                            <textarea class="input" rows="3" placeholder="Type your answer here..." disabled></textarea>
+                        </div>
+                    `;
+                case 'drag-drop':
+                    return `
+                        <div class="mt-3">
+                            <div class="drag-drop-preview">
+                                <div class="drag-sources">
+                                    ${question.pairs.map(pair => `
+                                        <div class="drag-item">${pair.source}</div>
+                                    `).join('')}
+                                </div>
+                                <div class="drop-targets">
+                                    ${question.pairs.map(pair => `
+                                        <div class="drop-zone">Drop here for: ${pair.target}</div>
+                                    `).join('')}
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                case 'hotspot':
+                    return `
+                        <div class="mt-3">
+                            ${question.imageUrl ? 
+                                `<img src="${question.imageUrl}" alt="Click on the correct areas" style="max-width: 100%; border: 1px solid var(--border-color);">` :
+                                '<p class="text-secondary">Image will be displayed here</p>'
+                            }
+                        </div>
+                    `;
+                case 'code':
+                    return `
+                        <div class="mt-3">
+                            <div class="code-editor-preview">
+                                <div class="code-header">
+                                    <span>${question.language || 'JavaScript'}</span>
+                                    ${question.runnable ? '<button class="btn btn--small btn--primary">Run Code</button>' : ''}
+                                </div>
+                                <textarea class="input code-editor" rows="10" placeholder="Write your code here..." disabled>${question.starterCode || ''}</textarea>
+                            </div>
+                        </div>
+                    `;
+                case 'matching':
+                    return `
+                        <div class="mt-3">
+                            <div class="matching-preview">
+                                <div class="matching-column">
+                                    ${question.matches.map((match, i) => `
+                                        <div class="match-item">${i + 1}. ${match.left}</div>
+                                    `).join('')}
+                                </div>
+                                <div class="matching-column">
+                                    ${question.matches.map((match, i) => `
+                                        <div class="match-item">A. ${match.right}</div>
+                                    `).join('')}
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                case 'ordering':
+                    return `
+                        <div class="mt-3">
+                            <div class="ordering-preview">
+                                ${question.items.map(() => `
+                                    <div class="order-item">
+                                        <i class="fas fa-grip-vertical"></i>
+                                        <span>[Drag to reorder]</span>
+                                    </div>
+                                `).join('')}
+                            </div>
+                            <p class="text-sm text-secondary mt-2">Items will be shuffled for students</p>
+                        </div>
+                    `;
+                default:
+                    return '';
+            }
+        }
+
         // Initialize on load
         document.addEventListener('DOMContentLoaded', () => {
             init();
             initDropdowns();
+            initCollaboration();
         });
     </script>
 </body>

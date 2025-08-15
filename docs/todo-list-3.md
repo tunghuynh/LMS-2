@@ -606,13 +606,13 @@ This is the master TODO list for LMS Phase I development following the Foundatio
   - Search and filter
   - Reusability across quizzes
   - Difficulty tagging
-- [ ] **3.2.5** Enhanced Quiz Builder (NEW):
-  - **NEW**: Advanced question types (drag-drop, hotspot, code questions)
-  - Question randomization options
-  - Conditional question logic
-  - Question pools for randomized tests
-  - Collaborative quiz building
-  - Quiz version control and history
+- [x] **3.2.5** Enhanced Quiz Builder (NEW):
+  - [x] **NEW**: Advanced question types (drag-drop, hotspot, code questions)
+  - [x] Question randomization options
+  - [x] Conditional question logic
+  - [x] Question pools for randomized tests
+  - [x] Collaborative quiz building
+  - [x] Quiz version control and history
 
 #### 3.3 Quiz Templates (NEW - Completely Missing)
 - [x] **3.3.1** Template Library (`quiz-templates.html`):
@@ -932,18 +932,18 @@ This is the master TODO list for LMS Phase I development following the Foundatio
 - **Phase 0 Foundation**: 43/43 tasks (100%) ✅ **Hoàn thành tất cả base components!**
 - **Phase I.1 User Management**: 30/30 tasks (100%) ✅ **Hoàn thành tất cả User Management tasks!**
 - **Phase I.2 Learning System**: 32/33 tasks (97%) 🚀 **Chỉ còn 1 task future enhancement**
-- **Phase I.3 Testing System**: 20/24 tasks (83.3%) 🚀 **Còn 4 tasks advanced features**
+- **Phase I.3 Testing System**: 21/24 tasks (87.5%) 🚀 **Còn 3 tasks advanced features**
 - **Phase I.4 Navigation & Integration**: 2/6 tasks (33.3%) 🚀 **Hoàn thành navigation enhancement**
 - **Integration & Testing**: 1/32 tasks (3.1%) 🚀 **Started with test framework**
 
-**Total: 128/168 tasks (76.2%)**
+**Total: 129/168 tasks (76.8%)**
 
 ### Updated Critical Path
 1. **Phase 0**: ✅ 100% Complete - Foundation ready
-2. **Phase I Business Logic**: 84/93 tasks (90.3%) - In Progress
+2. **Phase I Business Logic**: 85/93 tasks (91.4%) - In Progress
    - ✅ User Management Module: 30/30 tasks (100%) - Completed
    - ✅ Learning System Module: 32/33 tasks (97%) - Nearly Complete
-   - ✅ Testing System Module: 20/24 tasks (83.3%) - In Progress
+   - ✅ Testing System Module: 21/24 tasks (87.5%) - In Progress
    - ✅ Navigation & Integration: 2/6 tasks (33.3%) - In Progress
    
    **Recent Completions:**
