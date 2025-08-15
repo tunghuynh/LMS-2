@@ -12,6 +12,8 @@
     <link rel="stylesheet" href="../assets/css/utilities.css">
     <!-- Font Awesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <!-- Chart.js for analytics -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <!-- Configuration -->
     <script src="../config.js"></script>
     
@@ -305,6 +307,131 @@
             color: var(--text-secondary);
         }
         
+        /* Enhanced Analytics Styles */
+        .analytics-section {
+            margin-bottom: var(--spacing-6);
+        }
+        
+        .chart-container {
+            position: relative;
+            height: 300px;
+            margin-bottom: var(--spacing-4);
+        }
+        
+        .difficulty-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: var(--spacing-3);
+            margin-bottom: var(--spacing-4);
+        }
+        
+        .difficulty-card {
+            background: var(--bg-secondary);
+            border-radius: var(--radius-md);
+            padding: var(--spacing-3);
+            text-align: center;
+            border: 1px solid var(--border-color);
+        }
+        
+        .difficulty-card.easy {
+            border-color: var(--color-success);
+        }
+        
+        .difficulty-card.medium {
+            border-color: var(--color-warning);
+        }
+        
+        .difficulty-card.hard {
+            border-color: var(--color-danger);
+        }
+        
+        .performance-trend {
+            background: var(--bg-secondary);
+            border-radius: var(--radius-lg);
+            padding: var(--spacing-4);
+            margin-bottom: var(--spacing-4);
+        }
+        
+        .question-time-chart {
+            margin-top: var(--spacing-4);
+        }
+        
+        .export-buttons {
+            display: flex;
+            gap: var(--spacing-3);
+            flex-wrap: wrap;
+        }
+        
+        .share-section {
+            background: var(--bg-secondary);
+            border-radius: var(--radius-lg);
+            padding: var(--spacing-4);
+            margin-bottom: var(--spacing-4);
+        }
+        
+        .share-links {
+            display: flex;
+            gap: var(--spacing-3);
+            margin-top: var(--spacing-3);
+        }
+        
+        .share-link {
+            display: inline-flex;
+            align-items: center;
+            gap: var(--spacing-2);
+            padding: var(--spacing-2) var(--spacing-3);
+            background: var(--bg-primary);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-md);
+            text-decoration: none;
+            color: var(--text-primary);
+            transition: all var(--transition-base);
+        }
+        
+        .share-link:hover {
+            background: var(--bg-tertiary);
+            transform: translateY(-2px);
+        }
+        
+        .insights-box {
+            background: var(--bg-tertiary);
+            border-radius: var(--radius-md);
+            padding: var(--spacing-4);
+            margin-bottom: var(--spacing-4);
+        }
+        
+        .insight-item {
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-3);
+            margin-bottom: var(--spacing-3);
+        }
+        
+        .insight-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.25rem;
+        }
+        
+        .insight-icon.positive {
+            background: var(--color-success-light, rgba(16, 185, 129, 0.1));
+            color: var(--color-success);
+        }
+        
+        .insight-icon.negative {
+            background: var(--color-danger-light, rgba(239, 68, 68, 0.1));
+            color: var(--color-danger);
+        }
+        
+        .insight-icon.neutral {
+            background: var(--color-info-light, rgba(59, 130, 246, 0.1));
+            color: var(--color-info);
+        }
+        
         /* Responsive */
         @media (max-width: 768px) {
             .score-display {
@@ -320,6 +447,18 @@
                 align-items: flex-start;
                 gap: var(--spacing-2);
             }
+            
+            .chart-container {
+                height: 250px;
+            }
+            
+            .export-buttons {
+                flex-direction: column;
+            }
+            
+            .export-buttons .btn {
+                width: 100%;
+            }
         }
     </style>
 </head>
@@ -333,10 +472,30 @@
                     <p class="page-subtitle" id="quizTitle">Quiz Title</p>
                 </div>
                 <div class="flex flex-gap-3">
-                    <button class="btn btn--secondary" onclick="printResults()">
-                        <i class="fas fa-print" class="icon-mr"></i>
-                        <span data-translate="quiz.printResults">Print Results</span>
+                    <button class="btn btn--ghost" onclick="shareResults()">
+                        <i class="fas fa-share-alt" class="icon-mr"></i>
+                        <span data-translate="quiz.share">Share</span>
                     </button>
+                    <div class="dropdown">
+                        <button class="btn btn--secondary dropdown-toggle" onclick="toggleExportMenu(this)">
+                            <i class="fas fa-download" class="icon-mr"></i>
+                            <span data-translate="quiz.export">Export</span>
+                        </button>
+                        <div class="dropdown-menu">
+                            <a class="dropdown-item" onclick="exportPDF()">
+                                <i class="fas fa-file-pdf"></i>
+                                <span data-translate="quiz.exportPDF">Export as PDF</span>
+                            </a>
+                            <a class="dropdown-item" onclick="exportCSV()">
+                                <i class="fas fa-file-csv"></i>
+                                <span data-translate="quiz.exportCSV">Export as CSV</span>
+                            </a>
+                            <a class="dropdown-item" onclick="printResults()">
+                                <i class="fas fa-print"></i>
+                                <span data-translate="quiz.print">Print</span>
+                            </a>
+                        </div>
+                    </div>
                     <button class="btn btn--primary" onclick="goToCourses()">
                         <i class="fas fa-arrow-left" class="icon-mr"></i>
                         <span data-translate="quiz.backToCourses">Back to Courses</span>
@@ -370,6 +529,61 @@
                 <div class="stat-card">
                     <div class="stat-value" class="text-warning" id="timeSpent">0:00</div>
                     <div class="stat-label" data-translate="quiz.timeSpent">Time Spent</div>
+                </div>
+            </div>
+
+            <!-- Performance Insights -->
+            <div class="card analytics-section">
+                <div class="card__header">
+                    <h3 data-translate="quiz.performanceInsights">Performance Insights</h3>
+                </div>
+                <div class="card__body">
+                    <div class="insights-box" id="performanceInsights">
+                        <!-- Dynamic insights will be populated here -->
+                    </div>
+                </div>
+            </div>
+
+            <!-- Detailed Analytics -->
+            <div class="card analytics-section">
+                <div class="card__header">
+                    <h3 data-translate="quiz.detailedAnalytics">Detailed Analytics</h3>
+                </div>
+                <div class="card__body">
+                    <!-- Score Distribution Chart -->
+                    <div class="mb-5">
+                        <h4 class="mb-3" data-translate="quiz.scoreDistribution">Score Distribution</h4>
+                        <div class="chart-container">
+                            <canvas id="scoreDistributionChart"></canvas>
+                        </div>
+                    </div>
+
+                    <!-- Question Time Analysis -->
+                    <div class="mb-5">
+                        <h4 class="mb-3" data-translate="quiz.timePerQuestion">Time Spent Per Question</h4>
+                        <div class="chart-container">
+                            <canvas id="timePerQuestionChart"></canvas>
+                        </div>
+                    </div>
+
+                    <!-- Difficulty Analysis -->
+                    <div class="mb-5">
+                        <h4 class="mb-3" data-translate="quiz.difficultyAnalysis">Difficulty Analysis</h4>
+                        <div class="difficulty-grid" id="difficultyAnalysis">
+                            <!-- Dynamic difficulty cards -->
+                        </div>
+                        <div class="chart-container">
+                            <canvas id="difficultyChart"></canvas>
+                        </div>
+                    </div>
+
+                    <!-- Performance Trends -->
+                    <div class="mb-5" id="performanceTrendsSection" style="display: none;">
+                        <h4 class="mb-3" data-translate="quiz.performanceTrends">Performance Trends</h4>
+                        <div class="chart-container">
+                            <canvas id="performanceTrendsChart"></canvas>
+                        </div>
+                    </div>
                 </div>
             </div>
 
@@ -452,6 +666,49 @@
                     <i class="fas fa-redo" class="icon-mr"></i>
                     <span data-translate="quiz.startNewAttempt">Start New Attempt</span>
                 </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Share Modal -->
+    <div class="modal-backdrop" id="shareModalBackdrop">
+        <div class="modal modal--small" id="shareModal">
+            <div class="modal__header">
+                <h2 class="modal__title" data-translate="quiz.shareResults">Share Results</h2>
+                <button class="modal__close" onclick="closeShareModal()">×</button>
+            </div>
+            <div class="modal__body">
+                <p class="mb-4" data-translate="quiz.shareMessage">Share your quiz results with others</p>
+                
+                <div class="share-links">
+                    <a href="#" class="share-link" onclick="shareViaEmail()" title="Email">
+                        <i class="fas fa-envelope"></i>
+                        <span>Email</span>
+                    </a>
+                    <a href="#" class="share-link" onclick="shareViaFacebook()" title="Facebook">
+                        <i class="fab fa-facebook"></i>
+                        <span>Facebook</span>
+                    </a>
+                    <a href="#" class="share-link" onclick="shareViaTwitter()" title="Twitter">
+                        <i class="fab fa-twitter"></i>
+                        <span>Twitter</span>
+                    </a>
+                    <a href="#" class="share-link" onclick="shareViaLinkedIn()" title="LinkedIn">
+                        <i class="fab fa-linkedin"></i>
+                        <span>LinkedIn</span>
+                    </a>
+                </div>
+                
+                <div class="mt-4">
+                    <label class="input-group__label" data-translate="quiz.shareLink">Share Link</label>
+                    <div class="input-group">
+                        <input type="text" class="input" id="shareLink" readonly>
+                        <button class="btn btn--secondary" onclick="copyShareLink()">
+                            <i class="fas fa-copy"></i>
+                            <span data-translate="common.copy">Copy</span>
+                        </button>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
@@ -905,6 +1162,362 @@
             document.getElementById('certificateSection').style.display = 'block';
         }
 
+        // Display performance insights
+        function displayPerformanceInsights() {
+            const insightsContainer = document.getElementById('performanceInsights');
+            const insights = generateInsights();
+            
+            insightsContainer.innerHTML = insights.map(insight => `
+                <div class="insight-item">
+                    <div class="insight-icon ${insight.type}">
+                        <i class="${insight.icon}"></i>
+                    </div>
+                    <div>
+                        <div class="font-medium">${insight.title}</div>
+                        <div class="text-sm text-secondary">${insight.description}</div>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        // Generate performance insights
+        function generateInsights() {
+            const insights = [];
+            const avgTimePerQuestion = submissionData.timeSpent / quizData.questions.length;
+            
+            // Speed insight
+            if (avgTimePerQuestion < 30) {
+                insights.push({
+                    type: 'positive',
+                    icon: 'fas fa-bolt',
+                    title: LMS.t('quiz.fastCompletion'),
+                    description: LMS.t('quiz.fastCompletionDesc')
+                });
+            } else if (avgTimePerQuestion > 120) {
+                insights.push({
+                    type: 'neutral',
+                    icon: 'fas fa-clock',
+                    title: LMS.t('quiz.carefulApproach'),
+                    description: LMS.t('quiz.carefulApproachDesc')
+                });
+            }
+            
+            // Accuracy insight
+            const accuracy = (submissionData.correctAnswers / submissionData.totalQuestions) * 100;
+            if (accuracy >= 90) {
+                insights.push({
+                    type: 'positive',
+                    icon: 'fas fa-trophy',
+                    title: LMS.t('quiz.excellentAccuracy'),
+                    description: LMS.t('quiz.excellentAccuracyDesc')
+                });
+            } else if (accuracy < 50) {
+                insights.push({
+                    type: 'negative',
+                    icon: 'fas fa-exclamation-circle',
+                    title: LMS.t('quiz.needsImprovement'),
+                    description: LMS.t('quiz.needsImprovementDesc')
+                });
+            }
+            
+            // Question type performance
+            const typePerformance = analyzeQuestionTypePerformance();
+            Object.entries(typePerformance).forEach(([type, stats]) => {
+                if (stats.accuracy < 50) {
+                    insights.push({
+                        type: 'negative',
+                        icon: 'fas fa-info-circle',
+                        title: LMS.t('quiz.struggleWithType', { type: LMS.t(`quiz.${type}`) }),
+                        description: LMS.t('quiz.practiceRecommended')
+                    });
+                }
+            });
+            
+            return insights;
+        }
+
+        // Analyze question type performance
+        function analyzeQuestionTypePerformance() {
+            const typeStats = {};
+            
+            quizData.questions.forEach((question, index) => {
+                const type = question.type;
+                if (!typeStats[type]) {
+                    typeStats[type] = { correct: 0, total: 0 };
+                }
+                
+                typeStats[type].total++;
+                
+                const userAnswer = submissionData.answers[question.id];
+                if (isAnswerCorrect(question, userAnswer)) {
+                    typeStats[type].correct++;
+                }
+            });
+            
+            // Calculate accuracy for each type
+            Object.keys(typeStats).forEach(type => {
+                typeStats[type].accuracy = (typeStats[type].correct / typeStats[type].total) * 100;
+            });
+            
+            return typeStats;
+        }
+
+        // Check if answer is correct
+        function isAnswerCorrect(question, userAnswer) {
+            if (!userAnswer) return false;
+            
+            switch (question.type) {
+                case 'multiple-choice':
+                case 'true-false':
+                    const correctOption = question.options ? 
+                        question.options.find(o => o.correct)?.id : 
+                        question.answer;
+                    return userAnswer === correctOption || userAnswer === question.answer;
+                    
+                case 'multiple-select':
+                    const correctOptions = question.options.filter(o => o.correct).map(o => o.id);
+                    const selectedOptions = Array.isArray(userAnswer) ? userAnswer : [];
+                    return correctOptions.length === selectedOptions.length &&
+                           correctOptions.every(id => selectedOptions.includes(id));
+                           
+                default:
+                    return false;
+            }
+        }
+
+        // Display analytics charts
+        function displayAnalytics() {
+            displayScoreDistributionChart();
+            displayTimePerQuestionChart();
+            displayDifficultyAnalysis();
+            displayPerformanceTrends();
+        }
+
+        // Display score distribution chart
+        function displayScoreDistributionChart() {
+            const ctx = document.getElementById('scoreDistributionChart').getContext('2d');
+            const questionScores = calculateQuestionScores();
+            
+            new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: questionScores.map((_, i) => `Q${i + 1}`),
+                    datasets: [{
+                        label: LMS.t('quiz.pointsEarned'),
+                        data: questionScores.map(q => q.earned),
+                        backgroundColor: questionScores.map(q => 
+                            q.earned === q.possible ? 'rgba(16, 185, 129, 0.8)' : 
+                            q.earned > 0 ? 'rgba(245, 158, 11, 0.8)' : 'rgba(239, 68, 68, 0.8)'
+                        ),
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            max: Math.max(...questionScores.map(q => q.possible))
+                        }
+                    },
+                    plugins: {
+                        tooltip: {
+                            callbacks: {
+                                afterLabel: function(context) {
+                                    const index = context.dataIndex;
+                                    return `Max: ${questionScores[index].possible} points`;
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+        }
+
+        // Calculate question scores
+        function calculateQuestionScores() {
+            return quizData.questions.map(question => {
+                const userAnswer = submissionData.answers[question.id];
+                let earned = 0;
+                
+                if (isAnswerCorrect(question, userAnswer)) {
+                    earned = question.points || 1;
+                }
+                
+                return {
+                    earned,
+                    possible: question.points || 1
+                };
+            });
+        }
+
+        // Display time per question chart
+        function displayTimePerQuestionChart() {
+            const ctx = document.getElementById('timePerQuestionChart').getContext('2d');
+            
+            // Mock time data for demonstration
+            const timeData = quizData.questions.map((_, i) => {
+                const baseTime = 30 + Math.random() * 90; // 30-120 seconds
+                return Math.round(baseTime);
+            });
+            
+            new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: quizData.questions.map((_, i) => `Q${i + 1}`),
+                    datasets: [{
+                        label: LMS.t('quiz.timeInSeconds'),
+                        data: timeData,
+                        borderColor: 'rgb(59, 130, 246)',
+                        backgroundColor: 'rgba(59, 130, 246, 0.1)',
+                        tension: 0.1
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        tooltip: {
+                            callbacks: {
+                                label: function(context) {
+                                    const seconds = context.parsed.y;
+                                    const minutes = Math.floor(seconds / 60);
+                                    const secs = seconds % 60;
+                                    return `${context.dataset.label}: ${minutes}:${secs.toString().padStart(2, '0')}`;
+                                }
+                            }
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            title: {
+                                display: true,
+                                text: LMS.t('quiz.seconds')
+                            }
+                        }
+                    }
+                }
+            });
+        }
+
+        // Display difficulty analysis
+        function displayDifficultyAnalysis() {
+            // Mock difficulty data
+            const difficultyData = {
+                easy: { total: 5, correct: 4 },
+                medium: { total: 3, correct: 2 },
+                hard: { total: 2, correct: 0 }
+            };
+            
+            // Display difficulty cards
+            const difficultyGrid = document.getElementById('difficultyAnalysis');
+            difficultyGrid.innerHTML = Object.entries(difficultyData).map(([level, data]) => `
+                <div class="difficulty-card ${level}">
+                    <div class="text-2xl font-bold">${Math.round((data.correct / data.total) * 100)}%</div>
+                    <div class="text-sm text-secondary">${LMS.t(`quiz.${level}`)}</div>
+                    <div class="text-xs mt-1">${data.correct}/${data.total} ${LMS.t('quiz.correct')}</div>
+                </div>
+            `).join('');
+            
+            // Display difficulty chart
+            const ctx = document.getElementById('difficultyChart').getContext('2d');
+            new Chart(ctx, {
+                type: 'doughnut',
+                data: {
+                    labels: Object.keys(difficultyData).map(level => LMS.t(`quiz.${level}`)),
+                    datasets: [{
+                        data: Object.values(difficultyData).map(d => d.correct),
+                        backgroundColor: [
+                            'rgba(16, 185, 129, 0.8)',
+                            'rgba(245, 158, 11, 0.8)',
+                            'rgba(239, 68, 68, 0.8)'
+                        ]
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            position: 'bottom'
+                        },
+                        tooltip: {
+                            callbacks: {
+                                label: function(context) {
+                                    const level = context.label;
+                                    const data = Object.values(difficultyData)[context.dataIndex];
+                                    return `${level}: ${data.correct}/${data.total} correct`;
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+        }
+
+        // Display performance trends
+        function displayPerformanceTrends() {
+            const attempts = getQuizAttempts();
+            
+            if (attempts.length > 0) {
+                document.getElementById('performanceTrendsSection').style.display = 'block';
+                
+                const ctx = document.getElementById('performanceTrendsChart').getContext('2d');
+                
+                // Include current attempt
+                const allAttempts = [...attempts, submissionData];
+                
+                new Chart(ctx, {
+                    type: 'line',
+                    data: {
+                        labels: allAttempts.map((_, i) => LMS.t('quiz.attempt') + ` ${i + 1}`),
+                        datasets: [{
+                            label: LMS.t('quiz.scorePercentage'),
+                            data: allAttempts.map(a => a.score),
+                            borderColor: 'rgb(59, 130, 246)',
+                            backgroundColor: 'rgba(59, 130, 246, 0.1)',
+                            tension: 0.1
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        scales: {
+                            y: {
+                                beginAtZero: true,
+                                max: 100,
+                                title: {
+                                    display: true,
+                                    text: LMS.t('quiz.percentage')
+                                }
+                            }
+                        },
+                        plugins: {
+                            annotation: {
+                                annotations: {
+                                    passingLine: {
+                                        type: 'line',
+                                        yMin: quizData.passingScore,
+                                        yMax: quizData.passingScore,
+                                        borderColor: 'rgb(16, 185, 129)',
+                                        borderWidth: 2,
+                                        borderDash: [5, 5],
+                                        label: {
+                                            content: LMS.t('quiz.passingScore'),
+                                            enabled: true,
+                                            position: 'start'
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                });
+            }
+        }
+
         // Display retake section
         function displayRetakeSection() {
             // Get existing attempts
@@ -1028,6 +1641,189 @@ Date: ${new Date().toLocaleDateString()}
 
         function goToCourses() {
             window.location.href = 'courses.html';
+        }
+
+        // Export functions
+        function toggleExportMenu(button) {
+            const dropdown = button.parentElement;
+            dropdown.classList.toggle('active');
+            
+            // Close on outside click
+            document.addEventListener('click', function closeDropdown(e) {
+                if (!dropdown.contains(e.target)) {
+                    dropdown.classList.remove('active');
+                    document.removeEventListener('click', closeDropdown);
+                }
+            });
+        }
+
+        function exportPDF() {
+            // In a real implementation, would use a library like jsPDF
+            const content = `
+Quiz Results Report
+==================
+
+Quiz: ${quizData.title}
+Student: ${currentUser.fullName || 'Student'}
+Date: ${new Date().toLocaleDateString()}
+
+Results Summary
+--------------
+Score: ${submissionData.score}%
+Status: ${submissionData.passed ? 'PASSED' : 'FAILED'}
+Correct Answers: ${submissionData.correctAnswers}/${submissionData.totalQuestions}
+Time Spent: ${formatTime(submissionData.timeSpent)}
+
+Question Details
+---------------
+${quizData.questions.map((q, i) => {
+    const userAnswer = submissionData.answers[q.id];
+    const isCorrect = isAnswerCorrect(q, userAnswer);
+    return `
+Q${i + 1}: ${q.question}
+Your Answer: ${formatAnswer(q, userAnswer)}
+Result: ${isCorrect ? 'CORRECT' : 'INCORRECT'}
+`;
+}).join('\n')}
+`;
+            
+            const blob = new Blob([content], { type: 'text/plain' });
+            const url = window.URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `quiz_results_${quizData.title.replace(/\s+/g, '_')}_${new Date().toISOString().split('T')[0]}.txt`;
+            a.click();
+            window.URL.revokeObjectURL(url);
+            
+            LMS.showToast(LMS.t('quiz.exportedPDF'), 'success');
+        }
+
+        function exportCSV() {
+            const csvData = [
+                ['Question', 'Type', 'Your Answer', 'Correct Answer', 'Result', 'Points'],
+                ...quizData.questions.map((q, i) => {
+                    const userAnswer = submissionData.answers[q.id];
+                    const isCorrect = isAnswerCorrect(q, userAnswer);
+                    const correctAnswer = getCorrectAnswer(q);
+                    
+                    return [
+                        `Q${i + 1}: ${q.question}`,
+                        q.type,
+                        formatAnswer(q, userAnswer),
+                        correctAnswer,
+                        isCorrect ? 'Correct' : 'Incorrect',
+                        isCorrect ? (q.points || 1) : 0
+                    ];
+                })
+            ];
+            
+            const csv = csvData.map(row => row.map(cell => `"${cell}"`).join(',')).join('\n');
+            
+            const blob = new Blob([csv], { type: 'text/csv' });
+            const url = window.URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `quiz_results_${quizData.title.replace(/\s+/g, '_')}_${new Date().toISOString().split('T')[0]}.csv`;
+            a.click();
+            window.URL.revokeObjectURL(url);
+            
+            LMS.showToast(LMS.t('quiz.exportedCSV'), 'success');
+        }
+
+        function formatAnswer(question, answer) {
+            if (!answer) return 'No answer';
+            
+            switch (question.type) {
+                case 'multiple-choice':
+                    const option = question.options.find(o => o.id === answer);
+                    return option ? option.text : answer;
+                    
+                case 'multiple-select':
+                    return Array.isArray(answer) ? 
+                        answer.map(id => {
+                            const opt = question.options.find(o => o.id === id);
+                            return opt ? opt.text : id;
+                        }).join(', ') : 'No answer';
+                        
+                case 'true-false':
+                    return answer ? 'True' : 'False';
+                    
+                case 'text-input':
+                    return answer.substring(0, 100) + (answer.length > 100 ? '...' : '');
+                    
+                default:
+                    return JSON.stringify(answer);
+            }
+        }
+
+        function getCorrectAnswer(question) {
+            switch (question.type) {
+                case 'multiple-choice':
+                    const correct = question.options.find(o => o.correct);
+                    return correct ? correct.text : 'N/A';
+                    
+                case 'multiple-select':
+                    return question.options
+                        .filter(o => o.correct)
+                        .map(o => o.text)
+                        .join(', ');
+                        
+                case 'true-false':
+                    return question.answer ? 'True' : 'False';
+                    
+                default:
+                    return 'N/A';
+            }
+        }
+
+        // Share functions
+        function shareResults() {
+            const shareUrl = generateShareUrl();
+            document.getElementById('shareLink').value = shareUrl;
+            
+            document.getElementById('shareModalBackdrop').classList.add('active');
+            document.getElementById('shareModal').classList.add('active');
+        }
+
+        function closeShareModal() {
+            document.getElementById('shareModalBackdrop').classList.remove('active');
+            document.getElementById('shareModal').classList.remove('active');
+        }
+
+        function generateShareUrl() {
+            // In a real app, this would generate a unique shareable link
+            const baseUrl = window.location.origin + window.location.pathname;
+            const shareId = btoa(`${quizData.id}_${currentUser.id}_${Date.now()}`);
+            return `${baseUrl}?share=${shareId}`;
+        }
+
+        function copyShareLink() {
+            const input = document.getElementById('shareLink');
+            input.select();
+            document.execCommand('copy');
+            LMS.showToast(LMS.t('quiz.linkCopied'), 'success');
+        }
+
+        function shareViaEmail() {
+            const subject = encodeURIComponent(`My Quiz Results: ${quizData.title}`);
+            const body = encodeURIComponent(`I scored ${submissionData.score}% on "${quizData.title}"!\n\nCheck out my results: ${generateShareUrl()}`);
+            window.open(`mailto:?subject=${subject}&body=${body}`);
+        }
+
+        function shareViaFacebook() {
+            const url = encodeURIComponent(generateShareUrl());
+            window.open(`https://www.facebook.com/sharer/sharer.php?u=${url}`, '_blank');
+        }
+
+        function shareViaTwitter() {
+            const text = encodeURIComponent(`I scored ${submissionData.score}% on "${quizData.title}"!`);
+            const url = encodeURIComponent(generateShareUrl());
+            window.open(`https://twitter.com/intent/tweet?text=${text}&url=${url}`, '_blank');
+        }
+
+        function shareViaLinkedIn() {
+            const url = encodeURIComponent(generateShareUrl());
+            window.open(`https://www.linkedin.com/sharing/share-offsite/?url=${url}`, '_blank');
         }
 
         // Initialize on load
